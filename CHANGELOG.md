@@ -1,5 +1,8 @@
 # filestack-js changelog
 
+## 0.1.9 (2017-03-01)
+- Bump client to 0.2.0
+
 ## 0.1.8 (2017-03-01)
 - Bump picker to 0.2.9
 - Add repository to package.json

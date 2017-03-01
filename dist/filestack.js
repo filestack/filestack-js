@@ -1,4 +1,4 @@
-/* v0.1.8 */
+/* v0.1.9 */
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
 	typeof define === 'function' && define.amd ? define(factory) :
@@ -1327,42 +1327,42 @@ var requestBase = RequestBase;RequestBase.prototype.clearTimeout = function () {
   }, r.on = t.on, r.off = t.off, r;
 }; var logger = context("filestack", onOff); var initializeGlobalNamespace = function initializeGlobalNamespace() {
   var u = void 0;return "object" === ("undefined" == typeof window ? "undefined" : _typeof$1(window)) && (u = window.filestackInternals, u || (u = {}, window.filestackInternals = u), u.logger || (u.logger = logger, onOff.init())), u;
-};initializeGlobalNamespace();var log = logger.context("api-client"); var cloudApiUrl = ENV.cloudApiUrl; var _cloud = function _cloud(u, e) {
-  var t = function t(_t) {
-    var r = arguments.length > 1 && void 0 !== arguments[1] ? arguments[1] : {};return log("cloud.list() called:", _t), new Promise(function (n, i) {
-      var o = client$1.get(cloudApiUrl + "/" + e + "/folder/list" + _t).query({ apikey: u.apikey }).withCredentials().end(function (u, e) {
+};initializeGlobalNamespace();var log = logger.context("api-client"); var cloudApiUrl = ENV.cloudApiUrl; var _cloud = function _cloud(u, e, t) {
+  var r = { apikey: u.apikey };e && e.policy && e.signature && (r.policy = e.policy, r.signature = e.signature);var n = function n(u) {
+    var e = arguments.length > 1 && void 0 !== arguments[1] ? arguments[1] : {};return log("cloud.list() called:", u), new Promise(function (n, i) {
+      var o = client$1.get(cloudApiUrl + "/" + t + "/folder/list" + u).query(r).withCredentials().end(function (u, e) {
         u ? i(u) : (log("cloud.list() responded:", e.body), n(e.body));
-      });r.cancel = function () {
+      });e.cancel = function () {
         o.abort(), i(new Error("Cancelled"));
       };
     });
   },
-      r = function r(t) {
-    var r = arguments.length > 1 && void 0 !== arguments[1] ? arguments[1] : {},
-        n = arguments.length > 2 && void 0 !== arguments[2] ? arguments[2] : {};log("cloud.store() called:", t, r);var i = [{ name: "location", type: index$2.enums.of("S3 gcs rackspace azure dropbox") }, { name: "region", type: index$2.String }, { name: "path", type: index$2.String }, { name: "container", type: index$2.String }, { name: "access", type: index$2.enums.of("public private") }];checkOptions("cloud.store", i, r);var o = snakeKeys(r, "store");return new Promise(function (r, i) {
-      var a = client$1.get(cloudApiUrl + "/" + e + "/store" + t).query({ apikey: u.apikey }).query(removeEmpty(o)).withCredentials().end(function (u, e) {
-        u ? i(u) : (log("cloud.store() responded:", e.body), r(e.body));
+      i = function i(u) {
+    var e = arguments.length > 1 && void 0 !== arguments[1] ? arguments[1] : {},
+        n = arguments.length > 2 && void 0 !== arguments[2] ? arguments[2] : {};log("cloud.store() called:", u, e);var i = [{ name: "location", type: index$2.enums.of("S3 gcs rackspace azure dropbox") }, { name: "region", type: index$2.String }, { name: "path", type: index$2.String }, { name: "container", type: index$2.String }, { name: "access", type: index$2.enums.of("public private") }];checkOptions("cloud.store", i, e);var o = snakeKeys(e, "store");return new Promise(function (e, i) {
+      var a = client$1.get(cloudApiUrl + "/" + t + "/store" + u).query(r).query(removeEmpty(o)).withCredentials().end(function (u, t) {
+        u ? i(u) : (log("cloud.store() responded:", t.body), e(t.body));
       });n.cancel = function () {
         a.abort(), i(new Error("Cancelled"));
       };
     });
   },
-      n = function n(t) {
-    var r = arguments.length > 1 && void 0 !== arguments[1] ? arguments[1] : {};return log("cloud.link() called:", t), new Promise(function (n, i) {
-      var o = client$1.get(cloudApiUrl + "/" + e + "/link" + t).query({ apikey: u.apikey }).withCredentials().end(function (u, e) {
+      o = function o(u) {
+    var e = arguments.length > 1 && void 0 !== arguments[1] ? arguments[1] : {};return log("cloud.link() called:", u), new Promise(function (n, i) {
+      var o = client$1.get(cloudApiUrl + "/" + t + "/link" + u).query(r).withCredentials().end(function (u, e) {
         u ? i(u) : (log("cloud.link() responded:", e.body), n(e.body));
-      });r.cancel = function () {
+      });e.cancel = function () {
         o.abort(), i(new Error("Cancelled"));
       };
     });
   },
-      i = function i(e) {
+      a = function a(e) {
     log("cloud.logout() called:", e);var t = e ? cloudApiUrl + "/" + e : cloudApiUrl;return new Promise(function (e, r) {
       client$1.get(t + "/auth/logout").query({ apikey: u.apikey }).withCredentials().end(function (u, t) {
         u ? r(u) : (log("cloud.logout() responded:", t.body), e(t.body));
       });
     });
-  };return { name: e, list: t, store: r, link: n, logout: i };
+  };return { name: t, list: n, store: i, link: o, logout: a };
 }; var processURL = ENV.processApiUrl; var numberRange = function numberRange(u, e) {
   return index$2.refinement(index$2.Number, function (t) {
     return t >= u && t <= e;
@@ -1754,13 +1754,13 @@ var requestBase = RequestBase;RequestBase.prototype.clearTimeout = function () {
     }, metadata: function metadata(u, e) {
       return _metadata(t, u, e);
     }, cloud: function cloud(u) {
-      return _cloud(t, u);
+      return _cloud(t, e, u);
     }, transform: function transform(u, e) {
       return _transform(t, u, e);
     }, upload: function upload(u, e, r) {
       return _upload(t, u, e, r);
     } };
-}; var client = { version: "0.1.3", init: init$1 };
+}; var client = { version: "0.2.0", init: init$1 };
 
 // Logger can be used and required from many places.
 // This is global on / off switch for it, which all
@@ -2035,7 +2035,7 @@ var init = function init(apikey, config) {
 };
 
 var filestack = {
-  version: '0.1.8',
+  version: '0.1.9',
   init: init
 };
 

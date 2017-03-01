@@ -1,6 +1,6 @@
 {
   "name": "filestack-js",
-  "version": "0.1.8",
+  "version": "0.1.9",
   "description": "Official browser client for Filestack",
   "author": "Filestack",
   "license": "ISC",
