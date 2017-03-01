@@ -27,7 +27,7 @@
     "loader": "http://static.filestackapi.com/packages/loader/loader-2.0.2.tar.gz",
     "logger": "http://static.filestackapi.com/packages/logger/logger-1.3.3.tar.gz"
   },
-  "pickerVersion": "0.2.8",
+  "pickerVersion": "0.2.9",
   "devDependencies": {
     "babel-plugin-external-helpers": "^6.22.0",
     "babel-preset-es2015": "^6.22.0",
