@@ -1,0 +1,10 @@
+{
+  "staging": {
+    "bucket": "static-staging.filestackapi.com",
+    "folder": "v3"
+  },
+  "production": {
+    "bucket": "static.filestackapi.com",
+    "folder": "v3"
+  }
+}

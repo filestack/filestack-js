@@ -1,0 +1,56 @@
+{
+  "name": "filestack-js",
+  "version": "0.1.6",
+  "description": "Official browser client for Filestack",
+  "author": "Filestack",
+  "license": "ISC",
+  "scripts": {
+    "build": "rollup -c",
+    "build-cdn": "rollup -c rollup_cdn.config.js",
+    "lint": "eslint .",
+    "pretest": "npm run build -- --env=test",
+    "test": "electron-mocha --recursive --renderer --compilers js:babel-register --require source-map-support/register",
+    "start": "http-server -o",
+    "release-start": "release-o-tron --start",
+    "release-finish": "release-o-tron --finish",
+    "publish": "node scripts/publish.js"
+  },
+  "main": "dist/filestack.js",
+  "module": "dist/filestack.es2015.js",
+  "jsnext:main": "dist/filestack.es2015.js",
+  "dependencies": {
+    "api-client": "http://static.filestackapi.com/packages/api-client/api-client-0.1.2.tar.gz",
+    "loader": "http://static.filestackapi.com/packages/loader/loader-2.0.2.tar.gz",
+    "logger": "http://static.filestackapi.com/packages/logger/logger-1.3.3.tar.gz"
+  },
+  "pickerVersion": "0.2.7",
+  "devDependencies": {
+    "babel-plugin-external-helpers": "^6.22.0",
+    "babel-preset-es2015": "^6.22.0",
+    "babel-register": "^6.22.0",
+    "babelrc-rollup": "^3.0.0",
+    "chai": "^3.5.0",
+    "chai-spies": "^0.7.1",
+    "electron": "^1.4.4",
+    "electron-mocha": "^3.1.1",
+    "eslint": "^3.5.0",
+    "eslint-config-airbnb-base": "^8.0.0",
+    "eslint-plugin-import": "^1.16.0",
+    "fs-jetpack": "^0.10.2",
+    "http-server": "^0.9.0",
+    "minimist": "^1.2.0",
+    "pre-commit": "^1.1.3",
+    "release-o-tron": "http://static.filestackapi.com/packages/release-o-tron/release-o-tron-1.3.6.tar.gz",
+    "rollup": "^0.41.4",
+    "rollup-plugin-babel": "^2.7.1",
+    "rollup-plugin-commonjs": "^7.0.0",
+    "rollup-plugin-inject": "^2.0.0",
+    "rollup-plugin-node-resolve": "^2.0.0",
+    "rollup-plugin-replace": "^1.1.1",
+    "rollup-plugin-uglify": "^1.0.1"
+  },
+  "pre-commit": [
+    "lint",
+    "test"
+  ]
+}
