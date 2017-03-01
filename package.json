@@ -23,7 +23,7 @@
   "module": "dist/filestack.es2015.js",
   "jsnext:main": "dist/filestack.es2015.js",
   "dependencies": {
-    "api-client": "http://static.filestackapi.com/packages/api-client/api-client-0.1.3.tar.gz",
+    "api-client": "http://static.filestackapi.com/packages/api-client/api-client-0.2.0.tar.gz",
     "loader": "http://static.filestackapi.com/packages/loader/loader-2.0.2.tar.gz",
     "logger": "http://static.filestackapi.com/packages/logger/logger-1.3.3.tar.gz"
   },
