@@ -373,7 +373,7 @@ Initiates a multi-part upload flow.
 
 **Kind**: static method of <code>[init](#module_filestack..init)</code>  
 **Fulfil**: <code>object</code> - Metadata of uploaded file.  
-**Reject**: <code>string\|error</code> - A failure message or error object depending on where the flow halted.  
+**Reject**: <code>error</code> - An error object depending on where the flow halted.  
 **Params**
 
 - file <code>File</code> - must be a valid [File](https://developer.mozilla.org/en-US/docs/Web/API/File) or Blob.
