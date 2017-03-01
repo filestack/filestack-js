@@ -115,6 +115,10 @@ Opens the picker UI.
       - .transformations <code>object</code> - Enable and set options for various transformations.
           - .crop <code>boolean</code> | <code>object</code> - Enable crop.
               - .aspectRatio <code>number</code> - Maintain aspect ratio for crop selection. (e.g. 16/9 or 4/3)
+        - .rotate <code>boolean</code> - Enable rotate.
+        - .circle <code>boolean</code> - Enable circle.
+        - .monochrome <code>boolean</code> - Enable monochrome.
+        - .sepia <code>boolean</code> - Enable sepia.
     - .storeTo <code>object</code> - Options for file storage.
         - .location <code>string</code> <code> = &quot;s3&quot;</code> - One of `s3`, `gcs`, `rackspace`, `azure`, `dropbox`.
         - .region <code>string</code> - Valid S3 region for the selected S3 bucket. (S3 only).
@@ -156,7 +160,7 @@ onFileSelected(file) {
 
 // Using to change selected file name
 onFileSelected(file) {
-  file.filename = 'foo';
+  file.name = 'foo';
   // It's important to return altered file by the end of this function.
   return file;
 }
@@ -447,6 +451,9 @@ client.upload(file).then(res => console.log(res));
     - .width <code>number</code>
     - .color <code>number</code>
     - .background <code>number</code>
+- monochrome <code>boolean</code> - [Monochrome.](https://www.filestack.com/docs/image-transformations/filters#monochrome)
+- sepia <code>object</code> - [Sepia.](https://www.filestack.com/docs/image-transformations/filters#sepia)
+    - .tone <code>number</code>
 
 <a name="module_filestack..progressCallback"></a>
 
