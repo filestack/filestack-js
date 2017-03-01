@@ -1850,7 +1850,7 @@ initializeGlobalNamespace$1();
 
 var ENV$1 = {
   pickerUis: {
-    default: '//static.filestackapi.com/picker/v3/picker-0.2.9.js'
+    default: '//static.filestackapi.com/picker/v3/picker-0.2.10.js'
   }
 };
 
