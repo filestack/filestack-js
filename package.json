@@ -4,6 +4,10 @@
   "description": "Official browser client for Filestack",
   "author": "Filestack",
   "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/filestack/filestack-js.git"
+  },
   "scripts": {
     "build": "rollup -c",
     "build-cdn": "rollup -c rollup_cdn.config.js",
