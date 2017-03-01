@@ -981,7 +981,7 @@ var requestBase = RequestBase;RequestBase.prototype.clearTimeout = function () {
         n,
         i = u.split(/\r?\n/),
         o = {};i.pop();for (var a = 0, s = i.length; a < s; ++a) {
-      t = i[a], e = t.indexOf(":"), r = t.slice(0, e).toLowerCase(), n = y(t.slice(e + 1)), o[r] = n;
+      t = i[a], e = t.indexOf(":"), r = t.slice(0, e).toLowerCase(), n = m(t.slice(e + 1)), o[r] = n;
     }return o;
   }function a(u) {
     return (/[\/+]json\b/.test(u)
@@ -1003,8 +1003,8 @@ var requestBase = RequestBase;RequestBase.prototype.clearTimeout = function () {
     });
   }function A(u, e, t) {
     var r = h("DELETE", u);return "function" == typeof e && (t = e, e = null), e && r.send(e), t && r.end(t), r;
-  }var l;"undefined" != typeof window ? l = window : "undefined" != typeof self ? l = self : (console.warn("Using browser-only version of superagent in non-browser environment"), l = commonjsGlobal$1);var E = index,
-      p = requestBase,
+  }var l;"undefined" != typeof window ? l = window : "undefined" != typeof self ? l = self : (console.warn("Using browser-only version of superagent in non-browser environment"), l = commonjsGlobal$1);var p = index,
+      E = requestBase,
       f = isObject_1,
       d = isFunction_1,
       C = responseBase,
@@ -1021,7 +1021,7 @@ var requestBase = RequestBase;RequestBase.prototype.clearTimeout = function () {
     } catch (u) {}try {
       return new ActiveXObject("Msxml2.XMLHTTP");
     } catch (u) {}throw Error("Browser-only verison of superagent could not find XHR");
-  };var y = "".trim ? function (u) {
+  };var m = "".trim ? function (u) {
     return u.trim();
   } : function (u) {
     return u.replace(/(^\s*|\s*$)/g, "");
@@ -1033,7 +1033,7 @@ var requestBase = RequestBase;RequestBase.prototype.clearTimeout = function () {
         t = u.url,
         r = "cannot " + e + " " + t + " (" + this.status + ")",
         n = new Error(r);return n.status = this.status, n.method = e, n.url = t, n;
-  }, h.Response = s, E(c.prototype), p(c.prototype), c.prototype.type = function (u) {
+  }, h.Response = s, p(c.prototype), E(c.prototype), c.prototype.type = function (u) {
     return this.set("Content-Type", h.types[u] || u), this;
   }, c.prototype.accept = function (u) {
     return this.set("Accept", h.types[u] || u), this;
@@ -1209,8 +1209,8 @@ var requestBase = RequestBase;RequestBase.prototype.clearTimeout = function () {
     if (o.hasOwnProperty(s)) {
       var c = u[s];void 0 === c && (c = a[s]);var A = recurse(c, o[s], r.concat(s), n);i.value[s] = A.value, i.errors = i.errors.concat(A.errors);
     }
-  }var l = n.hasOwnProperty("strict") ? n.strict : e.meta.strict;if (l) for (var E in u) {
-    u.hasOwnProperty(E) && !o.hasOwnProperty(E) && i.errors.push(ValidationError.of(u[E], t.Nil, r.concat(E), n.context));
+  }var l = n.hasOwnProperty("strict") ? n.strict : e.meta.strict;if (l) for (var p in u) {
+    u.hasOwnProperty(p) && !o.hasOwnProperty(p) && i.errors.push(ValidationError.of(u[p], t.Nil, r.concat(p), n.context));
   }return i.errors.length || (i.value = new e(i.value)), i;
 }, validators.tuple = function (u, e, r, n) {
   var i = e.meta.types,
@@ -1389,6 +1389,14 @@ var requestBase = RequestBase;RequestBase.prototype.clearTimeout = function () {
     return u;
   }).join(","),
       n = snakeCase(u);return r.length ? n + "=" + r : n;
+}; var sepia = function sepia() {
+  var u = arguments.length > 0 && void 0 !== arguments[0] ? arguments[0] : [],
+      e = arguments[1],
+      t = [{ name: "tone", type: numberRange(0, 100) }];checkOptions("sepia", t, e);var r = formatOptions("sepia", t, e);return u.concat(r);
+}; var blackwhite = function blackwhite() {
+  var u = arguments.length > 0 && void 0 !== arguments[0] ? arguments[0] : [],
+      e = arguments[1],
+      t = [{ name: "threshold", type: numberRange(0, 100) }];checkOptions("blackwhite", t, e);var r = formatOptions("blackwhite", t, e);return u.concat(r);
 }; var border = function border() {
   var u = arguments.length > 0 && void 0 !== arguments[0] ? arguments[0] : [],
       e = arguments[1],
@@ -1433,14 +1441,17 @@ var requestBase = RequestBase;RequestBase.prototype.clearTimeout = function () {
 }; var flop = function flop() {
   var u = arguments.length > 0 && void 0 !== arguments[0] ? arguments[0] : [],
       e = arguments[1];if ("boolean" != typeof e) throw Error("flop must be a Boolean value");return e ? u.concat("flop") : u;
+}; var monochrome = function monochrome() {
+  var u = arguments.length > 0 && void 0 !== arguments[0] ? arguments[0] : [],
+      e = arguments[1];if ("boolean" != typeof e) throw Error("monochrome must be a Boolean value");return e ? u.concat("monochrome") : u;
 }; var crop = function crop() {
   var u = arguments.length > 0 && void 0 !== arguments[0] ? arguments[0] : [],
       e = arguments[1],
       t = [{ name: "dim", type: index$2.struct({ x: index$2.Integer, y: index$2.Integer, width: index$2.Integer, height: index$2.Integer }) }];checkOptions("crop", t, e);var r = e.dim,
       n = "crop=dim:[" + r.x + "," + r.y + "," + r.width + "," + r.height + "]";return u.concat(n);
-}; var transformers = { crop: crop, resize: resize, rotate: rotate, roundedCorners: roundedCorners, vignette: vignette, polaroid: polaroid, tornEdges: tornEdges, shadow: shadow, circle: circle, border: border, flip: flip, flop: flop }; var _transform = function _transform(u, e, t) {
+}; var transformers = { crop: crop, resize: resize, rotate: rotate, roundedCorners: roundedCorners, vignette: vignette, polaroid: polaroid, tornEdges: tornEdges, shadow: shadow, circle: circle, border: border, flip: flip, flop: flop, blackwhite: blackwhite, monochrome: monochrome, sepia: sepia }; var _transform = function _transform(u, e, t) {
   var r = Object.keys(transformers),
-      n = Object.keys(t);if (n.length < 1) throw new Error("No transforms to apply.");n.forEach(function (u) {
+      n = Object.keys(t);n.forEach(function (u) {
     if (r.indexOf(u) < 0) throw new Error("Invalid option specified: " + u + " is not a valid transform option.");
   });var i = function u() {
     var e = arguments.length > 0 && void 0 !== arguments[0] ? arguments[0] : [],
@@ -1527,13 +1538,13 @@ var requestBase = RequestBase;RequestBase.prototype.clearTimeout = function () {
       return String.fromCharCode.apply(null, new Uint8Array(u));
     }function l(u, e, t) {
       var r = new Uint8Array(u.byteLength + e.byteLength);return r.set(new Uint8Array(u)), r.set(new Uint8Array(e), u.byteLength), t ? r : r.buffer;
-    }function E(u) {
+    }function p(u) {
       var e,
           t = [],
           r = u.length;for (e = 0; e < r - 1; e += 2) {
         t.push(parseInt(u.substr(e, 2), 16));
       }return String.fromCharCode.apply(String, t);
-    }function p() {
+    }function E() {
       this.reset();
     }var f = function f(u, e) {
       return u + e & 4294967295;
@@ -1553,67 +1564,67 @@ var requestBase = RequestBase;RequestBase.prototype.clearTimeout = function () {
             c = e(t, s),
             A = s;return r !== u && (A = e(r, s)), c > A ? new ArrayBuffer(0) : (n = A - c, i = new ArrayBuffer(n), o = new Uint8Array(i), a = new Uint8Array(this, c, n), o.set(a), i);
       };
-    }(), p.prototype.append = function (u) {
+    }(), E.prototype.append = function (u) {
       return this.appendBinary(s(u)), this;
-    }, p.prototype.appendBinary = function (u) {
+    }, E.prototype.appendBinary = function (u) {
       this._buff += u, this._length += u.length;var r,
           n = this._buff.length;for (r = 64; r <= n; r += 64) {
         e(this._hash, t(this._buff.substring(r - 64, r)));
       }return this._buff = this._buff.substring(r - 64), this;
-    }, p.prototype.end = function (u) {
+    }, E.prototype.end = function (u) {
       var e,
           t,
           r = this._buff,
           n = r.length,
           i = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];for (e = 0; e < n; e += 1) {
         i[e >> 2] |= r.charCodeAt(e) << (e % 4 << 3);
-      }return this._finish(i, n), t = a(this._hash), u && (t = E(t)), this.reset(), t;
-    }, p.prototype.reset = function () {
+      }return this._finish(i, n), t = a(this._hash), u && (t = p(t)), this.reset(), t;
+    }, E.prototype.reset = function () {
       return this._buff = "", this._length = 0, this._hash = [1732584193, -271733879, -1732584194, 271733878], this;
-    }, p.prototype.getState = function () {
+    }, E.prototype.getState = function () {
       return { buff: this._buff, length: this._length, hash: this._hash };
-    }, p.prototype.setState = function (u) {
+    }, E.prototype.setState = function (u) {
       return this._buff = u.buff, this._length = u.length, this._hash = u.hash, this;
-    }, p.prototype.destroy = function () {
+    }, E.prototype.destroy = function () {
       delete this._hash, delete this._buff, delete this._length;
-    }, p.prototype._finish = function (u, t) {
+    }, E.prototype._finish = function (u, t) {
       var r,
           n,
           i,
           o = t;if (u[o >> 2] |= 128 << (o % 4 << 3), o > 55) for (e(this._hash, u), o = 0; o < 16; o += 1) {
         u[o] = 0;
       }r = 8 * this._length, r = r.toString(16).match(/(.*?)(.{0,8})$/), n = parseInt(r[2], 16), i = parseInt(r[1], 16) || 0, u[14] = n, u[15] = i, e(this._hash, u);
-    }, p.hash = function (u, e) {
-      return p.hashBinary(s(u), e);
-    }, p.hashBinary = function (u, e) {
+    }, E.hash = function (u, e) {
+      return E.hashBinary(s(u), e);
+    }, E.hashBinary = function (u, e) {
       var t = n(u),
-          r = a(t);return e ? E(r) : r;
-    }, p.ArrayBuffer = function () {
+          r = a(t);return e ? p(r) : r;
+    }, E.ArrayBuffer = function () {
       this.reset();
-    }, p.ArrayBuffer.prototype.append = function (u) {
+    }, E.ArrayBuffer.prototype.append = function (u) {
       var t,
           n = l(this._buff.buffer, u, !0),
           i = n.length;for (this._length += u.byteLength, t = 64; t <= i; t += 64) {
         e(this._hash, r(n.subarray(t - 64, t)));
       }return this._buff = t - 64 < i ? new Uint8Array(n.buffer.slice(t - 64)) : new Uint8Array(0), this;
-    }, p.ArrayBuffer.prototype.end = function (u) {
+    }, E.ArrayBuffer.prototype.end = function (u) {
       var e,
           t,
           r = this._buff,
           n = r.length,
           i = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];for (e = 0; e < n; e += 1) {
         i[e >> 2] |= r[e] << (e % 4 << 3);
-      }return this._finish(i, n), t = a(this._hash), u && (t = E(t)), this.reset(), t;
-    }, p.ArrayBuffer.prototype.reset = function () {
+      }return this._finish(i, n), t = a(this._hash), u && (t = p(t)), this.reset(), t;
+    }, E.ArrayBuffer.prototype.reset = function () {
       return this._buff = new Uint8Array(0), this._length = 0, this._hash = [1732584193, -271733879, -1732584194, 271733878], this;
-    }, p.ArrayBuffer.prototype.getState = function () {
-      var u = p.prototype.getState.call(this);return u.buff = A(u.buff), u;
-    }, p.ArrayBuffer.prototype.setState = function (u) {
-      return u.buff = c(u.buff, !0), p.prototype.setState.call(this, u);
-    }, p.ArrayBuffer.prototype.destroy = p.prototype.destroy, p.ArrayBuffer.prototype._finish = p.prototype._finish, p.ArrayBuffer.hash = function (u, e) {
+    }, E.ArrayBuffer.prototype.getState = function () {
+      var u = E.prototype.getState.call(this);return u.buff = A(u.buff), u;
+    }, E.ArrayBuffer.prototype.setState = function (u) {
+      return u.buff = c(u.buff, !0), E.prototype.setState.call(this, u);
+    }, E.ArrayBuffer.prototype.destroy = E.prototype.destroy, E.ArrayBuffer.prototype._finish = E.prototype._finish, E.ArrayBuffer.hash = function (u, e) {
       var t = i(new Uint8Array(u)),
-          r = a(t);return e ? E(r) : r;
-    }, p;
+          r = a(t);return e ? p(r) : r;
+    }, E;
   });
 }); var uploadURL = ENV.uploadApiUrl; var parseStoreOpts = function parseStoreOpts(u, e) {
   var t = [{ name: "location", type: index$2.enums.of("s3 gcs rackspace azure dropbox") }, { name: "region", type: index$2.String }, { name: "path", type: index$2.String }, { name: "container", type: index$2.String }, { name: "access", type: index$2.enums.of("public private") }];checkOptions("upload (storeParams)", t, e);var r = snakeKeys(e, "store");return u.policy && u.signature ? Object.assign({}, r, { signature: u.signature, policy: u.policy }) : r;
@@ -1630,7 +1641,7 @@ var requestBase = RequestBase;RequestBase.prototype.clearTimeout = function () {
     t && t.ok ? u.loadNextPart() : u.processRetries();
   });
 }, Uploader.prototype.start = function (u) {
-  var e = this;null !== e.config.onStart && e.config.onStart();var t = { filename: e.file.name, mimetype: e.file.type, size: e.file.size },
+  var e = this;null !== e.config.onStart && e.config.onStart();var t = { filename: e.file.name, mimetype: e.file.type || "application/octet-stream", size: e.file.size },
       r = e.createUploadFormData(t),
       n = new XMLHttpRequest();n.onreadystatechange = function () {
     if (4 === n.readyState) if (200 === n.status) {
@@ -1707,7 +1718,7 @@ var requestBase = RequestBase;RequestBase.prototype.clearTimeout = function () {
     }, e);
   } else u.uploadFailed = !0, u.config.onUploadFailedFunction(new Error("Failed to upload after " + u.attempts + " attempt(s)."));
 }, Uploader.prototype.complete = function () {
-  var u = this;null !== u.config.onUploadCompleteFunction && u.config.onUploadCompleteFunction();var e = { size: u.file.size, filename: u.file.name, mimetype: u.file.type, parts: u.parts.uploaded.join(";") },
+  var u = this;null !== u.config.onUploadCompleteFunction && u.config.onUploadCompleteFunction();var e = { size: u.file.size, filename: u.file.name, mimetype: u.file.type || "application/octet-stream", parts: u.parts.uploaded.join(";") },
       t = u.createUploadFormData(e),
       r = new XMLHttpRequest();r.onreadystatechange = function () {
     4 === r.readyState && 200 === r.status && null !== u.config.onCompleteFunction && u.config.onCompleteFunction(JSON.parse(r.response));
@@ -1749,7 +1760,7 @@ var requestBase = RequestBase;RequestBase.prototype.clearTimeout = function () {
     }, upload: function upload(u, e, r) {
       return _upload(t, u, e, r);
     } };
-}; var client = { version: "0.1.2", init: init$1 };
+}; var client = { version: "0.1.3", init: init$1 };
 
 // Logger can be used and required from many places.
 // This is global on / off switch for it, which all
@@ -1839,7 +1850,7 @@ initializeGlobalNamespace$1();
 
 var ENV$1 = {
   pickerUis: {
-    default: '//static.filestackapi.com/picker/v3/picker-0.2.7.js'
+    default: '//static.filestackapi.com/picker/v3/picker-0.2.8.js'
   }
 };
 
