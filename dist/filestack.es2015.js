@@ -1,4 +1,4 @@
-/* v0.1.9 */
+/* v0.1.10 */
 function createCommonjsModule(fn, module) {
 	return module = { exports: {} }, fn(module, module.exports), module.exports;
 }
@@ -2029,7 +2029,7 @@ var init = function init(apikey, config) {
 };
 
 var filestack = {
-  version: '0.1.9',
+  version: '0.1.10',
   init: init
 };
 
