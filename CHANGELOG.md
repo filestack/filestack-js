@@ -1,5 +1,8 @@
 # filestack-js changelog
 
+## 0.1.11 (2017-03-02)
+- Bump picker to 0.2.11, client to 0.2.1
+
 ## 0.1.10 (2017-03-01)
 - Bump picker to 0.2.10
 

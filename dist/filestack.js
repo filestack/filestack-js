@@ -1,4 +1,4 @@
-/* v0.1.10 */
+/* v0.1.11 */
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
 	typeof define === 'function' && define.amd ? define(factory) :
@@ -2035,7 +2035,7 @@ var init = function init(apikey, config) {
 };
 
 var filestack = {
-  version: '0.1.10',
+  version: '0.1.11',
   init: init
 };
 
