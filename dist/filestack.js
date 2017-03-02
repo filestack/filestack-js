@@ -1,4 +1,4 @@
-/* v0.1.11 */
+/* v0.1.12 */
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
 	typeof define === 'function' && define.amd ? define(factory) :
@@ -1850,7 +1850,7 @@ initializeGlobalNamespace$1();
 
 var ENV$1 = {
   pickerUis: {
-    default: '//static.filestackapi.com/picker/v3/picker-0.2.11.js'
+    default: '//static.filestackapi.com/picker/v3/picker-0.2.12.js'
   }
 };
 
@@ -2035,7 +2035,7 @@ var init = function init(apikey, config) {
 };
 
 var filestack = {
-  version: '0.1.11',
+  version: '0.1.12',
   init: init
 };
 
