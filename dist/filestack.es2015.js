@@ -1250,7 +1250,7 @@ var requestBase = RequestBase;RequestBase.prototype.clearTimeout = function () {
       i = n.join(", ");return r.forEach(function (e) {
     if (n.indexOf(e) < 0) throw new Error(e + " is not a valid option for " + u + ". Valid options are: " + i);
   }), e.forEach(function (u) {
-    var e = t[u.name];if (e) {
+    var e = t[u.name];if ("location" === u.name && "string" == typeof e && (e = e.toLowerCase()), e) {
       var r = validate$1(e, u.type);if (!r.isValid()) throw new Error(r.firstError().message);
     }
   }), r;
@@ -1333,7 +1333,7 @@ var requestBase = RequestBase;RequestBase.prototype.clearTimeout = function () {
   },
       i = function i(u) {
     var e = arguments.length > 1 && void 0 !== arguments[1] ? arguments[1] : {},
-        n = arguments.length > 2 && void 0 !== arguments[2] ? arguments[2] : {};log("cloud.store() called:", u, e);var i = [{ name: "location", type: index$2.enums.of("S3 gcs rackspace azure dropbox") }, { name: "region", type: index$2.String }, { name: "path", type: index$2.String }, { name: "container", type: index$2.String }, { name: "access", type: index$2.enums.of("public private") }];checkOptions("cloud.store", i, e);var o = snakeKeys(e, "store");return new Promise(function (e, i) {
+        n = arguments.length > 2 && void 0 !== arguments[2] ? arguments[2] : {};log("cloud.store() called:", u, e);var i = [{ name: "location", type: index$2.enums.of("s3 gcs rackspace azure dropbox") }, { name: "region", type: index$2.String }, { name: "path", type: index$2.String }, { name: "container", type: index$2.String }, { name: "access", type: index$2.enums.of("public private") }];checkOptions("cloud.store", i, e);var o = snakeKeys(e, "store");return new Promise(function (e, i) {
       var a = client$1.get(cloudApiUrl + "/" + t + "/store" + u).query(r).query(removeEmpty(o)).withCredentials().end(function (u, t) {
         u ? i(u) : (log("cloud.store() responded:", t.body), e(t.body));
       });n.cancel = function () {
@@ -1754,7 +1754,7 @@ var requestBase = RequestBase;RequestBase.prototype.clearTimeout = function () {
     }, upload: function upload(u, e, r) {
       return _upload(t, u, e, r);
     } };
-}; var client = { version: "0.2.0", init: init$1 };
+}; var client = { version: "0.2.1", init: init$1 };
 
 // Logger can be used and required from many places.
 // This is global on / off switch for it, which all
@@ -1844,7 +1844,7 @@ initializeGlobalNamespace$1();
 
 var ENV$1 = {
   pickerUis: {
-    default: '//static.filestackapi.com/picker/v3/picker-0.2.10.js'
+    default: '//static.filestackapi.com/picker/v3/picker-0.2.11.js'
   }
 };
 
