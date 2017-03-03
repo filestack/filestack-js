@@ -121,7 +121,7 @@ Opens the picker UI.
         - .sepia <code>boolean</code> - Enable sepia.
     - .storeTo <code>object</code> - Options for file storage.
         - .location <code>string</code> <code> = &quot;s3&quot;</code> - One of `s3`, `gcs`, `rackspace`, `azure`, `dropbox`.
-        - .region <code>string</code> - Valid S3 region for the selected S3 bucket. (S3 only).
+        - [.region] <code>string</code> - Valid S3 region for the selected S3 bucket. (S3 only).
         - .container <code>string</code>
         - .path <code>string</code>
         - .access <code>string</code> - One of `public` or `private`.
