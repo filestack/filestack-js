@@ -391,11 +391,11 @@ Initiates a multi-part upload flow.
     - [.onRetry] <code>[retryCallback](#module_filestack..retryCallback)</code> - Called if upload fails and retry is occurring
     - [.onUploadComplete] <code>function</code> - Called when an upload is completing (before final completion request).
 - [storeOptions] <code>object</code> - Configure where the file is stored.
-    - [.location] <code>string</code> - Valid options are: `s3`, `gcs`, `dropbox`, `azure`, `rackspace`.
+    - .location <code>string</code> - Valid options are: `s3`, `gcs`, `dropbox`, `azure`, `rackspace`.
     - [.region] <code>string</code> - Valid S3 region for the selected S3 bucket.
-    - [.container] <code>string</code> - Name of the storage container.
-    - [.path] <code>string</code> - Path where the file will be stored. A trailing slash will put the file in that folder path.
-    - [.access] <code>string</code> - Valid options are `private` or `public`.
+    - .container <code>string</code> - Name of the storage container.
+    - .path <code>string</code> - Path where the file will be stored. A trailing slash will put the file in that folder path.
+    - .access <code>string</code> - Valid options are `private` or `public`.
     
 **Example**  
 ```js
