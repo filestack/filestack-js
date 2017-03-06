@@ -1,5 +1,8 @@
 # filestack-js changelog
 
+## 0.2.0 (2017-03-06)
+- Change picker dependency to npm tarball
+
 ## 0.1.12 (2017-03-02)
 - Bump picker to 0.2.12
 
