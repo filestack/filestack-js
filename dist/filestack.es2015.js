@@ -1,4 +1,4 @@
-/* v0.1.12 */
+/* v0.2.0 */
 var commonjsGlobal = typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
 
 
@@ -7400,7 +7400,7 @@ var init = function init(apikey, security) {
 };
 
 var filestack = {
-  version: '0.1.12',
+  version: '0.2.0',
   init: init
 };
 
