@@ -47,7 +47,6 @@ export default {
       delimiters: ['@{', '}'],
       values: {
         VERSION: manifest.version,
-        PICKER_VERSION: manifest.pickerVersion,
       },
     }),
     nodeResolve(),

@@ -24,10 +24,9 @@
   "jsnext:main": "dist/filestack.es2015.js",
   "dependencies": {
     "api-client": "http://static.filestackapi.com/packages/api-client/api-client-0.2.1.tar.gz",
-    "loader": "http://static.filestackapi.com/packages/loader/loader-2.0.2.tar.gz",
+    "picker": "http://static.filestackapi.com/packages/picker/picker-0.2.14.tar.gz",
     "logger": "http://static.filestackapi.com/packages/logger/logger-1.3.3.tar.gz"
   },
-  "pickerVersion": "0.2.12",
   "devDependencies": {
     "babel-plugin-external-helpers": "^6.22.0",
     "babel-preset-es2015": "^6.22.0",
