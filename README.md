@@ -5,8 +5,6 @@ Official browser client to the Filestack API's. Available via NPM and CDN script
 
 Filestack documentation can be found here: https://filestack.com/docs/
 
-The above link will be very useful for providing "options" to the methods.
-
 ## Installation
 ```sh
 npm install --save filestack-js
