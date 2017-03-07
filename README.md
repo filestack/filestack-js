@@ -374,7 +374,7 @@ Initiates a multi-part upload flow.
 **Reject**: <code>error</code> - An error object depending on where the flow halted.  
 **Params**
 
-- file <code>File</code> - must be a valid [File](https://developer.mozilla.org/en-US/docs/Web/API/File) or Blob.
+- file <code>File</code> - must be a valid [File](https://developer.mozilla.org/en-US/docs/Web/API/File).
 - [uploadOptions] <code>object</code>
     - [.partSize] <code>number</code> <code> = 5 * 1024 * 1024</code> - Size of each uploaded part.
     - [.maxConcurrentUploads] <code>number</code> <code> = 5</code> - Max number of concurrent uploads.
