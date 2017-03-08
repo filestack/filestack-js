@@ -1,5 +1,11 @@
 # filestack-js changelog
 
+## 0.2.1 (2017-03-08)
+- Expose getSecurity and setSecurity methods
+- Fix drag and drop bug due to variable screen size
+- Mobile style fixes
+- Fix renaming via onFileSelected for local files
+
 ## 0.2.0 (2017-03-06)
 - Change picker dependency to npm tarball
 
