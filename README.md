@@ -33,8 +33,10 @@ Via script tag:
 * [filestack](#module_filestack)
     * [~version](#module_filestack..version) ⇒ <code>string</code>
     * [~init(apikey, [security])](#module_filestack..init) ⇒ <code>object</code>
-	    *  [.pick([options])](#exp_module_pick--pick) ⇒ <code>Promise</code>
-        * [.storeURL(url, [options])](#module_filestack..init.storeURL) ⇒ <code>Promise</code>
+    	* [.getSecurity()](#module_filestack..init.getSecurity) ⇒ <code>object</code>
+        * [.setSecurity(security)](#module_filestack..init.setSecurity) ⇒ <code>object</code>
+        * [.pick([options])](#exp_module_pick--pick) ⇒ <code>Promise</code>
+       	* [.storeURL(url, [options])](#module_filestack..init.storeURL) ⇒ <code>Promise</code>
         * [.retrieve(handle, [options])](#module_filestack..init.retrieve) ⇒ <code>Promise</code>
         * [.remove(handle)](#module_filestack..init.remove) ⇒ <code>Promise</code>
         * [.metadata(handle, [options])](#module_filestack..init.metadata) ⇒ <code>Promise</code>
@@ -64,12 +66,37 @@ Initializes the client.
 **Kind**: inner method of <code>[filestack](#module_filestack)</code>  
 **Returns**: <code>object</code> - Object containing the available methods documented below.  
 **Params**
-- apikey <code>string</code> - Filestack API key. Get a free key [here](https://dev.filestack.com/register/free).
-- [security] <code>object</code> - Read about [security policies](https://www.filestack.com/docs/security).
+  - apikey <code>string</code> - Filestack API key. Get a free key [here](https://dev.filestack.com/register/free).  
+  - [security] <code>object</code> - Read about [security policies](https://www.filestack.com/docs/security).  
+    - .policy <code>string</code> - Filestack security policy encoded in base64.  
+    - .signature <code>string</code> - HMAC-SHA256 sIgnature for the security policy.  
+
+<a name="exp_module_pick--pick"></a>
+  
+<a name="module_filestack..init.getSecurity"></a>
+
+### client.getSecurity() ⇒ <code>object</code>
+Get current security parameters
+
+**Kind**: static method of <code>[init](#module_filestack..init)</code>  
+**Returns**: <code>object</code> - Object containing current security parameters  
+<a name="module_filestack..init.setSecurity"></a>
+
+### client.setSecurity(security) ⇒ <code>object</code>
+Set security parameters -- useful for changing policy on instantiated client
+
+**Kind**: static method of <code>[init](#module_filestack..init)</code>  
+**Returns**: <code>object</code> - Object containing current session parameters  
+**Params**
+
+- security <code>object</code> - Read about [security policies](https://www.filestack.com/docs/security).
     - .policy <code>string</code> - Filestack security policy encoded in base64.
     - .signature <code>string</code> - HMAC-SHA256 sIgnature for the security policy.
 
-  <a name="exp_module_pick--pick"></a>
+**Example**  
+```js
+client.setSecurity({ policy: 'policy', signature: 'signature' });
+```
 
 ### client.pick([options]) ⇒ <code>Promise</code> ⏏
 Opens the picker UI.
