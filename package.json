@@ -32,8 +32,8 @@
   "module": "dist/filestack.es2015.js",
   "jsnext:main": "dist/filestack.es2015.js",
   "dependencies": {
-    "api-client": "http://static.filestackapi.com/packages/api-client/api-client-0.2.3.tar.gz",
-    "picker": "http://static.filestackapi.com/packages/picker/picker-0.3.1.tar.gz",
+    "api-client": "http://static.filestackapi.com/packages/api-client/api-client-0.3.1.tar.gz",
+    "picker": "http://static.filestackapi.com/packages/picker/picker-0.3.4.tar.gz",
     "logger": "http://static.filestackapi.com/packages/logger/logger-1.3.3.tar.gz"
   },
   "devDependencies": {
