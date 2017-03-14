@@ -146,7 +146,7 @@ Opens the picker UI.
         - .sepia <code>boolean</code> - Enable sepia.
     - .storeTo <code>object</code> - Options for file storage.
         - .location <code>string</code> <code> = &quot;s3&quot;</code> - One of `s3`, `gcs`, `rackspace`, `azure`, `dropbox`.
-        - [.region] <code>string</code> - Valid S3 region for the selected S3 bucket. (S3 only).
+        - [.region] <code>string</code> - Valid S3 region for the selected container (S3 only).
         - .container <code>string</code>
         - .path <code>string</code>
         - .access <code>string</code> - One of `public` or `private`.
@@ -250,6 +250,7 @@ Interface to the Filestack [Store API](https://www.filestack.com/docs/rest-api/s
     - .mimetype <code>string</code>
     - .path <code>string</code>
     - .container <code>string</code>
+    - .region <code>string</code> - Valid S3 region for the selected container (S3 only).
     - .access <code>string</code> - One of `public` or `private`.
     - .base64decode <code>boolean</code>
 
@@ -417,8 +418,8 @@ Initiates a multi-part upload flow.
     - [.onUploadComplete] <code>function</code> - Called when an upload is completing (before final completion request).
 - [storeOptions] <code>object</code> - Configure where the file is stored.
     - .location <code>string</code> - Valid options are: `s3`, `gcs`, `dropbox`, `azure`, `rackspace`.
-    - [.region] <code>string</code> - Valid S3 region for the selected S3 bucket.
     - .container <code>string</code> - Name of the storage container.
+    - [.region] <code>string</code> - Valid S3 region for the selected container (S3 only).
     - .path <code>string</code> - Path where the file will be stored. A trailing slash will put the file in that folder path.
     - .access <code>string</code> - Valid options are `private` or `public`.
     
