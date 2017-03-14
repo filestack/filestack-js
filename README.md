@@ -76,14 +76,16 @@ Initializes the client.
 <a name="module_filestack..init.getSecurity"></a>
 
 ### client.getSecurity() ⇒ <code>object</code>
-Get current security parameters
+Get current security parameters.
 
 **Kind**: static method of <code>[init](#module_filestack..init)</code>  
 **Returns**: <code>object</code> - Object containing current security parameters  
 <a name="module_filestack..init.setSecurity"></a>
 
 ### client.setSecurity(security) ⇒ <code>object</code>
-Set security parameters -- useful for changing policy on instantiated client
+Set security parameters -- useful for changing policy on instantiated client.
+
+**Note:** Does not currently work with `pick`. You will need to re-init the client if you want to propagate new security parameters to the picker.
 
 **Kind**: static method of <code>[init](#module_filestack..init)</code>  
 **Returns**: <code>object</code> - Object containing current session parameters  
