@@ -8,6 +8,15 @@
     "type": "git",
     "url": "https://github.com/filestack/filestack-js.git"
   },
+"keywords": [
+    "filestack",
+    "file",
+    "upload",
+    "multi-part",
+    "processing",
+    "store",
+    "picker"
+  ],
   "scripts": {
     "build": "rollup -c",
     "build-cdn": "rollup -c rollup_cdn.config.js",
