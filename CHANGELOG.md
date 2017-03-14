@@ -1,5 +1,15 @@
 # filestack-js changelog
 
+## 0.3.0 (2017-03-14)
+- Add file size and upload progress in bytes to local files on summary screen
+- Fix issue where edited images have no transformations
+- Add behavior to show summary when maxFiles is reached
+- Remove autofocus from image-search input
+- Fix bug with security on process URLs
+- Add missing region parameter to storeURL
+- Throttle XHR events for performance gain
+- Reduce bundle size by about 100KB
+
 ## 0.2.1 (2017-03-08)
 - Expose getSecurity and setSecurity methods
 - Fix drag and drop bug due to variable screen size

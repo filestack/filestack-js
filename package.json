@@ -1,6 +1,6 @@
 {
   "name": "filestack-js",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "description": "Official browser client for Filestack",
   "author": "Filestack",
   "license": "ISC",
@@ -8,7 +8,7 @@
     "type": "git",
     "url": "https://github.com/filestack/filestack-js.git"
   },
-"keywords": [
+  "keywords": [
     "filestack",
     "file",
     "upload",
