@@ -1,4 +1,4 @@
-/* v0.3.0 */
+/* v0.3.1 */
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
 	typeof define === 'function' && define.amd ? define(factory) :
@@ -1331,7 +1331,10 @@ var requestBase = RequestBase;RequestBase.prototype.clearTimeout = function () {
   var t = arguments.length > 2 && void 0 !== arguments[2] ? arguments[2] : {};if (!e || "string" != typeof e) throw new Error("url is required for store");checkOptions("store", [{ name: "filename", type: index$2.String }, { name: "location", type: index$2.enums.of("s3 gcs rackspace azure dropbox") }, { name: "mimetype", type: index$2.String }, { name: "path", type: index$2.String }, { name: "region", type: index$2.String }, { name: "container", type: index$2.String }, { name: "access", type: index$2.enums.of("public private") }, { name: "base64decode", type: index$2.Boolean }], t);var r = t.location || "s3",
       n = removeEmpty(t);u.policy && u.signature && (n.policy = u.policy, n.signature = u.signature);var i = storeApiUrl + "/" + r;return new Promise(function (t, r) {
     client$1.post(i).query({ key: u.apikey }).query(n).send("url=" + e).end(function (u, e) {
-      u ? r(u) : t(e.body);
+      if (u) r(u);else if (e.body && e.body.url) {
+        var n = e.body.url.split("/").pop(),
+            i = Object.assign({}, e.body, { handle: n });t(i);
+      } else t(e.body);
     });
   });
 }; var fileApiUrl = ENV.fileApiUrl; var _retrieve = function _retrieve(u, e) {
@@ -1985,7 +1988,7 @@ var requestBase = RequestBase;RequestBase.prototype.clearTimeout = function () {
     }, upload: function upload(u, e, r, n) {
       return _upload(t, u, e, r, n);
     } };
-}; var client = { version: "0.3.1", init: init$1 };
+}; var client = { version: "0.3.2", init: init$1 };
 
 // Logger can be used and required from many places.
 // This is global on / off switch for it, which all
@@ -5656,7 +5659,7 @@ var init = function init(apikey, security) {
 };
 
 var filestack = {
-  version: '0.3.0',
+  version: '0.3.1',
   init: init
 };
 

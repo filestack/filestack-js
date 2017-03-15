@@ -1,5 +1,8 @@
 # filestack-js changelog
 
+## 0.3.1 (2017-03-15)
+- Add correct handle to storeURL response
+
 ## 0.3.0 (2017-03-14)
 - Add file size and upload progress in bytes to local files on summary screen
 - Fix issue where edited images have no transformations
