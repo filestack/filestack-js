@@ -1,5 +1,9 @@
 # filestack-js changelog
 
+## 0.3.2 (2017-03-19)
+- Update transformer UI styles
+- Return unaltered source URL from transform when no options exist
+
 ## 0.3.1 (2017-03-15)
 - Add correct handle to storeURL response
 
