@@ -254,7 +254,6 @@ Interface to the Filestack [Store API](https://www.filestack.com/docs/rest-api/s
     - .container <code>string</code>
     - .region <code>string</code> - Valid S3 region for the selected container (S3 only).
     - .access <code>string</code> - One of `public` or `private`.
-    - .base64decode <code>boolean</code>
 
 **Example**  
 ```js
