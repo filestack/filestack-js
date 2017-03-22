@@ -1,4 +1,4 @@
-/* v0.4.0 */
+/* v0.4.1 */
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
 	typeof define === 'function' && define.amd ? define(factory) :
@@ -5833,7 +5833,7 @@ var init = function init(apikey, security) {
 };
 
 var filestack = {
-  version: '0.4.0',
+  version: '0.4.1',
   init: init
 };
 
