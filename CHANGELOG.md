@@ -1,5 +1,8 @@
 # filestack-js changelog
 
+## 0.4.1 (2017-03-22)
+- Same as 0.4.0 - last release didn't include new bundle
+
 ## 0.4.0 (2017-03-22)
 - Fix folder dragging in Chrome and Firefox
 - Add ability to drag images from the web in Chrome and Firefox
