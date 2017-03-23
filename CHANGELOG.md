@@ -9,7 +9,7 @@
 - Fix bug where cloud logout prevented subsequent logins
 - Add international language support
 - Add S3 key and container to returned file metadata
-- **Breaking change:** Rename `name` to `filename` in returned file metadata
+- **Breaking change:** Rename `name` to `filename` in returned file metadata from `pick`
 
 ## 0.3.2 (2017-03-19)
 - Update transformer UI styles
