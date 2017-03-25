@@ -1,4 +1,4 @@
-/* v0.4.1 */
+/* v0.4.2 */
 var commonjsGlobal = typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
 
 
@@ -2071,7 +2071,7 @@ var initializeGlobalNamespace = function initializeGlobalNamespace() {
 initializeGlobalNamespace();
 
 var picker = createCommonjsModule(function (module, exports) {
-  /* v0.4.0 */
+  /* v0.4.1 */
   !function (e, t) {
     module.exports = t();
   }(commonjsGlobal, function () {
@@ -2103,11 +2103,11 @@ var picker = createCommonjsModule(function (module, exports) {
       function i(i) {
         var n = arguments.length;return n ? n > 1 ? e.apply(t, arguments) : e.call(t, i) : e.call(t);
       }return i._length = e.length, i;
-    }function c(e, t) {
+    }function l(e, t) {
       t = t || 0;for (var i = e.length - t, n = new Array(i); i--;) {
         n[i] = e[i + t];
       }return n;
-    }function l(e, t) {
+    }function c(e, t) {
       for (var i in t) {
         e[i] = t[i];
       }return e;
@@ -2117,7 +2117,7 @@ var picker = createCommonjsModule(function (module, exports) {
       return _n.call(e) === yn;
     }function f(e) {
       for (var t = {}, i = 0; i < e.length; i++) {
-        e[i] && l(t, e[i]);
+        e[i] && c(t, e[i]);
       }return t;
     }function p() {}function m(e, t) {
       var i = u(e),
@@ -2168,10 +2168,10 @@ var picker = createCommonjsModule(function (module, exports) {
           r = Object.getOwnPropertyDescriptor(e, t);if (!r || r.configurable !== !1) {
         var s = r && r.get,
             a = r && r.set,
-            c = T(i);Object.defineProperty(e, t, { enumerable: !0, configurable: !0, get: function get$$1() {
-            var t = s ? s.call(e) : i;return zn.target && (o.depend(), c && c.dep.depend(), Array.isArray(t) && R(t)), t;
+            l = T(i);Object.defineProperty(e, t, { enumerable: !0, configurable: !0, get: function get$$1() {
+            var t = s ? s.call(e) : i;return zn.target && (o.depend(), l && l.dep.depend(), Array.isArray(t) && R(t)), t;
           }, set: function set$$1(t) {
-            var n = s ? s.call(e) : i;t === n || t !== t && n !== n || (a ? a.call(e, t) : i = t, c = T(t), o.notify());
+            var n = s ? s.call(e) : i;t === n || t !== t && n !== n || (a ? a.call(e, t) : i = t, l = T(t), o.notify());
           } });
       }
     }function F(e, t, i) {
@@ -2189,7 +2189,7 @@ var picker = createCommonjsModule(function (module, exports) {
     }function L(e, t) {
       return t ? e ? e.concat(t) : Array.isArray(t) ? t : [t] : e;
     }function N(e, t) {
-      var i = Object.create(e || null);return t ? l(i, t) : i;
+      var i = Object.create(e || null);return t ? c(i, t) : i;
     }function x(e) {
       var t = e.props;if (t) {
         var i,
@@ -2209,22 +2209,22 @@ var picker = createCommonjsModule(function (module, exports) {
       function n(n) {
         var o = Yn[n] || Xn;u[n] = o(e[n], t[n], i, n);
       }x(t), I(t);var r = t.extends;if (r && (e = "function" == typeof r ? D(e, r.options, i) : D(e, r, i)), t.mixins) for (var s = 0, a = t.mixins.length; s < a; s++) {
-        var c = t.mixins[s];c.prototype instanceof tt && (c = c.options), e = D(e, c, i);
-      }var l,
-          u = {};for (l in e) {
-        n(l);
-      }for (l in t) {
-        o(e, l) || n(l);
+        var l = t.mixins[s];l.prototype instanceof tt && (l = l.options), e = D(e, l, i);
+      }var c,
+          u = {};for (c in e) {
+        n(c);
+      }for (c in t) {
+        o(e, c) || n(c);
       }return u;
     }function $(e, t, i, n) {
       if ("string" == typeof i) {
-        var r = e[t];if (o(r, i)) return r[i];var s = hn(i);if (o(r, s)) return r[s];var a = vn(s);if (o(r, a)) return r[a];var c = r[i] || r[s] || r[a];return c;
+        var r = e[t];if (o(r, i)) return r[i];var s = hn(i);if (o(r, s)) return r[s];var a = vn(s);if (o(r, a)) return r[a];var l = r[i] || r[s] || r[a];return l;
       }
     }function U(e, t, i, n) {
       var r = t[e],
           s = !o(i, e),
           a = i[e];if (z(Boolean, r.type) && (s && !o(r, "default") ? a = !1 : z(String, r.type) || "" !== a && a !== gn(e) || (a = !0)), void 0 === a) {
-        a = M(n, r, e);var c = Hn.shouldConvert;Hn.shouldConvert = !0, T(a), Hn.shouldConvert = c;
+        a = M(n, r, e);var l = Hn.shouldConvert;Hn.shouldConvert = !0, T(a), Hn.shouldConvert = l;
       }return a;
     }function M(e, t, i) {
       if (o(t, "default")) {
@@ -2240,13 +2240,13 @@ var picker = createCommonjsModule(function (module, exports) {
       if (En.errorHandler) En.errorHandler.call(null, e, t, i);else {
         if (!An || "undefined" == typeof console) throw e;console.error(e);
       }
-    }function G(e) {
-      return new qn(void 0, void 0, void 0, String(e));
     }function V(e) {
+      return new qn(void 0, void 0, void 0, String(e));
+    }function G(e) {
       var t = new qn(e.tag, e.data, e.children, e.text, e.elm, e.context, e.componentOptions);return t.ns = e.ns, t.isStatic = e.isStatic, t.key = e.key, t.isCloned = !0, t;
     }function W(e) {
       for (var t = e.length, i = new Array(t), n = 0; n < t; n++) {
-        i[n] = V(e[n]);
+        i[n] = G(e[n]);
       }return i;
     }function H(e) {
       function t() {
@@ -2256,10 +2256,10 @@ var picker = createCommonjsModule(function (module, exports) {
         }
       }return t.fns = e, t;
     }function B(e, t, i, n, o) {
-      var r, s, a, c;for (r in e) {
-        s = e[r], a = t[r], c = Jn(r), s && (a ? s !== a && (a.fns = s, e[r] = a) : (s.fns || (s = e[r] = H(s)), i(c.name, s, c.once, c.capture)));
+      var r, s, a, l;for (r in e) {
+        s = e[r], a = t[r], l = Jn(r), s && (a ? s !== a && (a.fns = s, e[r] = a) : (s.fns || (s = e[r] = H(s)), i(l.name, s, l.once, l.capture)));
       }for (r in t) {
-        e[r] || (c = Jn(r), n(c.name, t[r], c.capture));
+        e[r] || (l = Jn(r), n(l.name, t[r], l.capture));
       }
     }function Y(e, t, i) {
       function o() {
@@ -2271,13 +2271,13 @@ var picker = createCommonjsModule(function (module, exports) {
         if (Array.isArray(e[t])) return Array.prototype.concat.apply([], e);
       }return e;
     }function q(e) {
-      return r(e) ? [G(e)] : Array.isArray(e) ? K(e) : void 0;
+      return r(e) ? [V(e)] : Array.isArray(e) ? K(e) : void 0;
     }function K(e, t) {
       var i,
           n,
           o,
           s = [];for (i = 0; i < e.length; i++) {
-        null != (n = e[i]) && "boolean" != typeof n && (o = s[s.length - 1], Array.isArray(n) ? s.push.apply(s, K(n, (t || "") + "_" + i)) : r(n) ? o && o.text ? o.text += String(n) : "" !== n && s.push(G(n)) : n.text && o && o.text ? s[s.length - 1] = G(o.text + n.text) : (n.tag && null == n.key && null != t && (n.key = "__vlist" + t + "_" + i + "__"), s.push(n)));
+        null != (n = e[i]) && "boolean" != typeof n && (o = s[s.length - 1], Array.isArray(n) ? s.push.apply(s, K(n, (t || "") + "_" + i)) : r(n) ? o && o.text ? o.text += String(n) : "" !== n && s.push(V(n)) : n.text && o && o.text ? s[s.length - 1] = V(o.text + n.text) : (n.tag && null == n.key && null != t && (n.key = "__vlist" + t + "_" + i + "__"), s.push(n)));
       }return s;
     }function Z(e) {
       return e && e.filter(function (e) {
@@ -2294,7 +2294,7 @@ var picker = createCommonjsModule(function (module, exports) {
     }function ie(e, t) {
       var i = {};if (!e) return i;for (var n, o, r = [], s = 0, a = e.length; s < a; s++) {
         if (o = e[s], (o.context === t || o.functionalContext === t) && o.data && (n = o.data.slot)) {
-          var c = i[n] || (i[n] = []);"template" === o.tag ? c.push.apply(c, o.children) : c.push(o);
+          var l = i[n] || (i[n] = []);"template" === o.tag ? l.push.apply(l, o.children) : l.push(o);
         } else r.push(o);
       }return r.every(ne) || (i.default = r), i;
     }function ne(e) {
@@ -2316,26 +2316,26 @@ var picker = createCommonjsModule(function (module, exports) {
       }, e._watcher = new ao(e, n, p), i = !1, null == e.$vnode && (e._isMounted = !0, de(e, "mounted")), e;
     }function ae(e, t, i, n, o) {
       var r = !!(o || e.$options._renderChildren || n.data.scopedSlots || e.$scopedSlots !== Sn);if (e.$options._parentVnode = n, e.$vnode = n, e._vnode && (e._vnode.parent = n), e.$options._renderChildren = o, t && e.$options.props) {
-        Hn.shouldConvert = !1;for (var s = e._props, a = e.$options._propKeys || [], c = 0; c < a.length; c++) {
-          var l = a[c];s[l] = U(l, e.$options.props, t, e);
+        Hn.shouldConvert = !1;for (var s = e._props, a = e.$options._propKeys || [], l = 0; l < a.length; l++) {
+          var c = a[l];s[c] = U(c, e.$options.props, t, e);
         }Hn.shouldConvert = !0, e.$options.propsData = t;
       }if (i) {
         var u = e.$options._parentListeners;e.$options._parentListeners = i, te(e, i, u);
       }r && (e.$slots = ie(o, n.context), e.$forceUpdate());
-    }function ce(e) {
+    }function le(e) {
       for (; e && (e = e.$parent);) {
         if (e._inactive) return !0;
       }return !1;
-    }function le(e, t) {
+    }function ce(e, t) {
       if (t) {
-        if (e._directInactive = !1, ce(e)) return;
+        if (e._directInactive = !1, le(e)) return;
       } else if (e._directInactive) return;if (e._inactive || null == e._inactive) {
         e._inactive = !1;for (var i = 0; i < e.$children.length; i++) {
-          le(e.$children[i]);
+          ce(e.$children[i]);
         }de(e, "activated");
       }
     }function ue(e, t) {
-      if (!(t && (e._directInactive = !0, ce(e)) || e._inactive)) {
+      if (!(t && (e._directInactive = !0, le(e)) || e._inactive)) {
         e._inactive = !0;for (var i = 0; i < e.$children.length; i++) {
           ue(e.$children[i]);
         }de(e, "deactivated");
@@ -2367,7 +2367,7 @@ var picker = createCommonjsModule(function (module, exports) {
         } else to.push(e);no || (no = !0, Un(pe));
       }
     }function he(e) {
-      co.clear(), ve(e, co);
+      lo.clear(), ve(e, lo);
     }function ve(e, t) {
       var i,
           n,
@@ -2381,11 +2381,11 @@ var picker = createCommonjsModule(function (module, exports) {
         }
       }
     }function ge(e, t, i) {
-      lo.get = function () {
+      co.get = function () {
         return this[t][i];
-      }, lo.set = function (e) {
+      }, co.set = function (e) {
         this[t][i] = e;
-      }, Object.defineProperty(e, i, lo);
+      }, Object.defineProperty(e, i, co);
     }function _e(e) {
       e._watchers = [];var t = e.$options;t.props && ye(e, t.props), t.methods && we(e, t.methods), t.data ? be(e) : T(e._data = {}, !0), t.computed && Ce(e, t.computed), t.watch && Te(e, t.watch);
     }function ye(e, t) {
@@ -2407,7 +2407,7 @@ var picker = createCommonjsModule(function (module, exports) {
             r = "function" == typeof o ? o : o.get;i[n] = new ao(e, r, p, uo), n in e || Ee(e, n, o);
       }
     }function Ee(e, t, i) {
-      "function" == typeof i ? (lo.get = Se(t), lo.set = p) : (lo.get = i.get ? i.cache !== !1 ? Se(t) : i.get : p, lo.set = i.set ? i.set : p), Object.defineProperty(e, t, lo);
+      "function" == typeof i ? (co.get = Se(t), co.set = p) : (co.get = i.get ? i.cache !== !1 ? Se(t) : i.get : p, co.set = i.set ? i.set : p), Object.defineProperty(e, t, co);
     }function Se(e) {
       return function () {
         var t = this._computedWatchers && this._computedWatchers[e];if (t) return t.dirty && t.evaluate(), zn.target && t.depend(), t.value;
@@ -2429,18 +2429,18 @@ var picker = createCommonjsModule(function (module, exports) {
         var r = i.$options._base;if (u(e) && (e = r.extend(e)), "function" == typeof e) {
           if (!e.cid) if (e.resolved) e = e.resolved;else if (!(e = Oe(e, r, function () {
             i.$forceUpdate();
-          }))) return;Qe(e), t = t || {}, t.model && De(e.options, t);var s = Le(t, e);if (e.options.functional) return ke(e, s, t, i, n);var a = t.on;t.on = t.nativeOn, e.options.abstract && (t = {}), xe(t);var c = e.options.name || o;return new qn("vue-component-" + e.cid + (c ? "-" + c : ""), t, void 0, void 0, void 0, i, { Ctor: e, propsData: s, listeners: a, tag: o, children: n });
+          }))) return;Qe(e), t = t || {}, t.model && De(e.options, t);var s = Le(t, e);if (e.options.functional) return ke(e, s, t, i, n);var a = t.on;t.on = t.nativeOn, e.options.abstract && (t = {}), xe(t);var l = e.options.name || o;return new qn("vue-component-" + e.cid + (l ? "-" + l : ""), t, void 0, void 0, void 0, i, { Ctor: e, propsData: s, listeners: a, tag: o, children: n });
         }
       }
     }function ke(e, t, i, n, o) {
       var r = {},
           s = e.options.props;if (s) for (var a in s) {
         r[a] = U(a, s, t);
-      }var c = Object.create(n),
-          l = function l(e, t, i, n) {
-        return $e(c, e, t, i, n, !0);
+      }var l = Object.create(n),
+          c = function c(e, t, i, n) {
+        return $e(l, e, t, i, n, !0);
       },
-          u = e.options.render.call(null, l, { props: r, data: i, parent: n, children: o, slots: function slots() {
+          u = e.options.render.call(null, c, { props: r, data: i, parent: n, children: o, slots: function slots() {
           return ie(o, n);
         } });return u instanceof qn && (u.functionalContext = n, i.slot && ((u.data || (u.data = {})).slot = i.slot)), u;
     }function Re(e, t, i, n) {
@@ -2465,7 +2465,7 @@ var picker = createCommonjsModule(function (module, exports) {
             o = e.attrs,
             r = e.props,
             s = e.domProps;if (o || r || s) for (var a in i) {
-          var c = gn(a);Ne(n, r, a, c, !0) || Ne(n, o, a, c) || Ne(n, s, a, c);
+          var l = gn(a);Ne(n, r, a, l, !0) || Ne(n, o, a, l) || Ne(n, s, a, l);
         }return n;
       }
     }function Ne(e, t, i, n, r) {
@@ -2504,12 +2504,12 @@ var picker = createCommonjsModule(function (module, exports) {
         s = r[n], i[n] = t(e[s], s, n);
       }return i;
     }function ze(e, t, i, n) {
-      var o = this.$scopedSlots[e];if (o) return i = i || {}, n && l(i, n), o(i) || t;var r = this.$slots[e];return r || t;
+      var o = this.$scopedSlots[e];if (o) return i = i || {}, n && c(i, n), o(i) || t;var r = this.$slots[e];return r || t;
     }function je(e) {
       return $(this.$options, "filters", e, !0) || Cn;
-    }function Ge(e, t, i) {
+    }function Ve(e, t, i) {
       var n = En.keyCodes[t] || i;return Array.isArray(n) ? n.indexOf(e) === -1 : n !== e;
-    }function Ve(e, t, i, n) {
+    }function Ge(e, t, i, n) {
       if (i) if (u(i)) {
         Array.isArray(i) && (i = f(i));var o;for (var r in i) {
           if ("class" === r || "style" === r) o = e;else {
@@ -2518,7 +2518,7 @@ var picker = createCommonjsModule(function (module, exports) {
         }
       } else ;return e;
     }function We(e, t) {
-      var i = this._staticTrees[e];return i && !t ? Array.isArray(i) ? W(i) : V(i) : (i = this._staticTrees[e] = this.$options.staticRenderFns[e].call(this._renderProxy), Be(i, "__static__" + e, !1), i);
+      var i = this._staticTrees[e];return i && !t ? Array.isArray(i) ? W(i) : G(i) : (i = this._staticTrees[e] = this.$options.staticRenderFns[e].call(this._renderProxy), Be(i, "__static__" + e, !1), i);
     }function He(e, t, i) {
       return Be(e, "__once__" + t + (i ? "_" + i : ""), !0), e;
     }function Be(e, t, i) {
@@ -2549,7 +2549,7 @@ var picker = createCommonjsModule(function (module, exports) {
     }function Qe(e) {
       var t = e.options;if (e.super) {
         var i = Qe(e.super);if (i !== e.superOptions) {
-          e.superOptions = i;var n = Je(e);n && l(e.extendOptions, n), t = e.options = D(i, e.extendOptions), t.name && (t.components[t.name] = e);
+          e.superOptions = i;var n = Je(e);n && c(e.extendOptions, n), t = e.options = D(i, e.extendOptions), t.name && (t.components[t.name] = e);
         }
       }return t;
     }function Je(e) {
@@ -2569,7 +2569,7 @@ var picker = createCommonjsModule(function (module, exports) {
     }function it(e) {
       e.use = function (e) {
         if (!e.installed) {
-          var t = c(arguments, 1);return t.unshift(this), "function" == typeof e.install ? e.install.apply(e, t) : "function" == typeof e && e.apply(null, t), e.installed = !0, this;
+          var t = l(arguments, 1);return t.unshift(this), "function" == typeof e.install ? e.install.apply(e, t) : "function" == typeof e && e.apply(null, t), e.installed = !0, this;
         }
       };
     }function nt(e) {
@@ -2585,7 +2585,7 @@ var picker = createCommonjsModule(function (module, exports) {
           this._init(e);
         };return s.prototype = Object.create(i.prototype), s.prototype.constructor = s, s.cid = t++, s.options = D(i.options, e), s.super = i, s.options.props && rt(s), s.options.computed && st(s), s.extend = i.extend, s.mixin = i.mixin, s.use = i.use, En._assetTypes.forEach(function (e) {
           s[e] = i[e];
-        }), r && (s.options.components[r] = s), s.superOptions = i.options, s.extendOptions = e, s.sealedOptions = l({}, s.options), o[n] = s, s;
+        }), r && (s.options.components[r] = s), s.superOptions = i.options, s.extendOptions = e, s.sealedOptions = c({}, s.options), o[n] = s, s;
       };
     }function rt(e) {
       var t = e.options.props;for (var i in t) {
@@ -2601,14 +2601,14 @@ var picker = createCommonjsModule(function (module, exports) {
           return i ? ("component" === t && d(i) && (i.name = i.name || e, i = this.options._base.extend(i)), "directive" === t && "function" == typeof i && (i = { bind: i, update: i }), this.options[t + "s"][e] = i, i) : this.options[t + "s"][e];
         };
       });
-    }function ct(e) {
+    }function lt(e) {
       return e && (e.Ctor.options.name || e.tag);
-    }function lt(e, t) {
+    }function ct(e, t) {
       return "string" == typeof e ? e.split(",").indexOf(t) > -1 : e instanceof RegExp && e.test(t);
     }function ut(e, t) {
       for (var i in e) {
         var n = e[i];if (n) {
-          var o = ct(n.componentOptions);o && !t(o) && (dt(n), e[i] = null);
+          var o = lt(n.componentOptions);o && !t(o) && (dt(n), e[i] = null);
         }
       }
     }function dt(e) {
@@ -2695,14 +2695,14 @@ var picker = createCommonjsModule(function (module, exports) {
           r = e === Uo,
           s = t === Uo,
           a = Pt(e.data.directives, e.context),
-          c = Pt(t.data.directives, t.context),
-          l = [],
-          u = [];for (i in c) {
-        n = a[i], o = c[i], n ? (o.oldValue = n.value, jt(o, "update", t, e), o.def && o.def.componentUpdated && u.push(o)) : (jt(o, "bind", t, e), o.def && o.def.inserted && l.push(o));
-      }if (l.length) {
+          l = Pt(t.data.directives, t.context),
+          c = [],
+          u = [];for (i in l) {
+        n = a[i], o = l[i], n ? (o.oldValue = n.value, jt(o, "update", t, e), o.def && o.def.componentUpdated && u.push(o)) : (jt(o, "bind", t, e), o.def && o.def.inserted && c.push(o));
+      }if (c.length) {
         var d = function d() {
-          for (var i = 0; i < l.length; i++) {
-            jt(l[i], "inserted", t, e);
+          for (var i = 0; i < c.length; i++) {
+            jt(c[i], "inserted", t, e);
           }
         };r ? Y(t.data.hook || (t.data.hook = {}), "insert", d) : d();
       }if (u.length && Y(t.data.hook || (t.data.hook = {}), "postpatch", function () {
@@ -2710,7 +2710,7 @@ var picker = createCommonjsModule(function (module, exports) {
           jt(u[i], "componentUpdated", t, e);
         }
       }), !r) for (i in a) {
-        c[i] || jt(a[i], "unbind", e, e, s);
+        l[i] || jt(a[i], "unbind", e, e, s);
       }
     }function Pt(e, t) {
       var i = Object.create(null);if (!e) return i;var n, o;for (n = 0; n < e.length; n++) {
@@ -2720,19 +2720,19 @@ var picker = createCommonjsModule(function (module, exports) {
       return e.rawName || e.name + "." + Object.keys(e.modifiers || {}).join(".");
     }function jt(e, t, i, n, o) {
       var r = e.def && e.def[t];r && r(i.elm, e, i, n, o);
-    }function Gt(e, t) {
+    }function Vt(e, t) {
       if (e.data.attrs || t.data.attrs) {
         var i,
             n,
             o = t.elm,
             r = e.data.attrs || {},
-            s = t.data.attrs || {};s.__ob__ && (s = t.data.attrs = l({}, s));for (i in s) {
-          n = s[i], r[i] !== n && Vt(o, i, n);
-        }Rn && s.value !== r.value && Vt(o, "value", s.value);for (i in r) {
+            s = t.data.attrs || {};s.__ob__ && (s = t.data.attrs = c({}, s));for (i in s) {
+          n = s[i], r[i] !== n && Gt(o, i, n);
+        }Rn && s.value !== r.value && Gt(o, "value", s.value);for (i in r) {
           null == s[i] && (Fo(i) ? o.removeAttributeNS(Ao, ko(i)) : wo(i) || o.removeAttribute(i));
         }
       }
-    }function Vt(e, t, i) {
+    }function Gt(e, t, i) {
       To(t) ? Ro(i) ? e.removeAttribute(t) : e.setAttribute(t, t) : wo(t) ? e.setAttribute(t, Ro(i) || "false" === i ? "false" : "true") : Fo(t) ? Ro(i) ? e.removeAttributeNS(Ao, ko(t)) : e.setAttributeNS(Ao, t, i) : Ro(i) ? e.removeAttribute(t) : e.setAttribute(t, i);
     }function Wt(e, t) {
       var i = t.elm,
@@ -2763,7 +2763,7 @@ var picker = createCommonjsModule(function (module, exports) {
             n,
             o = t.elm,
             r = e.data.domProps || {},
-            s = t.data.domProps || {};s.__ob__ && (s = t.data.domProps = l({}, s));for (i in r) {
+            s = t.data.domProps || {};s.__ob__ && (s = t.data.domProps = c({}, s));for (i in r) {
           null == s[i] && (o[i] = "");
         }for (i in s) {
           if (n = s[i], "textContent" !== i && "innerHTML" !== i || (t.children && (t.children.length = 0), n !== r[i])) if ("value" === i) {
@@ -2779,15 +2779,15 @@ var picker = createCommonjsModule(function (module, exports) {
       var n = e.value,
           o = e._vModifiers;return o && o.number || "number" === e.type ? t(n) !== t(i) : o && o.trim ? n.trim() !== i.trim() : n !== i;
     }function Jt(e) {
-      var t = ei(e.style);return e.staticStyle ? l(e.staticStyle, t) : t;
+      var t = ei(e.style);return e.staticStyle ? c(e.staticStyle, t) : t;
     }function ei(e) {
       return Array.isArray(e) ? f(e) : "string" == typeof e ? Xo(e) : e;
     }function ti(e, t) {
       var i,
           n = {};if (t) for (var o = e; o.componentInstance;) {
-        o = o.componentInstance._vnode, o.data && (i = Jt(o.data)) && l(n, i);
-      }(i = Jt(e.data)) && l(n, i);for (var r = e; r = r.parent;) {
-        r.data && (i = Jt(r.data)) && l(n, i);
+        o = o.componentInstance._vnode, o.data && (i = Jt(o.data)) && c(n, i);
+      }(i = Jt(e.data)) && c(n, i);for (var r = e; r = r.parent;) {
+        r.data && (i = Jt(r.data)) && c(n, i);
       }return n;
     }function ii(e, t) {
       var i = t.data,
@@ -2796,9 +2796,9 @@ var picker = createCommonjsModule(function (module, exports) {
             r,
             s = t.elm,
             a = e.data.staticStyle,
-            c = e.data.style || {},
-            u = a || c,
-            d = ei(t.data.style) || {};t.data.style = d.__ob__ ? l({}, d) : d;var f = ti(t, !0);for (r in u) {
+            l = e.data.style || {},
+            u = a || l,
+            d = ei(t.data.style) || {};t.data.style = d.__ob__ ? c({}, d) : d;var f = ti(t, !0);for (r in u) {
           null == f[r] && Zo(s, r, "");
         }for (r in f) {
           (o = f[r]) !== u[r] && Zo(s, r, null == o ? "" : o);
@@ -2821,30 +2821,30 @@ var picker = createCommonjsModule(function (module, exports) {
     }function ri(e) {
       if (e) {
         if ("object" === (void 0 === e ? "undefined" : un(e))) {
-          var t = {};return e.css !== !1 && l(t, tr(e.name || "v")), l(t, e), t;
+          var t = {};return e.css !== !1 && c(t, tr(e.name || "v")), c(t, e), t;
         }return "string" == typeof e ? tr(e) : void 0;
       }
     }function si(e) {
-      lr(function () {
-        lr(e);
+      cr(function () {
+        cr(e);
       });
     }function ai(e, t) {
       (e._transitionClasses || (e._transitionClasses = [])).push(t), ni(e, t);
-    }function ci(e, t) {
+    }function li(e, t) {
       e._transitionClasses && n(e._transitionClasses, t), oi(e, t);
-    }function li(e, t, i) {
+    }function ci(e, t, i) {
       var n = ui(e, t),
           o = n.type,
           r = n.timeout,
-          s = n.propCount;if (!o) return i();var a = o === nr ? sr : cr,
-          c = 0,
-          l = function l() {
+          s = n.propCount;if (!o) return i();var a = o === nr ? sr : lr,
+          l = 0,
+          c = function c() {
         e.removeEventListener(a, u), i();
       },
           u = function u(t) {
-        t.target === e && ++c >= s && l();
+        t.target === e && ++l >= s && c();
       };setTimeout(function () {
-        c < s && l();
+        l < s && c();
       }, r + 1), e.addEventListener(a, u);
     }function ui(e, t) {
       var i,
@@ -2853,10 +2853,10 @@ var picker = createCommonjsModule(function (module, exports) {
           r = n[rr + "Duration"].split(", "),
           s = di(o, r),
           a = n[ar + "Delay"].split(", "),
-          c = n[ar + "Duration"].split(", "),
-          l = di(a, c),
+          l = n[ar + "Duration"].split(", "),
+          c = di(a, l),
           u = 0,
-          d = 0;return t === nr ? s > 0 && (i = nr, u = s, d = r.length) : t === or ? l > 0 && (i = or, u = l, d = c.length) : (u = Math.max(s, l), i = u > 0 ? s > l ? nr : or : null, d = i ? i === nr ? r.length : c.length : 0), { type: i, timeout: u, propCount: d, hasTransform: i === nr && ur.test(n[rr + "Property"]) };
+          d = 0;return t === nr ? s > 0 && (i = nr, u = s, d = r.length) : t === or ? c > 0 && (i = or, u = c, d = l.length) : (u = Math.max(s, c), i = u > 0 ? s > c ? nr : or : null, d = i ? i === nr ? r.length : l.length : 0), { type: i, timeout: u, propCount: d, hasTransform: i === nr && ur.test(n[rr + "Property"]) };
     }function di(e, t) {
       for (; e.length < t.length;) {
         e = e.concat(e);
@@ -2867,12 +2867,12 @@ var picker = createCommonjsModule(function (module, exports) {
       return 1e3 * Number(e.slice(0, -1));
     }function pi(e, i) {
       var n = e.elm;n._leaveCb && (n._leaveCb.cancelled = !0, n._leaveCb());var o = ri(e.data.transition);if (o && !n._enterCb && 1 === n.nodeType) {
-        for (var r = o.css, s = o.type, a = o.enterClass, c = o.enterToClass, l = o.enterActiveClass, d = o.appearClass, f = o.appearToClass, p = o.appearActiveClass, m = o.beforeEnter, h = o.enter, g = o.afterEnter, _ = o.enterCancelled, y = o.beforeAppear, b = o.appear, C = o.afterAppear, E = o.appearCancelled, S = o.duration, w = eo, T = eo.$vnode; T && T.parent;) {
+        for (var r = o.css, s = o.type, a = o.enterClass, l = o.enterToClass, c = o.enterActiveClass, d = o.appearClass, f = o.appearToClass, p = o.appearActiveClass, m = o.beforeEnter, h = o.enter, g = o.afterEnter, _ = o.enterCancelled, y = o.beforeAppear, b = o.appear, C = o.afterAppear, E = o.appearCancelled, S = o.duration, w = eo, T = eo.$vnode; T && T.parent;) {
           T = T.parent, w = T.context;
         }var A = !w._isMounted || !e.isRootInsert;if (!A || b || "" === b) {
           var F = A && d ? d : a,
-              k = A && p ? p : l,
-              R = A && f ? f : c,
+              k = A && p ? p : c,
+              R = A && f ? f : l,
               O = A ? y || m : m,
               L = A && "function" == typeof b ? b : h,
               N = A ? C || g : g,
@@ -2881,25 +2881,25 @@ var picker = createCommonjsModule(function (module, exports) {
               D = r !== !1 && !Rn,
               $ = vi(L),
               U = n._enterCb = v(function () {
-            D && (ci(n, R), ci(n, k)), U.cancelled ? (D && ci(n, F), x && x(n)) : N && N(n), n._enterCb = null;
+            D && (li(n, R), li(n, k)), U.cancelled ? (D && li(n, F), x && x(n)) : N && N(n), n._enterCb = null;
           });e.data.show || Y(e.data.hook || (e.data.hook = {}), "insert", function () {
             var t = n.parentNode,
                 i = t && t._pending && t._pending[e.key];i && i.tag === e.tag && i.elm._leaveCb && i.elm._leaveCb(), L && L(n, U);
           }), O && O(n), D && (ai(n, F), ai(n, k), si(function () {
-            ai(n, R), ci(n, F), U.cancelled || $ || (hi(I) ? setTimeout(U, I) : li(n, s, U));
+            ai(n, R), li(n, F), U.cancelled || $ || (hi(I) ? setTimeout(U, I) : ci(n, s, U));
           })), e.data.show && (i && i(), L && L(n, U)), D || $ || U();
         }
       }
     }function mi(e, i) {
       function n() {
-        E.cancelled || (e.data.show || ((o.parentNode._pending || (o.parentNode._pending = {}))[e.key] = e), f && f(o), y && (ai(o, c), ai(o, d), si(function () {
-          ai(o, l), ci(o, c), E.cancelled || b || (hi(C) ? setTimeout(E, C) : li(o, a, E));
+        E.cancelled || (e.data.show || ((o.parentNode._pending || (o.parentNode._pending = {}))[e.key] = e), f && f(o), y && (ai(o, l), ai(o, d), si(function () {
+          ai(o, c), li(o, l), E.cancelled || b || (hi(C) ? setTimeout(E, C) : ci(o, a, E));
         })), p && p(o, E), y || b || E());
       }var o = e.elm;o._enterCb && (o._enterCb.cancelled = !0, o._enterCb());var r = ri(e.data.transition);if (!r) return i();if (!o._leaveCb && 1 === o.nodeType) {
         var s = r.css,
             a = r.type,
-            c = r.leaveClass,
-            l = r.leaveToClass,
+            l = r.leaveClass,
+            c = r.leaveToClass,
             d = r.leaveActiveClass,
             f = r.beforeLeave,
             p = r.leave,
@@ -2911,7 +2911,7 @@ var picker = createCommonjsModule(function (module, exports) {
             b = vi(p),
             C = t(u(_) ? _.leave : _),
             E = o._leaveCb = v(function () {
-          o.parentNode && o.parentNode._pending && (o.parentNode._pending[e.key] = null), y && (ci(o, l), ci(o, d)), E.cancelled ? (y && ci(o, c), h && h(o)) : (i(), m && m(o)), o._leaveCb = null;
+          o.parentNode && o.parentNode._pending && (o.parentNode._pending[e.key] = null), y && (li(o, c), li(o, d)), E.cancelled ? (y && li(o, l), h && h(o)) : (i(), m && m(o)), o._leaveCb = null;
         });g ? g(n) : n();
       }
     }function hi(e) {
@@ -2923,7 +2923,7 @@ var picker = createCommonjsModule(function (module, exports) {
     }function _i(e, t, i) {
       var n = t.value,
           o = e.multiple;if (!o || Array.isArray(n)) {
-        for (var r, s, a = 0, c = e.options.length; a < c; a++) {
+        for (var r, s, a = 0, l = e.options.length; a < l; a++) {
           if (s = e.options[a], o) r = h(n, bi(s)) > -1, s.selected !== r && (s.selected = r);else if (m(bi(s), n)) return void (e.selectedIndex !== a && (e.selectedIndex = a));
         }o || (e.selectedIndex = -1);
       }
@@ -3009,38 +3009,38 @@ var picker = createCommonjsModule(function (module, exports) {
       var r = !i.length,
           s = e._modules.getNamespace(i);if (s && (e._modulesNamespaceMap[s] = n), !r && !o) {
         var a = Xi(t, i.slice(0, -1)),
-            c = i[i.length - 1];e._withCommit(function () {
-          Mr.set(a, c, n.state);
+            l = i[i.length - 1];e._withCommit(function () {
+          Mr.set(a, l, n.state);
         });
-      }var l = n.context = Gi(e, s, i);n.forEachMutation(function (t, i) {
-        Wi(e, s + i, t, l);
+      }var c = n.context = Vi(e, s, i);n.forEachMutation(function (t, i) {
+        Wi(e, s + i, t, c);
       }), n.forEachAction(function (t, i) {
-        Hi(e, s + i, t, l);
+        Hi(e, s + i, t, c);
       }), n.forEachGetter(function (t, i) {
-        Bi(e, s + i, t, l);
+        Bi(e, s + i, t, c);
       }), n.forEachChild(function (n, r) {
         ji(e, t, i.concat(r), n, o);
       });
-    }function Gi(e, t, i) {
+    }function Vi(e, t, i) {
       var n = "" === t,
           o = { dispatch: n ? e.dispatch : function (i, n, o) {
           var r = qi(i, n, o),
               s = r.payload,
               a = r.options,
-              c = r.type;return a && a.root || (c = t + c, e._actions[c]) ? e.dispatch(c, s) : void console.error("[vuex] unknown local action type: " + r.type + ", global type: " + c);
+              l = r.type;return a && a.root || (l = t + l, e._actions[l]) ? e.dispatch(l, s) : void console.error("[vuex] unknown local action type: " + r.type + ", global type: " + l);
         }, commit: n ? e.commit : function (i, n, o) {
           var r = qi(i, n, o),
               s = r.payload,
               a = r.options,
-              c = r.type;if (!(a && a.root || (c = t + c, e._mutations[c]))) return void console.error("[vuex] unknown local mutation type: " + r.type + ", global type: " + c);e.commit(c, s, a);
+              l = r.type;if (!(a && a.root || (l = t + l, e._mutations[l]))) return void console.error("[vuex] unknown local mutation type: " + r.type + ", global type: " + l);e.commit(l, s, a);
         } };return Object.defineProperties(o, { getters: { get: n ? function () {
             return e.getters;
           } : function () {
-            return Vi(e, t);
+            return Gi(e, t);
           } }, state: { get: function get$$1() {
             return Xi(e.state, i);
           } } }), o;
-    }function Vi(e, t) {
+    }function Gi(e, t) {
       var i = {},
           n = t.length;return Object.keys(e.getters).forEach(function (o) {
         if (o.slice(0, n) === t) {
@@ -3098,20 +3098,20 @@ var picker = createCommonjsModule(function (module, exports) {
       }function r(e) {
         var i = e - g,
             n = e - _,
-            o = t - i;return b ? la(o, m - n) : o;
+            o = t - i;return b ? ua(o, m - n) : o;
       }function s(e) {
         var i = e - g,
             n = e - _;return void 0 === g || i >= t || i < 0 || b && n >= m;
       }function a() {
-        var e = ua();if (s(e)) return c(e);v = setTimeout(a, r(e));
-      }function c(e) {
+        var e = da();if (s(e)) return l(e);v = setTimeout(a, r(e));
+      }function l(e) {
         return v = void 0, C && f ? n(e) : (f = p = void 0, h);
-      }function l() {
+      }function c() {
         void 0 !== v && clearTimeout(v), _ = 0, f = g = p = v = void 0;
       }function u() {
-        return void 0 === v ? h : c(ua());
+        return void 0 === v ? h : l(da());
       }function d() {
-        var e = ua(),
+        var e = da(),
             i = s(e);if (f = arguments, p = this, g = e, i) {
           if (void 0 === v) return o(g);if (b) return v = setTimeout(a, t), n(g);
         }return void 0 === v && (v = setTimeout(a, t)), h;
@@ -3124,27 +3124,27 @@ var picker = createCommonjsModule(function (module, exports) {
           _ = 0,
           y = !1,
           b = !1,
-          C = !0;if ("function" != typeof e) throw new TypeError(qs);return t = sn(t) || 0, nn(i) && (y = !!i.leading, b = "maxWait" in i, m = b ? ca(sn(i.maxWait) || 0, t) : m, C = "trailing" in i ? !!i.trailing : C), d.cancel = l, d.flush = u, d;
+          C = !0;if ("function" != typeof e) throw new TypeError(Ks);return t = sn(t) || 0, nn(i) && (y = !!i.leading, b = "maxWait" in i, m = b ? ca(sn(i.maxWait) || 0, t) : m, C = "trailing" in i ? !!i.trailing : C), d.cancel = c, d.flush = u, d;
     }function tn(e, t, i) {
       var n = !0,
-          o = !0;if ("function" != typeof e) throw new TypeError(qs);return nn(i) && (n = "leading" in i ? !!i.leading : n, o = "trailing" in i ? !!i.trailing : o), en(e, t, { leading: n, maxWait: t, trailing: o });
+          o = !0;if ("function" != typeof e) throw new TypeError(Ks);return nn(i) && (n = "leading" in i ? !!i.leading : n, o = "trailing" in i ? !!i.trailing : o), en(e, t, { leading: n, maxWait: t, trailing: o });
     }function nn(e) {
       var t = void 0 === e ? "undefined" : un(e);return !!e && ("object" == t || "function" == t);
     }function on(e) {
       return !!e && "object" == (void 0 === e ? "undefined" : un(e));
     }function rn(e) {
-      return "symbol" == (void 0 === e ? "undefined" : un(e)) || on(e) && aa.call(e) == Zs;
+      return "symbol" == (void 0 === e ? "undefined" : un(e)) || on(e) && la.call(e) == Qs;
     }function sn(e) {
-      if ("number" == typeof e) return e;if (rn(e)) return Ks;if (nn(e)) {
+      if ("number" == typeof e) return e;if (rn(e)) return Zs;if (nn(e)) {
         var t = "function" == typeof e.valueOf ? e.valueOf() : e;e = nn(t) ? t + "" : t;
-      }if ("string" != typeof e) return 0 === e ? e : +e;e = e.replace(Qs, "");var i = ea.test(e);return i || ta.test(e) ? ia(e.slice(2), i ? 2 : 8) : Js.test(e) ? Ks : +e;
+      }if ("string" != typeof e) return 0 === e ? e : +e;e = e.replace(Js, "");var i = ta.test(e);return i || ia.test(e) ? na(e.slice(2), i ? 2 : 8) : ea.test(e) ? Zs : +e;
     }!function (e) {
       function t() {}function i(e, t) {
         return function () {
           e.apply(t, arguments);
         };
       }function n(e) {
-        if ("object" != _typeof(this)) throw new TypeError("Promises must be constructed via new");if ("function" != typeof e) throw new TypeError("not a function");this._state = 0, this._handled = !1, this._value = void 0, this._deferreds = [], l(e, this);
+        if ("object" != _typeof(this)) throw new TypeError("Promises must be constructed via new");if ("function" != typeof e) throw new TypeError("not a function");this._state = 0, this._handled = !1, this._value = void 0, this._deferreds = [], c(e, this);
       }function o(e, t) {
         for (; 3 === e._state;) {
           e = e._value;
@@ -3158,7 +3158,7 @@ var picker = createCommonjsModule(function (module, exports) {
       }function r(e, t) {
         try {
           if (t === e) throw new TypeError("A promise cannot be resolved with itself.");if (t && ("object" == (typeof t === 'undefined' ? 'undefined' : _typeof(t)) || "function" == typeof t)) {
-            var o = t.then;if (t instanceof n) return e._state = 3, e._value = t, void a(e);if ("function" == typeof o) return void l(i(o, t), e);
+            var o = t.then;if (t instanceof n) return e._state = 3, e._value = t, void a(e);if ("function" == typeof o) return void c(i(o, t), e);
           }e._state = 1, e._value = t, a(e);
         } catch (t) {
           s(e, t);
@@ -3171,9 +3171,9 @@ var picker = createCommonjsModule(function (module, exports) {
         });for (var t = 0, i = e._deferreds.length; t < i; t++) {
           o(e, e._deferreds[t]);
         }e._deferreds = null;
-      }function c(e, t, i) {
+      }function l(e, t, i) {
         this.onFulfilled = "function" == typeof e ? e : null, this.onRejected = "function" == typeof t ? t : null, this.promise = i;
-      }function l(e, t) {
+      }function c(e, t) {
         var i = !1;try {
           e(function (e) {
             i || (i = !0, r(t, e));
@@ -3186,7 +3186,7 @@ var picker = createCommonjsModule(function (module, exports) {
       }var u = setTimeout;n.prototype.catch = function (e) {
         return this.then(null, e);
       }, n.prototype.then = function (e, i) {
-        var n = new this.constructor(t);return o(this, new c(e, i, n)), n;
+        var n = new this.constructor(t);return o(this, new l(e, i, n)), n;
       }, n.all = function (e) {
         var t = Array.prototype.slice.call(e);return new n(function (e, i) {
           function n(r, s) {
@@ -3229,8 +3229,8 @@ var picker = createCommonjsModule(function (module, exports) {
         n._unhandledRejectionFn = e;
       }, "undefined" != 'object' && module.exports ? module.exports = n : e.Promise || (e.Promise = n);
     }(this);var an,
-        cn,
-        ln = { css: { main: "https://static.filestackapi.com/picker/v3/0.4.0/main.css" } },
+        ln,
+        cn = { css: { main: "https://static.filestackapi.com/picker/v3/0.4.1/main.css" } },
         un = "function" == typeof Symbol && "symbol" == _typeof(Symbol.iterator) ? function (e) {
       return typeof e === 'undefined' ? 'undefined' : _typeof(e);
     } : function (e) {
@@ -3309,8 +3309,8 @@ var picker = createCommonjsModule(function (module, exports) {
       };else {
         var s = 1,
             a = new MutationObserver(e),
-            c = document.createTextNode(String(s));a.observe(c, { characterData: !0 }), t = function t() {
-          s = (s + 1) % 2, c.data = String(s);
+            l = document.createTextNode(String(s));a.observe(l, { characterData: !0 }), t = function t() {
+          s = (s + 1) % 2, l.data = String(s);
         };
       }return function (e, o) {
         var r;if (i.push(function () {
@@ -3319,7 +3319,7 @@ var picker = createCommonjsModule(function (module, exports) {
           r = e;
         });
       };
-    }();cn = "undefined" != typeof Set && b(Set) ? Set : function () {
+    }();ln = "undefined" != typeof Set && b(Set) ? Set : function () {
       function e() {
         this.set = Object.create(null);
       }return e.prototype.has = function (e) {
@@ -3344,9 +3344,9 @@ var picker = createCommonjsModule(function (module, exports) {
         e[t].update();
       }
     }, zn.target = null;var jn = [],
-        Gn = Array.prototype,
-        Vn = Object.create(Gn);["push", "pop", "shift", "unshift", "splice", "sort", "reverse"].forEach(function (e) {
-      var t = Gn[e];_(Vn, e, function () {
+        Vn = Array.prototype,
+        Gn = Object.create(Vn);["push", "pop", "shift", "unshift", "splice", "sort", "reverse"].forEach(function (e) {
+      var t = Vn[e];_(Gn, e, function () {
         for (var i = arguments, n = arguments.length, o = new Array(n); n--;) {
           o[n] = i[n];
         }var r,
@@ -3356,11 +3356,11 @@ var picker = createCommonjsModule(function (module, exports) {
             r = o;break;case "splice":
             r = o.slice(2);}return r && a.observeArray(r), a.dep.notify(), s;
       });
-    });var Wn = Object.getOwnPropertyNames(Vn),
+    });var Wn = Object.getOwnPropertyNames(Gn),
         Hn = { shouldConvert: !0, isSettingProps: !1 },
         Bn = function Bn(e) {
       if (this.value = e, this.dep = new zn(), this.vmCount = 0, _(e, "__ob__", this), Array.isArray(e)) {
-        (Tn ? S : w)(e, Vn, Wn), this.observeArray(e);
+        (Tn ? S : w)(e, Gn, Wn), this.observeArray(e);
       } else this.walk(e);
     };Bn.prototype.walk = function (e) {
       for (var t = Object.keys(e), i = 0; i < t.length; i++) {
@@ -3382,12 +3382,12 @@ var picker = createCommonjsModule(function (module, exports) {
     }), En._assetTypes.forEach(function (e) {
       Yn[e + "s"] = N;
     }), Yn.watch = function (e, t) {
-      if (!t) return Object.create(e || null);if (!e) return t;var i = {};l(i, e);for (var n in t) {
+      if (!t) return Object.create(e || null);if (!e) return t;var i = {};c(i, e);for (var n in t) {
         var o = i[n],
             r = t[n];o && !Array.isArray(o) && (o = [o]), i[n] = o ? o.concat(r) : [r];
       }return i;
     }, Yn.props = Yn.methods = Yn.computed = function (e, t) {
-      if (!t) return Object.create(e || null);if (!e) return t;var i = Object.create(null);return l(i, e), l(i, t), i;
+      if (!t) return Object.create(e || null);if (!e) return t;var i = Object.create(null);return c(i, e), c(i, t), i;
     };var Xn = function Xn(e, t) {
       return void 0 === t ? e : t;
     },
@@ -3411,7 +3411,7 @@ var picker = createCommonjsModule(function (module, exports) {
         ro = 0,
         so = 0,
         ao = function ao(e, t, i, n) {
-      this.vm = e, e._watchers.push(this), n ? (this.deep = !!n.deep, this.user = !!n.user, this.lazy = !!n.lazy, this.sync = !!n.sync) : this.deep = this.user = this.lazy = this.sync = !1, this.cb = i, this.id = ++so, this.active = !0, this.dirty = this.lazy, this.deps = [], this.newDeps = [], this.depIds = new cn(), this.newDepIds = new cn(), this.expression = "", "function" == typeof t ? this.getter = t : (this.getter = y(t), this.getter || (this.getter = function () {})), this.value = this.lazy ? void 0 : this.get();
+      this.vm = e, e._watchers.push(this), n ? (this.deep = !!n.deep, this.user = !!n.user, this.lazy = !!n.lazy, this.sync = !!n.sync) : this.deep = this.user = this.lazy = this.sync = !1, this.cb = i, this.id = ++so, this.active = !0, this.dirty = this.lazy, this.deps = [], this.newDeps = [], this.depIds = new ln(), this.newDepIds = new ln(), this.expression = "", "function" == typeof t ? this.getter = t : (this.getter = y(t), this.getter || (this.getter = function () {})), this.value = this.lazy ? void 0 : this.get();
     };ao.prototype.get = function () {
       C(this);var e,
           t = this.vm;if (this.user) try {
@@ -3449,8 +3449,8 @@ var picker = createCommonjsModule(function (module, exports) {
           e.deps[t].removeSub(e);
         }this.active = !1;
       }
-    };var co = new cn(),
-        lo = { enumerable: !0, configurable: !0, get: p, set: p },
+    };var lo = new ln(),
+        co = { enumerable: !0, configurable: !0, get: p, set: p },
         uo = { lazy: !0 },
         fo = { init: function init(e, t, i, n) {
         if (!e.componentInstance || e.componentInstance._isDestroyed) {
@@ -3461,7 +3461,7 @@ var picker = createCommonjsModule(function (module, exports) {
       }, prepatch: function prepatch(e, t) {
         var i = t.componentOptions;ae(t.componentInstance = e.componentInstance, i.propsData, i.listeners, t, i.children);
       }, insert: function insert(e) {
-        e.componentInstance._isMounted || (e.componentInstance._isMounted = !0, de(e.componentInstance, "mounted")), e.data.keepAlive && le(e.componentInstance, !0);
+        e.componentInstance._isMounted || (e.componentInstance._isMounted = !0, de(e.componentInstance, "mounted")), e.data.keepAlive && ce(e.componentInstance, !0);
       }, destroy: function destroy(e) {
         e.componentInstance._isDestroyed || (e.data.keepAlive ? ue(e.componentInstance, !0) : e.componentInstance.$destroy());
       } },
@@ -3498,15 +3498,15 @@ var picker = createCommonjsModule(function (module, exports) {
           for (var o = 0, r = e.length; o < r; o++) {
             i.$off(e[o], t);
           }return n;
-        }var s = n._events[e];if (!s) return n;if (1 === arguments.length) return n._events[e] = null, n;for (var a, c = s.length; c--;) {
-          if ((a = s[c]) === t || a.fn === t) {
-            s.splice(c, 1);break;
+        }var s = n._events[e];if (!s) return n;if (1 === arguments.length) return n._events[e] = null, n;for (var a, l = s.length; l--;) {
+          if ((a = s[l]) === t || a.fn === t) {
+            s.splice(l, 1);break;
           }
         }return n;
       }, e.prototype.$emit = function (e) {
         var t = this,
             i = t._events[e];if (i) {
-          i = i.length > 1 ? c(i) : i;for (var n = c(arguments, 1), o = 0, r = i.length; o < r; o++) {
+          i = i.length > 1 ? l(i) : i;for (var n = l(arguments, 1), o = 0, r = i.length; o < r; o++) {
             i[o].apply(t, n);
           }
         }return t;
@@ -3540,7 +3540,7 @@ var picker = createCommonjsModule(function (module, exports) {
         } catch (t) {
           j(t, e, "render function"), s = e._vnode;
         }return s instanceof qn || (s = Qn()), s.parent = o, s;
-      }, i.prototype._o = He, i.prototype._n = t, i.prototype._s = e, i.prototype._l = Pe, i.prototype._t = ze, i.prototype._q = m, i.prototype._i = h, i.prototype._m = We, i.prototype._f = je, i.prototype._k = Ge, i.prototype._b = Ve, i.prototype._v = G, i.prototype._e = Qn, i.prototype._u = oe;
+      }, i.prototype._o = He, i.prototype._n = t, i.prototype._s = e, i.prototype._l = Pe, i.prototype._t = ze, i.prototype._q = m, i.prototype._i = h, i.prototype._m = We, i.prototype._f = je, i.prototype._k = Ve, i.prototype._b = Ge, i.prototype._v = V, i.prototype._e = Qn, i.prototype._u = oe;
     }(tt);var go = [String, RegExp],
         _o = { name: "keep-alive", abstract: !0, props: { include: go, exclude: go }, created: function created() {
         this.cache = Object.create(null);
@@ -3550,24 +3550,24 @@ var picker = createCommonjsModule(function (module, exports) {
         }
       }, watch: { include: function include(e) {
           ut(this.cache, function (t) {
-            return lt(e, t);
+            return ct(e, t);
           });
         }, exclude: function exclude(e) {
           ut(this.cache, function (t) {
-            return !lt(e, t);
+            return !ct(e, t);
           });
         } }, render: function render() {
         var e = Z(this.$slots.default),
             t = e && e.componentOptions;if (t) {
-          var i = ct(t);if (i && (this.include && !lt(this.include, i) || this.exclude && lt(this.exclude, i))) return e;var n = null == e.key ? t.Ctor.cid + (t.tag ? "::" + t.tag : "") : e.key;this.cache[n] ? e.componentInstance = this.cache[n].componentInstance : this.cache[n] = e, e.data.keepAlive = !0;
+          var i = lt(t);if (i && (this.include && !ct(this.include, i) || this.exclude && ct(this.exclude, i))) return e;var n = null == e.key ? t.Ctor.cid + (t.tag ? "::" + t.tag : "") : e.key;this.cache[n] ? e.componentInstance = this.cache[n].componentInstance : this.cache[n] = e, e.data.keepAlive = !0;
         }return e;
       } },
         yo = { KeepAlive: _o };!function (e) {
       var t = {};t.get = function () {
         return En;
-      }, Object.defineProperty(e, "config", t), e.util = { warn: Mn, extend: l, mergeOptions: D, defineReactive: A }, e.set = F, e.delete = k, e.nextTick = Un, e.options = Object.create(null), En._assetTypes.forEach(function (t) {
+      }, Object.defineProperty(e, "config", t), e.util = { warn: Mn, extend: c, mergeOptions: D, defineReactive: A }, e.set = F, e.delete = k, e.nextTick = Un, e.options = Object.create(null), En._assetTypes.forEach(function (t) {
         e.options[t + "s"] = Object.create(null);
-      }), e.options._base = e, l(e.options.components, yo), it(e), nt(e), ot(e), at(e);
+      }), e.options._base = e, c(e.options.components, yo), it(e), nt(e), ot(e), at(e);
     }(tt), Object.defineProperty(tt.prototype, "$isServer", { get: In }), tt.version = "2.2.4";var bo,
         Co,
         Eo = i("input,textarea,option,select"),
@@ -3608,8 +3608,8 @@ var picker = createCommonjsModule(function (module, exports) {
       } },
         zo = Object.create(null),
         jo = [$o, Po],
-        Go = { create: Gt, update: Gt },
-        Vo = { create: Wt, update: Wt },
+        Vo = { create: Vt, update: Vt },
+        Go = { create: Wt, update: Wt },
         Wo = "__r",
         Ho = "__c",
         Bo = { create: Xt, update: Xt },
@@ -3642,12 +3642,12 @@ var picker = createCommonjsModule(function (module, exports) {
         rr = "transition",
         sr = "transitionend",
         ar = "animation",
-        cr = "animationend";ir && (void 0 === window.ontransitionend && void 0 !== window.onwebkittransitionend && (rr = "WebkitTransition", sr = "webkitTransitionEnd"), void 0 === window.onanimationend && void 0 !== window.onwebkitanimationend && (ar = "WebkitAnimation", cr = "webkitAnimationEnd"));var lr = An && window.requestAnimationFrame ? window.requestAnimationFrame.bind(window) : setTimeout,
+        lr = "animationend";ir && (void 0 === window.ontransitionend && void 0 !== window.onwebkittransitionend && (rr = "WebkitTransition", sr = "webkitTransitionEnd"), void 0 === window.onanimationend && void 0 !== window.onwebkitanimationend && (ar = "WebkitAnimation", lr = "webkitAnimationEnd"));var cr = An && window.requestAnimationFrame ? window.requestAnimationFrame.bind(window) : setTimeout,
         ur = /\b(transform|all)(,|$)/,
         dr = An ? { create: gi, activate: gi, remove: function remove(e, t) {
         e.data.show ? t() : mi(e, t);
       } } : {},
-        fr = [Go, Vo, Bo, Yo, er, dr],
+        fr = [Vo, Go, Bo, Yo, er, dr],
         pr = fr.concat(jo),
         mr = function (e) {
       function t(e) {
@@ -3662,15 +3662,15 @@ var picker = createCommonjsModule(function (module, exports) {
         if (e.isRootInsert = !o, !a(e, t, i, n)) {
           var r = e.data,
               s = e.children,
-              c = e.tag;It(c) ? (e.elm = e.ns ? F.createElementNS(e.ns, c) : F.createElement(c, e), m(e), d(e, s, t), It(r) && p(e, t), u(i, e.elm, n)) : e.isComment ? (e.elm = F.createComment(e.text), u(i, e.elm, n)) : (e.elm = F.createTextNode(e.text), u(i, e.elm, n));
+              l = e.tag;It(l) ? (e.elm = e.ns ? F.createElementNS(e.ns, l) : F.createElement(l, e), m(e), d(e, s, t), It(r) && p(e, t), u(i, e.elm, n)) : e.isComment ? (e.elm = F.createComment(e.text), u(i, e.elm, n)) : (e.elm = F.createTextNode(e.text), u(i, e.elm, n));
         }
       }function a(e, t, i, n) {
         var o = e.data;if (It(o)) {
-          var r = It(e.componentInstance) && o.keepAlive;if (It(o = o.hook) && It(o = o.init) && o(e, !1, i, n), It(e.componentInstance)) return c(e, t), r && l(e, t, i, n), !0;
+          var r = It(e.componentInstance) && o.keepAlive;if (It(o = o.hook) && It(o = o.init) && o(e, !1, i, n), It(e.componentInstance)) return l(e, t), r && c(e, t, i, n), !0;
         }
-      }function c(e, t) {
+      }function l(e, t) {
         e.data.pendingInsert && t.push.apply(t, e.data.pendingInsert), e.elm = e.componentInstance.$el, f(e) ? (p(e, t), m(e)) : (Nt(e), t.push(e));
-      }function l(e, t, i, n) {
+      }function c(e, t, i, n) {
         for (var o, r = e; r.componentInstance;) {
           if (r = r.componentInstance._vnode, It(o = r.data) && It(o = o.transition)) {
             for (o = 0; o < T.activate.length; ++o) {
@@ -3719,20 +3719,20 @@ var picker = createCommonjsModule(function (module, exports) {
           }It(S = e.data.hook) && It(S = S.remove) ? S(e, t) : t();
         } else o(e.elm);
       }function y(e, t, i, n, o) {
-        for (var r, a, c, l, u = 0, d = 0, f = t.length - 1, p = t[0], m = t[f], v = i.length - 1, _ = i[0], y = i[v], C = !o; u <= f && d <= v;) {
-          xt(p) ? p = t[++u] : xt(m) ? m = t[--f] : Dt(p, _) ? (b(p, _, n), p = t[++u], _ = i[++d]) : Dt(m, y) ? (b(m, y, n), m = t[--f], y = i[--v]) : Dt(p, y) ? (b(p, y, n), C && F.insertBefore(e, p.elm, F.nextSibling(m.elm)), p = t[++u], y = i[--v]) : Dt(m, _) ? (b(m, _, n), C && F.insertBefore(e, m.elm, p.elm), m = t[--f], _ = i[++d]) : (xt(r) && (r = $t(t, u, f)), a = It(_.key) ? r[_.key] : null, xt(a) ? (s(_, n, e, p.elm), _ = i[++d]) : (c = t[a], Dt(c, _) ? (b(c, _, n), t[a] = void 0, C && F.insertBefore(e, _.elm, p.elm), _ = i[++d]) : (s(_, n, e, p.elm), _ = i[++d])));
-        }u > f ? (l = xt(i[v + 1]) ? null : i[v + 1].elm, h(e, l, i, d, v, n)) : d > v && g(e, t, u, f);
+        for (var r, a, l, c, u = 0, d = 0, f = t.length - 1, p = t[0], m = t[f], v = i.length - 1, _ = i[0], y = i[v], C = !o; u <= f && d <= v;) {
+          xt(p) ? p = t[++u] : xt(m) ? m = t[--f] : Dt(p, _) ? (b(p, _, n), p = t[++u], _ = i[++d]) : Dt(m, y) ? (b(m, y, n), m = t[--f], y = i[--v]) : Dt(p, y) ? (b(p, y, n), C && F.insertBefore(e, p.elm, F.nextSibling(m.elm)), p = t[++u], y = i[--v]) : Dt(m, _) ? (b(m, _, n), C && F.insertBefore(e, m.elm, p.elm), m = t[--f], _ = i[++d]) : (xt(r) && (r = $t(t, u, f)), a = It(_.key) ? r[_.key] : null, xt(a) ? (s(_, n, e, p.elm), _ = i[++d]) : (l = t[a], Dt(l, _) ? (b(l, _, n), t[a] = void 0, C && F.insertBefore(e, _.elm, p.elm), _ = i[++d]) : (s(_, n, e, p.elm), _ = i[++d])));
+        }u > f ? (c = xt(i[v + 1]) ? null : i[v + 1].elm, h(e, c, i, d, v, n)) : d > v && g(e, t, u, f);
       }function b(e, t, i, n) {
         if (e !== t) {
           if (t.isStatic && e.isStatic && t.key === e.key && (t.isCloned || t.isOnce)) return t.elm = e.elm, void (t.componentInstance = e.componentInstance);var o,
               r = t.data,
               s = It(r);s && It(o = r.hook) && It(o = o.prepatch) && o(e, t);var a = t.elm = e.elm,
-              c = e.children,
-              l = t.children;if (s && f(t)) {
+              l = e.children,
+              c = t.children;if (s && f(t)) {
             for (o = 0; o < T.update.length; ++o) {
               T.update[o](e, t);
             }It(o = r.hook) && It(o = o.update) && o(e, t);
-          }xt(t.text) ? It(c) && It(l) ? c !== l && y(a, c, l, i, n) : It(l) ? (It(e.text) && F.setTextContent(a, ""), h(a, null, l, 0, l.length - 1, i)) : It(c) ? g(a, c, 0, c.length - 1) : It(e.text) && F.setTextContent(a, "") : e.text !== t.text && F.setTextContent(a, t.text), s && It(o = r.hook) && It(o = o.postpatch) && o(e, t);
+          }xt(t.text) ? It(l) && It(c) ? l !== c && y(a, l, c, i, n) : It(c) ? (It(e.text) && F.setTextContent(a, ""), h(a, null, c, 0, c.length - 1, i)) : It(l) ? g(a, l, 0, l.length - 1) : It(e.text) && F.setTextContent(a, "") : e.text !== t.text && F.setTextContent(a, t.text), s && It(o = r.hook) && It(o = o.postpatch) && o(e, t);
         }
       }function C(e, t, i) {
         if (i && e.parent) e.parent.data.pendingInsert = t;else for (var n = 0; n < t.length; ++n) {
@@ -3741,10 +3741,10 @@ var picker = createCommonjsModule(function (module, exports) {
       }function E(e, t, i) {
         t.elm = e;var n = t.tag,
             o = t.data,
-            r = t.children;if (It(o) && (It(S = o.hook) && It(S = S.init) && S(t, !0), It(S = t.componentInstance))) return c(t, i), !0;if (It(n)) {
+            r = t.children;if (It(o) && (It(S = o.hook) && It(S = S.init) && S(t, !0), It(S = t.componentInstance))) return l(t, i), !0;if (It(n)) {
           if (It(r)) if (e.hasChildNodes()) {
-            for (var s = !0, a = e.firstChild, l = 0; l < r.length; l++) {
-              if (!a || !E(a, r[l], i)) {
+            for (var s = !0, a = e.firstChild, c = 0; c < r.length; c++) {
+              if (!a || !E(a, r[c], i)) {
                 s = !1;break;
               }a = a.nextSibling;
             }if (!s || a) return !1;
@@ -3763,13 +3763,13 @@ var picker = createCommonjsModule(function (module, exports) {
           void 0 !== A[w][Mo[S]] && T[Mo[S]].push(A[w][Mo[S]]);
         }
       }var k = i("attrs,style,class,staticClass,staticStyle,key");return function (e, i, n, o, r, a) {
-        if (!i) return void (e && v(e));var c = !1,
-            l = [];if (e) {
-          var u = It(e.nodeType);if (!u && Dt(e, i)) b(e, i, l, o);else {
+        if (!i) return void (e && v(e));var l = !1,
+            c = [];if (e) {
+          var u = It(e.nodeType);if (!u && Dt(e, i)) b(e, i, c, o);else {
             if (u) {
-              if (1 === e.nodeType && e.hasAttribute("server-rendered") && (e.removeAttribute("server-rendered"), n = !0), n && E(e, i, l)) return C(i, l, !0), e;e = t(e);
+              if (1 === e.nodeType && e.hasAttribute("server-rendered") && (e.removeAttribute("server-rendered"), n = !0), n && E(e, i, c)) return C(i, c, !0), e;e = t(e);
             }var d = e.elm,
-                p = F.parentNode(d);if (s(i, l, d._leaveCb ? null : p, F.nextSibling(d)), i.parent) {
+                p = F.parentNode(d);if (s(i, c, d._leaveCb ? null : p, F.nextSibling(d)), i.parent) {
               for (var m = i.parent; m;) {
                 m.elm = i.elm, m = m.parent;
               }if (f(i)) for (var h = 0; h < T.create.length; ++h) {
@@ -3777,7 +3777,7 @@ var picker = createCommonjsModule(function (module, exports) {
               }
             }null !== p ? g(p, [e], 0, 0) : It(e.tag) && v(e);
           }
-        } else c = !0, s(i, l, r, a);return C(i, l, c), i.elm;
+        } else l = !0, s(i, c, r, a);return C(i, c, l), i.elm;
       };
     }({ nodeOps: Do, modules: pr });Rn && document.addEventListener("selectionchange", function () {
       var e = document.activeElement;e && e.vmodel && Si(e, "input");
@@ -3816,31 +3816,31 @@ var picker = createCommonjsModule(function (module, exports) {
           return e.tag;
         }), i.length)) {
           var n = this.mode,
-              o = i[0];if (ki(this.$vnode)) return o;var s = Ti(o);if (!s) return o;if (this._leaving) return Fi(e, o);var a = "__transition-" + this._uid + "-";s.key = null == s.key ? a + s.tag : r(s.key) ? 0 === String(s.key).indexOf(a) ? s.key : a + s.key : s.key;var c = (s.data || (s.data = {})).transition = Ai(this),
+              o = i[0];if (ki(this.$vnode)) return o;var s = Ti(o);if (!s) return o;if (this._leaving) return Fi(e, o);var a = "__transition-" + this._uid + "-";s.key = null == s.key ? a + s.tag : r(s.key) ? 0 === String(s.key).indexOf(a) ? s.key : a + s.key : s.key;var l = (s.data || (s.data = {})).transition = Ai(this),
               u = this._vnode,
               d = Ti(u);if (s.data.directives && s.data.directives.some(function (e) {
             return "show" === e.name;
           }) && (s.data.show = !0), d && d.data && !Ri(s, d)) {
-            var f = d && (d.data.transition = l({}, c));if ("out-in" === n) return this._leaving = !0, Y(f, "afterLeave", function () {
+            var f = d && (d.data.transition = c({}, l));if ("out-in" === n) return this._leaving = !0, Y(f, "afterLeave", function () {
               t._leaving = !1, t.$forceUpdate();
             }), Fi(e, o);if ("in-out" === n) {
               var p,
                   m = function m() {
                 p();
-              };Y(c, "afterEnter", m), Y(c, "enterCancelled", m), Y(f, "delayLeave", function (e) {
+              };Y(l, "afterEnter", m), Y(l, "enterCancelled", m), Y(f, "delayLeave", function (e) {
                 p = e;
               });
             }
           }return o;
         }
       } },
-        br = l({ tag: String, moveClass: String }, _r);delete br.mode;var Cr = { props: br, render: function render(e) {
+        br = c({ tag: String, moveClass: String }, _r);delete br.mode;var Cr = { props: br, render: function render(e) {
         for (var t = this.tag || this.$vnode.data.tag || "span", i = Object.create(null), n = this.prevChildren = this.children, o = this.$slots.default || [], r = this.children = [], s = Ai(this), a = 0; a < o.length; a++) {
-          var c = o[a];c.tag && null != c.key && 0 !== String(c.key).indexOf("__vlist") && (r.push(c), i[c.key] = c, (c.data || (c.data = {})).transition = s);
+          var l = o[a];l.tag && null != l.key && 0 !== String(l.key).indexOf("__vlist") && (r.push(l), i[l.key] = l, (l.data || (l.data = {})).transition = s);
         }if (n) {
-          for (var l = [], u = [], d = 0; d < n.length; d++) {
-            var f = n[d];f.data.transition = s, f.data.pos = f.elm.getBoundingClientRect(), i[f.key] ? l.push(f) : u.push(f);
-          }this.kept = e(t, null, l), this.removed = u;
+          for (var c = [], u = [], d = 0; d < n.length; d++) {
+            var f = n[d];f.data.transition = s, f.data.pos = f.elm.getBoundingClientRect(), i[f.key] ? c.push(f) : u.push(f);
+          }this.kept = e(t, null, c), this.removed = u;
         }return e(t, null, r);
       }, beforeUpdate: function beforeUpdate() {
         this.__patch__(this._vnode, this.kept, !1, !0), this._vnode = this.kept;
@@ -3851,7 +3851,7 @@ var picker = createCommonjsModule(function (module, exports) {
             if (e.data.moved) {
               var i = e.elm,
                   n = i.style;ai(i, t), n.transform = n.WebkitTransform = n.transitionDuration = "", i.addEventListener(sr, i._moveCb = function e(n) {
-                n && !/transform$/.test(n.propertyName) || (i.removeEventListener(sr, e), i._moveCb = null, ci(i, t));
+                n && !/transform$/.test(n.propertyName) || (i.removeEventListener(sr, e), i._moveCb = null, li(i, t));
               });
             }
           });
@@ -3861,7 +3861,7 @@ var picker = createCommonjsModule(function (module, exports) {
             oi(i, e);
           }), ni(i, t), i.style.display = "none", this.$el.appendChild(i);var n = ui(i);return this.$el.removeChild(i), this._hasMove = n.hasTransform;
         } } },
-        Er = { Transition: yr, TransitionGroup: Cr };tt.config.mustUseProp = So, tt.config.isReservedTag = xo, tt.config.getTagNamespace = gt, tt.config.isUnknownElement = _t, l(tt.options.directives, gr), l(tt.options.components, Er), tt.prototype.__patch__ = An ? mr : p, tt.prototype.$mount = function (e, t) {
+        Er = { Transition: yr, TransitionGroup: Cr };tt.config.mustUseProp = So, tt.config.isReservedTag = xo, tt.config.getTagNamespace = gt, tt.config.isUnknownElement = _t, c(tt.options.directives, gr), c(tt.options.components, Er), tt.prototype.__patch__ = An ? mr : p, tt.prototype.$mount = function (e, t) {
       return e = e && An ? yt(e) : void 0, se(this, e, t);
     }, setTimeout(function () {
       En.devtools && Dn && Dn.emit("init", tt);
@@ -4020,10 +4020,10 @@ var picker = createCommonjsModule(function (module, exports) {
       var t = this;void 0 === e && (e = {}), Ui(Mr, "must call Vue.use(Vuex) before creating a store instance."), Ui("undefined" != typeof Promise, "vuex requires a Promise polyfill in this browser.");var i = e.state;void 0 === i && (i = {});var n = e.plugins;void 0 === n && (n = []);var o = e.strict;void 0 === o && (o = !1), this._committing = !1, this._actions = Object.create(null), this._mutations = Object.create(null), this._wrappedGetters = Object.create(null), this._modules = new Ur(e), this._modulesNamespaceMap = Object.create(null), this._subscribers = [], this._watcherVM = new Mr();var r = this,
           s = this,
           a = s.dispatch,
-          c = s.commit;this.dispatch = function (e, t) {
+          l = s.commit;this.dispatch = function (e, t) {
         return a.call(r, e, t);
       }, this.commit = function (e, t, i) {
-        return c.call(r, e, t, i);
+        return l.call(r, e, t, i);
       }, this.strict = o, ji(this, i, [], this._modules.root), zi(this, i), n.concat(xi).forEach(function (e) {
         return e(t);
       });
@@ -4038,13 +4038,13 @@ var picker = createCommonjsModule(function (module, exports) {
           r = o.type,
           s = o.payload,
           a = o.options,
-          c = { type: r, payload: s },
-          l = this._mutations[r];if (!l) return void console.error("[vuex] unknown mutation type: " + r);this._withCommit(function () {
-        l.forEach(function (e) {
+          l = { type: r, payload: s },
+          c = this._mutations[r];if (!c) return void console.error("[vuex] unknown mutation type: " + r);this._withCommit(function () {
+        c.forEach(function (e) {
           e(s);
         });
       }), this._subscribers.forEach(function (e) {
-        return e(c, n.state);
+        return e(l, n.state);
       }), a && a.silent && console.warn("[vuex] mutation type: " + r + ". Silent option has been removed. Use the filter functionality in the vue-devtools");
     }, Pr.prototype.dispatch = function (e, t) {
       var i = qi(e, t),
@@ -4086,7 +4086,7 @@ var picker = createCommonjsModule(function (module, exports) {
         }, i[n].vuex = !0;
       }), i;
     }),
-        Gr = Qi(function (e, t) {
+        Vr = Qi(function (e, t) {
       var i = {};return Zi(t).forEach(function (t) {
         var n = t.key,
             o = t.val;o = e + o, i[n] = function () {
@@ -4096,7 +4096,7 @@ var picker = createCommonjsModule(function (module, exports) {
         };
       }), i;
     }),
-        Vr = Qi(function (e, t) {
+        Gr = Qi(function (e, t) {
       var i = {};return Zi(t).forEach(function (t) {
         var n = t.key,
             o = t.val;o = e + o, i[n] = function () {
@@ -4114,7 +4114,7 @@ var picker = createCommonjsModule(function (module, exports) {
         };
       }), i;
     }),
-        Hr = { Store: Pr, install: Ki, version: "2.2.1", mapState: jr, mapMutations: Gr, mapGetters: Vr, mapActions: Wr },
+        Hr = { Store: Pr, install: Ki, version: "2.2.1", mapState: jr, mapMutations: Vr, mapGetters: Gr, mapActions: Wr },
         Br = function Br(e) {
       return "function" == typeof e.getAsEntry ? e.getAsEntry() : "function" == typeof e.webkitGetAsEntry ? e.webkitGetAsEntry() : void 0;
     },
@@ -4226,11 +4226,11 @@ var picker = createCommonjsModule(function (module, exports) {
         return is(t) ? ns(e, t) : ss(e, t);
       });
     },
-        cs = function cs(e) {
+        ls = function ls(e) {
       var t = { filename: e.name, mimetype: e.mimetype || e.type, size: e.size, source: e.source, url: e.url, handle: e.handle };return e.status && (t.status = e.status), e.key && (t.key = e.key), e.container && (t.container = e.container), t;
     },
-        ls = function ls(e) {
-      return e.map(cs);
+        cs = function cs(e) {
+      return e.map(ls);
     },
         us = function us(e) {
       return e >= 1048576 ? Math.round(e / 1048576) + "MB" : e >= 1024 ? Math.round(e / 1024) + "KB" : e + "B";
@@ -4238,6 +4238,8 @@ var picker = createCommonjsModule(function (module, exports) {
         ds = function ds(e) {
       if (e.name.length < 45) return e.name;var t = e.name.split(".");if (2 === t.length) {
         return t[0].substring(0, 42) + ".." + "." + t[1];
+      }if (t.length > 2) {
+        return e.name.substring(0, 42) + ".." + "." + t[t.length - 1];
       }return e.name.substring(0, 42) + "...";
     },
         fs = function fs() {
@@ -4248,35 +4250,39 @@ var picker = createCommonjsModule(function (module, exports) {
         t += fs();
       }return t;
     },
-        ms = { Add: "Hinzufügen", My: "Mein", Connect: "Verbinden mit", View: "Aussicht", Upload: "Hochladen", Filter: "Filtern", Images: "Bilder", of: "von", Loading: "Laden", Revert: "Rückgängig", Edit: "Bearbeiten", More: "Mehr", Uploaded: "Hochgeladen", "A new page will open to connect your account.": "Eine neue Seite wird geöffnet, um Ihr Konto zu verbinden", "My Device": "Mein Gerät", "or Drag and Drop, Copy and Paste Files": "oder ziehen, kopieren und Einfügen von Dateien", "Pick Your Files": "Wählen Sie Ihre Dateien", "Select Files to Upload": "Wählen Sie Dateien hochladen", "Selected Files": "Ausgewählten Dateien", "Select Files from": "Wählen Sie Dateien aus", "We only extract images and never modify or delete them.": "Wir extrahieren Bilder nur und modifizieren oder löschen sie niemals", "You need to authenticate with ": "Sie müssen sich mit anmelden ", "Search images": "Suche bilder", "Sign Out": "Abmelden", "Select From": "Wählen Sie aus", "View/Edit Selected": "Anzeigen/Bearbeiten ausgewählt", "Deselect All": "Deaktivieren Sie alle", "Files & Folders": "Dateien und Ordner", "Edited Images": "Bearbeitete Bilder", "Go Back": "Zurück", "No search results found for": "Keine Suchergebnisse gefunden für", "Please select": "Bitte wählen Sie", "more file": "weitere Datei", "more files": "weitere Dateien", "File {displayName} is not an accepted file type. The accepted file types are {types}": "Datei-{displayName} ist keine anerkannte Dateityp. Die akzeptierten Dateitypen sind {types}", "File {displayName} is too big. The accepted file size is less than {roundFileSize}": "{displayName} Datei ist zu groß. Die akzeptierten Dateigröße beträgt {roundFileSize}", "Our file upload limit is {maxFiles} {filesText}": "Unser Dateigrößenlimit ist {maxFiles} {filesText}" },
-        hs = { "File {displayName} is not an accepted file type. The accepted file types are {types}": "File {displayName} is not an accepted file type. The accepted file types are {types}", "File {displayName} is too big. The accepted file size is less than {roundFileSize}": "File {displayName} is too big. The accepted file size is less than {roundFileSize}", "Our file upload limit is {maxFiles} {filesText}": "Our file upload limit is {maxFiles} {filesText}" },
-        vs = { Add: "Añadir", My: "Mi", Connect: "Conectar", View: "Ver", Upload: "Subir", Filter: "Filtrar", Images: "Imágenes", of: "de", Loading: "Cargando", Revert: "Deshacer", Edit: "Editar", More: "Mas", Uploaded: "Subido", "A new page will open to connect your account.": "Se abrirá una nueva página para conectar tu cuenta.", "My Device": "Mi Dispositivo", "or Drag and Drop, Copy and Paste Files": "O arrastrar y soltar, copiar y pegar archivos", "Pick Your Files": "Elige tus archivos", "Select Files to Upload": "Seleccionar archivos para cargar", "Selected Files": "Archivos seleccionados", "Select Files from": "Seleccione Archivos de", "We only extract images and never modify or delete them.": "Sólo extraemos imágenes y nunca las modificamos o eliminamos", "You need to authenticate with ": "Debe autenticarse con", "Search images": "Búsqueda de imágenes", "Sign Out": "Desconectar", "Select From": "Seleccione de", "View/Edit Selected": "Ver/Editar Seleccionado", "Deselect All": "Deseleccionar Todo", "Files & Folders": "Archivos y Carpetas", "Edited Images": "Imágenes editadas", "Go Back": "Volver", "No search results found for": "No hay resultados de búsqueda para", "Please select": "Por favor, seleccione", "more file": "el archivo más", "more files": "el archivo más", "File {displayName} is not an accepted file type. The accepted file types are {types}": "Archivo {displayName} no es un tipo de archivo aceptado. Los tipos de archivo aceptados son {types}", "File {displayName} is too big. The accepted file size is less than {roundFileSize}": "{displayName} De archivo es demasiado grande. El tamaño aceptado es {roundFileSize}", "Our file upload limit is {maxFiles} {filesText}": "Nuestro límite de upload de archivo es {maxFiles} {filesText}" },
-        gs = { Add: "Ajouter", My: "Ma", Connect: "Relier", View: "Vue", Upload: "Télécharger", Filter: "Filtrer", Images: "Images", of: "sur", Loading: "Chargement", Revert: "Annuler", Edit: "Modifier", More: "Plus", Uploaded: "Téléchargées", "A new page will open to connect your account.": "Une nouvelle page s'ouvrira pour connecter votre compte.", "My Device": "Mon appareil", "or Drag and Drop, Copy and Paste Files": "ou faites glisser, copier et coller des fichiers", "Pick Your Files": "Choisissez vos fichiers", "Select Files to Upload": "Sélectionnez les fichiers à télécharger", "Selected Files": "Fichiers sélectionnés", "Select Files from": "Sélectionnez les fichiers à partir de", "We only extract images and never modify or delete them.": "Nous ne faisons qu'extraire les images, et ne les modifions ou supprimons jamais.", "You need to authenticate with ": "Vous devez vous authentifier avec ", "Search images": "Rechercher des images", "Sign Out": "Déconnecter", "Select From": "Sélectionnez dans", "View/Edit Selected": "Afficher/modifier sélectionnée", "Deselect All": "Désélectionner tout", "Files & Folders": "Fichiers et dossiers", "Edited Images": "Images éditées", "Go Back": "Retour", "No search results found for": "Aucun résultat de recherche trouvé pour", "Please select": "Veuillez sélectionner", "more file": "plus de fichier", "more files": "plus de fichiers", "File {displayName} is not an accepted file type. The accepted file types are {types}": "{displayName} De fichier n’est pas un type de fichier accepté. Les types de fichiers acceptés sont {types}", "File {displayName} is too big. The accepted file size is less than {roundFileSize}": "Le fichier {displayName} est trop grand. La taille de fichier acceptée est {roundFileSize}", "Our file upload limit is {maxFiles} {filesText}": "Notre limite de téléchargement de fichier est {maxFiles} {filesText}" },
-        _s = { Add: "Aggiungere", My: "Mio", Connect: "Collegare", View: "Visualizza", Upload: "Caricare", Filter: "Filtrare", Images: "Immagini", of: "di", Loading: "Caricamento", Revert: "Annulla", Edit: "Modifica", More: "Più", Uploaded: "Caricato", "A new page will open to connect your account.": "Si aprirà una nuova pagina per collegare il tuo account", "My Device": "Il mio dispositivo", "or Drag and Drop, Copy and Paste Files": "o trascinare, copiare e incollare file", "Pick Your Files": "Selezionare i file", "Select Files to Upload": "Selezionare i file da caricare", "Selected Files": "File selezionati", "Select Files from": "Selezionare i file da", "We only extract images and never modify or delete them.": "Abbiamo estratto solo immagini e non modificarli o cancellarli.", "You need to authenticate with": "È necessario autenticarsi con", "Search images": "Ricerca immagini", "Sign Out": "Esci", "Select From": "Selezionare da", "View/Edit Selected": "Visualizza/Modifica selezionato", "Deselect All": "Deselezionare tutto", "Files & Folders": "File e cartelle", "Edited Images": "Immagini Modificate", "Go Back": "Indietro", "No search results found for": "È il nostro limite di upload di file", "Please select": "Si prega di selezionare", "more file": "più file", "more files": "più file", "File {displayName} is not an accepted file type. The accepted file types are {types}": "{displayName} File non è un tipo di file accettato. I tipi di file accettati sono {types}", "File {displayName} is too big. The accepted file size is less than {roundFileSize}": "{displayName} Arquivo é muito grande. O tamanho de arquivo aceito é {roundFileSize}", "Our file upload limit is {maxFiles} {filesText}": "È il nostro limite di upload di file {maxFiles} {filesText}" },
-        ys = { Add: "Toevoegen", My: "Mijn", Connect: "Verbinding maken", View: "Bekijken", Upload: "Uploaden", Filter: "Filtreren", Images: "Afbeeldingen", of: "van de", Loading: "Laden", Revert: "Ongedaan maken", Edit: "Bewerken", More: "Meer", Uploaded: "Geüpload", "A new page will open to connect your account.": "Een nieuwe pagina wordt geopend om verbinding maken met uw account", "My Device": "Mijn apparaat", "or Drag and Drop, Copy and Paste Files": "of slepen, kopiëren en plakken van bestanden", "Pick Your Files": "Kies uw bestanden", "Select Files to Upload": "Selecteer bestanden om te uploaden", "Selected Files": "Geselecteerde bestanden", "Select Files from": "Selecteer bestanden uit", "We only extract images and never modify or delete them.": "We halen alleen afbeeldingen en nooit wijzigen of verwijderen", "You need to authenticate with ": "U moet verifiëren bij ", "Search images": "Zoek beelden", "Sign Out": "Afmelden", "Select From": "Selecteren", "View/Edit Selected": "Bekijken/bewerken geselecteerd", "Deselect All": "Deselecteer alles", "Files & Folders": "Bestanden en mappen", "Edited Images": "Bewerkte Afbeeldingen", "Go Back": "Ga Bacl", "No search results found for": "Geen zoekresultaten gevonden voor", "Please select": "Gelieve te selecteren", "more file": "meer bestand", "more files": "meer bestanden", "File {displayName} is not an accepted file type. The accepted file types are {types}": "Bestand {displayName} is niet een geaccepteerde bestandstype. De geaccepteerde bestandstypen zijn {types}", "File {displayName} is too big. The accepted file size is less than {roundFileSize}": "Bestand {displayName} is te groot. De aanvaarde vijl spanwijdte zit {roundFileSize}", "Our file upload limit is {maxFiles} {filesText}": "Onze bestand uploaden limiet is {maxFiles} {filesText}" },
-        bs = { Add: "Dodaj", My: "Mój", Connect: "Połączyć", View: "Widok", Upload: "Prześlij pliki", Filter: "Szukaj", Images: "Obrazy", of: "z", Loading: "Ładowanie", Revert: "Cofnij", Edit: "Edytuj", More: "Więcej", Uploaded: "Przesłany", "A new page will open to connect your account.": "Nowa strona zostanie otwarta w celu połączenia z Twoim kontem.", "My Device": "Moje urządzenie", "or Drag and Drop, Copy and Paste Files": "lub przeciągnij i upuść, kopiować i wklejać pliki", "Pick Your Files": "Wybierz swoje pliki", "Select Files to Upload": "Wybierz pliki do przesłania", "Selected Files": "Wybrane pliki", "Select Files from": "Wybierz pliki z", "We only extract images and never modify or delete them.": "Mamy tylko wyodrębnić obrazy i nigdy zmodyfikować lub usunąć je", "You need to authenticate with ": "Musisz uwierzytelnić", "Search images": "Szukaj obrazów", "Sign Out": "Wyloguj się", "Select From": "Wybierz z", "View/Edit Selected": "Wyświetl/Edytuj zaznaczone", "Deselect All": "Odznacz wszystko", "Files & Folders": "Pliki i Foldery", "Edited Images": "Edytowane obrazy", "Go Back": "Przejdź wstecz", "No search results found for": "Brak wyników wyszukiwania", "Please select": "Proszę wybrać", "more file": "więcej plików", "more files": "więcej plików", "File {displayName} is not an accepted file type. The accepted file types are {types}": "{displayName} Plik nie jest typem plików akceptowane. Typy plików akceptowane są {types}", "File {displayName} is too big. The accepted file size is less than {roundFileSize}": "{displayName} Plik jest zbyt duże. Rozmiar plików akceptowane jest {roundFileSize}", "Our file upload limit is {maxFiles} {filesText}": "Nasz limit uploadu pliku jest {maxFiles} {filesText}" },
-        Cs = { Add: "Adicionar", My: "Meu", Connect: "Conectar-se", View: "Ver", Upload: "Carregar", Filter: "Ordenar", Images: "Imagens", of: "de", Loading: "Carregamento", Revert: "Desfazer", Edit: "Editar", More: "Mais", Uploaded: "Carregado", "A new page will open to connect your account.": "Uma nova página será aberta para conectar a sua conta.", "My Device": "Meu dispositivo", "or Drag and Drop, Copy and Paste Files": "ou arrastar, copiar e colar arquivos", "Pick Your Files": "Selecione seus arquivos", "Select Files to Upload": "Selecionar arquivos para upload", "Selected Files": "Arquivos selecionados", "Select Files from": "Selecione arquivos de", "We only extract images and never modify or delete them.": "Nós apenas extraímos as imagens e nunca a modificamos ou a removemos.", "You need to authenticate with ": "Você precisar se autenticar com", "Search images": "Procurar fotos", "Sign Out": "Desconectar", "Select From": "Selecione de", "View/Edit Selected": "Exibir/Editar selecionada", "Deselect All": "Desmarcar todos", "Files & Folders": "Arquivos e pastas", "Edited Images": "Imagens editadas", "Go Back": "Voltar", "No search results found for": "Nenhum resultado de pesquisa encontrado para", "Please select": "Por favor selecione", "more file": "arquivo mais", "more files": "mais arquivos", "File {displayName} is not an accepted file type. The accepted file types are {types}": " Arquivo {displayName} não é um tipo de arquivo aceitos. Os tipos de arquivo aceitos são {types}", "File {displayName} is too big. The accepted file size is less than {roundFileSize}": "{displayName} Arquivo é muito grande. O tamanho de arquivo aceito é {roundFileSize}", "Our file upload limit is {maxFiles} {filesText}": "É o nosso limite de upload de arquivo {maxFiles} {filesText}" },
-        Es = { Add: "Добавить", My: "Мой", Connect: "подключить", View: "просмотреть", Upload: "загрузить", Filter: "сортировать по дате", Images: "фото", of: "из", Loading: "загрузки", Revert: "Отменить", Edit: "Изменить", More: "больше", Uploaded: "загружены", "A new page will open to connect your account.": "Новая страница открывается чтобы подключить ваш аккаунт", "My Device": "Моё устройство", "or Drag and Drop, Copy and Paste Files": "или перетаскивать, копировать и вставлять файлы", "Pick Your Files": "Выберите файлы", "Select Files to Upload": "Выберите файлы для загрузки", "Selected Files": "Выбранные файлы", "Select Files from": "Выбрать файлы", "We only extract images and never modify or delete them.": "Мы просто извлекаем фото, а никогда не их изменяем или удалим", "You need to authenticate with ": "Требуется аутентификация аккаунта с ", "Search images": "поиск фото", "Sign Out": "выйти", "Select From": "выбрать в...", "View/Edit Selected": "просмотреть/редактировать", "Deselect All": "отмена", "Files & Folders": "файлы и папки", "Edited Images": "Отредактированные изображения", "Go Back": "Вернуться", "No search results found for": "Нет результатов поиска найдено для", "Please select": "Пожалуйста, выберите", "more file": "более файла", "more files": "больше файлов", "File {displayName} is not an accepted file type. The accepted file types are {types}": "{displayName} Файлов не является типом прикладываемых файлов. Типы прикладываемых файлов являются {types}", "File {displayName} is too big. The accepted file size is less than {roundFileSize}": "{displayName} Файл слишком большой. Признанных файл имеет размер {roundFileSize}", "Our file upload limit is {maxFiles} {filesText}": "Наш предел загрузки файлов {maxFiles} {filesText}" },
-        Ss = { Add: "再添加", My: "我的", Connect: "连接", View: "看", Upload: "上传", Filter: "过滤", Images: "图片", of: "/", Loading: "载入中", Revert: "还原", Edit: "编辑", More: "更多", Uploaded: "已上传", "A new page will open to connect your account.": "一个新页面会打开以关联您的帐户", "My Device": "我的设备", "or Drag and Drop, Copy and Paste Files": "或拖放，复制和粘贴文件", "Pick Your Files": "选择您的文件", "Select Files to Upload": "选择要上传的文件", "Selected Files": "所选文件", "Select Files from": "从中选择文件", "We only extract images and never modify or delete them.": "我们只提取图像，从不修改或删除它们", "You need to authenticate with": "您需要验证", "Search images": "搜索图像", "Sign Out": "登出", "Select From": "选择自", "View/Edit Selected": "查看/编辑所选项", "Deselect All": "取消选择全部", "Files & Folders": "文件和文件夹", "Edited Images": "编辑的图像", "Go Back": "返回", "No search results found for": "未找到搜索结果", "Please select": "请选择", "more file": "更多文件", "more files": "更多文件", "File {displayName} is not an accepted file type. The accepted file types are {types}": " 文件{displayName}不是可接受的文件类型。 可接受的文件类型为{types}", "File {displayName} is too big. The accepted file size is less than {roundFileSize}": " 文件{displayName}太大。 可接受的文件大小为{roundFileSize}", "Our file upload limit is {maxFiles} {filesText}": "我们的文件上传限制为 {maxFiles} {filesText}" },
-        ws = { de: ms, en: hs, es: vs, fr: gs, it: _s, nl: ys, pl: bs, pt: Cs, ru: Es, zh: Ss },
-        Ts = function Ts() {
+        ms = { Add: "Tilføj", My: "Min", Connect: "Forbind", View: "Vis", Upload: "Upload", Filter: "Filtrer", Images: "Billeder", of: "af", Loading: "Indlæser", Revert: "Gør om", Edit: "Rediger", More: "Mere", Uploaded: "Uploaded", "A new page will open to connect your account.": "En ny side vil åbne for at forbinde med din konto", "My Device": "Min enhed", "or Drag and Drop, Copy and Paste Files": "Eller træk og slip, kopier og indsæt filer", "Pick Your Files": "Vælg dine filer", "Select Files to Upload": "Vælg filer til upload", "Selected Files": "Valgte filer", "Select Files from": "Vælg filer fra", "We only extract images and never modify or delete them.": "Vi hiver kun billeder og modificerer eller sletter dem aldrig", "You need to authenticate with ": "Du skal godkende med ", "Search images": "Søg billeder", "Sign Out": "Log ud", "Select From": "Vælg fra", "View/Edit Selected": "Vis/rediger valgte", "Deselect All": "Fravælg alle", "Files & Folders": "Filer og foldere", "Edited Images": "Redigerede filer", "Go Back": "Gå tilbage", "No search results found for": "Ingen resultater fundet for", "Please select": "Vælg venligst", "more file": "fil mere", "more files": "flere filer", "File {displayName} is not an accepted file type. The accepted file types are {types}": "Filen {displayName} er ikke i et acceptabelt format. De accepterede formater er {types}", "File {displayName} is too big. The accepted file size is less than {roundFileSize}": " Filen {displayName} er for stor. Den accepterede filstørrelse er {roundFileSize}", "Our file upload limit is {maxFiles} {filesText}": " Vores filstørrelse er begrænset til {maxFiles} {filesText}" },
+        hs = { Add: "Hinzufügen", My: "Mein", Connect: "Verbinden mit", View: "Aussicht", Upload: "Hochladen", Filter: "Filtern", Images: "Bilder", of: "von", Loading: "Laden", Revert: "Rückgängig", Edit: "Bearbeiten", More: "Mehr", Uploaded: "Hochgeladen", "A new page will open to connect your account.": "Eine neue Seite wird geöffnet, um Ihr Konto zu verbinden", "My Device": "Mein Gerät", "or Drag and Drop, Copy and Paste Files": "oder ziehen, kopieren und Einfügen von Dateien", "Pick Your Files": "Wählen Sie Ihre Dateien", "Select Files to Upload": "Wählen Sie Dateien hochladen", "Selected Files": "Ausgewählten Dateien", "Select Files from": "Wählen Sie Dateien aus", "We only extract images and never modify or delete them.": "Wir extrahieren Bilder nur und modifizieren oder löschen sie niemals", "You need to authenticate with ": "Sie müssen sich mit anmelden ", "Search images": "Suche bilder", "Sign Out": "Abmelden", "Select From": "Wählen Sie aus", "View/Edit Selected": "Anzeigen/Bearbeiten ausgewählt", "Deselect All": "Deaktivieren Sie alle", "Files & Folders": "Dateien und Ordner", "Edited Images": "Bearbeitete Bilder", "Go Back": "Zurück", "No search results found for": "Keine Suchergebnisse gefunden für", "Please select": "Bitte wählen Sie", "more file": "weitere Datei", "more files": "weitere Dateien", "File {displayName} is not an accepted file type. The accepted file types are {types}": "Datei-{displayName} ist keine anerkannte Dateityp. Die akzeptierten Dateitypen sind {types}", "File {displayName} is too big. The accepted file size is less than {roundFileSize}": "{displayName} Datei ist zu groß. Die akzeptierten Dateigröße beträgt {roundFileSize}", "Our file upload limit is {maxFiles} {filesText}": "Unser Dateigrößenlimit ist {maxFiles} {filesText}" },
+        vs = { "File {displayName} is not an accepted file type. The accepted file types are {types}": "File {displayName} is not an accepted file type. The accepted file types are {types}", "File {displayName} is too big. The accepted file size is less than {roundFileSize}": "File {displayName} is too big. The accepted file size is less than {roundFileSize}", "Our file upload limit is {maxFiles} {filesText}": "Our file upload limit is {maxFiles} {filesText}" },
+        gs = { Add: "Añadir", My: "Mi", Connect: "Conectar", View: "Ver", Upload: "Subir", Filter: "Filtrar", Images: "Imágenes", of: "de", Loading: "Cargando", Revert: "Deshacer", Edit: "Editar", More: "Mas", Uploaded: "Subido", "A new page will open to connect your account.": "Se abrirá una nueva página para conectar tu cuenta.", "My Device": "Mi Dispositivo", "or Drag and Drop, Copy and Paste Files": "O arrastrar y soltar, copiar y pegar archivos", "Pick Your Files": "Elige tus archivos", "Select Files to Upload": "Seleccionar archivos para cargar", "Selected Files": "Archivos seleccionados", "Select Files from": "Seleccione Archivos de", "We only extract images and never modify or delete them.": "Sólo extraemos imágenes y nunca las modificamos o eliminamos", "You need to authenticate with ": "Debe autenticarse con", "Search images": "Búsqueda de imágenes", "Sign Out": "Desconectar", "Select From": "Seleccione de", "View/Edit Selected": "Ver/Editar Seleccionado", "Deselect All": "Deseleccionar Todo", "Files & Folders": "Archivos y Carpetas", "Edited Images": "Imágenes editadas", "Go Back": "Volver", "No search results found for": "No hay resultados de búsqueda para", "Please select": "Por favor, seleccione", "more file": "el archivo más", "more files": "el archivo más", "File {displayName} is not an accepted file type. The accepted file types are {types}": "Archivo {displayName} no es un tipo de archivo aceptado. Los tipos de archivo aceptados son {types}", "File {displayName} is too big. The accepted file size is less than {roundFileSize}": "{displayName} De archivo es demasiado grande. El tamaño aceptado es {roundFileSize}", "Our file upload limit is {maxFiles} {filesText}": "Nuestro límite de upload de archivo es {maxFiles} {filesText}" },
+        _s = { Add: "Ajouter", My: "Ma", Connect: "Relier", View: "Vue", Upload: "Télécharger", Filter: "Filtrer", Images: "Images", of: "sur", Loading: "Chargement", Revert: "Annuler", Edit: "Modifier", More: "Plus", Uploaded: "Téléchargées", "A new page will open to connect your account.": "Une nouvelle page s'ouvrira pour connecter votre compte.", "My Device": "Mon appareil", "or Drag and Drop, Copy and Paste Files": "ou faites glisser, copier et coller des fichiers", "Pick Your Files": "Choisissez vos fichiers", "Select Files to Upload": "Sélectionnez les fichiers à télécharger", "Selected Files": "Fichiers sélectionnés", "Select Files from": "Sélectionnez les fichiers à partir de", "We only extract images and never modify or delete them.": "Nous ne faisons qu'extraire les images, et ne les modifions ou supprimons jamais.", "You need to authenticate with ": "Vous devez vous authentifier avec ", "Search images": "Rechercher des images", "Sign Out": "Déconnecter", "Select From": "Sélectionnez dans", "View/Edit Selected": "Afficher/modifier sélectionnée", "Deselect All": "Désélectionner tout", "Files & Folders": "Fichiers et dossiers", "Edited Images": "Images éditées", "Go Back": "Retour", "No search results found for": "Aucun résultat de recherche trouvé pour", "Please select": "Veuillez sélectionner", "more file": "plus de fichier", "more files": "plus de fichiers", "File {displayName} is not an accepted file type. The accepted file types are {types}": "{displayName} De fichier n’est pas un type de fichier accepté. Les types de fichiers acceptés sont {types}", "File {displayName} is too big. The accepted file size is less than {roundFileSize}": "Le fichier {displayName} est trop grand. La taille de fichier acceptée est {roundFileSize}", "Our file upload limit is {maxFiles} {filesText}": "Notre limite de téléchargement de fichier est {maxFiles} {filesText}" },
+        ys = { Add: "Aggiungere", My: "Mio", Connect: "Collegare", View: "Visualizza", Upload: "Caricare", Filter: "Filtrare", Images: "Immagini", of: "di", Loading: "Caricamento", Revert: "Annulla", Edit: "Modifica", More: "Più", Uploaded: "Caricato", "A new page will open to connect your account.": "Si aprirà una nuova pagina per collegare il tuo account", "My Device": "Il mio dispositivo", "or Drag and Drop, Copy and Paste Files": "o trascinare, copiare e incollare file", "Pick Your Files": "Selezionare i file", "Select Files to Upload": "Selezionare i file da caricare", "Selected Files": "File selezionati", "Select Files from": "Selezionare i file da", "We only extract images and never modify or delete them.": "Abbiamo estratto solo immagini e non modificarli o cancellarli.", "You need to authenticate with": "È necessario autenticarsi con", "Search images": "Ricerca immagini", "Sign Out": "Esci", "Select From": "Selezionare da", "View/Edit Selected": "Visualizza/Modifica selezionato", "Deselect All": "Deselezionare tutto", "Files & Folders": "File e cartelle", "Edited Images": "Immagini Modificate", "Go Back": "Indietro", "No search results found for": "È il nostro limite di upload di file", "Please select": "Si prega di selezionare", "more file": "più file", "more files": "più file", "File {displayName} is not an accepted file type. The accepted file types are {types}": "{displayName} File non è un tipo di file accettato. I tipi di file accettati sono {types}", "File {displayName} is too big. The accepted file size is less than {roundFileSize}": "{displayName} Arquivo é muito grande. O tamanho de arquivo aceito é {roundFileSize}", "Our file upload limit is {maxFiles} {filesText}": "È il nostro limite di upload di file {maxFiles} {filesText}" },
+        bs = { Add: "Toevoegen", My: "Mijn", Connect: "Verbinding maken", View: "Bekijken", Upload: "Uploaden", Filter: "Filtreren", Images: "Afbeeldingen", of: "van de", Loading: "Laden", Revert: "Ongedaan maken", Edit: "Bewerken", More: "Meer", Uploaded: "Geüpload", "A new page will open to connect your account.": "Een nieuwe pagina wordt geopend om verbinding maken met uw account", "My Device": "Mijn apparaat", "or Drag and Drop, Copy and Paste Files": "of slepen, kopiëren en plakken van bestanden", "Pick Your Files": "Kies uw bestanden", "Select Files to Upload": "Selecteer bestanden om te uploaden", "Selected Files": "Geselecteerde bestanden", "Select Files from": "Selecteer bestanden uit", "We only extract images and never modify or delete them.": "We halen alleen afbeeldingen en nooit wijzigen of verwijderen", "You need to authenticate with ": "U moet verifiëren bij ", "Search images": "Zoek beelden", "Sign Out": "Afmelden", "Select From": "Selecteren", "View/Edit Selected": "Bekijken/bewerken geselecteerd", "Deselect All": "Deselecteer alles", "Files & Folders": "Bestanden en mappen", "Edited Images": "Bewerkte Afbeeldingen", "Go Back": "Ga Bacl", "No search results found for": "Geen zoekresultaten gevonden voor", "Please select": "Gelieve te selecteren", "more file": "meer bestand", "more files": "meer bestanden", "File {displayName} is not an accepted file type. The accepted file types are {types}": "Bestand {displayName} is niet een geaccepteerde bestandstype. De geaccepteerde bestandstypen zijn {types}", "File {displayName} is too big. The accepted file size is less than {roundFileSize}": "Bestand {displayName} is te groot. De aanvaarde vijl spanwijdte zit {roundFileSize}", "Our file upload limit is {maxFiles} {filesText}": "Onze bestand uploaden limiet is {maxFiles} {filesText}" },
+        Cs = { Add: "Dodaj", My: "Mój", Connect: "Połączyć", View: "Widok", Upload: "Prześlij pliki", Filter: "Szukaj", Images: "Obrazy", of: "z", Loading: "Ładowanie", Revert: "Cofnij", Edit: "Edytuj", More: "Więcej", Uploaded: "Przesłany", "A new page will open to connect your account.": "Nowa strona zostanie otwarta w celu połączenia z Twoim kontem.", "My Device": "Moje urządzenie", "or Drag and Drop, Copy and Paste Files": "lub przeciągnij i upuść, kopiować i wklejać pliki", "Pick Your Files": "Wybierz swoje pliki", "Select Files to Upload": "Wybierz pliki do przesłania", "Selected Files": "Wybrane pliki", "Select Files from": "Wybierz pliki z", "We only extract images and never modify or delete them.": "Mamy tylko wyodrębnić obrazy i nigdy zmodyfikować lub usunąć je", "You need to authenticate with ": "Musisz uwierzytelnić", "Search images": "Szukaj obrazów", "Sign Out": "Wyloguj się", "Select From": "Wybierz z", "View/Edit Selected": "Wyświetl/Edytuj zaznaczone", "Deselect All": "Odznacz wszystko", "Files & Folders": "Pliki i Foldery", "Edited Images": "Edytowane obrazy", "Go Back": "Przejdź wstecz", "No search results found for": "Brak wyników wyszukiwania", "Please select": "Proszę wybrać", "more file": "więcej plików", "more files": "więcej plików", "File {displayName} is not an accepted file type. The accepted file types are {types}": "{displayName} Plik nie jest typem plików akceptowane. Typy plików akceptowane są {types}", "File {displayName} is too big. The accepted file size is less than {roundFileSize}": "{displayName} Plik jest zbyt duże. Rozmiar plików akceptowane jest {roundFileSize}", "Our file upload limit is {maxFiles} {filesText}": "Nasz limit uploadu pliku jest {maxFiles} {filesText}" },
+        Es = { Add: "Adicionar", My: "Meu", Connect: "Conectar-se", View: "Ver", Upload: "Carregar", Filter: "Ordenar", Images: "Imagens", of: "de", Loading: "Carregamento", Revert: "Desfazer", Edit: "Editar", More: "Mais", Uploaded: "Carregado", "A new page will open to connect your account.": "Uma nova página será aberta para conectar a sua conta.", "My Device": "Meu dispositivo", "or Drag and Drop, Copy and Paste Files": "ou arrastar, copiar e colar arquivos", "Pick Your Files": "Selecione seus arquivos", "Select Files to Upload": "Selecionar arquivos para upload", "Selected Files": "Arquivos selecionados", "Select Files from": "Selecione arquivos de", "We only extract images and never modify or delete them.": "Nós apenas extraímos as imagens e nunca a modificamos ou a removemos.", "You need to authenticate with ": "Você precisar se autenticar com", "Search images": "Procurar fotos", "Sign Out": "Desconectar", "Select From": "Selecione de", "View/Edit Selected": "Exibir/Editar selecionada", "Deselect All": "Desmarcar todos", "Files & Folders": "Arquivos e pastas", "Edited Images": "Imagens editadas", "Go Back": "Voltar", "No search results found for": "Nenhum resultado de pesquisa encontrado para", "Please select": "Por favor selecione", "more file": "arquivo mais", "more files": "mais arquivos", "File {displayName} is not an accepted file type. The accepted file types are {types}": " Arquivo {displayName} não é um tipo de arquivo aceitos. Os tipos de arquivo aceitos são {types}", "File {displayName} is too big. The accepted file size is less than {roundFileSize}": "{displayName} Arquivo é muito grande. O tamanho de arquivo aceito é {roundFileSize}", "Our file upload limit is {maxFiles} {filesText}": "É o nosso limite de upload de arquivo {maxFiles} {filesText}" },
+        Ss = { Add: "Добавить", My: "Мой", Connect: "подключить", View: "просмотреть", Upload: "загрузить", Filter: "сортировать по дате", Images: "фото", of: "из", Loading: "загрузки", Revert: "Отменить", Edit: "Изменить", More: "больше", Uploaded: "загружены", "A new page will open to connect your account.": "Новая страница открывается чтобы подключить ваш аккаунт", "My Device": "Моё устройство", "or Drag and Drop, Copy and Paste Files": "или перетаскивать, копировать и вставлять файлы", "Pick Your Files": "Выберите файлы", "Select Files to Upload": "Выберите файлы для загрузки", "Selected Files": "Выбранные файлы", "Select Files from": "Выбрать файлы", "We only extract images and never modify or delete them.": "Мы просто извлекаем фото, а никогда не их изменяем или удалим", "You need to authenticate with ": "Требуется аутентификация аккаунта с ", "Search images": "поиск фото", "Sign Out": "выйти", "Select From": "выбрать в...", "View/Edit Selected": "просмотреть/редактировать", "Deselect All": "отмена", "Files & Folders": "файлы и папки", "Edited Images": "Отредактированные изображения", "Go Back": "Вернуться", "No search results found for": "Нет результатов поиска найдено для", "Please select": "Пожалуйста, выберите", "more file": "более файла", "more files": "больше файлов", "File {displayName} is not an accepted file type. The accepted file types are {types}": "{displayName} Файлов не является типом прикладываемых файлов. Типы прикладываемых файлов являются {types}", "File {displayName} is too big. The accepted file size is less than {roundFileSize}": "{displayName} Файл слишком большой. Признанных файл имеет размер {roundFileSize}", "Our file upload limit is {maxFiles} {filesText}": "Наш предел загрузки файлов {maxFiles} {filesText}" },
+        ws = { Add: "再添加", My: "我的", Connect: "连接", View: "看", Upload: "上传", Filter: "过滤", Images: "图片", of: "/", Loading: "载入中", Revert: "还原", Edit: "编辑", More: "更多", Uploaded: "已上传", "A new page will open to connect your account.": "一个新页面会打开以关联您的帐户", "My Device": "我的设备", "or Drag and Drop, Copy and Paste Files": "或拖放，复制和粘贴文件", "Pick Your Files": "选择您的文件", "Select Files to Upload": "选择要上传的文件", "Selected Files": "所选文件", "Select Files from": "从中选择文件", "We only extract images and never modify or delete them.": "我们只提取图像，从不修改或删除它们", "You need to authenticate with": "您需要验证", "Search images": "搜索图像", "Sign Out": "登出", "Select From": "选择自", "View/Edit Selected": "查看/编辑所选项", "Deselect All": "取消选择全部", "Files & Folders": "文件和文件夹", "Edited Images": "编辑的图像", "Go Back": "返回", "No search results found for": "未找到搜索结果", "Please select": "请选择", "more file": "更多文件", "more files": "更多文件", "File {displayName} is not an accepted file type. The accepted file types are {types}": " 文件{displayName}不是可接受的文件类型。 可接受的文件类型为{types}", "File {displayName} is too big. The accepted file size is less than {roundFileSize}": " 文件{displayName}太大。 可接受的文件大小为{roundFileSize}", "Our file upload limit is {maxFiles} {filesText}": "我们的文件上传限制为 {maxFiles} {filesText}" },
+        Ts = { da: ms, de: hs, en: vs, es: gs, fr: _s, it: ys, nl: bs, pl: Cs, pt: Es, ru: Ss, zh: ws },
+        As = function As() {
       var e = arguments.length > 0 && void 0 !== arguments[0] ? arguments[0] : "en",
-          t = ws[e];return { ERROR_FILE_NOT_ACCEPTABLE: t["File {displayName} is not an accepted file type. The accepted file types are {types}"], ERROR_FILE_TOO_BIG: t["File {displayName} is too big. The accepted file size is less than {roundFileSize}"], ERROR_MAX_FILES_REACHED: t["Our file upload limit is {maxFiles} {filesText}"] };
+          t = Ts[e];return { ERROR_FILE_NOT_ACCEPTABLE: t["File {displayName} is not an accepted file type. The accepted file types are {types}"], ERROR_FILE_TOO_BIG: t["File {displayName} is too big. The accepted file size is less than {roundFileSize}"], ERROR_MAX_FILES_REACHED: t["Our file upload limit is {maxFiles} {filesText}"] };
     },
-        As = Ar.context("picker"),
-        Fs = function Fs(e) {
+        Fs = Ar.context("picker"),
+        ks = function ks(e) {
       return e.source + e.path;
     },
-        ks = function ks(e, t) {
+        Rs = function Rs(e, t) {
       return e.map(function (e) {
-        return Fs(e);
-      }).indexOf(Fs(t));
+        return ks(e);
+      }).indexOf(ks(t));
     },
-        Rs = function Rs(e) {
+        Os = function Os(e) {
       var t = arguments.length > 1 && void 0 !== arguments[1] ? arguments[1] : {},
           i = 0,
           n = function n(e) {
-        return (e instanceof File || e instanceof Blob) && (e = { source: "local_file_system", mimetype: e.type, name: e.name, path: e.name, size: e.size, originalFile: e }), "dragged-from-web" === e.source && (e.name = e.url.split("/").pop(), e.path = e.url, e.thumbnail = e.url), e.uploadToken = ps(16), e.progress = 0, e.progressSize = 0, e;
+        if ((e instanceof File || e instanceof Blob) && (e = { source: "local_file_system", mimetype: e.type, name: e.name, path: e.name, size: e.size, originalFile: e }), "dragged-from-web" === e.source) {
+          e.name = e.url.split("/").pop(), e.path = e.url, e.mimetype = "text/html";var t = e.url.split(".").pop(),
+              i = ["jpg", "jpeg", "png", "tiff", "gif", "bmp"];t && i.indexOf(t.toLowerCase()) !== -1 && (e.thumbnail = e.url, e.mimetype = "image/" + t);
+        }return e.uploadToken = ps(16), e.progress = 0, e.progressSize = 0, e;
       },
           o = function o(e, t) {
         var i = function i(e) {
@@ -4286,23 +4292,23 @@ var picker = createCommonjsModule(function (module, exports) {
         };return i(e.waiting) || i(e.uploading) || i(e.done) || i(e.failed);
       },
           r = function r(e, t) {
-        if (ks(e.getters.filesWaiting, t) !== -1) return e.commit("CANCEL_UPLOAD", t.uploadToken), void e.commit("DESELECT_FILE", t);if (t.folder) return void e.dispatch("addCloudFolder", { name: t.source, path: t.path });if (!function () {
+        if (Rs(e.getters.filesWaiting, t) !== -1) return e.commit("CANCEL_UPLOAD", t.uploadToken), void e.commit("DESELECT_FILE", t);if (t.folder) return void e.dispatch("addCloudFolder", { name: t.source, path: t.path });if (!function () {
           if (e.getters.allFilesInQueueCount === e.getters.maxFiles) {
             var t = 1 === e.getters.maxFiles ? "file" : "files",
-                i = Ts(e.getters.lang).ERROR_MAX_FILES_REACHED.replace("{maxFiles}", e.getters.maxFiles).replace("{filesText}", t);return e.dispatch("showNotification", i), !0;
+                i = As(e.getters.lang).ERROR_MAX_FILES_REACHED.replace("{maxFiles}", e.getters.maxFiles).replace("{filesText}", t);return e.dispatch("showNotification", i), !0;
           }return !1;
         }()) {
           var i = n(t);(function (t) {
-            if (as(t, e.getters.accept)) return !0;var i = Ts(e.getters.lang).ERROR_FILE_NOT_ACCEPTABLE.replace("{displayName}", ds(t)).replace("{types}", e.getters.accept);return e.dispatch("showNotification", i), !1;
+            if (as(t, e.getters.accept)) return !0;var i = As(e.getters.lang).ERROR_FILE_NOT_ACCEPTABLE.replace("{displayName}", ds(t)).replace("{types}", e.getters.accept);return e.dispatch("showNotification", i), !1;
           })(i) && function (t) {
             if (void 0 !== e.getters.onFileSelected) try {
-              var i = e.getters.onFileSelected(cs(t));return i && "string" == typeof i.name && (t.originalFile && (t.originalFile.newName = i.name), t.name = i.name), !0;
+              var i = e.getters.onFileSelected(ls(t));return i && "string" == typeof i.name && (t.originalFile && (t.originalFile.newName = i.name), t.name = i.name), !0;
             } catch (t) {
               return e.dispatch("showNotification", t.message), !1;
             }return !0;
           }(i) && function (t) {
-            if (void 0 === e.getters.maxSize) return !0;if (t.size < e.getters.maxSize) return !0;if (!t.size) return !0;var i = Ts(e.getters.lang).ERROR_FILE_TOO_BIG.replace("{displayName}", ds(t)).replace("{roundFileSize}", us(e.getters.maxSize));return e.dispatch("showNotification", i), !1;
-          }(i) && (As("Selected file:", t), e.commit("MARK_FILE_AS_WAITING", i), function () {
+            if (void 0 === e.getters.maxSize) return !0;if (t.size < e.getters.maxSize) return !0;if (!t.size) return !0;var i = As(e.getters.lang).ERROR_FILE_TOO_BIG.replace("{displayName}", ds(t)).replace("{roundFileSize}", us(e.getters.maxSize));return e.dispatch("showNotification", i), !1;
+          }(i) && (Fs("Selected file:", t), e.commit("MARK_FILE_AS_WAITING", i), function () {
             e.getters.startUploadingWhenMaxFilesReached === !0 && e.getters.filesWaiting.length === e.getters.maxFiles ? e.dispatch("startUploading", !0) : e.getters.uploadInBackground && e.dispatch("startUploading");
           }(), e.getters.allFilesInQueueCount === e.getters.maxFiles && (e.commit("CHANGE_ROUTE", ["summary"]), e.commit("UPDATE_MOBILE_NAV_ACTIVE", !1)));
         }
@@ -4320,14 +4326,14 @@ var picker = createCommonjsModule(function (module, exports) {
               o = {},
               r = void 0;if (n.tempStorage && !n.transformed) r = Promise.resolve(n.tempStorage);else if (n.transformed && !n.transformedFile) r = e.storeURL(n.transformed, fn({}, t.getters.storeTo, { filename: n.name }));else if (n.transformedFile) r = Promise.resolve(n.transformedFile);else if ("local_file_system" === n.source) {
             var s = { retryOptions: null, onProgress: function onProgress(e) {
-                t.getters.uploadStarted && (t.commit("SET_FILE_UPLOAD_PROGRESS", { uploadToken: n.uploadToken, progress: e.totalProgressPercent, progressSize: us(e.progressTotal) }), void 0 !== t.getters.onFileUploadProgress && t.getters.onFileUploadProgress(cs(n), e));
+                t.getters.uploadStarted && (t.commit("SET_FILE_UPLOAD_PROGRESS", { uploadToken: n.uploadToken, progress: e.totalProgressPercent, progressSize: us(e.progressTotal) }), void 0 !== t.getters.onFileUploadProgress && t.getters.onFileUploadProgress(ls(n), e));
               } };r = e.upload(n.originalFile, s, t.getters.storeTo, o);
           } else if ("source-url" === n.source || "dragged-from-web" === n.source) r = e.storeURL(n.path, fn({}, t.getters.storeTo, { filename: n.name }));else {
             if ("cloud" !== n.sourceKind) throw new Error("Can't upload this file");r = t.getters.preferLinkOverStore ? e.cloud(n.source).link(n.path) : e.cloud(n.source).store(n.path, t.getters.storeTo, o);
-          }return i += 1, t.commit("MARK_FILE_AS_UPLOADING", n), o.cancel && t.commit("SET_CANCEL_TOKEN", { uploadToken: n.uploadToken, token: o }), As("Upload started:", n), void 0 !== t.getters.onFileUploadStarted && t.getters.onFileUploadStarted(cs(n)), r.then(function (e) {
-            var o = fn({}, n, e);i -= 1, t.commit("MARK_FILE_AS_DONE", { file: n, uploadMetadata: o }), t.commit("REMOVE_CANCEL_TOKEN", n.uploadToken), void 0 !== t.getters.onFileUploadFinished && t.getters.onFileUploadFinished(cs(o)), As("Upload done:", n);
+          }return i += 1, t.commit("MARK_FILE_AS_UPLOADING", n), o.cancel && t.commit("SET_CANCEL_TOKEN", { uploadToken: n.uploadToken, token: o }), Fs("Upload started:", n), void 0 !== t.getters.onFileUploadStarted && t.getters.onFileUploadStarted(ls(n)), r.then(function (e) {
+            var o = fn({}, n, e);i -= 1, t.commit("MARK_FILE_AS_DONE", { file: n, uploadMetadata: o }), t.commit("REMOVE_CANCEL_TOKEN", n.uploadToken), void 0 !== t.getters.onFileUploadFinished && t.getters.onFileUploadFinished(ls(o)), Fs("Upload done:", n);
           }).catch(function (e) {
-            i -= 1, t.commit("MARK_FILE_AS_FAILED", n), t.commit("REMOVE_CANCEL_TOKEN", n.uploadToken), void 0 !== t.getters.onFileUploadFailed && t.getters.onFileUploadFailed(cs(n), e), e instanceof Error ? As("Upload failed:", n, e.message) : As("Upload failed:", n, e);
+            i -= 1, t.commit("MARK_FILE_AS_FAILED", n), t.commit("REMOVE_CANCEL_TOKEN", n.uploadToken), void 0 !== t.getters.onFileUploadFailed && t.getters.onFileUploadFailed(ls(n), e), e instanceof Error ? Fs("Upload failed:", n, e.message) : Fs("Upload failed:", n, e);
           }), r;
         };t.getters.uploadStarted || (n && (t.commit("SET_UPLOAD_STARTED", !0), t.commit("UPDATE_MOBILE_NAV_ACTIVE", !1), t.commit("CHANGE_ROUTE", ["summary"])), function e() {
           o() ? (s().then(e).catch(e), e()) : r() && t.getters.uploadStarted && t.dispatch("allUploadsDone");
@@ -4336,20 +4342,20 @@ var picker = createCommonjsModule(function (module, exports) {
           a = function a(t, i) {
         if ("local_file_system" === t.source) return e.upload(t.originalFile, i.getters.storeTo);if ("cloud" === t.sourceKind) return e.cloud(t.source).store(t.path, i.getters.storeTo);throw new Error("Can't upload this file");
       },
-          c = function c(e, t) {
+          l = function l(e, t) {
         return new Promise(function (i, n) {
           var r = o(e.state, t),
               s = e.state.uploading.map(function (e) {
             return e.uploadToken;
           }),
-              c = s.indexOf(t) !== -1;if (r.tempStorage) i(r.tempStorage);else if (c) {
+              l = s.indexOf(t) !== -1;if (r.tempStorage) i(r.tempStorage);else if (l) {
             !function s() {
               var a = o(e.state, t);if (a) {
                 if (void 0 !== a.tempStorage) i(a.tempStorage);else {
-                  var c = e.state.failed.map(function (e) {
+                  var l = e.state.failed.map(function (e) {
                     return e.uploadToken;
                   }),
-                      l = c.indexOf(t) !== -1;l ? (n(), e.dispatch("showNotification", r.name + " failed to upload. Please try again or check your network log.")) : setTimeout(s, 100);
+                      c = l.indexOf(t) !== -1;c ? (n(), e.dispatch("showNotification", r.name + " failed to upload. Please try again or check your network log.")) : setTimeout(s, 100);
                 }
               } else i(null);
             }();
@@ -4364,10 +4370,10 @@ var picker = createCommonjsModule(function (module, exports) {
           }, MARK_FILE_AS_WAITING: function MARK_FILE_AS_WAITING(e, t) {
             e.waiting.push(t);
           }, DESELECT_FILE: function DESELECT_FILE(e, t) {
-            var i = ks(e.waiting, t),
-                n = ks(e.uploading, t),
-                o = ks(e.done, t),
-                r = ks(e.failed, t);switch ([i >= 0, n >= 0, o >= 0, r >= 0].indexOf(!0)) {case -1:
+            var i = Rs(e.waiting, t),
+                n = Rs(e.uploading, t),
+                o = Rs(e.done, t),
+                r = Rs(e.failed, t);switch ([i >= 0, n >= 0, o >= 0, r >= 0].indexOf(!0)) {case -1:
                 throw new Error("Illegal operation for given file");case 0:
                 e.waiting.splice(i, 1);break;case 1:
                 e.uploading.splice(n, 1);break;case 2:
@@ -4382,15 +4388,15 @@ var picker = createCommonjsModule(function (module, exports) {
           }, DESELECT_ALL_FILES: function DESELECT_ALL_FILES(e) {
             e.waiting.splice(0, e.waiting.length), e.uploading.splice(0, e.uploading.length), e.done.splice(0, e.done.length), e.failed.splice(0, e.failed.length);
           }, MARK_FILE_AS_UPLOADING: function MARK_FILE_AS_UPLOADING(e, t) {
-            var i = ks(e.waiting, t);if (i === -1) throw new Error("Illegal operation for given file");e.waiting.splice(i, 1), e.uploading.push(t);
+            var i = Rs(e.waiting, t);if (i === -1) throw new Error("Illegal operation for given file");e.waiting.splice(i, 1), e.uploading.push(t);
           }, MARK_FILE_AS_DONE: function MARK_FILE_AS_DONE(e, t) {
             var i = t.file,
                 n = t.uploadMetadata,
-                o = ks(e.uploading, i);o >= 0 && (e.uploading.splice(o, 1), e.done.push(i), i.transformed ? tt.set(i, "transformedFile", n) : tt.set(i, "tempStorage", n), Object.keys(n).forEach(function (e) {
+                o = Rs(e.uploading, i);o >= 0 && (e.uploading.splice(o, 1), e.done.push(i), i.transformed ? tt.set(i, "transformedFile", n) : tt.set(i, "tempStorage", n), Object.keys(n).forEach(function (e) {
               tt.set(i, e, n[e]);
             }));
           }, MARK_FILE_AS_FAILED: function MARK_FILE_AS_FAILED(e, t) {
-            var i = ks(e.uploading, t);i >= 0 && (e.uploading.splice(i, 1), e.failed.push(t));
+            var i = Rs(e.uploading, t);i >= 0 && (e.uploading.splice(i, 1), e.failed.push(t));
           }, SET_FILE_UPLOAD_PROGRESS: function SET_FILE_UPLOAD_PROGRESS(e, t) {
             var i = t.uploadToken,
                 n = t.progress,
@@ -4405,15 +4411,15 @@ var picker = createCommonjsModule(function (module, exports) {
           }, SET_FILE_TRANSFORMATION: function SET_FILE_TRANSFORMATION(e, t) {
             var i = t.uploadToken,
                 n = t.transformedUrl,
-                r = o(e, i);tt.set(r, "transformed", n);var s = ks(e.done, r),
-                a = ks(e.failed, r),
-                c = ks(e.uploading, r),
-                l = ks(e.waiting, r);s >= 0 ? e.done.splice(s, 1) : c >= 0 ? e.uploading.splice(c, 1) : a >= 0 && e.failed.splice(s, 1), l < 0 && e.waiting.push(r);
+                r = o(e, i);tt.set(r, "transformed", n);var s = Rs(e.done, r),
+                a = Rs(e.failed, r),
+                l = Rs(e.uploading, r),
+                c = Rs(e.waiting, r);s >= 0 ? e.done.splice(s, 1) : l >= 0 ? e.uploading.splice(l, 1) : a >= 0 && e.failed.splice(s, 1), c < 0 && e.waiting.push(r);
           }, REMOVE_FILE_TRANSFORMATION: function REMOVE_FILE_TRANSFORMATION(e, t) {
-            var i = o(e, t);tt.delete(i, "transformed"), tt.delete(i, "transformedFile"), i.originalFile && i.originalFile.size && tt.set(i, "size", i.originalFile.size);var n = ks(e.done, i),
-                r = ks(e.failed, i),
-                s = ks(e.uploading, i),
-                a = ks(e.waiting, i);n >= 0 ? e.done.splice(n, 1) : s >= 0 ? e.uploading.splice(s, 1) : r >= 0 && e.failed.splice(n, 1), a < 0 && e.waiting.push(i);
+            var i = o(e, t);tt.delete(i, "transformed"), tt.delete(i, "transformedFile"), i.originalFile && i.originalFile.size && tt.set(i, "size", i.originalFile.size);var n = Rs(e.done, i),
+                r = Rs(e.failed, i),
+                s = Rs(e.uploading, i),
+                a = Rs(e.waiting, i);n >= 0 ? e.done.splice(n, 1) : s >= 0 ? e.uploading.splice(s, 1) : r >= 0 && e.failed.splice(n, 1), a < 0 && e.waiting.push(i);
           }, REMOVE_SOURCE_FROM_WAITING: function REMOVE_SOURCE_FROM_WAITING(e, t) {
             var i = e.waiting.filter(function (e) {
               return e.source !== t;
@@ -4441,7 +4447,7 @@ var picker = createCommonjsModule(function (module, exports) {
             Object.keys(e.pendingTokens).forEach(function (t) {
               var i = e.pendingTokens[t];i && i.cancel && i.cancel();
             }), e.pendingTokens = {};
-          } }, actions: { addFile: r, startUploading: s, uploadFileToTemporaryLocation: c, removeTransformation: function removeTransformation(e, t) {
+          } }, actions: { addFile: r, startUploading: s, uploadFileToTemporaryLocation: l, removeTransformation: function removeTransformation(e, t) {
             e.commit("REMOVE_FILE_TRANSFORMATION", t.uploadToken);
           }, deselectAllFiles: function deselectAllFiles(e) {
             e.commit("CANCEL_ALL_UPLOADS"), e.commit("DESELECT_ALL_FILES");
@@ -4473,10 +4479,10 @@ var picker = createCommonjsModule(function (module, exports) {
             return e.stagedForTransform;
           } } };
     },
-        Os = function Os(e) {
+        Ls = function Ls(e) {
       var t = e.path.split("/");return t.pop(), e.folder ? e.path : t.join("/");
     },
-        Ls = { render: function render() {
+        Ns = { render: function render() {
         var e = this,
             t = e.$createElement,
             i = e._self._c || t;return e.files.length > 0 ? i("div", { staticClass: "fsp-grid" }, [i("div", { staticClass: "fsp-grid__label" }, [e._v(e._s(e.t("Files & Folders")))]), e._l(e.onlyFolders, function (t) {
@@ -4510,14 +4516,14 @@ var picker = createCommonjsModule(function (module, exports) {
           return !!e.folder && this.cloudFolders[e.path] && this.cloudFolders[e.path].loading;
         }, isSelected: function isSelected(e) {
           return e.folder ? this.filesWaiting.filter(function (t) {
-            return Os(t) === e.path;
-          }).length > 0 : ks(this.filesWaiting, e) !== -1;
+            return Ls(t) === e.path;
+          }).length > 0 : Rs(this.filesWaiting, e) !== -1;
         }, getFileCount: function getFileCount(e) {
           return this.filesWaiting.filter(function (t) {
-            return Os(t) === e.path;
+            return Ls(t) === e.path;
           }).length;
         } }), props: ["files"] },
-        Ns = { render: function render() {
+        xs = { render: function render() {
         var e = this,
             t = e.$createElement,
             i = e._self._c || t;return e.images && e.images.length > 0 ? i("div", { staticClass: "fsp-grid" }, [i("div", { staticClass: "fsp-grid__label" }, [e._v(e._s(e.t("Images")))]), e._l(e.images, function (t) {
@@ -4526,13 +4532,13 @@ var picker = createCommonjsModule(function (module, exports) {
               } } }, [e.isSelected(t) ? i("span", { staticClass: "fsp-image-grid__icon--selected" }) : e._e(), e._v(" "), i("img", { staticClass: "fsp-image-grid__image", class: { "fsp-image-grid__image--selected": e.isSelected(t) }, attrs: { src: t.thumbnail, alt: t.name } }), e.isSelected(t) ? i("div", { staticClass: "fsp-image-grid__cell--dark" }) : e._e()]);
         })], 2) : e._e();
       }, staticRenderFns: [], computed: fn({}, Hr.mapGetters(["filesWaiting"])), methods: fn({}, Hr.mapActions(["addFile"]), { isSelected: function isSelected(e) {
-          return ks(this.filesWaiting, e) !== -1;
+          return Rs(this.filesWaiting, e) !== -1;
         } }), props: ["images"] },
-        xs = { render: function render() {
+        Is = { render: function render() {
         var e = this,
             t = e.$createElement,
             i = e._self._c || t;return i("div", [i("file-array", { attrs: { files: e.arrayOfFiles } }), e.arrayOfFiles.length && e.arrayOfImages.length ? i("hr", { staticClass: "fsp-grid__separator" }) : e._e(), i("image-array", { attrs: { images: e.arrayOfImages } })], 1);
-      }, staticRenderFns: [], components: { FileArray: Ls, ImageArray: Ns }, computed: fn({}, Hr.mapGetters(["listForCurrentCloudPath"]), { arrayOfImages: function arrayOfImages() {
+      }, staticRenderFns: [], components: { FileArray: Ns, ImageArray: xs }, computed: fn({}, Hr.mapGetters(["listForCurrentCloudPath"]), { arrayOfImages: function arrayOfImages() {
           return this.listForCurrentCloudPath.filter(this.isImage);
         }, arrayOfFiles: function arrayOfFiles() {
           var e = this;return this.listForCurrentCloudPath.filter(function (t) {
@@ -4541,7 +4547,7 @@ var picker = createCommonjsModule(function (module, exports) {
         } }), methods: { isImage: function isImage(e) {
           return e && e.mimetype && e.mimetype.indexOf("image/") !== -1;
         } } },
-        Is = { render: function render() {
+        Ds = { render: function render() {
         var e = this,
             t = e.$createElement,
             i = e._self._c || t;return i("div", { staticClass: "fsp-breadcrumb__container" }, [e.crumbs.length < 3 ? i("span", e._l(e.crumbs, function (t) {
@@ -4561,20 +4567,20 @@ var picker = createCommonjsModule(function (module, exports) {
         }, handleClick: function handleClick(e) {
           e.path && e.label && this.onClick(e);
         } } },
-        Ds = { render: function render() {
+        $s = { render: function render() {
         var e = this,
             t = e.$createElement;return (e._self._c || t)("div", { staticClass: "fsp-loading" });
       }, staticRenderFns: [] },
-        $s = function $s(e) {
+        Us = function Us(e) {
       var t = null == e ? 0 : e.length;return t ? e[t - 1] : void 0;
     },
-        Us = { render: function render() {
+        Ms = { render: function render() {
         var e = this,
             t = e.$createElement,
             i = e._self._c || t;return i("div", { staticClass: "fsp-cloud", class: { "fsp-content--selected-items": e.filesWaiting.length } }, [e.cloudLoading || e.isPrefetching ? i("loading") : e._e(), e.currentCloudAuthorized !== !0 ? i("div", { staticClass: "fsp-source-auth__wrapper" }, [i("span", { staticClass: "fsp-icon-auth fsp-icon fsp-source-auth__el", class: "fsp-icon--" + e.currentCloudName }), i("div", { staticClass: "fsp-text__title fsp-source-auth__el" }, [e._v(e._s(e.t("Select Files from")) + " " + e._s(e.currentDisplay.label))]), i("div", { staticClass: "fsp-source-auth__el" }, [i("span", { staticClass: "fsp-text__subheader" }, [e._v(e._s(e.t("You need to authenticate with ")) + " "), i("span", { staticClass: "fsp-cloudname" }, [e._v(e._s(e.currentDisplay.label))]), e._v(". " + e._s(e.t("We only extract images and never modify or delete them.")))])]), i("button", { staticClass: "fsp-button__auth fsp-source-auth__el", attrs: { type: "button" }, on: { click: e.authorize } }, [e._v(e._s(e.t("Connect")) + " "), i("span", { staticClass: "fsp-cloudname" }, [e._v(e._s(e.currentDisplay.label))])]), i("div", { staticClass: "fsp-source-auth__el" }, [i("span", { staticClass: "fsp-text__subheader" }, [e._v(e._s(e.t("A new page will open to connect your account.")))])])]) : e._e(), e.currentCloudAuthorized === !0 ? i("div", [e.currentCrumbs.length > 1 ? i("div", { staticClass: "fsp-cloud-breadcrumbs" }, [i("breadcrumbs", { attrs: { crumbs: e.currentCrumbs, "on-click": e.updatePath } })], 1) : e._e(), i("cloud-grid")], 1) : e._e()], 1);
-      }, staticRenderFns: [], components: { CloudGrid: xs, Breadcrumbs: Is, Loading: Ds }, computed: fn({}, Hr.mapGetters(["route", "currentCloudAuthorized", "currentCloudName", "currentCloudPath", "listForCurrentCloudPath", "cloudFolders", "cloudLoading", "cloudsPrefetching", "filesWaiting"]), { isPrefetching: function isPrefetching() {
+      }, staticRenderFns: [], components: { CloudGrid: Is, Breadcrumbs: Ds, Loading: $s }, computed: fn({}, Hr.mapGetters(["route", "currentCloudAuthorized", "currentCloudName", "currentCloudPath", "listForCurrentCloudPath", "cloudFolders", "cloudLoading", "cloudsPrefetching", "filesWaiting"]), { isPrefetching: function isPrefetching() {
           var e = this.currentCloudPath,
-              t = e.length > 0 ? $s(e) : e,
+              t = e.length > 0 ? Us(e) : e,
               i = this.currentCloudName + t;return this.cloudsPrefetching[i];
         }, currentDisplay: function currentDisplay() {
           return es(this.route[1]);
@@ -4598,35 +4604,35 @@ var picker = createCommonjsModule(function (module, exports) {
             var t = e[1],
                 i = e[2];this.showCloudPath({ name: t, path: i });
           } } } },
-        Ms = function Ms(e) {
+        Ps = function Ps(e) {
       return new RegExp("Android|webOS|iPhone|iPad|BlackBerry|Windows Phone|Opera Mini|IEMobile|Mobile", "i").test(e);
     },
-        Ps = function Ps(e) {
+        zs = function zs(e) {
       return JSON.parse(JSON.stringify(e));
     },
-        zs = { render: function render() {
+        js = { render: function render() {
         var e = this,
             t = e.$createElement,
             i = e._self._c || t;return i("div", { staticClass: "fsp-mobile-menu", on: { click: function click(t) {
               e.toggleNav();
             } } }, [i("div", { staticClass: "fsp-nav__menu-toggle" })]);
       }, staticRenderFns: [], computed: fn({}, Hr.mapGetters(["mobileNavActive", "route"]), { hideLocalOnMobile: function hideLocalOnMobile() {
-          var e = Ps(this.route),
-              t = e.pop();return !(!Ms(navigator.userAgent) || t.indexOf("local_file_system") === -1) || !this.mobileNavActive;
+          var e = zs(this.route),
+              t = e.pop();return !(!Ps(navigator.userAgent) || t.indexOf("local_file_system") === -1) || !this.mobileNavActive;
         } }), methods: fn({}, Hr.mapActions(["updateMobileNavActive"]), { toggleNav: function toggleNav() {
           this.updateMobileNavActive(this.hideLocalOnMobile);
         } }) },
-        js = { render: function render() {
+        Vs = { render: function render() {
         var e = this,
             t = e.$createElement,
             i = e._self._c || t;return i("div", { staticClass: "fsp-header", class: { "fsp-hide-header": e.hideHeader } }, [e.sourceName && !e.mobileNavActive ? i("span", { staticClass: "fsp-header-icon", class: "fsp-navbar--" + e.sourceName }) : e._e(), e._v(" "), e.mobileNavActive ? i("span", { staticClass: "fsp-header-text" }, [e._v(e._s(e.t("Select From")))]) : e._e(), e._t("default"), i("mobile-menu-button")], 2);
-      }, staticRenderFns: [], computed: fn({}, Hr.mapGetters(["mobileNavActive"])), components: { MobileMenuButton: zs }, props: ["sourceName", "hideHeader"] },
+      }, staticRenderFns: [], computed: fn({}, Hr.mapGetters(["mobileNavActive"])), components: { MobileMenuButton: js }, props: ["sourceName", "hideHeader"] },
         Gs = { render: function render() {
         var e = this,
             t = e.$createElement,
             i = e._self._c || t;return i("div", { staticClass: "fsp-footer", class: { "fsp-footer--appeared": e.isVisible } }, [i("div", { staticClass: "fsp-nav" }, [i("span", { staticClass: "fsp-nav__left" }, [e._t("nav-left")], 2), i("span", { staticClass: "fsp-nav__center" }, [e._t("nav-center")], 2), i("span", { staticClass: "fsp-nav__right" }, [e._t("nav-right")], 2)])]);
       }, staticRenderFns: [], props: ["isVisible"] },
-        Vs = { render: function render() {
+        Ws = { render: function render() {
         var e = this,
             t = e.$createElement,
             i = e._self._c || t;return i("div", { staticClass: "fsp-image-search", class: { "fsp-image-search--results": e.resultsFound } }, [i("div", { staticClass: "fsp-image-search__form-container" }, [i("form", { staticClass: "fsp-image-search__form", on: { submit: function submit(t) {
@@ -4634,7 +4640,7 @@ var picker = createCommonjsModule(function (module, exports) {
             } } }, [i("input", { ref: "searchInput", staticClass: "fsp-image-search__input", attrs: { placeholder: e.placeholderText, disabled: e.isSearching }, domProps: { value: e.imageSearchInput }, on: { input: e.updateInput } }), e._v(" "), e.imageSearchInput === e.imageSearchName ? i("button", { staticClass: "fsp-image-search__submit", on: { click: function click(t) {
               t.preventDefault(), e.clearSearch(t);
             } } }, [i("span", { staticClass: "fsp-image-search__icon--reset" })]) : e._e(), e._v(" "), e.imageSearchInput !== e.imageSearchName ? i("button", { staticClass: "fsp-image-search__submit", attrs: { type: "submit" } }, [i("span", { class: { "fsp-image-search__icon--search": !0, "fsp-image-search__icon--searching": e.isSearching } })]) : e._e()])]), i("div", { staticClass: "fsp-image-search__results", class: { "fsp-content--selected-items": e.filesWaiting.length } }, [i("image-array", { attrs: { images: e.imageSearchResults } })], 1)]);
-      }, staticRenderFns: [], components: { ImageArray: Ns }, computed: fn({}, Hr.mapGetters(["isSearching", "noResultsFound", "resultsFound", "imageSearchName", "imageSearchInput", "imageSearchResults", "filesWaiting"]), { placeholderText: function placeholderText() {
+      }, staticRenderFns: [], components: { ImageArray: xs }, computed: fn({}, Hr.mapGetters(["isSearching", "noResultsFound", "resultsFound", "imageSearchName", "imageSearchInput", "imageSearchResults", "filesWaiting"]), { placeholderText: function placeholderText() {
           return this.t("Search images") + "...";
         } }), methods: fn({}, Hr.mapActions(["updateSearchInput", "fetchImages"]), { focusAndFetch: function focusAndFetch() {
           this.fetchImages(), this.$refs.searchInput.focus();
@@ -4643,12 +4649,12 @@ var picker = createCommonjsModule(function (module, exports) {
         }, clearSearch: function clearSearch() {
           this.updateSearchInput(""), this.$refs.searchInput.focus();
         } }) },
-        Ws = { render: function render() {
+        Hs = { render: function render() {
         var e = this,
             t = e.$createElement,
             i = e._self._c || t;return i("div", { staticClass: "fsp-select-labels", class: { active: e.selectLabelIsActive } }, [i("div", { staticClass: "fsp-drop-area__title fsp-text__title" }, [e._v(e._s(e.t("Select Files to Upload")))]), i("div", { staticClass: "fsp-drop-area__subtitle fsp-text__subheader" }, [e._v(e._s(e.t("or Drag and Drop, Copy and Paste Files")))])]);
       }, staticRenderFns: [], computed: fn({}, Hr.mapGetters(["selectLabelIsActive"])) },
-        Hs = { render: function render() {
+        Bs = { render: function render() {
         var e = this,
             t = e.$createElement,
             i = e._self._c || t;return i("div", [i("div", { ref: "dropArea", staticClass: "fsp-drop-area", on: { click: e.openSelectFile } }, [i("select-files-label"), i("input", { ref: "fileUploadInput", staticClass: "fsp-local-source__fileinput", attrs: { type: "file", id: "fsp-fileUpload", accept: e.acceptStr, multiple: e.multiple, disabled: !e.canAddMoreFiles }, on: { change: function change(t) {
@@ -4656,7 +4662,7 @@ var picker = createCommonjsModule(function (module, exports) {
             }, click: function click(t) {
               e.clearEvent(t);
             } } })], 1)]);
-      }, staticRenderFns: [], components: { SelectFilesLabel: Ws }, computed: fn({}, Hr.mapGetters(["accept", "canAddMoreFiles", "maxFiles"]), { acceptStr: function acceptStr() {
+      }, staticRenderFns: [], components: { SelectFilesLabel: Hs }, computed: fn({}, Hr.mapGetters(["accept", "canAddMoreFiles", "maxFiles"]), { acceptStr: function acceptStr() {
           if (this.accept) return this.accept.join(",");
         }, multiple: function multiple() {
           return this.maxFiles > 1;
@@ -4675,7 +4681,7 @@ var picker = createCommonjsModule(function (module, exports) {
         } }), mounted: function mounted() {
         var e = this.$refs.dropArea;e.addEventListener("mouseover", this.onMouseover), e.addEventListener("mouseout", this.onMouseout);
       } },
-        Bs = { render: function render() {
+        Ys = { render: function render() {
         var e = this,
             t = e.$createElement,
             i = e._self._c || t;return i("div", { staticClass: "fsp-source-list__item", class: { active: e.isSelectedSource, hidden: e.isHidden, disabled: e.uploadStarted }, on: { click: function click(t) {
@@ -4704,13 +4710,13 @@ var picker = createCommonjsModule(function (module, exports) {
             this.addFile(t[i]);
           }
         } }) },
-        Ys = { render: function render() {
+        Xs = { render: function render() {
         var e = this,
             t = e.$createElement,
             i = e._self._c || t;return i("div", { staticClass: "fsp-modal__sidebar", class: { "fsp-mobile-nav-active": e.mobileNavActive } }, [i("div", { staticClass: "fsp-source-list" }, [e._l(e.paginatedSources, function (e) {
           return i("source-nav-item", { key: e.name, attrs: { "is-hidden": e.isHidden, "source-name": e.name, "source-label": e.label } });
         }), e.fromSources.length > this.offset + 1 ? i("div", { staticClass: "fsp-source-list__item fsp-source-list__more", on: { click: e.updateIndex } }, [i("span", { staticClass: "fsp-source-list__icon fsp-source-list__more-icon" }), e._v(" "), i("span", { staticClass: "fsp-source-list__label" }, [e._v("More")])]) : e._e()], 2)]);
-      }, staticRenderFns: [], components: { SourceNavItem: Bs }, computed: fn({}, Hr.mapGetters(["fromSources", "mobileNavActive"]), { paginatedSources: function paginatedSources() {
+      }, staticRenderFns: [], components: { SourceNavItem: Ys }, computed: fn({}, Hr.mapGetters(["fromSources", "mobileNavActive"]), { paginatedSources: function paginatedSources() {
           var e = this;return this.fromSources.map(function (t, i) {
             return i >= e.index && i <= e.index + e.offset ? t : fn({}, t, { isHidden: !0 });
           });
@@ -4721,7 +4727,7 @@ var picker = createCommonjsModule(function (module, exports) {
             return !e.isHidden;
           }).length <= this.offset ? this.index = 0 : this.index = this.index + (this.offset + 1);
         } } },
-        Xs = { render: function render() {
+        qs = { render: function render() {
         var e = this,
             t = e.$createElement,
             i = e._self._c || t;return i("div", { staticClass: "fsp-picker" }, [i("close-button"), i("div", { staticClass: "fsp-modal" }, [i("sidebar"), i("div", { staticClass: "fsp-modal__body" }, [i("div", { staticClass: "fsp-container" }, [e.isInsideCloudFolder ? i("div", { staticClass: "fsp-summary__go-back", attrs: { title: "Go back" }, on: { click: e.goBack } }) : e._e(), i("content-header", { attrs: { "source-name": e.currentSource.name, "hide-header": e.showsHeaderIcon } }), i("div", { staticClass: "fsp-content" }, ["local" === e.currentSource.ui ? i("local") : e._e(), "cloud" === e.currentSource.ui ? i("cloud") : e._e(), "imagesearch" === e.currentSource.ui ? i("image-search") : e._e()], 1)], 1), i("footer-nav", { attrs: { "is-visible": e.filesWaiting.length > 0 } }, [i("span", { staticClass: "fsp-footer-text", slot: "nav-left" }, [e._v(e._s(e.t("Selected Files")) + ": " + e._s(e.filesWaiting.length))]), e._v(" "), e.canStartUpload || 0 === e.filesWaiting.length ? e._e() : i("span", { slot: "nav-center" }, [e._v(e._s(e.getMinFilesMessage) + " ")]), i("span", { staticClass: "fsp-button fsp-button--primary", class: { "fsp-button--disabled": !e.canStartUpload }, attrs: { title: "Next" }, on: { click: e.goToSummary }, slot: "nav-right" }, [e._v(e._s(e.t("View/Edit Selected")))])])], 1)], 1), e._m(0)], 1);
@@ -4729,7 +4735,7 @@ var picker = createCommonjsModule(function (module, exports) {
         var e = this,
             t = e.$createElement,
             i = e._self._c || t;return i("div", { staticClass: "fsp-picker__footer" }, [e._v("Powered by "), i("span", { staticClass: "fsp-icon--filestack" }), e._v(" Filestack")]);
-      }], components: { CloseButton: ts, Cloud: Us, ContentHeader: js, FooterNav: Gs, ImageSearch: Vs, Local: Hs, Sidebar: Ys }, computed: fn({}, Hr.mapGetters(["route", "filesWaiting", "cloudLoading", "currentCloudPath", "currentCloudAuthorized", "minFiles", "canStartUpload", "filesNeededCount", "mobileNavActive"]), { currentSource: function currentSource() {
+      }], components: { CloseButton: ts, Cloud: Ms, ContentHeader: Vs, FooterNav: Gs, ImageSearch: Ws, Local: Bs, Sidebar: Xs }, computed: fn({}, Hr.mapGetters(["route", "filesWaiting", "cloudLoading", "currentCloudPath", "currentCloudAuthorized", "minFiles", "canStartUpload", "filesNeededCount", "mobileNavActive"]), { currentSource: function currentSource() {
           return es(this.route[1]);
         }, getMinFilesMessage: function getMinFilesMessage() {
           return 1 === this.filesNeededCount ? this.t("Add") + " 1 " + this.t("more file") : this.filesNeededCount > 1 ? this.t("Add") + " " + this.filesNeededCount + " " + this.t("more files") : null;
@@ -4740,39 +4746,39 @@ var picker = createCommonjsModule(function (module, exports) {
         } }), methods: fn({}, Hr.mapActions(["deselectAllFiles", "goBack", "updateMobileNavActive"]), { goToSummary: function goToSummary() {
           this.canStartUpload && (this.$store.commit("CHANGE_ROUTE", ["summary"]), this.updateMobileNavActive(!1));
         } }) },
-        qs = "Expected a function",
-        Ks = NaN,
-        Zs = "[object Symbol]",
-        Qs = /^\s+|\s+$/g,
-        Js = /^[-+]0x[0-9a-f]+$/i,
-        ea = /^0b[01]+$/i,
-        ta = /^0o[0-7]+$/i,
-        ia = parseInt,
-        na = "object" == un(Sr) && Sr && Sr.Object === Object && Sr,
-        oa = "object" == ("undefined" == typeof self ? "undefined" : un(self)) && self && self.Object === Object && self,
-        ra = na || oa || Function("return this")(),
-        sa = Object.prototype,
-        aa = sa.toString,
+        Ks = "Expected a function",
+        Zs = NaN,
+        Qs = "[object Symbol]",
+        Js = /^\s+|\s+$/g,
+        ea = /^[-+]0x[0-9a-f]+$/i,
+        ta = /^0b[01]+$/i,
+        ia = /^0o[0-7]+$/i,
+        na = parseInt,
+        oa = "object" == un(Sr) && Sr && Sr.Object === Object && Sr,
+        ra = "object" == ("undefined" == typeof self ? "undefined" : un(self)) && self && self.Object === Object && self,
+        sa = oa || ra || Function("return this")(),
+        aa = Object.prototype,
+        la = aa.toString,
         ca = Math.max,
-        la = Math.min,
-        ua = function ua() {
-      return ra.Date.now();
+        ua = Math.min,
+        da = function da() {
+      return sa.Date.now();
     },
-        da = tn,
-        fa = Ar.context("transformer"),
-        pa = function pa(e) {
+        fa = tn,
+        pa = Ar.context("transformer"),
+        ma = function ma(e) {
       return e + "px";
     },
-        ma = { topLeftX: "bottomRightX", topLeftY: "bottomRightY", bottomRightX: "topLeftX", bottomRightY: "topLeftY" },
-        ha = function ha(e, t, i, n) {
+        ha = { topLeftX: "bottomRightX", topLeftY: "bottomRightY", bottomRightX: "topLeftX", bottomRightY: "topLeftY" },
+        va = function va(e, t, i, n) {
       var o = e.imageNaturalWidth / (t.imageWidth - t.imageX),
           r = e.imageNaturalHeight / (t.imageHeight - t.imageY),
           s = { x: Math.round((i.topLeftX - t.imageX) * o), y: Math.round((i.topLeftY - t.imageY) * r), width: Math.round((i.bottomRightX - i.topLeftX) * o), height: Math.round((i.bottomRightY - i.topLeftY) * r) };i.topLeftX === t.imageX && i.topLeftY === t.imageY && i.bottomRightX === t.imageWidth && i.bottomRightY === t.imageHeight ? n.commit("REMOVE_TRANSFORMATION", "crop") : n.commit("SET_TRANSFORMATION", { type: "crop", options: { dim: s } });
     },
-        va = da(function (e, t, i, n) {
-      return ha(e, t, i, n);
+        ga = fa(function (e, t, i, n) {
+      return va(e, t, i, n);
     }, 500),
-        ga = { render: function render() {
+        _a = { render: function render() {
         var e = this,
             t = e.$createElement,
             i = e._self._c || t;return i("div", [i("div", { directives: [{ name: "show", rawName: "v-show", value: !e.cachedCropRectangle && !e.imageLoading, expression: "!cachedCropRectangle && !imageLoading" }], staticStyle: { position: "absolute", top: "0", left: "0" } }, [i("div", { ref: "cropArea", staticClass: "fst-crop__area", style: e.cropAreaStyle }, [i("div", { staticClass: "fst-crop__area-line--right" }), i("div", { staticClass: "fst-crop__area-line--left" }), i("div", { staticClass: "fst-crop__area-line--top" }), i("div", { staticClass: "fst-crop__area-line--bottom" })]), i("div", { ref: "topLeftMarker", staticClass: "fst-crop__marker fst-crop__marker--top-left", style: e.topLeftStyle }), i("div", { ref: "topRightMarker", staticClass: "fst-crop__marker fst-crop__marker--top-right", style: e.topRightStyle }), i("div", { ref: "bottomLeftMarker", staticClass: "fst-crop__marker fst-crop__marker--bottom-left", style: e.bottomLeftStyle }), i("div", { ref: "bottomRightMarker", staticClass: "fst-crop__marker fst-crop__marker--bottom-right", style: e.bottomRightStyle })]), !e.imageLoading && e.cachedCropRectangle ? i("div", { staticClass: "fst-options-bar" }, [i("div", { staticClass: "fst-options__option" }, [i("div", { staticClass: "fst-button fst-button--cancel", staticStyle: { "font-weight": "500" }, on: { click: e.undoCrop } }, [e._v("Undo Crop")])])]) : e._e()]);
@@ -4782,27 +4788,27 @@ var picker = createCommonjsModule(function (module, exports) {
           return this.$store.getters.cropAspectRatio;
         }, topLeftStyle: function topLeftStyle() {
           var e = this.$refs.topLeftMarker && this.$refs.topLeftMarker.getBoundingClientRect().width / 2,
-              t = this.cropRectangle.topLeftX - e;return { top: pa(this.cropRectangle.topLeftY - e), left: pa(t) };
+              t = this.cropRectangle.topLeftX - e;return { top: ma(this.cropRectangle.topLeftY - e), left: ma(t) };
         }, topRightStyle: function topRightStyle() {
           var e = this.$refs.topRightMarker && this.$refs.topRightMarker.getBoundingClientRect().width / 2,
-              t = this.cropRectangle.bottomRightX - e;return { top: pa(this.cropRectangle.topLeftY - e), left: pa(t) };
+              t = this.cropRectangle.bottomRightX - e;return { top: ma(this.cropRectangle.topLeftY - e), left: ma(t) };
         }, bottomLeftStyle: function bottomLeftStyle() {
           var e = this.$refs.bottomLeftMarker && this.$refs.bottomLeftMarker.getBoundingClientRect().width / 2,
-              t = this.cropRectangle.topLeftX - e;return { top: pa(this.cropRectangle.bottomRightY - e), left: pa(t) };
+              t = this.cropRectangle.topLeftX - e;return { top: ma(this.cropRectangle.bottomRightY - e), left: ma(t) };
         }, bottomRightStyle: function bottomRightStyle() {
           var e = this.$refs.bottomRightMarker && this.$refs.bottomRightMarker.getBoundingClientRect().width / 2,
-              t = this.cropRectangle.bottomRightX - e;return { top: pa(this.cropRectangle.bottomRightY - e), left: pa(t) };
+              t = this.cropRectangle.bottomRightX - e;return { top: ma(this.cropRectangle.bottomRightY - e), left: ma(t) };
         }, cropAreaStyle: function cropAreaStyle() {
           var e = this.cropRectangle.topLeftX,
               t = this.cropRectangle.topLeftY,
               i = this.cropRectangle.bottomRightX - this.cropRectangle.topLeftX,
-              n = this.cropRectangle.bottomRightY - this.cropRectangle.topLeftY;return { left: pa(e), top: pa(t), width: pa(i), height: pa(n) };
+              n = this.cropRectangle.bottomRightY - this.cropRectangle.topLeftY;return { left: ma(e), top: ma(t), width: ma(i), height: ma(n) };
         } }), watch: { imageLoading: { handler: function handler(e) {
             var t = this;e || this.cachedCropRectangle || this.$nextTick(function () {
               t.addMarkerBehaviour(t.$refs.topLeftMarker, "topLeftX", "topLeftY"), t.addMarkerBehaviour(t.$refs.topRightMarker, "bottomRightX", "topLeftY"), t.addMarkerBehaviour(t.$refs.bottomLeftMarker, "topLeftX", "bottomRightY"), t.addMarkerBehaviour(t.$refs.bottomRightMarker, "bottomRightX", "bottomRightY"), t.addMoveSelectionBehaviour(), t.initialize();
             });
           } }, cropRectangle: { deep: !0, handler: function handler() {
-            va({ imageNaturalWidth: this.imageNaturalWidth, imageNaturalHeight: this.imageNaturalHeight }, { imageWidth: this.imageWidth, imageHeight: this.imageHeight, imageX: this.imageX, imageY: this.imageY }, this.cropRectangle, this.$store);
+            ga({ imageNaturalWidth: this.imageNaturalWidth, imageNaturalHeight: this.imageNaturalHeight }, { imageWidth: this.imageWidth, imageHeight: this.imageHeight, imageX: this.imageX, imageY: this.imageY }, this.cropRectangle, this.$store);
           } } }, methods: fn({}, Hr.mapActions(["performTransformations"]), { calculateRectangleMaintainingAspectRatio: function calculateRectangleMaintainingAspectRatio(e, t) {
           var i = { w: e, h: e / this.aspectRatio },
               n = { w: t * this.aspectRatio, h: t };return Math.sqrt(i.w * i.w + i.h * i.h) < Math.sqrt(n.w * n.w + n.h * n.h) ? i : n;
@@ -4827,17 +4833,17 @@ var picker = createCommonjsModule(function (module, exports) {
                 a = function a(e) {
               var o = e.touches ? e.touches[0] : e,
                   a = void 0,
-                  c = void 0,
-                  l = n.ensurePointWithinBoundsX(o.clientX - r, t),
+                  l = void 0,
+                  c = n.ensurePointWithinBoundsX(o.clientX - r, t),
                   u = n.ensurePointWithinBoundsY(o.clientY - s, i),
-                  d = ma[t],
-                  f = ma[i],
-                  p = Math.abs(l - n.cropRectangle[d]),
-                  m = Math.abs(u - n.cropRectangle[f]);p < 40 && (p = 40), m < 40 && (m = 40);var h = { w: p, h: m };void 0 !== n.aspectRatio && (h = n.calculateRectangleMaintainingAspectRatio(p, m)), a = l < n.cropRectangle[d] ? n.cropRectangle[d] - h.w : n.cropRectangle[d] + h.w, c = u < n.cropRectangle[f] ? n.cropRectangle[f] - h.h : n.cropRectangle[f] + h.h, n.cropRectangle[t] = a, n.cropRectangle[i] = c;
+                  d = ha[t],
+                  f = ha[i],
+                  p = Math.abs(c - n.cropRectangle[d]),
+                  m = Math.abs(u - n.cropRectangle[f]);p < 40 && (p = 40), m < 40 && (m = 40);var h = { w: p, h: m };void 0 !== n.aspectRatio && (h = n.calculateRectangleMaintainingAspectRatio(p, m)), a = c < n.cropRectangle[d] ? n.cropRectangle[d] - h.w : n.cropRectangle[d] + h.w, l = u < n.cropRectangle[f] ? n.cropRectangle[f] - h.h : n.cropRectangle[f] + h.h, n.cropRectangle[t] = a, n.cropRectangle[i] = l;
             },
-                c = function e() {
+                l = function e() {
               document.documentElement.removeEventListener("mousemove", a, !1), document.documentElement.removeEventListener("mouseup", e, !1), document.documentElement.removeEventListener("mouseleave", e, !1), document.documentElement.removeEventListener("touchmove", a, !1), document.documentElement.removeEventListener("touchend", e, !1), document.documentElement.removeEventListener("touchleave", e, !1);
-            };document.documentElement.addEventListener("mousemove", a, !1), document.documentElement.addEventListener("mouseup", c, !1), document.documentElement.addEventListener("mouseleave", c, !1), document.documentElement.addEventListener("touchmove", a, !1), document.documentElement.addEventListener("touchend", c, !1), document.documentElement.addEventListener("touchleave", c, !1);
+            };document.documentElement.addEventListener("mousemove", a, !1), document.documentElement.addEventListener("mouseup", l, !1), document.documentElement.addEventListener("mouseleave", l, !1), document.documentElement.addEventListener("touchmove", a, !1), document.documentElement.addEventListener("touchend", l, !1), document.documentElement.addEventListener("touchleave", l, !1);
           };e.addEventListener("mousedown", o, !1), e.addEventListener("touchstart", o, !1);
         }, addMoveSelectionBehaviour: function addMoveSelectionBehaviour() {
           var e = this,
@@ -4850,24 +4856,24 @@ var picker = createCommonjsModule(function (module, exports) {
                 a = function a(t) {
               var i = t.touches ? t.touches[0] : t,
                   a = i.clientX - n,
-                  c = i.clientY - o;a < e.imageX ? a = e.imageX : a + r > e.imageWidth && (a = e.imageWidth - r), c < e.imageY ? c = e.imageY : c + s > e.imageHeight && (c = e.imageHeight - s), e.cropRectangle.topLeftX = a, e.cropRectangle.topLeftY = c, e.cropRectangle.bottomRightX = a + r, e.cropRectangle.bottomRightY = c + s;
+                  l = i.clientY - o;a < e.imageX ? a = e.imageX : a + r > e.imageWidth && (a = e.imageWidth - r), l < e.imageY ? l = e.imageY : l + s > e.imageHeight && (l = e.imageHeight - s), e.cropRectangle.topLeftX = a, e.cropRectangle.topLeftY = l, e.cropRectangle.bottomRightX = a + r, e.cropRectangle.bottomRightY = l + s;
             },
-                c = function e() {
+                l = function e() {
               document.documentElement.removeEventListener("mousemove", a, !1), document.documentElement.removeEventListener("mouseup", e, !1), document.documentElement.removeEventListener("mouseleave", e, !1), document.documentElement.removeEventListener("touchmove", a, !1), document.documentElement.removeEventListener("touchend", e, !1), document.documentElement.removeEventListener("touchleave", e, !1);
-            };document.documentElement.addEventListener("mousemove", a, !1), document.documentElement.addEventListener("mouseup", c, !1), document.documentElement.addEventListener("mouseleave", c, !1), document.documentElement.addEventListener("touchmove", a, !1), document.documentElement.addEventListener("touchend", c, !1), document.documentElement.addEventListener("touchleave", c, !1);
+            };document.documentElement.addEventListener("mousemove", a, !1), document.documentElement.addEventListener("mouseup", l, !1), document.documentElement.addEventListener("mouseleave", l, !1), document.documentElement.addEventListener("touchmove", a, !1), document.documentElement.addEventListener("touchend", l, !1), document.documentElement.addEventListener("touchleave", l, !1);
           };this.$refs.cropArea.addEventListener("mousedown", t, !1), this.$refs.cropArea.addEventListener("touchstart", t, !1);
         }, initialize: function initialize() {
           if (void 0 !== this.aspectRatio) {
             var e = this.calculateRectangleMaintainingAspectRatio(this.imageWidth - this.imageX, this.imageHeight - this.imageY);this.cropRectangle.topLeftX = (this.imageWidth + this.imageX - e.w) / 2, this.cropRectangle.topLeftY = (this.imageHeight + this.imageY - e.h) / 2, this.cropRectangle.bottomRightX = this.cropRectangle.topLeftX + e.w, this.cropRectangle.bottomRightY = this.cropRectangle.topLeftY + e.h;
-          } else this.cropRectangle.topLeftX = this.imageX, this.cropRectangle.topLeftY = this.imageY, this.cropRectangle.bottomRightX = this.imageWidth, this.cropRectangle.bottomRightY = this.imageHeight, fa("crop initialized", this.cropRectangle);
+          } else this.cropRectangle.topLeftX = this.imageX, this.cropRectangle.topLeftY = this.imageY, this.cropRectangle.bottomRightX = this.imageWidth, this.cropRectangle.bottomRightY = this.imageHeight, pa("crop initialized", this.cropRectangle);
         }, undoCrop: function undoCrop() {
           this.$store.commit("SET_CROP_RECTANGLE", null), this.$store.commit("REMOVE_TRANSFORMATION", "crop"), this.performTransformations();
         } }), mounted: function mounted() {
-        fa("crop mounted"), this.imageLoading || this.cachedCropRectangle || (this.addMarkerBehaviour(this.$refs.topLeftMarker, "topLeftX", "topLeftY"), this.addMarkerBehaviour(this.$refs.topRightMarker, "bottomRightX", "topLeftY"), this.addMarkerBehaviour(this.$refs.bottomLeftMarker, "topLeftX", "bottomRightY"), this.addMarkerBehaviour(this.$refs.bottomRightMarker, "bottomRightX", "bottomRightY"), this.addMoveSelectionBehaviour(), this.initialize());
+        pa("crop mounted"), this.imageLoading || this.cachedCropRectangle || (this.addMarkerBehaviour(this.$refs.topLeftMarker, "topLeftX", "topLeftY"), this.addMarkerBehaviour(this.$refs.topRightMarker, "bottomRightX", "topLeftY"), this.addMarkerBehaviour(this.$refs.bottomLeftMarker, "topLeftX", "bottomRightY"), this.addMarkerBehaviour(this.$refs.bottomRightMarker, "bottomRightX", "bottomRightY"), this.addMoveSelectionBehaviour(), this.initialize());
       }, destroyed: function destroyed() {
         this.performTransformations();
       } },
-        _a = { render: function render() {
+        ya = { render: function render() {
         var e = this,
             t = e.$createElement,
             i = e._self._c || t;return i("div", { staticClass: "fst-options-bar" }, [i("div", { staticClass: "fst-options__option" }, [i("div", { staticClass: "fst-radio-check-container" }, [i("label", { attrs: { for: "on" } }, [e._v("On:")]), i("input", { directives: [{ name: "model", rawName: "v-model", value: e.on, expression: "on" }], attrs: { id: "on", type: "radio", value: "true" }, domProps: { checked: e._q(e.on, "true") }, on: { change: e.applyTransform, __c: function __c(t) {
@@ -4882,7 +4888,7 @@ var picker = createCommonjsModule(function (module, exports) {
         } }), mounted: function mounted() {
         this.on = !!this.transformations.circle || !1;
       } },
-        ya = { render: function render() {
+        ba = { render: function render() {
         var e = this,
             t = e.$createElement,
             i = e._self._c || t;return i("div", { directives: [{ name: "show", rawName: "v-show", value: e.show, expression: "show" }], ref: "wrap", class: ["vue-slider-wrap", e.flowDirection, e.disabledClass], style: e.wrapStyles, on: { click: e.wrapClick } }, [i("div", { ref: "elem", staticClass: "vue-slider", style: [e.elemStyles, e.bgStyle] }, [e.isMoblie ? [e.isRange ? [i("div", { ref: "dot0", class: [e.tooltipStatus, "vue-slider-dot"], style: [e.sliderStyles[0], e.dotStyles], on: { touchstart: function touchstart(t) {
@@ -5032,7 +5038,7 @@ var picker = createCommonjsModule(function (module, exports) {
       }, beforeDestroy: function beforeDestroy() {
         this.unbindEvents();
       } },
-        ba = { render: function render() {
+        Ca = { render: function render() {
         var e = this,
             t = e.$createElement,
             i = e._self._c || t;return i("div", { staticClass: "fst-options-bar" }, [i("div", { staticClass: "fst-options__option" }, [i("vue-slider", { ref: "slider", attrs: { min: 0, max: 360, interval: 15, piecewise: !0, formatter: function formatter(e) {
@@ -5040,7 +5046,7 @@ var picker = createCommonjsModule(function (module, exports) {
             }, "process-style": { "background-color": "rgb(46, 104, 251)" }, "tooltip-style": { "background-color": "rgb(46, 104, 251)", border: "1px solid rgb(46, 104, 251)" } }, model: { value: e.options.deg, callback: function callback(t) {
               e.options.deg = t;
             }, expression: "options.deg" } })], 1)]);
-      }, staticRenderFns: [], components: { vueSlider: ya }, computed: fn({}, Hr.mapGetters(["transformations"])), data: function data() {
+      }, staticRenderFns: [], components: { vueSlider: ba }, computed: fn({}, Hr.mapGetters(["transformations"])), data: function data() {
         return { options: { deg: 0 } };
       }, methods: fn({}, Hr.mapActions(["performTransformations"]), { applyTransform: function applyTransform() {
           var e = fn({}, this.options);this.options.exif && delete e.deg, 0 === this.options.deg || 360 === this.options.deg ? this.$store.commit("REMOVE_TRANSFORMATION", "rotate") : this.$store.commit("SET_TRANSFORMATION", { type: "rotate", options: e }), this.performTransformations();
@@ -5049,7 +5055,7 @@ var picker = createCommonjsModule(function (module, exports) {
       }, watch: { options: { deep: !0, handler: function handler() {
             this.applyTransform();
           } } } },
-        Ca = { render: function render() {
+        Ea = { render: function render() {
         var e = this,
             t = e.$createElement,
             i = e._self._c || t;return i("div", { staticClass: "fst-options-bar" }, [i("div", { staticClass: "fst-options__option" }, [i("label", { attrs: { for: "deg" } }, [e._v("Threshold:")]), i("input", { directives: [{ name: "model", rawName: "v-model.number", value: e.options.threshold, expression: "options.threshold", modifiers: { number: !0 } }], attrs: { id: "deg", type: "range", min: "0", max: "100" }, domProps: { value: e.options.threshold }, on: { change: e.applyTransform, __r: function __r(t) {
@@ -5068,7 +5074,7 @@ var picker = createCommonjsModule(function (module, exports) {
         } }), mounted: function mounted() {
         this.options = fn({}, this.options, this.transformations.blackwhite);
       } },
-        Ea = { render: function render() {
+        Sa = { render: function render() {
         var e = this,
             t = e.$createElement,
             i = e._self._c || t;return i("div", { staticClass: "fst-options-bar" }, [i("div", { staticClass: "fst-options__option" }, [i("div", { staticClass: "fst-radio-check-container" }, [i("label", { attrs: { for: "on" } }, [e._v("On:")]), i("input", { directives: [{ name: "model", rawName: "v-model", value: e.on, expression: "on" }], attrs: { id: "on", type: "radio", value: "true" }, domProps: { checked: e._q(e.on, "true") }, on: { change: e.applyTransform, __c: function __c(t) {
@@ -5083,7 +5089,7 @@ var picker = createCommonjsModule(function (module, exports) {
         } }), mounted: function mounted() {
         this.on = this.transformations.monochrome || !1;
       } },
-        Sa = { render: function render() {
+        wa = { render: function render() {
         var e = this,
             t = e.$createElement,
             i = e._self._c || t;return i("div", { staticClass: "fst-options-bar" }, [i("div", { staticClass: "fst-options__option" }, [i("vue-slider", { ref: "slider", attrs: { min: 0, max: 100, formatter: function formatter(e) {
@@ -5091,7 +5097,7 @@ var picker = createCommonjsModule(function (module, exports) {
             }, "process-style": { "background-color": "rgb(46, 104, 251)" }, "tooltip-style": { "background-color": "rgb(46, 104, 251)", border: "1px solid rgb(46, 104, 251)" } }, model: { value: e.options.tone, callback: function callback(t) {
               e.options.tone = t;
             }, expression: "options.tone" } })], 1)]);
-      }, staticRenderFns: [], components: { vueSlider: ya }, computed: fn({}, Hr.mapGetters(["transformations"])), data: function data() {
+      }, staticRenderFns: [], components: { vueSlider: ba }, computed: fn({}, Hr.mapGetters(["transformations"])), data: function data() {
         return { options: { tone: 0 } };
       }, methods: fn({}, Hr.mapActions(["performTransformations"]), { applyTransform: function applyTransform() {
           0 === this.options.tone ? this.$store.commit("REMOVE_TRANSFORMATION", "sepia") : this.$store.commit("SET_TRANSFORMATION", { type: "sepia", options: this.options }), this.performTransformations();
@@ -5100,7 +5106,7 @@ var picker = createCommonjsModule(function (module, exports) {
       }, watch: { options: { deep: !0, handler: function handler() {
             this.applyTransform();
           } } } },
-        wa = { render: function render() {
+        Ta = { render: function render() {
         var e = this,
             t = e.$createElement,
             i = e._self._c || t;return i("div", { staticClass: "fst-sidebar" }, e._l(e.enabled, function (t) {
@@ -5113,11 +5119,11 @@ var picker = createCommonjsModule(function (module, exports) {
         }, genIconClass: function genIconClass(e) {
           return this.activeTransform === e ? "fst-icon--" + e + "-white" : "fst-icon--" + e + "-black";
         } } },
-        Ta = { render: function render() {
+        Aa = { render: function render() {
         var e = this,
             t = e.$createElement,
             i = e._self._c || t;return i("div", { staticClass: "fst-transform" }, [i("div", { staticClass: "fst-modal" }, [i("transforms"), i("div", { staticClass: "fst-modal__body" }, [i("div", { staticClass: "fst-container" }, [i("div", { staticClass: "fst-content" }, [i("img", { ref: "image", staticClass: "fst-image", attrs: { src: e.imageUrl }, on: { load: e.imageLoaded } }), e.imageLoading ? i("div", { staticClass: "fst-image-loader" }) : e._e(), "crop" === e.activeTransform ? i("crop", { attrs: { "image-width": e.imageWidth, "image-height": e.imageHeight, "image-x": e.imageX, "image-y": e.imageY } }) : e._e(), "rotate" === e.activeTransform ? i("rotate") : e._e(), "blackwhite" === e.activeTransform ? i("black-white") : e._e(), "monochrome" === e.activeTransform ? i("monochrome") : e._e(), "circle" === e.activeTransform ? i("circle-view") : e._e(), "sepia" === e.activeTransform ? i("sepia") : e._e()], 1)]), i("div", { staticClass: "fst-footer" }, [i("div", { staticClass: "fst-button fst-button--cancel", on: { click: e.cancel } }, [e._v("Cancel")]), i("div", { staticClass: "fst-button fst-button--primary", on: { click: e.done } }, [e._v("Done")])])])], 1)]);
-      }, staticRenderFns: [], components: { "circle-view": _a, Crop: ga, Rotate: ba, BlackWhite: Ca, Monochrome: Ea, Sepia: Sa, Transforms: wa }, data: function data() {
+      }, staticRenderFns: [], components: { "circle-view": ya, Crop: _a, Rotate: Ca, BlackWhite: Ea, Monochrome: Sa, Sepia: wa, Transforms: Ta }, data: function data() {
         return { imageWidth: 0, imageHeight: 0 };
       }, computed: fn({}, Hr.mapGetters(["imageUrl", "activeTransform", "imageLoading"])), methods: fn({}, Hr.mapActions(["performTransformations"]), { imageLoaded: function imageLoaded() {
           if (this.$refs.image) {
@@ -5129,12 +5135,12 @@ var picker = createCommonjsModule(function (module, exports) {
           this.$root.$destroy();
         }, done: function done() {
           this.performTransformations({ done: !0 }), this.$root.$destroy();
-        } }) };tt.use(Hr);var Aa = { imageNaturalWidth: 0, imageNaturalHeight: 0, imageLoading: !0, transformations: {}, cropRectangle: null, activeTransform: null },
-        Fa = function Fa(e, t, i) {
+        } }) };tt.use(Hr);var Fa = { imageNaturalWidth: 0, imageNaturalHeight: 0, imageLoading: !0, transformations: {}, cropRectangle: null, activeTransform: null },
+        ka = function ka(e, t, i) {
       var n = arguments.length > 3 && void 0 !== arguments[3] ? arguments[3] : {},
           o = function o(t) {
         var i = e.getSecurity();return i && i.policy && i.signature && t.indexOf("https://process.filestackapi.com") === -1 && t.indexOf("https://process-stage.filestackapi.com") === -1 ? t + "?policy=" + i.policy + "&signature=" + i.signature : t;
-      };return new Hr.Store({ state: fn({}, Aa, { config: t }, n), mutations: { SET_IMAGE_NATURAL_SIZE: function SET_IMAGE_NATURAL_SIZE(e, t) {
+      };return new Hr.Store({ state: fn({}, Fa, { config: t }, n), mutations: { SET_IMAGE_NATURAL_SIZE: function SET_IMAGE_NATURAL_SIZE(e, t) {
             e.imageNaturalWidth = t.w, e.imageNaturalHeight = t.h;
           }, SET_CROP_RECTANGLE: function SET_CROP_RECTANGLE(e, t) {
             e.cropRectangle = t;
@@ -5187,13 +5193,13 @@ var picker = createCommonjsModule(function (module, exports) {
             return e.config.transformations.crop && e.config.transformations.crop.aspectRatio;
           } } });
     },
-        ka = function ka(e) {
+        Ra = function Ra(e) {
       return "object" === (void 0 === e ? "undefined" : un(e)) && null !== e && Array.isArray(e) === !1 && e instanceof HTMLElement == !1;
     },
-        Ra = function Ra(e) {
+        Oa = function Oa(e) {
       return "number" == typeof e;
     },
-        Oa = { imageUrl: function imageUrl(e) {
+        La = { imageUrl: function imageUrl(e) {
         return e;
       }, container: function container(e) {
         if (e instanceof HTMLElement) return e;throw new Error('Invalid value for "container" config option');
@@ -5214,11 +5220,11 @@ var picker = createCommonjsModule(function (module, exports) {
           }throw new Error('Option "maxDimensions" requires array with exactly two elements: [width, height]');
         }throw new Error('Invalid value for "maxDimensions" config option');
       }, transformations: function transformations(e) {
-        if (ka(e)) return e;throw new Error('Invalid value for "transformations" config option');
+        if (Ra(e)) return e;throw new Error('Invalid value for "transformations" config option');
       }, "transformations.crop": function transformationsCrop(e) {
-        if (ka(e)) return e;if (e === !0) return {};if (e === !1) return !1;throw new Error('Invalid value for "transformations.crop" config option');
+        if (Ra(e)) return e;if (e === !0) return {};if (e === !1) return !1;throw new Error('Invalid value for "transformations.crop" config option');
       }, "transformations.crop.aspectRatio": function transformationsCropAspectRatio(e) {
-        if (Ra(e)) return e;throw new Error('Invalid value for "transformations.crop.aspectRatio" config option');
+        if (Oa(e)) return e;throw new Error('Invalid value for "transformations.crop.aspectRatio" config option');
       }, "transformations.rotate": function transformationsRotate(e) {
         if ("boolean" == typeof e) return e;throw new Error('Invalid value for "transformations.rotate" config option');
       }, "transformations.blackwhite": function transformationsBlackwhite(e) {
@@ -5230,34 +5236,34 @@ var picker = createCommonjsModule(function (module, exports) {
       }, "transformations.sepia": function transformationsSepia(e) {
         if ("boolean" == typeof e) return e;throw new Error('Invalid value for "transformations.sepia" config option');
       } },
-        La = function La(e) {
+        Na = function Na(e) {
       return void 0 === e.transformations && (e.transformations = { crop: !0 }), e;
     },
-        Na = function e(t, i) {
+        xa = function e(t, i) {
       var n = {};return Object.keys(t).forEach(function (o) {
-        var r = o;i && (r = i + "." + o);var s = Oa[r];if (!s) throw new Error('Unknown config option "' + r + '"');var a = s(t[o]);ka(a) ? n[o] = e(a, r) : n[o] = a;
+        var r = o;i && (r = i + "." + o);var s = La[r];if (!s) throw new Error('Unknown config option "' + r + '"');var a = s(t[o]);Ra(a) ? n[o] = e(a, r) : n[o] = a;
       }), n;
     },
-        xa = Ar.context("transformer"),
-        Ia = function Ia(e, t, i) {
+        Ia = Ar.context("transformer"),
+        Da = function Da(e, t, i) {
       return new Promise(function (n) {
         var o = function o(e) {
           n(e);
         },
-            r = document.body;t.container && (r = t.container);var s = document.createElement("div");r.appendChild(s);var a = new tt({ el: s, store: Fa(e, t, o, i), render: function render(e) {
-            return e(Ta);
+            r = document.body;t.container && (r = t.container);var s = document.createElement("div");r.appendChild(s);var a = new tt({ el: s, store: ka(e, t, o, i), render: function render(e) {
+            return e(Aa);
           }, destroyed: function destroyed() {
             return a.$el.parentNode.removeChild(a.$el), o();
           } });
       });
     },
-        Da = function Da(e, t) {
+        $a = function $a(e, t) {
       var i = arguments.length > 2 && void 0 !== arguments[2] ? arguments[2] : {},
-          n = arguments.length > 3 && void 0 !== arguments[3] ? arguments[3] : {};return xa("Starting transformer v0.4.0 with config:", i), i = fn({ imageUrl: t }, i), i = Na(La(i)), i.originalUrl = t, Nr.loadCss(ln.css.main).then(function () {
-        return Ia(e, i, n);
+          n = arguments.length > 3 && void 0 !== arguments[3] ? arguments[3] : {};return Ia("Starting transformer v0.4.1 with config:", i), i = fn({ imageUrl: t }, i), i = xa(Na(i)), i.originalUrl = t, Nr.loadCss(cn.css.main).then(function () {
+        return Da(e, i, n);
       });
     },
-        $a = { render: function render() {
+        Ua = { render: function render() {
         var e = this,
             t = e.$createElement,
             i = e._self._c || t;return i("div", { staticClass: "fsp-picker" }, [i("div", { ref: "container" }), e._m(0)]);
@@ -5266,7 +5272,7 @@ var picker = createCommonjsModule(function (module, exports) {
             t = e.$createElement,
             i = e._self._c || t;return i("div", { staticClass: "fsp-picker__footer" }, [e._v("Powered by "), i("span", { staticClass: "fsp-icon--filestack" }), e._v(" Filestack")]);
       }], computed: fn({}, Hr.mapGetters(["apiClient", "stagedForTransform", "transformOptions", "uploadInBackground"])), methods: fn({}, Hr.mapActions(["startUploading"]), { showInTransformer: function showInTransformer(e) {
-          var t = this;Da(this.apiClient, e.url, fn({}, this.transformOptions, { container: this.$refs.container }), { transformations: {} }).then(function (i) {
+          var t = this;$a(this.apiClient, e.url, fn({}, this.transformOptions, { container: this.$refs.container }), { transformations: {} }).then(function (i) {
             t.$store.commit("SET_FILE_TRANSFORMATION", { uploadToken: e.uploadToken, transformedUrl: i });
           }).then(function () {
             t.$store.commit("GO_BACK_WITH_ROUTE"), t.uploadInBackground && t.startUploading();
@@ -5274,7 +5280,7 @@ var picker = createCommonjsModule(function (module, exports) {
         } }), mounted: function mounted() {
         this.showInTransformer(this.stagedForTransform);
       } },
-        Ua = { render: function render() {
+        Ma = { render: function render() {
         var e = this,
             t = e.$createElement,
             i = e._self._c || t;return i("div", { staticClass: "fsp-picker" }, [i("close-button"), i("div", { staticClass: "fsp-modal" }, [i("sidebar"), i("div", { staticClass: "fsp-modal__body" }, [i("div", { staticClass: "fsp-container" }, [e.uploadStarted || e.mobileNavActive ? e._e() : i("div", { staticClass: "fsp-summary__go-back", attrs: { title: "Go back" }, on: { click: e.goBack } }), i("content-header", [e.mobileNavActive ? e._e() : i("span", { staticClass: "fsp-header-text--visible" }, [e._v(e._s(e.headerText))])]), i("div", { staticClass: "fsp-content fsp-content--selected-items" }, [i("div", { staticClass: "fsp-summary" }, [i("div", { staticClass: "fsp-summary__header" }, [i("div", { staticClass: "fsp-summary__filter" }, [i("input", { attrs: { placeholder: e.placeholderText }, on: { input: e.updateFilter } }), e._v(" "), i("span", { staticClass: "fsp-summary__filter-icon" })])]), i("div", { staticClass: "fsp-summary__body" }, [e.onlyTransformedImages.length ? i("div", { staticClass: "fsp-grid__label" }, [e._v(e._s(e.t("Edited Images")))]) : e._e(), e.onlyTransformedImages.length ? i("div", { staticClass: "fsp-summary__images-container" }, e._l(e.onlyTransformedImages, function (t) {
@@ -5302,7 +5308,7 @@ var picker = createCommonjsModule(function (module, exports) {
         var e = this,
             t = e.$createElement,
             i = e._self._c || t;return i("div", { staticClass: "fsp-picker__footer" }, [e._v("Powered by "), i("span", { staticClass: "fsp-icon--filestack" }), e._v(" Filestack")]);
-      }], components: { CloseButton: ts, ContentHeader: js, Sidebar: Ys, FooterNav: Gs }, computed: fn({}, Hr.mapGetters(["allFilesInQueueCount", "filesWaiting", "filesUploading", "filesDone", "filesFailed", "route", "routesHistory", "uploadStarted", "minFiles", "canStartUpload", "filesNeededCount", "disableTransformer", "mobileNavActive"]), { allFiles: function allFiles() {
+      }], components: { CloseButton: ts, ContentHeader: Vs, Sidebar: Xs, FooterNav: Gs }, computed: fn({}, Hr.mapGetters(["allFilesInQueueCount", "filesWaiting", "filesUploading", "filesDone", "filesFailed", "route", "routesHistory", "uploadStarted", "minFiles", "canStartUpload", "filesNeededCount", "disableTransformer", "mobileNavActive"]), { allFiles: function allFiles() {
           return this.filesUploading.concat(this.filesWaiting);
         }, getMinFilesNotification: function getMinFilesNotification() {
           return 1 === this.filesNeededCount ? this.t("Please select") + " 1 " + this.t("more file") : this.filesNeededCount > 1 ? this.t("Please select") + " " + this.filesNeededCount + " " + this.t("more files") : null;
@@ -5311,14 +5317,14 @@ var picker = createCommonjsModule(function (module, exports) {
         }, onlyFiles: function onlyFiles() {
           var e = this,
               t = new RegExp(this.filter, "i");return this.allFiles.filter(function (t) {
-            return !e.isImage(t) && !e.isImageURL(t.thumbnail);
+            return !e.isImage(t);
           }).filter(function (e) {
             return t.test(e.name);
           });
         }, onlyImages: function onlyImages() {
           var e = this,
               t = new RegExp(this.filter, "i");return this.allFiles.filter(function (t) {
-            return e.isImage(t) || e.isImageURL(t.thumbnail);
+            return e.isImage(t);
           }).filter(function (e) {
             return !e.transformed;
           }).filter(function (e) {
@@ -5327,7 +5333,7 @@ var picker = createCommonjsModule(function (module, exports) {
         }, onlyTransformedImages: function onlyTransformedImages() {
           var e = this,
               t = new RegExp(this.filter, "i");return this.allFiles.filter(function (t) {
-            return e.isImage(t) || e.isImageURL(t.thumbnail);
+            return e.isImage(t);
           }).filter(function (e) {
             return e.transformed;
           }).filter(function (e) {
@@ -5357,13 +5363,8 @@ var picker = createCommonjsModule(function (module, exports) {
           return this.isAudio(e) ? "fsp-grid__icon-audio" : "application/pdf" === e.mimetype ? "fsp-grid__icon-pdf" : "fsp-grid__icon-file";
         }, translatedFileSize: function translatedFileSize(e) {
           return us(e);
-        }, isImageURL: function isImageURL(e) {
-          if (e) {
-            var t = e.split(".").pop(),
-                i = ["jpg", "jpeg", "png", "tiff", "gif", "bmp"];return t && i.indexOf(t.toLowerCase()) !== -1;
-          }return !1;
         }, generateThumbnail: function generateThumbnail(e) {
-          if (e.thumbnail) return e.thumbnail;if (e.transformed) return e.transformed;var t = window.URL.createObjectURL(e.originalFile);return this.blobURLs[e.uploadToken] = t, t;
+          if (e.transformed) return e.transformed;var t = window.URL.createObjectURL(e.originalFile);return this.blobURLs[e.uploadToken] = t, t;
         }, revokeURL: function revokeURL(e) {
           var t = this.blobURLs[e.uploadToken];window.URL.revokeObjectURL(t);
         }, updateFilter: function updateFilter(e) {
@@ -5381,11 +5382,11 @@ var picker = createCommonjsModule(function (module, exports) {
         } }), watch: { allFiles: { handler: function handler(e) {
             0 === e.length && this.$store.commit("GO_BACK_WITH_ROUTE");
           } } } },
-        Ma = { render: function render() {
+        Pa = { render: function render() {
         var e = this,
             t = e.$createElement,
             i = e._self._c || t;return e.uiVisible ? i("div", [e.isRootRoute("source") ? i("pick-from-source") : e._e(), e.isRootRoute("summary") ? i("upload-summary") : e._e(), e.isRootRoute("transform") ? i("transform") : e._e(), i("notifications"), e.localPickingAllowed ? i("drag-and-drop") : e._e()], 1) : e._e();
-      }, staticRenderFns: [], components: { DragAndDrop: Zr, Notifications: Qr, PickFromSource: Xs, Transform: $a, UploadSummary: Ua }, computed: fn({}, Hr.mapGetters(["uiVisible", "route", "fromSources", "pendingReqs"]), { localPickingAllowed: function localPickingAllowed() {
+      }, staticRenderFns: [], components: { DragAndDrop: Zr, Notifications: Qr, PickFromSource: qs, Transform: Ua, UploadSummary: Ma }, computed: fn({}, Hr.mapGetters(["uiVisible", "route", "fromSources", "pendingReqs"]), { localPickingAllowed: function localPickingAllowed() {
           return this.fromSources.some(function (e) {
             return "local_file_system" === e.name;
           });
@@ -5402,7 +5403,7 @@ var picker = createCommonjsModule(function (module, exports) {
       }, watch: { route: { immediate: !0, deep: !0, handler: function handler(e) {
             "done" === e[0] && this.$root.$destroy();
           } } } },
-        Pa = function Pa(e) {
+        za = function za(e) {
       var t = void 0,
           i = function i(e, t) {
         return fn({ source: t, sourceKind: "cloud" }, e);
@@ -5416,12 +5417,12 @@ var picker = createCommonjsModule(function (module, exports) {
           }, RESET_CLOUD_AUTHORIZED: function RESET_CLOUD_AUTHORIZED(e) {
             e.cloudsAuthorized = {};
           }, SET_CURRENT_CLOUD_PATH: function SET_CURRENT_CLOUD_PATH(e, t) {
-            var i = t.length > 0 ? $s(t) : t,
+            var i = t.length > 0 ? Us(t) : t,
                 n = e.currentCloudName + i,
                 o = e.cache[n];o && (e.listForCurrentCloudPath = o), e.currentCloudPath = t;
           }, SET_LIST_FOR_CURRENT_CLOUD_PATH: function SET_LIST_FOR_CURRENT_CLOUD_PATH(e, t) {
             var i = e.currentCloudPath,
-                n = i.length > 0 ? $s(i) : i,
+                n = i.length > 0 ? Us(i) : i,
                 o = e.currentCloudName + n;e.cache[o] = t, e.listForCurrentCloudPath = t;
           }, RESET_LIST_CURRENT_CLOUD_PATH: function RESET_LIST_CURRENT_CLOUD_PATH(e) {
             e.listForCurrentCloudPath = [];
@@ -5453,7 +5454,7 @@ var picker = createCommonjsModule(function (module, exports) {
             }), e.pendingReqs = [], e.pendingTokens = [], e.cloudsPrefetching = {};
           } }, actions: { goToDirectory: function goToDirectory(e, t) {
             if (t.path !== e.getters.currentCloudPath.join("")) {
-              var i = Ps(e.getters.currentCloudPath);i.push(t.path);var n = ["source", e.getters.currentCloudName, i];e.commit("CHANGE_ROUTE", n);
+              var i = zs(e.getters.currentCloudPath);i.push(t.path);var n = ["source", e.getters.currentCloudName, i];e.commit("CHANGE_ROUTE", n);
             }
           }, logout: function logout(t, i) {
             i ? e.cloud().logout(i).then(function () {
@@ -5494,16 +5495,16 @@ var picker = createCommonjsModule(function (module, exports) {
                     a = function a() {
                   return e.commit("SET_CLOUD_PREFETCHING", { key: r, value: !0 }), n.list(t.path, s).then(function (s) {
                     var a = e.getters.currentCloudPath,
-                        c = a.length > 0 ? $s(a) : a,
-                        l = s.contents.map(function (e) {
+                        l = a.length > 0 ? Us(a) : a,
+                        c = s.contents.map(function (e) {
                       return i(e, o);
                     }),
-                        u = l.filter(function (e) {
+                        u = c.filter(function (e) {
                       return e.folder;
-                    });e.commit("SET_CLOUD_PREFETCHING", { key: r, value: !1 }), e.commit("SET_CLOUD_FOLDERS", u), e.commit("SET_CACHE", { key: r, value: l }), t.path === c && (e.commit("SET_LIST_FOR_CURRENT_CLOUD_PATH", l), e.dispatch("prefetchFolders", { client: n, name: o, folders: u }));
+                    });e.commit("SET_CLOUD_PREFETCHING", { key: r, value: !1 }), e.commit("SET_CLOUD_FOLDERS", u), e.commit("SET_CACHE", { key: r, value: c }), t.path === l && (e.commit("SET_LIST_FOR_CURRENT_CLOUD_PATH", c), e.dispatch("prefetchFolders", { client: n, name: o, folders: u }));
                   }).catch(function (i) {
                     e.commit("SET_CLOUD_PREFETCHING", { key: r, value: !1 });var n = e.getters.currentCloudPath,
-                        o = n.length > 0 ? $s(n) : n;t.path === o && 401 === i.status && e.commit("SET_CURRENT_CLOUD_AUTHORIZED", { status: "unauthorized", authUrl: i.response.body.redirect_url });
+                        o = n.length > 0 ? Us(n) : n;t.path === o && 401 === i.status && e.commit("SET_CURRENT_CLOUD_AUTHORIZED", { status: "unauthorized", authUrl: i.response.body.redirect_url });
                   });
                 };e.commit("ADD_PENDING_REQUEST", { request: a, token: s });
               }
@@ -5512,15 +5513,15 @@ var picker = createCommonjsModule(function (module, exports) {
             var r = o.name,
                 s = o.path,
                 a = void 0,
-                c = r + s,
-                l = n.state.cache[c];l ? a = Promise.resolve(l) : (t = e.cloud(r), a = t.list(s), n.commit("SET_CLOUD_FOLDER_LOADING", { path: s, value: !0 })), a.then(function (e) {
-              if (l) return void e.filter(function (e) {
+                l = r + s,
+                c = n.state.cache[l];c ? a = Promise.resolve(c) : (t = e.cloud(r), a = t.list(s), n.commit("SET_CLOUD_FOLDER_LOADING", { path: s, value: !0 })), a.then(function (e) {
+              if (c) return void e.filter(function (e) {
                 return !e.folder;
               }).forEach(function (e) {
                 return n.dispatch("addFile", e);
               });n.commit("SET_CLOUD_FOLDER_LOADING", { path: s, value: !1 });var t = e.contents.map(function (e) {
                 return i(e, r);
-              });n.commit("SET_CACHE", { key: c, value: t }), t.filter(function (e) {
+              });n.commit("SET_CACHE", { key: l, value: t }), t.filter(function (e) {
                 return !e.folder;
               }).forEach(function (e) {
                 return n.dispatch("addFile", e);
@@ -5531,13 +5532,13 @@ var picker = createCommonjsModule(function (module, exports) {
           }, showCloudPath: function showCloudPath(n, o) {
             var r = o.name,
                 s = o.path,
-                a = void 0 === s ? [] : s;n.getters.currentCloudName !== r && (t = e.cloud(r), n.commit("SET_CURRENT_CLOUD_NAME", r)), n.getters.currentCloudAuthorized !== !0 && n.commit("SET_CURRENT_CLOUD_AUTHORIZED", !0);var c = a.length > 0 ? $s(a) : a,
-                l = r + c,
-                u = n.state.cache[l];if (n.commit("RESET_LIST_CURRENT_CLOUD_PATH"), n.commit("SET_CURRENT_CLOUD_PATH", a), n.commit("CANCEL_ALL_PENDING_REQUESTS"), u) {
+                a = void 0 === s ? [] : s;n.getters.currentCloudName !== r && (t = e.cloud(r), n.commit("SET_CURRENT_CLOUD_NAME", r)), n.getters.currentCloudAuthorized !== !0 && n.commit("SET_CURRENT_CLOUD_AUTHORIZED", !0);var l = a.length > 0 ? Us(a) : a,
+                c = r + l,
+                u = n.state.cache[c];if (n.commit("RESET_LIST_CURRENT_CLOUD_PATH"), n.commit("SET_CURRENT_CLOUD_PATH", a), n.commit("CANCEL_ALL_PENDING_REQUESTS"), u) {
               var d = u.filter(function (e) {
                 return e.folder;
               });return void n.dispatch("prefetchFolders", { client: t, name: r, folders: d });
-            }n.getters.cloudsPrefetching[l] || function (e) {
+            }n.getters.cloudsPrefetching[c] || function (e) {
               n.commit("SET_CLOUD_LOADING", !0), t.list(e).then(function (e) {
                 if (n.getters.currentCloudPath === a) {
                   var o = e.contents.map(function (e) {
@@ -5550,7 +5551,7 @@ var picker = createCommonjsModule(function (module, exports) {
               }).catch(function (e) {
                 n.commit("SET_CLOUD_LOADING", !1), n.getters.currentCloudPath === a && (401 === e.status ? n.commit("SET_CURRENT_CLOUD_AUTHORIZED", { status: "unauthorized", authUrl: e.response.body.redirect_url }) : n.dispatch("showNotification", e.response.body.status));
               });
-            }(c);
+            }(l);
           } }, getters: { currentCloudAuthorized: function currentCloudAuthorized(e) {
             return e.currentCloudAuthorized;
           }, currentCloudName: function currentCloudName(e) {
@@ -5571,7 +5572,7 @@ var picker = createCommonjsModule(function (module, exports) {
             return e.pendingReqs;
           } } };
     },
-        za = function za(e) {
+        ja = function ja(e) {
       var t = function t(e) {
         return fn({ source: "imagesearch", sourceKind: "cloud" }, e);
       };return { state: { input: "", isSearching: !1, result: null, error: null }, mutations: { UPDATE_INPUT: function UPDATE_INPUT(e, t) {
@@ -5610,7 +5611,7 @@ var picker = createCommonjsModule(function (module, exports) {
             return e.error;
           } } };
     },
-        ja = { ADD_NOTIFICATION: function ADD_NOTIFICATION(e, t) {
+        Va = { ADD_NOTIFICATION: function ADD_NOTIFICATION(e, t) {
         e.notifications.push(t);
       }, REMOVE_NOTIFICATION: function REMOVE_NOTIFICATION(e, t) {
         e.notifications = e.notifications.filter(function (e) {
@@ -5628,20 +5629,20 @@ var picker = createCommonjsModule(function (module, exports) {
       }, removeAllNotifications: function removeAllNotifications(e) {
         e.commit("REMOVE_ALL_NOTIFICATIONS");
       } },
-        Va = { notifications: function notifications(e) {
+        Wa = { notifications: function notifications(e) {
         return e.notifications;
       } },
-        Wa = { state: { notifications: [] }, mutations: ja, actions: Ga, getters: Va };tt.use(Hr);var Ha = function Ha(e, t, i, n) {
-      return n = fn({ apiClient: e, config: t, route: ["source", t.fromSources[0].name], routesHistory: [] }, n, { mobileNavActive: Ms(navigator.userAgent), selectLabelIsActive: !1 }), new Hr.Store({ state: n, modules: { uploadQueue: Rs(e, n.uploadQueue), cloud: Pa(e), imageSearch: za(e), notifications: Wa }, mutations: { CHANGE_ROUTE: function CHANGE_ROUTE(e, t) {
-            Ms(navigator.userAgent) && t.indexOf("local_file_system") !== -1 && (e.mobileNavActive = !0), e.routesHistory.push(e.route), e.route = t;
+        Ha = { state: { notifications: [] }, mutations: Va, actions: Ga, getters: Wa };tt.use(Hr);var Ba = function Ba(e, t, i, n) {
+      return n = fn({ apiClient: e, config: t, route: ["source", t.fromSources[0].name], routesHistory: [] }, n, { mobileNavActive: Ps(navigator.userAgent), selectLabelIsActive: !1 }), new Hr.Store({ state: n, modules: { uploadQueue: Os(e, n.uploadQueue), cloud: za(e), imageSearch: ja(e), notifications: Ha }, mutations: { CHANGE_ROUTE: function CHANGE_ROUTE(e, t) {
+            Ps(navigator.userAgent) && t.indexOf("local_file_system") !== -1 && (e.mobileNavActive = !0), e.routesHistory.push(e.route), e.route = t;
           }, GO_BACK_WITH_ROUTE: function GO_BACK_WITH_ROUTE(e) {
-            var t = e.routesHistory.pop();Ms(navigator.userAgent) && t.indexOf("local_file_system") !== -1 && (e.mobileNavActive = !0), e.route = t;
+            var t = e.routesHistory.pop();Ps(navigator.userAgent) && t.indexOf("local_file_system") !== -1 && (e.mobileNavActive = !0), e.route = t;
           }, UPDATE_MOBILE_NAV_ACTIVE: function UPDATE_MOBILE_NAV_ACTIVE(e, t) {
             e.mobileNavActive = t;
           }, UPDATE_SELECT_LABEL_ACTIVE: function UPDATE_SELECT_LABEL_ACTIVE(e, t) {
             e.selectLabelIsActive = t;
           } }, actions: { allUploadsDone: function allUploadsDone(e) {
-            e.commit("CHANGE_ROUTE", ["done"]), i({ filesUploaded: ls(e.getters.filesDone), filesFailed: ls(e.getters.filesFailed) });
+            e.commit("CHANGE_ROUTE", ["done"]), i({ filesUploaded: cs(e.getters.filesDone), filesFailed: cs(e.getters.filesFailed) });
           }, goBack: function goBack(e) {
             e.commit("GO_BACK_WITH_ROUTE");
           }, updateMobileNavActive: function updateMobileNavActive(e, t) {
@@ -5696,13 +5697,13 @@ var picker = createCommonjsModule(function (module, exports) {
             return e.config.lang;
           } } });
     },
-        Ba = function Ba(e) {
+        Ya = function Ya(e) {
       return "object" === (void 0 === e ? "undefined" : un(e)) && null !== e && Array.isArray(e) === !1;
     },
-        Ya = function Ya(e) {
+        Xa = function Xa(e) {
       return e % 1 == 0;
     },
-        Xa = { fromSources: function fromSources(e) {
+        qa = { fromSources: function fromSources(e) {
         return "string" == typeof e && (e = [e]), e.map(es);
       }, accept: function accept(e) {
         return "string" == typeof e && (e = [e]), e.forEach(function (e) {
@@ -5711,11 +5712,11 @@ var picker = createCommonjsModule(function (module, exports) {
       }, preferLinkOverStore: function preferLinkOverStore(e) {
         if ("boolean" != typeof e) throw new Error('Invalid value for "preferLinkOverStore" config option');return e;
       }, maxSize: function maxSize(e) {
-        if ("number" != typeof e || !Ya(e) || e < 0) throw new Error('Invalid value for "maxSize" config option');return e;
+        if ("number" != typeof e || !Xa(e) || e < 0) throw new Error('Invalid value for "maxSize" config option');return e;
       }, minFiles: function minFiles(e) {
-        if ("number" != typeof e || !Ya(e) || e < 0) throw new Error('Invalid value for "minFiles" config option');return e;
+        if ("number" != typeof e || !Xa(e) || e < 0) throw new Error('Invalid value for "minFiles" config option');return e;
       }, maxFiles: function maxFiles(e) {
-        if ("number" != typeof e || !Ya(e) || e < 0) throw new Error('Invalid value for "maxFiles" config option');return e;
+        if ("number" != typeof e || !Xa(e) || e < 0) throw new Error('Invalid value for "maxFiles" config option');return e;
       }, startUploadingWhenMaxFilesReached: function startUploadingWhenMaxFilesReached(e) {
         if ("boolean" != typeof e) throw new Error('Invalid value for "startUploadingWhenMaxFilesReached" config option');return e;
       }, loadCss: function loadCss(e) {
@@ -5723,9 +5724,9 @@ var picker = createCommonjsModule(function (module, exports) {
       }, lang: function lang(e) {
         if ("boolean" == typeof e && e === !1 || "string" == typeof e) return e;throw new Error('Invalid value for "lang" config option');
       }, storeTo: function storeTo(e) {
-        if (Ba(e)) return e;throw new Error('Invalid value for "storeTo" config option');
+        if (Ya(e)) return e;throw new Error('Invalid value for "storeTo" config option');
       }, transformOptions: function transformOptions(e) {
-        if (Ba(e)) return e;throw new Error('Invalid value for "transformOptions" config option');
+        if (Ya(e)) return e;throw new Error('Invalid value for "transformOptions" config option');
       }, hideWhenUploading: function hideWhenUploading(e) {
         if ("boolean" != typeof e) throw new Error('Invalid value for "hideWhenUploading" config option');return e;
       }, uploadInBackground: function uploadInBackground(e) {
@@ -5743,21 +5744,21 @@ var picker = createCommonjsModule(function (module, exports) {
       }, onFileUploadFailed: function onFileUploadFailed(e) {
         if ("function" != typeof e) throw new Error('Invalid value for "onFileUploadFailed" config option');return e;
       } },
-        qa = function qa(e, t) {
+        Ka = function Ka(e, t) {
       return void 0 === e.fromSources && (e.fromSources = ["local_file_system", "imagesearch", "facebook", "instagram", "googledrive", "dropbox"]), void 0 === e.preferLinkOverStore && (e.preferLinkOverStore = !1), void 0 === e.minFiles && (e.minFiles = 1), void 0 === e.maxFiles && (e.maxFiles = 1), void 0 === e.startUploadingWhenMaxFilesReached && (e.startUploadingWhenMaxFilesReached = !1), void 0 === e.loadCss && (e.loadCss = t.css.main), void 0 === e.hideWhenUploading && (e.hideWhenUploading = !1), void 0 === e.lang && (e.lang = "en"), void 0 === e.uploadInBackground && (e.uploadInBackground = !0), void 0 === e.disableTransformer && (e.disableTransformer = !1), e;
     },
-        Ka = function Ka(e) {
+        Za = function Za(e) {
       var t = {};if (Object.keys(e).forEach(function (i) {
-        var n = Xa[i];if (!n) throw new Error('Unknown config option "' + i + '"');t[i] = n(e[i]);
+        var n = qa[i];if (!n) throw new Error('Unknown config option "' + i + '"');t[i] = n(e[i]);
       }), void 0 !== t.minFiles && void 0 !== t.maxFiles && t.minFiles > t.maxFiles) throw new Error('Config option "minFiles" must be smaller or equal to "maxFiles"');return t;
     },
-        Za = Ar.context("picker"),
-        Qa = function Qa(e, t, i) {
+        Qa = Ar.context("picker"),
+        Ja = function Ja(e, t, i) {
       return new Promise(function (n) {
         var o = function o(e) {
           n(e);
-        };tt.use(wr), tt.locales(ws);var r = document.createElement("div");document.body.appendChild(r);var s = new tt({ el: r, store: Ha(e, t, o, i), render: function render(e) {
-            return e(Ma);
+        };tt.use(wr), tt.locales(Ts);var r = document.createElement("div");document.body.appendChild(r);var s = new tt({ el: r, store: Ba(e, t, o, i), render: function render(e) {
+            return e(Pa);
           }, created: function created() {
             this.$translate.setLang(t.lang), document.body.classList.add("fsp-picker-open");
           }, destroyed: function destroyed() {
@@ -5765,12 +5766,12 @@ var picker = createCommonjsModule(function (module, exports) {
           } });
       });
     },
-        Ja = function Ja(e) {
+        el = function el(e) {
       return e.loadCss === !1 ? Promise.resolve() : Nr.loadCss(e.loadCss);
     };return function (e) {
       var t = arguments.length > 1 && void 0 !== arguments[1] ? arguments[1] : {},
-          i = arguments.length > 2 && void 0 !== arguments[2] ? arguments[2] : {};return Za("Starting picker v0.4.0 with config:", t), t = Ka(qa(t, ln)), Ja(t).then(function () {
-        return Qa(e, t, i);
+          i = arguments.length > 2 && void 0 !== arguments[2] ? arguments[2] : {};return Qa("Starting picker v0.4.1 with config:", t), t = Za(Ka(t, cn)), el(t).then(function () {
+        return Ja(e, t, i);
       });
     };
   });
@@ -5827,7 +5828,7 @@ var init = function init(apikey, security) {
 };
 
 var filestack = {
-  version: '0.4.1',
+  version: '0.4.2',
   init: init
 };
 

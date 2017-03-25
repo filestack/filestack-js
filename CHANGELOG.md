@@ -1,5 +1,9 @@
 # filestack-js changelog
 
+## 0.4.2 (2017-03-25)
+- Fix regression with summary screen images
+- Add Danish language support
+
 ## 0.4.1 (2017-03-22)
 - Same as 0.4.0 - last release didn't include new bundle
 
