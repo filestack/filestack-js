@@ -130,7 +130,7 @@ Opens the picker UI.
       - `video/*` <- special mime type accepting all types of video files
       - `audio/*` <- special mime type accepting all types of audio files
     - .preferLinkOverStore <code>boolean</code> <code> = false</code> - For cloud sources whether to __link__ or __store__ files.
-    - .lang <code>string</code> <code> = &quot;en&quot;</code> - Sets locale. Accepts: `de`, `en`, `es`, `fr`, `it`, `nl`, `pl`, `pt`, `ru`, `zh`.
+    - .lang <code>string</code> <code> = &quot;en&quot;</code> - Sets locale. Accepts: `da`, `de`, `en`, `es`, `fr`, `it`, `nl`, `pl`, `pt`, `ru`, `zh`.
     - .minFiles <code>number</code> <code> = 1</code> - Minimum number of files required to start uploading.
     - .maxFiles <code>number</code> <code> = 1</code> - Maximum number of files allowed to upload.
     - .startUploadingWhenMaxFilesReached <code>boolean</code> <code> = false</code> - Whether to start uploading automatically when maxFiles is hit.
