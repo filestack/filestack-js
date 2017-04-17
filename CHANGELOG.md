@@ -1,5 +1,15 @@
 # filestack-js changelog
 
+## 0.5.0 (2017-04-17)
+- Implement single file/image flow in picker
+- Add translations for sidebar sources
+- Add Japanese locale
+- Add missing mimetypes to accept option
+- Fix grid style issue in Windows 10
+- General style changes, e.g. close button has been moved into the modal
+- Implemented several fixes for IE11
+- __Breaking changes__: pick option `transformOptions` changed to `transformations`. See README
+
 ## 0.4.2 (2017-03-25)
 - Fix regression with summary screen images
 - Add Danish language support
