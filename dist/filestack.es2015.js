@@ -1,4 +1,4 @@
-/* v0.5.0 */
+/* v0.5.1 */
 var commonjsGlobal = typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
 
 function commonjsRequire () {
@@ -3085,7 +3085,7 @@ var initializeGlobalNamespace$1 = function initializeGlobalNamespace() {
 initializeGlobalNamespace$1();
 
 var picker = createCommonjsModule(function (module, exports) {
-  /* v0.5.2 */
+  /* v0.5.3 */
   !function (e, t) {
     module.exports = t();
   }(commonjsGlobal, function () {
@@ -3183,7 +3183,7 @@ var picker = createCommonjsModule(function (module, exports) {
         var a = r && r.get,
             s = r && r.set,
             c = A(n);Object.defineProperty(e, t, { enumerable: !0, configurable: !0, get: function get$$1() {
-            var t = a ? a.call(e) : n;return Wi.target && (o.depend(), c && c.dep.depend(), Array.isArray(t) && k(t)), t;
+            var t = a ? a.call(e) : n;return Wi.target && (o.depend(), c && c.dep.depend(), Array.isArray(t) && O(t)), t;
           }, set: function set$$1(t) {
             var i = a ? a.call(e) : n;t === i || t !== t && i !== i || (s ? s.call(e, t) : n = t, c = A(t), o.notify());
           } });
@@ -3192,13 +3192,13 @@ var picker = createCommonjsModule(function (module, exports) {
       if (Array.isArray(e) && "number" == typeof t) return e.length = Math.max(e.length, t), e.splice(t, 1, n), n;if (o(e, t)) return e[t] = n, n;var i = e.__ob__;return e._isVue || i && i.vmCount ? n : i ? (F(i.value, t, n), i.dep.notify(), n) : (e[t] = n, n);
     }function R(e, t) {
       if (Array.isArray(e) && "number" == typeof t) return void e.splice(t, 1);var n = e.__ob__;e._isVue || n && n.vmCount || o(e, t) && (delete e[t], n && n.dep.notify());
-    }function k(e) {
+    }function O(e) {
       for (var t = void 0, n = 0, i = e.length; n < i; n++) {
-        t = e[n], t && t.__ob__ && t.__ob__.dep.depend(), Array.isArray(t) && k(t);
+        t = e[n], t && t.__ob__ && t.__ob__.dep.depend(), Array.isArray(t) && O(t);
       }
-    }function O(e, t) {
+    }function k(e, t) {
       if (!t) return e;for (var n, i, r, a = Object.keys(t), s = 0; s < a.length; s++) {
-        n = a[s], i = e[n], r = t[n], o(e, n) ? d(i) && d(r) && O(i, r) : w(e, n, r);
+        n = a[s], i = e[n], r = t[n], o(e, n) ? d(i) && d(r) && k(i, r) : w(e, n, r);
       }return e;
     }function N(e, t) {
       return t ? e ? e.concat(t) : Array.isArray(t) ? t : [t] : e;
@@ -3252,7 +3252,7 @@ var picker = createCommonjsModule(function (module, exports) {
       }return !1;
     }function G(e, t, n) {
       if (Ai.errorHandler) Ai.errorHandler.call(null, e, t, n);else {
-        if (!ki || "undefined" == typeof console) throw e;console.error(e);
+        if (!Oi || "undefined" == typeof console) throw e;console.error(e);
       }
     }function j(e) {
       return new Qi(void 0, void 0, void 0, String(e));
@@ -3449,10 +3449,10 @@ var picker = createCommonjsModule(function (module, exports) {
         var r = n.$options._base;if (u(e) && (e = r.extend(e)), "function" == typeof e) {
           if (!e.cid) if (e.resolved) e = e.resolved;else if (!(e = Ne(e, r, function () {
             n.$forceUpdate();
-          }))) return;Je(e), t = t || {}, t.model && Ue(e.options, t);var a = Le(t, e, o);if (e.options.functional) return ke(e, a, t, n, i);var s = t.on;t.on = t.nativeOn, e.options.abstract && (t = {}), xe(t);var c = e.options.name || o;return new Qi("vue-component-" + e.cid + (c ? "-" + c : ""), t, void 0, void 0, void 0, n, { Ctor: e, propsData: a, listeners: s, tag: o, children: i });
+          }))) return;Je(e), t = t || {}, t.model && Ue(e.options, t);var a = Le(t, e, o);if (e.options.functional) return Oe(e, a, t, n, i);var s = t.on;t.on = t.nativeOn, e.options.abstract && (t = {}), xe(t);var c = e.options.name || o;return new Qi("vue-component-" + e.cid + (c ? "-" + c : ""), t, void 0, void 0, void 0, n, { Ctor: e, propsData: a, listeners: s, tag: o, children: i });
         }
       }
-    }function ke(e, t, n, i, o) {
+    }function Oe(e, t, n, i, o) {
       var r = {},
           a = e.options.props;if (a) for (var s in a) {
         r[s] = M(s, a, t);
@@ -3463,7 +3463,7 @@ var picker = createCommonjsModule(function (module, exports) {
           u = e.options.render.call(null, l, { props: r, data: n, parent: i, children: o, slots: function slots() {
           return ne(o, i);
         } });return u instanceof Qi && (u.functionalContext = i, n.slot && ((u.data || (u.data = {})).slot = n.slot)), u;
-    }function Oe(e, t, n, i) {
+    }function ke(e, t, n, i) {
       var o = e.componentOptions,
           r = { _isComponent: !0, parent: t, propsData: o.propsData, _componentTag: o.tag, _parentVnode: e, _parentListeners: o.listeners, _renderChildren: o.children, _parentElm: n || null, _refElm: i || null },
           a = e.data.inlineTemplate;return a && (r.render = a.render, r.staticRenderFns = a.staticRenderFns), new o.Ctor(r);
@@ -3661,7 +3661,7 @@ var picker = createCommonjsModule(function (module, exports) {
     }function _t(e) {
       return Do(e) ? "svg" : "math" === e ? "math" : void 0;
     }function yt(e) {
-      if (!ki) return !0;if (Uo(e)) return !1;if (e = e.toLowerCase(), null != Mo[e]) return Mo[e];var t = document.createElement(e);return e.indexOf("-") > -1 ? Mo[e] = t.constructor === window.HTMLUnknownElement || t.constructor === window.HTMLElement : Mo[e] = /HTMLUnknownElement/.test(t.toString());
+      if (!Oi) return !0;if (Uo(e)) return !1;if (e = e.toLowerCase(), null != Mo[e]) return Mo[e];var t = document.createElement(e);return e.indexOf("-") > -1 ? Mo[e] = t.constructor === window.HTMLUnknownElement || t.constructor === window.HTMLElement : Mo[e] = /HTMLUnknownElement/.test(t.toString());
     }function Et(e) {
       if ("string" == typeof e) {
         var t = document.querySelector(e);return t || document.createElement("div");
@@ -3682,9 +3682,9 @@ var picker = createCommonjsModule(function (module, exports) {
       e.appendChild(t);
     }function Rt(e) {
       return e.parentNode;
-    }function kt(e) {
-      return e.nextSibling;
     }function Ot(e) {
+      return e.nextSibling;
+    }function kt(e) {
       return e.tagName;
     }function Nt(e, t) {
       e.textContent = t;
@@ -3755,11 +3755,11 @@ var picker = createCommonjsModule(function (module, exports) {
             a = t.data.attrs || {};a.__ob__ && (a = t.data.attrs = l({}, a));for (n in a) {
           i = a[n], r[n] !== i && Vt(o, n, i);
         }Li && a.value !== r.value && Vt(o, "value", a.value);for (n in r) {
-          null == a[n] && (Oo(n) ? o.removeAttributeNS(ko, No(n)) : wo(n) || o.removeAttribute(n));
+          null == a[n] && (ko(n) ? o.removeAttributeNS(Oo, No(n)) : wo(n) || o.removeAttribute(n));
         }
       }
     }function Vt(e, t, n) {
-      Ro(t) ? Lo(n) ? e.removeAttribute(t) : e.setAttribute(t, t) : wo(t) ? e.setAttribute(t, Lo(n) || "false" === n ? "false" : "true") : Oo(t) ? Lo(n) ? e.removeAttributeNS(ko, No(t)) : e.setAttributeNS(ko, t, n) : Lo(n) ? e.removeAttribute(t) : e.setAttribute(t, n);
+      Ro(t) ? Lo(n) ? e.removeAttribute(t) : e.setAttribute(t, t) : wo(t) ? e.setAttribute(t, Lo(n) || "false" === n ? "false" : "true") : ko(t) ? Lo(n) ? e.removeAttributeNS(Oo, No(t)) : e.setAttributeNS(Oo, t, n) : Lo(n) ? e.removeAttribute(t) : e.setAttribute(t, n);
     }function Yt(e, t) {
       var n = t.elm,
           i = t.data,
@@ -3898,8 +3898,8 @@ var picker = createCommonjsModule(function (module, exports) {
         }var F = !T._isMounted || !e.isRootInsert;if (!F || E || "" === E) {
           var w = F && d ? d : s,
               R = F && p ? p : l,
-              k = F && f ? f : c,
-              O = F ? y || m : m,
+              O = F && f ? f : c,
+              k = F ? y || m : m,
               N = F && "function" == typeof E ? E : h,
               L = F ? b || v : v,
               I = F ? C || _ : _,
@@ -3907,12 +3907,12 @@ var picker = createCommonjsModule(function (module, exports) {
               D = !1 !== r && !Li,
               U = En(N),
               M = i._enterCb = g(function () {
-            D && (fn(i, k), fn(i, R)), M.cancelled ? (D && fn(i, w), I && I(i)) : L && L(i), i._enterCb = null;
+            D && (fn(i, O), fn(i, R)), M.cancelled ? (D && fn(i, w), I && I(i)) : L && L(i), i._enterCb = null;
           });e.data.show || Y(e.data.hook || (e.data.hook = {}), "insert", function () {
             var t = i.parentNode,
                 n = t && t._pending && t._pending[e.key];n && n.tag === e.tag && n.elm._leaveCb && n.elm._leaveCb(), N && N(i, M);
-          }), O && O(i), D && (dn(i, w), dn(i, R), un(function () {
-            dn(i, k), fn(i, w), M.cancelled || U || (yn(x) ? setTimeout(M, x) : pn(i, a, M));
+          }), k && k(i), D && (dn(i, w), dn(i, R), un(function () {
+            dn(i, O), fn(i, w), M.cancelled || U || (yn(x) ? setTimeout(M, x) : pn(i, a, M));
           })), e.data.show && (n && n(), N && N(i, M)), D || U || M();
         }
       }
@@ -3967,9 +3967,9 @@ var picker = createCommonjsModule(function (module, exports) {
       var n = document.createEvent("HTMLEvents");n.initEvent(t, !0, !0), e.dispatchEvent(n);
     }function Rn(e) {
       return !e.componentInstance || e.data && e.data.transition ? e : Rn(e.componentInstance._vnode);
-    }function kn(e) {
-      var t = e && e.componentOptions;return t && t.Ctor.options.abstract ? kn(Z(t.children)) : e;
     }function On(e) {
+      var t = e && e.componentOptions;return t && t.Ctor.options.abstract ? On(Z(t.children)) : e;
+    }function kn(e) {
       var t = {},
           n = e.$options;for (var i in n.propsData) {
         t[i] = e[i];
@@ -4166,7 +4166,7 @@ var picker = createCommonjsModule(function (module, exports) {
       }if ("string" != typeof e) return 0 === e ? e : +e;e = e.replace(as, "");var n = cs.test(e);return n || ls.test(e) ? us(e.slice(2), n ? 2 : 8) : ss.test(e) ? os : +e;
     }var ui,
         di,
-        fi = { css: { main: "https://static.filestackapi.com/picker/v3/0.5.2/main.css" } },
+        fi = { css: { main: "https://static.filestackapi.com/picker/v3/0.5.3/main.css" } },
         pi = "function" == typeof Symbol && "symbol" == _typeof(Symbol.iterator) ? function (e) {
       return typeof e === 'undefined' ? 'undefined' : _typeof(e);
     } : function (e) {
@@ -4213,18 +4213,18 @@ var picker = createCommonjsModule(function (module, exports) {
         Fi = Object.freeze({}),
         wi = /[^\w.$]/,
         Ri = "__proto__" in {},
-        ki = "undefined" != typeof window,
-        Oi = ki && window.navigator.userAgent.toLowerCase(),
-        Ni = Oi && /msie|trident/.test(Oi),
-        Li = Oi && Oi.indexOf("msie 9.0") > 0,
-        Ii = Oi && Oi.indexOf("edge/") > 0,
-        xi = Oi && Oi.indexOf("android") > 0,
-        Di = Oi && /iphone|ipad|ipod|ios/.test(Oi),
-        Ui = Oi && /chrome\/\d+/.test(Oi) && !Ii,
+        Oi = "undefined" != typeof window,
+        ki = Oi && window.navigator.userAgent.toLowerCase(),
+        Ni = ki && /msie|trident/.test(ki),
+        Li = ki && ki.indexOf("msie 9.0") > 0,
+        Ii = ki && ki.indexOf("edge/") > 0,
+        xi = ki && ki.indexOf("android") > 0,
+        Di = ki && /iphone|ipad|ipod|ios/.test(ki),
+        Ui = ki && /chrome\/\d+/.test(ki) && !Ii,
         Mi = function Mi() {
-      return void 0 === ui && (ui = !ki && "undefined" != typeof commonjsGlobal && "server" === commonjsGlobal.process.env.VUE_ENV), ui;
+      return void 0 === ui && (ui = !Oi && "undefined" != typeof commonjsGlobal && "server" === commonjsGlobal.process.env.VUE_ENV), ui;
     },
-        $i = ki && window.__VUE_DEVTOOLS_GLOBAL_HOOK__,
+        $i = Oi && window.__VUE_DEVTOOLS_GLOBAL_HOOK__,
         Pi = "undefined" != typeof Symbol && E(Symbol) && "undefined" != typeof Reflect && E(Reflect.ownKeys),
         zi = function () {
       function e() {
@@ -4308,9 +4308,9 @@ var picker = createCommonjsModule(function (module, exports) {
     };var Ki = Ai.optionMergeStrategies;Ki.data = function (e, t, n) {
       return n ? e || t ? function () {
         var i = "function" == typeof t ? t.call(n) : t,
-            o = "function" == typeof e ? e.call(n) : void 0;return i ? O(i, o) : o;
+            o = "function" == typeof e ? e.call(n) : void 0;return i ? k(i, o) : o;
       } : void 0 : t ? "function" != typeof t ? e : e ? function () {
-        return O(t.call(this), e.call(this));
+        return k(t.call(this), e.call(this));
       } : t : e;
     }, Ai._lifecycleHooks.forEach(function (e) {
       Ki[e] = N;
@@ -4389,7 +4389,7 @@ var picker = createCommonjsModule(function (module, exports) {
         mo = { lazy: !0 },
         ho = { init: function init(e, t, n, i) {
         if (!e.componentInstance || e.componentInstance._isDestroyed) {
-          (e.componentInstance = Oe(e, io, n, i)).$mount(t ? e.elm : void 0, t);
+          (e.componentInstance = ke(e, io, n, i)).$mount(t ? e.elm : void 0, t);
         } else if (e.data.keepAlive) {
           var o = e;ho.prepatch(o, o);
         }
@@ -4511,12 +4511,12 @@ var picker = createCommonjsModule(function (module, exports) {
     },
         wo = n("contenteditable,draggable,spellcheck"),
         Ro = n("allowfullscreen,async,autofocus,autoplay,checked,compact,controls,declare,default,defaultchecked,defaultmuted,defaultselected,defer,disabled,enabled,formnovalidate,hidden,indeterminate,inert,ismap,itemscope,loop,multiple,muted,nohref,noresize,noshade,novalidate,nowrap,open,pauseonexit,readonly,required,reversed,scoped,seamless,selected,sortable,translate,truespeed,typemustmatch,visible"),
-        ko = "http://www.w3.org/1999/xlink",
-        Oo = function Oo(e) {
+        Oo = "http://www.w3.org/1999/xlink",
+        ko = function ko(e) {
       return ":" === e.charAt(5) && "xlink" === e.slice(0, 5);
     },
         No = function No(e) {
-      return Oo(e) ? e.slice(6, e.length) : "";
+      return ko(e) ? e.slice(6, e.length) : "";
     },
         Lo = function Lo(e) {
       return null == e || !1 === e;
@@ -4528,7 +4528,7 @@ var picker = createCommonjsModule(function (module, exports) {
       return xo(e) || Do(e);
     },
         Mo = Object.create(null),
-        $o = Object.freeze({ createElement: bt, createElementNS: Ct, createTextNode: St, createComment: Tt, insertBefore: At, removeChild: Ft, appendChild: wt, parentNode: Rt, nextSibling: kt, tagName: Ot, setTextContent: Nt, setAttribute: Lt }),
+        $o = Object.freeze({ createElement: bt, createElementNS: Ct, createTextNode: St, createComment: Tt, insertBefore: At, removeChild: Ft, appendChild: wt, parentNode: Rt, nextSibling: Ot, tagName: kt, setTextContent: Nt, setAttribute: Lt }),
         Po = { create: function create(e, t) {
         It(t);
       }, update: function update(e, t) {
@@ -4571,15 +4571,15 @@ var picker = createCommonjsModule(function (module, exports) {
         or = a(function (e) {
       return { enterClass: e + "-enter", enterToClass: e + "-enter-to", enterActiveClass: e + "-enter-active", leaveClass: e + "-leave", leaveToClass: e + "-leave-to", leaveActiveClass: e + "-leave-active" };
     }),
-        rr = ki && !Li,
+        rr = Oi && !Li,
         ar = "transition",
         sr = "animation",
         cr = "transition",
         lr = "transitionend",
         ur = "animation",
-        dr = "animationend";rr && (void 0 === window.ontransitionend && void 0 !== window.onwebkittransitionend && (cr = "WebkitTransition", lr = "webkitTransitionEnd"), void 0 === window.onanimationend && void 0 !== window.onwebkitanimationend && (ur = "WebkitAnimation", dr = "webkitAnimationEnd"));var fr = ki && window.requestAnimationFrame ? window.requestAnimationFrame.bind(window) : setTimeout,
+        dr = "animationend";rr && (void 0 === window.ontransitionend && void 0 !== window.onwebkittransitionend && (cr = "WebkitTransition", lr = "webkitTransitionEnd"), void 0 === window.onanimationend && void 0 !== window.onwebkitanimationend && (ur = "WebkitAnimation", dr = "webkitAnimationEnd"));var fr = Oi && window.requestAnimationFrame ? window.requestAnimationFrame.bind(window) : setTimeout,
         pr = /\b(transform|all)(,|$)/,
-        mr = ki ? { create: bn, activate: bn, remove: function remove(e, t) {
+        mr = Oi ? { create: bn, activate: bn, remove: function remove(e, t) {
         e.data.show ? t() : _n(e, t);
       } } : {},
         hr = [Bo, Vo, qo, Ko, ir, mr],
@@ -4750,9 +4750,9 @@ var picker = createCommonjsModule(function (module, exports) {
           return e.tag;
         }), n.length)) {
           var i = this.mode,
-              o = n[0];if (Ln(this.$vnode)) return o;var a = kn(o);if (!a) return o;if (this._leaving) return Nn(e, o);var s = "__transition-" + this._uid + "-";a.key = null == a.key ? s + a.tag : r(a.key) ? 0 === String(a.key).indexOf(s) ? a.key : s + a.key : a.key;var c = (a.data || (a.data = {})).transition = On(this),
+              o = n[0];if (Ln(this.$vnode)) return o;var a = On(o);if (!a) return o;if (this._leaving) return Nn(e, o);var s = "__transition-" + this._uid + "-";a.key = null == a.key ? s + a.tag : r(a.key) ? 0 === String(a.key).indexOf(s) ? a.key : s + a.key : a.key;var c = (a.data || (a.data = {})).transition = kn(this),
               u = this._vnode,
-              d = kn(u);if (a.data.directives && a.data.directives.some(function (e) {
+              d = On(u);if (a.data.directives && a.data.directives.some(function (e) {
             return "show" === e.name;
           }) && (a.data.show = !0), d && d.data && !In(a, d)) {
             var f = d && (d.data.transition = l({}, c));if ("out-in" === i) return this._leaving = !0, Y(f, "afterLeave", function () {
@@ -4769,7 +4769,7 @@ var picker = createCommonjsModule(function (module, exports) {
         }
       } },
         Sr = l({ tag: String, moveClass: String }, br);delete Sr.mode;var Tr = { props: Sr, render: function render(e) {
-        for (var t = this.tag || this.$vnode.data.tag || "span", n = Object.create(null), i = this.prevChildren = this.children, o = this.$slots.default || [], r = this.children = [], a = On(this), s = 0; s < o.length; s++) {
+        for (var t = this.tag || this.$vnode.data.tag || "span", n = Object.create(null), i = this.prevChildren = this.children, o = this.$slots.default || [], r = this.children = [], a = kn(this), s = 0; s < o.length; s++) {
           var c = o[s];c.tag && null != c.key && 0 !== String(c.key).indexOf("__vlist") && (r.push(c), n[c.key] = c, (c.data || (c.data = {})).transition = a);
         }if (i) {
           for (var l = [], u = [], d = 0; d < i.length; d++) {
@@ -4795,8 +4795,8 @@ var picker = createCommonjsModule(function (module, exports) {
             cn(n, e);
           }), sn(n, t), n.style.display = "none", this.$el.appendChild(n);var i = mn(n);return this.$el.removeChild(n), this._hasMove = i.hasTransform;
         } } },
-        Ar = { Transition: Cr, TransitionGroup: Tr };nt.config.mustUseProp = Fo, nt.config.isReservedTag = Uo, nt.config.getTagNamespace = _t, nt.config.isUnknownElement = yt, l(nt.options.directives, Er), l(nt.options.components, Ar), nt.prototype.__patch__ = ki ? vr : p, nt.prototype.$mount = function (e, t) {
-      return e = e && ki ? Et(e) : void 0, ae(this, e, t);
+        Ar = { Transition: Cr, TransitionGroup: Tr };nt.config.mustUseProp = Fo, nt.config.isReservedTag = Uo, nt.config.getTagNamespace = _t, nt.config.isUnknownElement = yt, l(nt.options.directives, Er), l(nt.options.components, Ar), nt.prototype.__patch__ = Oi ? vr : p, nt.prototype.$mount = function (e, t) {
+      return e = e && Oi ? Et(e) : void 0, ae(this, e, t);
     }, setTimeout(function () {
       Ai.devtools && $i && $i.emit("init", nt);
     }, 0);var Fr = "undefined" != typeof window ? window : "undefined" != typeof commonjsGlobal ? commonjsGlobal : "undefined" != typeof self ? self : {},
@@ -4843,7 +4843,7 @@ var picker = createCommonjsModule(function (module, exports) {
       }, off: function off() {
         window.filestackInternals.logger.working = !1;
       } },
-        kr = function e(t, n) {
+        Or = function e(t, n) {
       var i = function i() {
         for (var e = arguments.length, i = Array(e), o = 0; o < e; o++) {
           i[o] = arguments[o];
@@ -4862,11 +4862,11 @@ var picker = createCommonjsModule(function (module, exports) {
         return e(t + "][" + i, n);
       }, i.on = n.on, i.off = n.off, i;
     }("filestack", Rr);!function () {
-      var e = void 0;"object" === ("undefined" == typeof window ? "undefined" : pi(window)) && (e = window.filestackInternals, e || (e = {}, window.filestackInternals = e), e.logger || (e.logger = kr, Rr.init()));
-    }();var Or = function () {
+      var e = void 0;"object" === ("undefined" == typeof window ? "undefined" : pi(window)) && (e = window.filestackInternals, e || (e = {}, window.filestackInternals = e), e.logger || (e.logger = Or, Rr.init()));
+    }();var kr = function () {
       var e = void 0;return "object" === ("undefined" == typeof window ? "undefined" : pi(window)) && (e = window.filestackInternals, e || (e = {}, window.filestackInternals = e), e.loader || (e.loader = { modules: {} })), e;
     }(),
-        Nr = Or.loader.modules,
+        Nr = kr.loader.modules,
         Lr = function Lr(e) {
       var t = Nr[e];if (t || (Nr[e] = {}, t = Nr[e]), t.instance) return Promise.resolve(t.instance);if (t.promise) return t.promise;var n = new Promise(function (n) {
         var i = function i() {
@@ -5253,17 +5253,17 @@ var picker = createCommonjsModule(function (module, exports) {
         Fa = { Add: "Aggiungere", My: "Mio", Connect: "Collegare", View: "Visualizza", Upload: "Caricare", Filter: "Filtrare", Images: "Immagini", of: "di", Loading: "Caricamento", Revert: "Annulla", Edit: "Modifica", More: "Più", Uploaded: "Caricato", "Web Search": "Scatta Foto", "Take Picture": "Fare una foto", "A new page will open to connect your account.": "Si aprirà una nuova pagina per collegare il tuo account", "My Device": "Il mio dispositivo", "or Drag and Drop, Copy and Paste Files": "o trascinare, copiare e incollare file", "Pick Your Files": "Selezionare i file", "Select Files to Upload": "Selezionare i file da caricare", "Selected Files": "File selezionati", "Select Files from": "Selezionare i file da", "We only extract images and never modify or delete them.": "Abbiamo estratto solo immagini e non modificarli o cancellarli.", "You need to authenticate with": "È necessario autenticarsi con", "Search images": "Ricerca immagini", "Sign Out": "Esci", "Select From": "Selezionare da", "View/Edit Selected": "Visualizza/Modifica selezionato", "Deselect All": "Deselezionare tutto", "Files & Folders": "File e cartelle", "Edited Images": "Immagini Modificate", "Go Back": "Indietro", "No search results found for": "È il nostro limite di upload di file", "Please select": "Si prega di selezionare", "more file": "più file", "more files": "più file", "File {displayName} is not an accepted file type. The accepted file types are {types}": "{displayName} File non è un tipo di file accettato. I tipi di file accettati sono {types}", "File {displayName} is too big. The accepted file size is less than {roundFileSize}": "{displayName} Arquivo é muito grande. O tamanho de arquivo aceito é {roundFileSize}", "Our file upload limit is {maxFiles} {filesText}": "È il nostro limite di upload di file {maxFiles} {filesText}" },
         wa = { Add: "追加", My: "私の", Connect: "接続", View: "閲覧", Upload: "アップロード", Filter: "フィルター", Images: "画像", of: "の", Loading: "ロード中", Revert: "元に戻す", Edit: "編集", More: "詳細", Uploaded: "アップロード完了", "Web Search": "ウェブ検索", "Take Picture": "写真を撮る", "A new page will open to connect your account.": "マイページに移動します", "My Device": "マイデバイス", "or Drag and Drop, Copy and Paste Files": "または、ファイルをドラッグ・アンド・ドロップ、コピー・アンド・ペーストする", "Pick Your Files": "ファイルを選択", "Select Files to Upload": "アップロードするファイルを選択", "Selected Files": "選択済のファイル", "Select Files from": "からファイルを選択", "We only extract images and never modify or delete them.": "画像の抽出だけを行い、修正や削除をすることはありません", "You need to authenticate with ": "を認証してください ", "Search images": "画像を検索", "Sign Out": "サインアウト", "Select From": "から選択", "View/Edit Selected": "選択したファイルを閲覧/編集", "Deselect All": "選択を全て解除", "Files & Folders": "ファイルとフォルダー", "Edited Images": "編集された画像", "Go Back": "戻る", "No search results found for": "に対する検索結果は見つかりませんでした", "Please select": "選択してください", "more file": "追加ファイル", "more files": "追加ファイル", "File {displayName} is not an accepted file type. The accepted file types are {types}": "ファイル名{displayName}は、送受信可能なファイル形式ではありません。受け入れ可能なファイル形式は{types}です", "File {displayName} is too big. The accepted file size is less than {roundFileSize}": "ファイル名{displayName}の容量が大きすぎます。送受信可能なファイルのサイズは{roundFileSize}です", "Our file upload limit is {maxFiles} {filesText}": "一度にアップロードできるファイルの上限は {maxFiles} {filesText}" },
         Ra = { Add: "Toevoegen", My: "Mijn", Connect: "Verbinding maken", View: "Bekijken", Upload: "Uploaden", Filter: "Filtreren", Images: "Afbeeldingen", of: "van de", Loading: "Laden", Revert: "Ongedaan maken", Edit: "Bewerken", More: "Meer", Uploaded: "Geüpload", "Web Search": "Zoeken op het web", "Take Picture": "Foto nemen", "A new page will open to connect your account.": "Een nieuwe pagina wordt geopend om verbinding maken met uw account", "My Device": "Mijn apparaat", "or Drag and Drop, Copy and Paste Files": "of slepen, kopiëren en plakken van bestanden", "Pick Your Files": "Kies uw bestanden", "Select Files to Upload": "Selecteer bestanden om te uploaden", "Selected Files": "Geselecteerde bestanden", "Select Files from": "Selecteer bestanden uit", "We only extract images and never modify or delete them.": "We halen alleen afbeeldingen en nooit wijzigen of verwijderen", "You need to authenticate with ": "U moet verifiëren bij ", "Search images": "Zoek beelden", "Sign Out": "Afmelden", "Select From": "Selecteren", "View/Edit Selected": "Bekijken/bewerken geselecteerd", "Deselect All": "Deselecteer alles", "Files & Folders": "Bestanden en mappen", "Edited Images": "Bewerkte Afbeeldingen", "Go Back": "Ga Bacl", "No search results found for": "Geen zoekresultaten gevonden voor", "Please select": "Gelieve te selecteren", "more file": "meer bestand", "more files": "meer bestanden", "File {displayName} is not an accepted file type. The accepted file types are {types}": "Bestand {displayName} is niet een geaccepteerde bestandstype. De geaccepteerde bestandstypen zijn {types}", "File {displayName} is too big. The accepted file size is less than {roundFileSize}": "Bestand {displayName} is te groot. De aanvaarde vijl spanwijdte zit {roundFileSize}", "Our file upload limit is {maxFiles} {filesText}": "Onze bestand uploaden limiet is {maxFiles} {filesText}" },
-        ka = { Add: "Dodaj", My: "Mój", Connect: "Połączyć", View: "Widok", Upload: "Prześlij pliki", Filter: "Szukaj", Images: "Obrazy", of: "z", Loading: "Ładowanie", Revert: "Cofnij", Edit: "Edytuj", More: "Więcej", Uploaded: "Przesłany", "Web Search": "Grafika z internetu", "Take Picture": "Zrób zdjęcie", "A new page will open to connect your account.": "Nowa strona zostanie otwarta w celu połączenia z Twoim kontem.", "My Device": "Moje urządzenie", "or Drag and Drop, Copy and Paste Files": "lub przeciągnij i upuść, kopiować i wklejać pliki", "Pick Your Files": "Wybierz swoje pliki", "Select Files to Upload": "Wybierz pliki do przesłania", "Selected Files": "Wybrane pliki", "Select Files from": "Wybierz pliki z", "We only extract images and never modify or delete them.": "Mamy tylko wyodrębnić obrazy i nigdy zmodyfikować lub usunąć je", "You need to authenticate with ": "Musisz uwierzytelnić", "Search images": "Szukaj obrazów", "Sign Out": "Wyloguj się", "Select From": "Wybierz z", "View/Edit Selected": "Wyświetl/Edytuj zaznaczone", "Deselect All": "Odznacz wszystko", "Files & Folders": "Pliki i Foldery", "Edited Images": "Edytowane obrazy", "Go Back": "Przejdź wstecz", "No search results found for": "Brak wyników wyszukiwania", "Please select": "Proszę wybrać", "more file": "więcej plików", "more files": "więcej plików", "File {displayName} is not an accepted file type. The accepted file types are {types}": "{displayName} Plik nie jest typem plików akceptowane. Typy plików akceptowane są {types}", "File {displayName} is too big. The accepted file size is less than {roundFileSize}": "{displayName} Plik jest zbyt duże. Rozmiar plików akceptowane jest {roundFileSize}", "Our file upload limit is {maxFiles} {filesText}": "Nasz limit uploadu pliku jest {maxFiles} {filesText}" },
-        Oa = { Add: "Adicionar", My: "Meu", Connect: "Conectar-se", View: "Ver", Upload: "Carregar", Filter: "Ordenar", Images: "Imagens", of: "de", Loading: "Carregamento", Revert: "Desfazer", Edit: "Editar", More: "Mais", Uploaded: "Carregado", "Web Search": "Buscar imagens na Web", "Take Picture": "Tire uma foto", "A new page will open to connect your account.": "Uma nova página será aberta para conectar a sua conta.", "My Device": "Meu dispositivo", "or Drag and Drop, Copy and Paste Files": "ou arrastar, copiar e colar arquivos", "Pick Your Files": "Selecione seus arquivos", "Select Files to Upload": "Selecionar arquivos para upload", "Selected Files": "Arquivos selecionados", "Select Files from": "Selecione arquivos de", "We only extract images and never modify or delete them.": "Nós apenas extraímos as imagens e nunca a modificamos ou a removemos.", "You need to authenticate with ": "Você precisar se autenticar com", "Search images": "Procurar fotos", "Sign Out": "Desconectar", "Select From": "Selecione de", "View/Edit Selected": "Exibir/Editar selecionada", "Deselect All": "Desmarcar todos", "Files & Folders": "Arquivos e pastas", "Edited Images": "Imagens editadas", "Go Back": "Voltar", "No search results found for": "Nenhum resultado de pesquisa encontrado para", "Please select": "Por favor selecione", "more file": "arquivo mais", "more files": "mais arquivos", "File {displayName} is not an accepted file type. The accepted file types are {types}": " Arquivo {displayName} não é um tipo de arquivo aceitos. Os tipos de arquivo aceitos são {types}",
+        Oa = { Add: "Dodaj", My: "Mój", Connect: "Połączyć", View: "Widok", Upload: "Prześlij pliki", Filter: "Szukaj", Images: "Obrazy", of: "z", Loading: "Ładowanie", Revert: "Cofnij", Edit: "Edytuj", More: "Więcej", Uploaded: "Przesłany", "Web Search": "Grafika z internetu", "Take Picture": "Zrób zdjęcie", "A new page will open to connect your account.": "Nowa strona zostanie otwarta w celu połączenia z Twoim kontem.", "My Device": "Moje urządzenie", "or Drag and Drop, Copy and Paste Files": "lub przeciągnij i upuść, kopiować i wklejać pliki", "Pick Your Files": "Wybierz swoje pliki", "Select Files to Upload": "Wybierz pliki do przesłania", "Selected Files": "Wybrane pliki", "Select Files from": "Wybierz pliki z", "We only extract images and never modify or delete them.": "Mamy tylko wyodrębnić obrazy i nigdy zmodyfikować lub usunąć je", "You need to authenticate with ": "Musisz uwierzytelnić", "Search images": "Szukaj obrazów", "Sign Out": "Wyloguj się", "Select From": "Wybierz z", "View/Edit Selected": "Wyświetl/Edytuj zaznaczone", "Deselect All": "Odznacz wszystko", "Files & Folders": "Pliki i Foldery", "Edited Images": "Edytowane obrazy", "Go Back": "Przejdź wstecz", "No search results found for": "Brak wyników wyszukiwania", "Please select": "Proszę wybrać", "more file": "więcej plików", "more files": "więcej plików", "File {displayName} is not an accepted file type. The accepted file types are {types}": "{displayName} Plik nie jest typem plików akceptowane. Typy plików akceptowane są {types}", "File {displayName} is too big. The accepted file size is less than {roundFileSize}": "{displayName} Plik jest zbyt duże. Rozmiar plików akceptowane jest {roundFileSize}", "Our file upload limit is {maxFiles} {filesText}": "Nasz limit uploadu pliku jest {maxFiles} {filesText}" },
+        ka = { Add: "Adicionar", My: "Meu", Connect: "Conectar-se", View: "Ver", Upload: "Carregar", Filter: "Ordenar", Images: "Imagens", of: "de", Loading: "Carregamento", Revert: "Desfazer", Edit: "Editar", More: "Mais", Uploaded: "Carregado", "Web Search": "Buscar imagens na Web", "Take Picture": "Tire uma foto", "A new page will open to connect your account.": "Uma nova página será aberta para conectar a sua conta.", "My Device": "Meu dispositivo", "or Drag and Drop, Copy and Paste Files": "ou arrastar, copiar e colar arquivos", "Pick Your Files": "Selecione seus arquivos", "Select Files to Upload": "Selecionar arquivos para upload", "Selected Files": "Arquivos selecionados", "Select Files from": "Selecione arquivos de", "We only extract images and never modify or delete them.": "Nós apenas extraímos as imagens e nunca a modificamos ou a removemos.", "You need to authenticate with ": "Você precisar se autenticar com", "Search images": "Procurar fotos", "Sign Out": "Desconectar", "Select From": "Selecione de", "View/Edit Selected": "Exibir/Editar selecionada", "Deselect All": "Desmarcar todos", "Files & Folders": "Arquivos e pastas", "Edited Images": "Imagens editadas", "Go Back": "Voltar", "No search results found for": "Nenhum resultado de pesquisa encontrado para", "Please select": "Por favor selecione", "more file": "arquivo mais", "more files": "mais arquivos", "File {displayName} is not an accepted file type. The accepted file types are {types}": " Arquivo {displayName} não é um tipo de arquivo aceitos. Os tipos de arquivo aceitos são {types}",
       "File {displayName} is too big. The accepted file size is less than {roundFileSize}": "{displayName} Arquivo é muito grande. O tamanho de arquivo aceito é {roundFileSize}", "Our file upload limit is {maxFiles} {filesText}": "É o nosso limite de upload de arquivo {maxFiles} {filesText}" },
         Na = { Add: "Добавить", My: "Мой", Connect: "подключить", View: "просмотреть", Upload: "загрузить", Filter: "сортировать по дате", Images: "фото", of: "из", Loading: "загрузки", Revert: "Отменить", Edit: "Изменить", More: "больше", Uploaded: "загружены", "Web Search": "Поиск изображений в сети", "Take Picture": "Фотографировать", "A new page will open to connect your account.": "Новая страница открывается чтобы подключить ваш аккаунт", "My Device": "Моё устройство", "or Drag and Drop, Copy and Paste Files": "или перетаскивать, копировать и вставлять файлы", "Pick Your Files": "Выберите файлы", "Select Files to Upload": "Выберите файлы для загрузки", "Selected Files": "Выбранные файлы", "Select Files from": "Выбрать файлы", "We only extract images and never modify or delete them.": "Мы просто извлекаем фото, а никогда не их изменяем или удалим", "You need to authenticate with ": "Требуется аутентификация аккаунта с ", "Search images": "поиск фото", "Sign Out": "выйти", "Select From": "выбрать в...", "View/Edit Selected": "просмотреть/редактировать", "Deselect All": "отмена", "Files & Folders": "файлы и папки", "Edited Images": "Отредактированные изображения", "Go Back": "Вернуться", "No search results found for": "Нет результатов поиска найдено для", "Please select": "Пожалуйста, выберите", "more file": "более файла", "more files": "больше файлов", "File {displayName} is not an accepted file type. The accepted file types are {types}": "{displayName} Файлов не является типом прикладываемых файлов. Типы прикладываемых файлов являются {types}", "File {displayName} is too big. The accepted file size is less than {roundFileSize}": "{displayName} Файл слишком большой. Признанных файл имеет размер {roundFileSize}", "Our file upload limit is {maxFiles} {filesText}": "Наш предел загрузки файлов {maxFiles} {filesText}" },
         La = { Add: "再添加", My: "我的", Connect: "连接", View: "看", Upload: "上传", Filter: "过滤", Images: "图片", of: "/", Loading: "载入中", Revert: "还原", Edit: "编辑", More: "更多", Uploaded: "已上传", "Web Search": "为图片搜索网络", "Take Picture": "拍照", "A new page will open to connect your account.": "一个新页面会打开以关联您的帐户", "My Device": "我的设备", "or Drag and Drop, Copy and Paste Files": "或拖放，复制和粘贴文件", "Pick Your Files": "选择您的文件", "Select Files to Upload": "选择要上传的文件", "Selected Files": "所选文件", "Select Files from": "从中选择文件", "We only extract images and never modify or delete them.": "我们只提取图像，从不修改或删除它们", "You need to authenticate with": "您需要验证", "Search images": "搜索图像", "Sign Out": "登出", "Select From": "选择自", "View/Edit Selected": "查看/编辑所选项", "Deselect All": "取消选择全部", "Files & Folders": "文件和文件夹", "Edited Images": "编辑的图像", "Go Back": "返回", "No search results found for": "未找到搜索结果", "Please select": "请选择", "more file": "更多文件", "more files": "更多文件", "File {displayName} is not an accepted file type. The accepted file types are {types}": " 文件{displayName}不是可接受的文件类型。 可接受的文件类型为{types}", "File {displayName} is too big. The accepted file size is less than {roundFileSize}": " 文件{displayName}太大。 可接受的文件大小为{roundFileSize}", "Our file upload limit is {maxFiles} {filesText}": "我们的文件上传限制为 {maxFiles} {filesText}" },
-        Ia = { da: ba, de: Ca, en: Sa, es: Ta, fr: Aa, it: Fa, ja: wa, nl: Ra, pl: ka, pt: Oa, ru: Na, zh: La },
+        Ia = { da: ba, de: Ca, en: Sa, es: Ta, fr: Aa, it: Fa, ja: wa, nl: Ra, pl: Oa, pt: ka, ru: Na, zh: La },
         xa = function xa() {
       var e = arguments.length > 0 && void 0 !== arguments[0] ? arguments[0] : "en",
           t = Ia[e];return { ERROR_FILE_NOT_ACCEPTABLE: t["File {displayName} is not an accepted file type. The accepted file types are {types}"], ERROR_FILE_TOO_BIG: t["File {displayName} is too big. The accepted file size is less than {roundFileSize}"], ERROR_MAX_FILES_REACHED: t["Our file upload limit is {maxFiles} {filesText}"] };
     },
-        Da = kr.context("picker"),
+        Da = Or.context("picker"),
         Ua = function Ua(e) {
       return e.source + e.path;
     },
@@ -5739,7 +5739,7 @@ var picker = createCommonjsModule(function (module, exports) {
       return ps.Date.now();
     },
         ys = ri,
-        Es = kr.context("transformer"),
+        Es = Or.context("transformer"),
         bs = function bs(e) {
       return e + "px";
     },
@@ -6006,7 +6006,7 @@ var picker = createCommonjsModule(function (module, exports) {
       }, watch: { route: { immediate: !0, deep: !0, handler: function handler(e) {
             "done" === e[0] && this.$root.$destroy();
           } } } },
-        ks = function ks(e) {
+        Os = function Os(e) {
       var t = void 0,
           n = function n(e, t) {
         return hi({ source: t, sourceKind: "cloud" }, e);
@@ -6175,7 +6175,7 @@ var picker = createCommonjsModule(function (module, exports) {
             return e.pendingReqs;
           } } };
     },
-        Os = function Os(e) {
+        ks = function ks(e) {
       var t = function t(e) {
         return hi({ source: "imagesearch", sourceKind: "cloud" }, e);
       };return { state: { input: "", isSearching: !1, result: null, error: null }, mutations: { UPDATE_INPUT: function UPDATE_INPUT(e, t) {
@@ -6240,7 +6240,9 @@ var picker = createCommonjsModule(function (module, exports) {
       var i = arguments.length > 3 && void 0 !== arguments[3] ? arguments[3] : {},
           o = { imageUrl: null, imageNaturalWidth: 0, imageNaturalHeight: 0, originalUrl: null, imageLoading: !0, imageUploading: !1, transformations: {}, cropRectangle: null, activeTransform: null },
           r = function r(t) {
-        var n = e.getSecurity();return n && n.policy && n.signature && -1 === t.indexOf("https://process.filestackapi.com") && -1 === t.indexOf("https://process-stage.filestackapi.com") ? t + "?policy=" + n.policy + "&signature=" + n.signature : t;
+        if (t) {
+          var n = e.getSecurity();if (n && n.policy && n.signature && -1 === t.indexOf("https://process.filestackapi.com") && -1 === t.indexOf("https://process-stage.filestackapi.com") && -1 === t.indexOf("blob:") && -1 === t.indexOf("?policy=")) return t + "?policy=" + n.policy + "&signature=" + n.signature;
+        }return t;
       },
           a = { SET_IMAGE_NATURAL_SIZE: function SET_IMAGE_NATURAL_SIZE(e, t) {
           e.imageNaturalWidth = t.w, e.imageNaturalHeight = t.h;
@@ -6281,8 +6283,8 @@ var picker = createCommonjsModule(function (module, exports) {
             }
           } catch (e) {
             console.log(e);
-          } else {
-            delete o.resize;var s = e.transform(t.getters.originalUrl, o);t.getters.imageUrl !== s && (t.commit("SET_IMAGE_URL", s), t.commit("SET_IMAGE_LOADING", !0));
+          } else if (delete o.resize, Object.keys(o).length) {
+            var s = e.transform(t.getters.originalUrl, o);t.getters.imageUrl !== s && (t.commit("SET_IMAGE_URL", s), t.commit("SET_IMAGE_LOADING", !0));
           }return Promise.resolve();
         } },
           c = { imageUrl: function imageUrl(e) {
@@ -6314,7 +6316,7 @@ var picker = createCommonjsModule(function (module, exports) {
         } };return { state: hi({}, o, { config: t }, i), mutations: a, actions: s, getters: c };
     };nt.use(Xr);var Us = function Us(e, t, n, i) {
       var o = t.fromSources[0],
-          r = ["source", o.name];return i = hi({ apiClient: e, config: t, route: r, routesHistory: [], mobileNavActive: Ya(navigator.userAgent), selectLabelIsActive: !1 }, i), new Xr.Store({ state: i, modules: { uploadQueue: $a(e, i.uploadQueue), cloud: ks(e), imageSearch: Os(e), transformer: Ds(e, t.transformations), notifications: xs }, mutations: { CHANGE_ROUTE: function CHANGE_ROUTE(e, t) {
+          r = ["source", o.name];return i = hi({ apiClient: e, config: t, route: r, routesHistory: [], mobileNavActive: Ya(navigator.userAgent), selectLabelIsActive: !1 }, i), new Xr.Store({ state: i, modules: { uploadQueue: $a(e, i.uploadQueue), cloud: Os(e), imageSearch: ks(e), transformer: Ds(e, t.transformations), notifications: xs }, mutations: { CHANGE_ROUTE: function CHANGE_ROUTE(e, t) {
             Ya(navigator.userAgent) && -1 !== t.indexOf("local_file_system") && (e.mobileNavActive = !0), e.routesHistory.push(e.route), e.route = t;
           }, GO_BACK_WITH_ROUTE: function GO_BACK_WITH_ROUTE(e) {
             var t = e.routesHistory.pop();Ya(navigator.userAgent) && -1 !== t.indexOf("local_file_system") && (e.mobileNavActive = !0), e.route = t;
@@ -6461,7 +6463,7 @@ var picker = createCommonjsModule(function (module, exports) {
         var r = o;n && (r = n + "." + o);var a = zs[r];if (!a) throw new Error('Unknown config option "' + r + '"');var s = a(t[o]);$s(s) && -1 !== r.indexOf("transformations") ? i[o] = e(s, r) : i[o] = s;
       }), void 0 !== i.minFiles && void 0 !== i.maxFiles && i.minFiles > i.maxFiles) throw new Error('Config option "minFiles" must be smaller or equal to "maxFiles"');return i;
     },
-        Ws = kr.context("picker"),
+        Ws = Or.context("picker"),
         Hs = function Hs(e, t, n) {
       return new Promise(function (i) {
         var o = function o(e) {
@@ -6479,7 +6481,7 @@ var picker = createCommonjsModule(function (module, exports) {
       return !1 === e.loadCss ? Promise.resolve() : Dr.loadCss(e.loadCss);
     };return function (e) {
       var t = arguments.length > 1 && void 0 !== arguments[1] ? arguments[1] : {},
-          n = arguments.length > 2 && void 0 !== arguments[2] ? arguments[2] : {};return Ws("Starting picker v0.5.2 with config:", t), t = js(Gs(t, fi)), Bs(t).then(function () {
+          n = arguments.length > 2 && void 0 !== arguments[2] ? arguments[2] : {};return Ws("Starting picker v0.5.3 with config:", t), t = js(Gs(t, fi)), Bs(t).then(function () {
         return Hs(e, t, n);
       });
     };
@@ -6539,7 +6541,7 @@ var init = function init(apikey, security) {
 };
 
 var filestack = {
-  version: '0.5.0',
+  version: '0.5.1',
   init: init
 };
 

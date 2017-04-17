@@ -1,5 +1,8 @@
 # filestack-js changelog
 
+## 0.5.1 (2017-04-17)
+- Fix transformations regression with security enabled
+
 ## 0.5.0 (2017-04-17)
 - Implement single file/image flow in picker
 - Add translations for sidebar sources
