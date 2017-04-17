@@ -134,7 +134,7 @@ Opens the picker UI.
       - `application/*` <- accept all types of application files
       - `text/*` <- accept all types of text files
     - .preferLinkOverStore <code>boolean</code> <code> = false</code> - For cloud sources whether to __link__ or __store__ files.
-    - .lang <code>string</code> <code> = &quot;en&quot;</code> - Sets locale. Accepts: `da`, `de`, `es`, `fr`, `it`, `ja`, `nl`, `pl`, `pt`, `ru`, `zh`.
+    - .lang <code>string</code> <code> = &quot;en&quot;</code> - Sets locale. Accepts: `da`, `de`, `en`, `es`, `fr`, `it`, `ja`, `nl`, `pl`, `pt`, `ru`, `zh`.
     - .minFiles <code>number</code> <code> = 1</code> - Minimum number of files required to start uploading.
     - .maxFiles <code>number</code> <code> = 1</code> - Maximum number of files allowed to upload.
     - .maxSize <code>number</code> - Restrict selected files to a maximum number of bytes. (e.g. `10 * 1024 * 1024` for 1MB limit).
