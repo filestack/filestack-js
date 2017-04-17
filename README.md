@@ -100,7 +100,7 @@ Set security parameters -- useful for changing policy on instantiated client.
 client.setSecurity({ policy: 'policy', signature: 'signature' });
 ```
 
-### client.pick([options]) ⇒ <code>Promise</code> ⏏
+### client.pick([options]) ⇒ <code>Promise</code>
 Opens the picker UI.
 
 **Kind**: static method of <code>[init](#module_filestack..init)</code>  
@@ -126,36 +126,36 @@ Opens the picker UI.
     - .accept <code>string</code> | <code>Array.&lt;string&gt;</code> - Restrict file types that are allowed to be picked. Formats accepted:
       - `.pdf` <- any file extension
       - `image/jpeg` <- any mime type commonly known by browsers
-      - `image/*` <- special mime type accepting all types of images
-      - `video/*` <- special mime type accepting all types of video files
-      - `audio/*` <- special mime type accepting all types of audio files
+      - `image/*` <- accept all types of images
+      - `video/*` <- accept all types of video files
+      - `audio/*` <- accept all types of audio files
+      - `application/*` <- accept all types of application files
+      - `text/*` <- accept all types of text files
     - .preferLinkOverStore <code>boolean</code> <code> = false</code> - For cloud sources whether to __link__ or __store__ files.
-    - .lang <code>string</code> <code> = &quot;en&quot;</code> - Sets locale. Accepts: `da`, `de`, `en`, `es`, `fr`, `it`, `nl`, `pl`, `pt`, `ru`, `zh`.
+    - .lang <code>string</code> <code> = &quot;en&quot;</code> - Sets locale. Accepts: `da`, `de`, `es`, `fr`, `it`, `ja`, `nl`, `pl`, `pt`, `ru`, `zh`.
     - .minFiles <code>number</code> <code> = 1</code> - Minimum number of files required to start uploading.
     - .maxFiles <code>number</code> <code> = 1</code> - Maximum number of files allowed to upload.
+    - .maxSize <code>number</code> - Restrict selected files to a maximum number of bytes. (e.g. `10 * 1024 * 1024` for 1MB limit).
     - .startUploadingWhenMaxFilesReached <code>boolean</code> <code> = false</code> - Whether to start uploading automatically when maxFiles is hit.
     - .hideWhenUploading <code>boolean</code> <code> = false</code> - Hide the picker UI once uploading begins.
     - .uploadInBackground <code>boolean</code> <code> = true</code> - Start uploading immediately on file selection.
-    - .disableTransformer <code>boolean</code> <code> = false</code> - When true removes ability to edit images with transformer UI.
-    - .transformOptions <code>object</code> - Options to be passed to the transformer UI.
-      - .minDimensions <code>array</code> - Minimum dimensions for picked image. Image will be upscaled if smaller. (e.g. [200, 300])
-      - .maxDimensions <code>array</code> - Maximum dimensions for picked image. Image will be downscaled if smaller. (e.g. [200, 300])
-      - .transformations <code>object</code> - Enable and set options for various transformations.
-          - .crop <code>boolean</code> | <code>object</code> - Enable crop.
-              - .aspectRatio <code>number</code> - Maintain aspect ratio for crop selection. (e.g. 16/9 or 4/3)
-        - .rotate <code>boolean</code> - Enable rotate.
-        - .circle <code>boolean</code> - Enable circle.
-        - .monochrome <code>boolean</code> - Enable monochrome.
-        - .sepia <code>boolean</code> - Enable sepia.
+    - .disableTransformer <code>boolean</code> <code> = false</code> - When true removes ability to edit images.
+    - .transformations <code>object</code> - Specify transforms for images passed to the transformations UI.
+        - .crop <code>boolean</code> | <code>object</code> <code> = true</code> - Enable crop.
+            - .aspectRatio <code>number</code> - Maintain aspect ratio for crop selection. (e.g. 16/9 or 4/3)
+            - .circle <code>boolean</code> <code> = true</code> - Enable circle crop. __Disabled if `aspectRatio` is defined and not 1__.
+        - .minDimensions <code>array</code> - Minimum dimensions for picked image. Image will be upscaled if smaller. (e.g. [200, 300])
+        - .maxDimensions <code>array</code> - Maximum dimensions for picked image. Image will be downscaled if smaller. (e.g. [200, 300])
+        - .filters <code>Array.&lt;string&gt;</code> - Enable image filters. Pick from: `sepia`, `monochrome`. __All enabled by default__.
     - .storeTo <code>object</code> - Options for file storage.
         - .location <code>string</code> <code> = &quot;s3&quot;</code> - One of `s3`, `gcs`, `rackspace`, `azure`, `dropbox`.
-        - [.region] <code>string</code> - Valid S3 region for the selected container (S3 only).
+        - .region <code>string</code> - Valid S3 region for the selected S3 bucket. __S3 only__.
         - .container <code>string</code>
         - .path <code>string</code>
         - .access <code>string</code> - One of `public` or `private`.
     - .onFileSelected <code>[onFileSelected](#module_pick--pick..onFileSelected)</code> - Called whenever user selects a file.
     - .onFileUploadStarted <code>[onFileUploadStarted](#module_pick--pick..onFileUploadStarted)</code> - Called when a file begins uploading.
-    - .onFileUploadProgress <code>[onFileUploadProgress](#module_pick--pick..onFileUploadProgress)</code> - Called during multi-part upload progress events.
+    - .onFileUploadProgress <code>[onFileUploadProgress](#module_pick--pick..onFileUploadProgress)</code> - Called during multi-part upload progress events. __Local files only__.
     - .onFileUploadFinished <code>[onFileUploadFinished](#module_pick--pick..onFileUploadFinished)</code> - Called when a file is done uploading.
     - .onFileUploadFailed <code>[onFileUploadFailed](#module_pick--pick..onFileUploadFailed)</code> - Called when uploading a file fails.
 
