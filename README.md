@@ -35,7 +35,7 @@ Via script tag:
     * [~init(apikey, [security])](#module_filestack..init) ⇒ <code>object</code>
     	* [.getSecurity()](#module_filestack..init.getSecurity) ⇒ <code>object</code>
         * [.setSecurity(security)](#module_filestack..init.setSecurity) ⇒ <code>object</code>
-        * [.pick([options])](#exp_module_pick--pick) ⇒ <code>Promise</code>
+        * [.pick([options])](#module_filestack..init.pick) ⇒ <code>Promise</code>
        	* [.storeURL(url, [options])](#module_filestack..init.storeURL) ⇒ <code>Promise</code>
         * [.retrieve(handle, [options])](#module_filestack..init.retrieve) ⇒ <code>Promise</code>
         * [.remove(handle)](#module_filestack..init.remove) ⇒ <code>Promise</code>
@@ -100,6 +100,7 @@ Set security parameters -- useful for changing policy on instantiated client.
 client.setSecurity({ policy: 'policy', signature: 'signature' });
 ```
 
+<a name="module_filestack..init.pick"></a>
 ### client.pick([options]) ⇒ <code>Promise</code>
 Opens the picker UI.
 
