@@ -101,6 +101,7 @@ client.setSecurity({ policy: 'policy', signature: 'signature' });
 ```
 
 <a name="module_filestack..init.pick"></a>
+
 ### client.pick([options]) ⇒ <code>Promise</code>
 Opens the picker UI.
 
