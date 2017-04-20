@@ -1,4 +1,4 @@
-/* v0.5.1 */
+/* v0.5.2 */
 var commonjsGlobal = typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
 
 function commonjsRequire () {
@@ -3085,7 +3085,7 @@ var initializeGlobalNamespace$1 = function initializeGlobalNamespace() {
 initializeGlobalNamespace$1();
 
 var picker = createCommonjsModule(function (module, exports) {
-  /* v0.5.3 */
+  /* v0.5.4 */
   !function (e, t) {
     module.exports = t();
   }(commonjsGlobal, function () {
@@ -4166,7 +4166,7 @@ var picker = createCommonjsModule(function (module, exports) {
       }if ("string" != typeof e) return 0 === e ? e : +e;e = e.replace(as, "");var n = cs.test(e);return n || ls.test(e) ? us(e.slice(2), n ? 2 : 8) : ss.test(e) ? os : +e;
     }var ui,
         di,
-        fi = { css: { main: "https://static.filestackapi.com/picker/v3/0.5.3/main.css" } },
+        fi = { css: { main: "https://static.filestackapi.com/picker/v3/0.5.4/main.css" } },
         pi = "function" == typeof Symbol && "symbol" == _typeof(Symbol.iterator) ? function (e) {
       return typeof e === 'undefined' ? 'undefined' : _typeof(e);
     } : function (e) {
@@ -6283,8 +6283,8 @@ var picker = createCommonjsModule(function (module, exports) {
             }
           } catch (e) {
             console.log(e);
-          } else if (delete o.resize, Object.keys(o).length) {
-            var s = e.transform(t.getters.originalUrl, o);t.getters.imageUrl !== s && (t.commit("SET_IMAGE_URL", s), t.commit("SET_IMAGE_LOADING", !0));
+          } else {
+            delete o.resize;var s = e.transform(t.getters.originalUrl, o);t.getters.imageUrl !== s && (t.commit("SET_IMAGE_URL", s), t.commit("SET_IMAGE_LOADING", !0));
           }return Promise.resolve();
         } },
           c = { imageUrl: function imageUrl(e) {
@@ -6481,7 +6481,7 @@ var picker = createCommonjsModule(function (module, exports) {
       return !1 === e.loadCss ? Promise.resolve() : Dr.loadCss(e.loadCss);
     };return function (e) {
       var t = arguments.length > 1 && void 0 !== arguments[1] ? arguments[1] : {},
-          n = arguments.length > 2 && void 0 !== arguments[2] ? arguments[2] : {};return Ws("Starting picker v0.5.3 with config:", t), t = js(Gs(t, fi)), Bs(t).then(function () {
+          n = arguments.length > 2 && void 0 !== arguments[2] ? arguments[2] : {};return Ws("Starting picker v0.5.4 with config:", t), t = js(Gs(t, fi)), Bs(t).then(function () {
         return Hs(e, t, n);
       });
     };
@@ -6541,7 +6541,7 @@ var init = function init(apikey, security) {
 };
 
 var filestack = {
-  version: '0.5.1',
+  version: '0.5.2',
   init: init
 };
 

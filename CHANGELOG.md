@@ -1,5 +1,8 @@
 # filestack-js changelog
 
+## 0.5.2 (2017-04-20)
+- Fix one more transformations regression (sorry folks)
+
 ## 0.5.1 (2017-04-17)
 - Fix transformations regression with security enabled
 
