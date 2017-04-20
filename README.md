@@ -24,7 +24,7 @@ const client = filestack.init(apikey);
 Via script tag:
 (Note http://static.filestackapi.com/v3/filestack.js will always point to the latest version. This is __not__ recommended for production.)
 ```HTML
-<script src="http://static.filestackapi.com/v3/filestack-0.5.1.js"></script>
+<script src="http://static.filestackapi.com/v3/filestack-0.5.2.js"></script>
 <script>
   const apikey = 'abc';
   const client = filestack.init(apikey);
