@@ -1,11 +1,11 @@
 filestack-js
 ======================
 
-Official browser client to the Filestack API's. Available via NPM and CDN script.
+Official browser client to the Filestack API's. Available via NPM and Filestack CDN.
 
 Filestack documentation can be found here: https://filestack.com/docs/
 
-This SDK is shipped as both a UMD module and a ES2015 module for modern Javascript bundlers. There is also a separate minified version available on the Filestack CDN.
+This library is shipped as both a UMD module and a ES2015 module for modern Javascript bundlers. There is also a separate minified UMD module available on the Filestack CDN.
 
 ## Installation
 ```sh
