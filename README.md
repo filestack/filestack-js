@@ -109,7 +109,7 @@ client.setSecurity({ policy: 'policy', signature: 'signature' });
 Opens the picker UI.
 
 **Kind**: static method of <code>[init](#module_filestack..init)</code>  
-**Fulfil**: <code>object</code> - Object contains keys `filesUploaded` and `filesFailed` which are both arrays of file metadata.  
+**Resolve**: <code>object</code> - Object contains keys `filesUploaded` and `filesFailed` which are both arrays of file metadata.  
 **Params**
 
 - [options] <code>object</code>
@@ -247,7 +247,7 @@ onFileSelected(file) {
 Interface to the Filestack [Store API](https://www.filestack.com/docs/rest-api/store). Used for storing from a URL.
 
 **Kind**: static method of <code>[init](#module_filestack..init)</code>  
-**Fulfil**: <code>object</code> - Metadata of stored file.  
+**Resolve**: <code>object</code> - Metadata of stored file.  
 **Reject**: <code>error</code> - A Superagent error object.  
 **Params**
 
@@ -274,7 +274,7 @@ Interface to the Filestack [Retrieve API](https://www.filestack.com/docs/rest-ap
 Used for accessing files via Filestack handles.
 
 **Kind**: static method of <code>[init](#module_filestack..init)</code>  
-**Fulfil**: <code>object</code> - Metadata of stored file or stored file, depending on metadata / head option.  
+**Resolve**: <code>object</code> - Metadata of stored file or stored file, depending on metadata / head option.  
 **Reject**: <code>error</code> - A Superagent error object.  
 **Params**
 
@@ -305,7 +305,7 @@ Interface to the Filestack [Remove API](https://www.filestack.com/docs/rest-api/
 Used for removing files, __requires security to be enabled__.
 
 **Kind**: static method of <code>[init](#module_filestack..init)</code>  
-**Fulfil**: <code>object</code> - Result of remove.  
+**Resolve**: <code>object</code> - Result of remove.  
 **Reject**: <code>error</code> - A Superagent error object.  
 **Params**
 
@@ -329,7 +329,7 @@ Interface to the Filestack [Metadata API](https://www.filestack.com/docs/rest-ap
 Used for retrieving detailed data of stored files.
 
 **Kind**: static method of <code>[init](#module_filestack..init)</code>  
-**Fulfil**: <code>object</code> - Result of metadata.  
+**Resolve**: <code>object</code> - Result of metadata.  
 **Reject**: <code>error</code> - A Superagent error object.  
 **Params**
 
@@ -405,7 +405,7 @@ client.storeURL(transformedUrl).then(res => console.log(res));
 Initiates a multi-part upload flow.
 
 **Kind**: static method of <code>[init](#module_filestack..init)</code>  
-**Fulfil**: <code>object</code> - Metadata of uploaded file.  
+**Resolve**: <code>object</code> - Metadata of uploaded file.  
 **Reject**: <code>error</code> - An error object depending on where the flow halted.  
 **Params**
 
