@@ -49,7 +49,11 @@ export default {
         VERSION: manifest.version,
       },
     }),
-    nodeResolve(),
+    nodeResolve({
+      module: true,
+      jsnext: true,
+      main: true,
+    }),
     commonJs(),
     babel(babelrc()),
   ],
