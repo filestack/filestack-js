@@ -9,6 +9,8 @@ import inject from 'rollup-plugin-inject';
 import replace from 'rollup-plugin-replace';
 import nodeResolve from 'rollup-plugin-node-resolve';
 import commonJs from 'rollup-plugin-commonjs';
+import uglify from 'rollup-plugin-uglify';
+import uglify2 from 'uglify-js';
 
 const argv = minimist(process.argv);
 const envName = argv.env || 'production';
@@ -27,14 +29,6 @@ export default {
   entry: 'lib/filestack.js',
   acorn: {
     allowReserved: true,
-  },
-  onwarn(warning) {
-    // Suppress this error message
-    // https://github.com/rollup/rollup/wiki/Troubleshooting#this-is-undefined
-    if (warning.code === 'THIS_IS_UNDEFINED') {
-      return;
-    }
-    console.error(warning.message);
   },
   plugins: [
     inject({
@@ -56,6 +50,14 @@ export default {
     }),
     commonJs(),
     babel(babelrc()),
+    uglify({
+      compress: false,
+      mangle: false,
+      output: {
+        // Leave topmost comment with version
+        comments: (node, comment) => comment.line === 1,
+      },
+    }, uglify2.minify),
   ],
   targets: [
     {

@@ -20,14 +20,6 @@ export default {
   acorn: {
     allowReserved: true,
   },
-  onwarn(warning) {
-    // Suppress this error message
-    // https://github.com/rollup/rollup/wiki/Troubleshooting#this-is-undefined
-    if (warning.code === 'THIS_IS_UNDEFINED') {
-      return;
-    }
-    console.error(warning.message);
-  },
   plugins: [
     inject({
       exclude: 'node_modules/**',
