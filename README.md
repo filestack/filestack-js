@@ -22,9 +22,10 @@ const client = filestack.init(apikey);
 ```
 
 Via script tag:
+
 (Note http://static.filestackapi.com/v3/filestack.js will always point to the latest version. This is __not__ recommended for production.)
 ```HTML
-<script src="http://static.filestackapi.com/v3/filestack-0.5.2.js"></script>
+<script src="http://static.filestackapi.com/v3/filestack-0.6.0.js"></script>
 <script>
   const apikey = 'abc';
   const client = filestack.init(apikey);
@@ -34,67 +35,56 @@ Via script tag:
 # API Reference
   
 * [filestack](#module_filestack)
-    * [~version](#module_filestack..version) ⇒ <code>string</code>
-    * [~init(apikey, [security])](#module_filestack..init) ⇒ <code>object</code>
-    	* [.getSecurity()](#module_filestack..init.getSecurity) ⇒ <code>object</code>
+    * [init(apikey, [security])](#module_filestack..init) ⇒ <code>object</code>
+        * [.getSecurity()](#module_filestack..init.getSecurity) ⇒ <code>object</code>
         * [.setSecurity(security)](#module_filestack..init.setSecurity) ⇒ <code>object</code>
-        * [.pick([options])](#module_filestack..init.pick) ⇒ <code>Promise</code>
-       	* [.storeURL(url, [options])](#module_filestack..init.storeURL) ⇒ <code>Promise</code>
-        * [.retrieve(handle, [options])](#module_filestack..init.retrieve) ⇒ <code>Promise</code>
-        * [.remove(handle)](#module_filestack..init.remove) ⇒ <code>Promise</code>
         * [.metadata(handle, [options])](#module_filestack..init.metadata) ⇒ <code>Promise</code>
+        * [.pick([options])](#module_filestack..init.pick) ⇒ <code>Promise</code>
+        * [.remove(handle)](#module_filestack..init.remove) ⇒ <code>Promise</code>
+        * [.retrieve(handle, [options])](#module_filestack..init.retrieve) ⇒ <code>Promise</code>
+        * [.storeURL(url, [options])](#module_filestack..init.storeURL) ⇒ <code>Promise</code>
         * [.transform(url, options)](#module_filestack..init.transform) ⇒ <code>string</code>
         * [.upload(file, [uploadOptions], [storeOptions])](#module_filestack..init.upload) ⇒ <code>Promise</code>
-    * [~TransformOptions](#module_filestack..TransformOptions) : <code>object</code>
-    * [~progressCallback](#module_filestack..progressCallback) : <code>function</code>
-    * [~retryCallback](#module_filestack..retryCallback) : <code>function</code>
+    * [version](#module_filestack..version) ⇒ <code>string</code>
 
-
-<a name="module_filestack..version"></a>
-
-### filestack~version ⇒ <code>string</code>
-Gets current version.
-
-**Kind**: inner property of <code>[filestack](#module_filestack)</code>  
-**Example**  
-```js
-import filestack from 'filestack-js';
-console.log(filestack.version);
-```
 <a name="module_filestack..init"></a>
 
-### filestack~init(apikey, [security]) ⇒ <code>object</code>
+### init(apikey, [security]) ⇒ <code>object</code>
 Initializes the client.
 
-**Kind**: inner method of <code>[filestack](#module_filestack)</code>  
-**Returns**: <code>object</code> - Object containing the available methods documented below.  
+**Returns**: <code>object</code> - Object containing client methods.  
 **Params**
   - apikey <code>string</code> - Filestack API key. Get a free key [here](https://dev.filestack.com/register/free).  
   - [security] <code>object</code> - Read about [security policies](https://www.filestack.com/docs/security).  
     - .policy <code>string</code> - Filestack security policy encoded in base64.  
     - .signature <code>string</code> - HMAC-SHA256 sIgnature for the security policy.  
 
-<a name="exp_module_pick--pick"></a>
-  
+<a name="module_filestack..version"></a>
+
+### version ⇒ <code>string</code>
+Gets current version.
+
+**Example**  
+```js
+import filestack from 'filestack-js';
+console.log(filestack.version);
+```
 <a name="module_filestack..init.getSecurity"></a>
 
 ### client.getSecurity() ⇒ <code>object</code>
 Get current security parameters.
 
-**Kind**: static method of <code>[init](#module_filestack..init)</code>  
 **Returns**: <code>object</code> - Object containing current security parameters  
 <a name="module_filestack..init.setSecurity"></a>
 
 ### client.setSecurity(security) ⇒ <code>object</code>
 Set security parameters -- useful for changing policy on instantiated client.
 
-**Note:** Does not currently work with `pick`. You will need to re-init the client if you want to propagate new security parameters to the picker.
+**Note:** Does not currently work with `pick`. You will need to init a new client if you want to propagate new security parameters to the picker.
 
-**Kind**: static method of <code>[init](#module_filestack..init)</code>  
 **Returns**: <code>object</code> - Object containing current session parameters  
 **Params**
-
-- security <code>object</code> - Read about [security policies](https://www.filestack.com/docs/security).
+  - security <code>object</code> - Read about [security policies](https://www.filestack.com/docs/security).
     - .policy <code>string</code> - Filestack security policy encoded in base64.
     - .signature <code>string</code> - HMAC-SHA256 sIgnature for the security policy.
 
@@ -108,7 +98,6 @@ client.setSecurity({ policy: 'policy', signature: 'signature' });
 ### client.pick([options]) ⇒ <code>Promise</code>
 Opens the picker UI.
 
-**Kind**: static method of <code>[init](#module_filestack..init)</code>  
 **Resolve**: <code>object</code> - Object contains keys `filesUploaded` and `filesFailed` which are both arrays of file metadata.  
 **Params**
 
@@ -120,6 +109,7 @@ Opens the picker UI.
       - `instagram` - __Default__
       - `googledrive` - __Default__
       - `dropbox` - __Default__
+      - `webcam` - Desktop only. Please use `local_file_system` for mobile. Not currently supported in Safari or IE.
       - `evernote`
       - `flickr`
       - `box`
@@ -163,6 +153,7 @@ Opens the picker UI.
     - .onFileUploadProgress <code>[onFileUploadProgress](#module_pick--pick..onFileUploadProgress)</code> - Called during multi-part upload progress events. __Local files only__.
     - .onFileUploadFinished <code>[onFileUploadFinished](#module_pick--pick..onFileUploadFinished)</code> - Called when a file is done uploading.
     - .onFileUploadFailed <code>[onFileUploadFailed](#module_pick--pick..onFileUploadFailed)</code> - Called when uploading a file fails.
+    - .onClose <code>function</code> - Called when the UI is exited.
 
 **Example**
 ```js
@@ -173,8 +164,7 @@ client.pick({
 ```
 <a name="module_pick--pick..onFileSelected"></a>
 
-#### client.pick~onFileSelected : <code>function</code>
-**Kind**: inner typedef of <code>[pick](#exp_module_pick--pick)</code>
+#### onFileSelected : <code>function</code>
 
 **Params**
 
@@ -200,8 +190,7 @@ onFileSelected(file) {
 ```
 <a name="module_pick--pick..onFileUploadStarted"></a>
 
-#### client.pick~onFileUploadStarted : <code>function</code>
-**Kind**: inner typedef of <code>[pick](#exp_module_pick--pick)</code>
+#### onFileUploadStarted : <code>function</code>
 
 **Params**
 
@@ -209,8 +198,7 @@ onFileSelected(file) {
 
 <a name="module_pick--pick..onFileUploadFinished"></a>
 
-#### client.pick~onFileUploadFinished : <code>function</code>
-**Kind**: inner typedef of <code>[pick](#exp_module_pick--pick)</code>
+#### onFileUploadFinished : <code>function</code>
 
 **Params**
 
@@ -218,8 +206,7 @@ onFileSelected(file) {
 
 <a name="module_pick--pick..onFileUploadFailed"></a>
 
-#### client.pick~onFileUploadFailed : <code>function</code>
-**Kind**: inner typedef of <code>[pick](#exp_module_pick--pick)</code>
+#### onFileUploadFailed : <code>function</code>
 
 **Params**
 
@@ -228,25 +215,20 @@ onFileSelected(file) {
 
 <a name="module_pick--pick..onFileUploadProgress"></a>
 
-#### client.pick~onFileUploadProgress : <code>function</code>
-**Kind**: inner typedef of <code>[pick](#exp_module_pick--pick)</code>
+#### onFileUploadProgress : <code>function</code>
 
 **Params**
 
 - file <code>object</code> - File metadata.
 - event <code>object</code> - Progress event.
-    - .totalProgressPercent <code>number</code> - Percent of total upload.
-    - .progressTotal <code>number</code> - Total number of bytes uploaded thus far across all parts.
-    - .part <code>number</code> - Part #.
-    - .loaded <code>number</code> - Amount of data in this part that has been uploaded.
-    - .byteLength <code>number</code> - Total number of bytes in this part.
+    - .totalPercent <code>number</code> - Percent of file uploaded.
+    - .totalBytes <code>number</code> - Total number of bytes uploaded for this file.
 
 <a name="module_filestack..init.storeURL"></a>
 
 ### client.storeURL(url, [options]) ⇒ <code>Promise</code>
 Interface to the Filestack [Store API](https://www.filestack.com/docs/rest-api/store). Used for storing from a URL.
 
-**Kind**: static method of <code>[init](#module_filestack..init)</code>  
 **Resolve**: <code>object</code> - Metadata of stored file.  
 **Reject**: <code>error</code> - A Superagent error object.  
 **Params**
@@ -273,7 +255,6 @@ client
 Interface to the Filestack [Retrieve API](https://www.filestack.com/docs/rest-api/retrieve).
 Used for accessing files via Filestack handles.
 
-**Kind**: static method of <code>[init](#module_filestack..init)</code>  
 **Resolve**: <code>object</code> - Metadata of stored file or stored file, depending on metadata / head option.  
 **Reject**: <code>error</code> - A Superagent error object.  
 **Params**
@@ -304,7 +285,6 @@ client
 Interface to the Filestack [Remove API](https://www.filestack.com/docs/rest-api/remove).
 Used for removing files, __requires security to be enabled__.
 
-**Kind**: static method of <code>[init](#module_filestack..init)</code>  
 **Resolve**: <code>object</code> - Result of remove.  
 **Reject**: <code>error</code> - A Superagent error object.  
 **Params**
@@ -328,7 +308,6 @@ client
 Interface to the Filestack [Metadata API](https://www.filestack.com/docs/rest-api/meta-data).
 Used for retrieving detailed data of stored files.
 
-**Kind**: static method of <code>[init](#module_filestack..init)</code>  
 **Resolve**: <code>object</code> - Result of metadata.  
 **Reject**: <code>error</code> - A Superagent error object.  
 **Params**
@@ -371,12 +350,11 @@ client
 ### client.transform(url, options) ⇒ <code>string</code>
 Interface to the Filestack [transformation engine](https://www.filestack.com/docs/image-transformations).
 
-**Kind**: static method of <code>[init](#module_filestack..init)</code>  
 **Returns**: <code>string</code> - A new URL that points to the transformed resource.  
 **Params**
 
 - url <code>string</code> - Valid URL to an image.
-- options <code>[TransformOptions](#module_filestack..TransformOptions)</code> - Transformations are applied in the order specified by this object.
+- options [<code>transformOptions</code>](#module_filestack..transformOptions) - Transformations are applied in the order specified by this object.
 
 **Example**  
 ```js
@@ -399,45 +377,9 @@ const transformedUrl = client.transform(url, {
 // optionally store the new URL
 client.storeURL(transformedUrl).then(res => console.log(res));
 ```
-<a name="module_filestack..init.upload"></a>
+<a name="module_filestack..transformOptions"></a>
 
-### client.upload(file, [uploadOptions], [storeOptions]) ⇒ <code>Promise</code>
-Initiates a multi-part upload flow.
-
-**Kind**: static method of <code>[init](#module_filestack..init)</code>  
-**Resolve**: <code>object</code> - Metadata of uploaded file.  
-**Reject**: <code>error</code> - An error object depending on where the flow halted.  
-**Params**
-
-- file <code>File</code> - must be a valid [File](https://developer.mozilla.org/en-US/docs/Web/API/File).
-- [uploadOptions] <code>object</code>
-    - [.partSize] <code>number</code> <code> = 5 * 1024 * 1024</code> - Size of each uploaded part.
-    - [.maxConcurrentUploads] <code>number</code> <code> = 5</code> - Max number of concurrent uploads.
-    - [.retryOptions] <code>object</code> - params for retry settings
-        - [.retries] <code>number</code> <code> = 10</code> - max number of retries
-        - [.factor] <code>number</code> <code> = 2</code> - the exponential factor to use
-        - [.minTimeout] <code>number</code> <code> = 1 * 1000</code> - ms before starting first retry
-        - [.maxTimeout] <code>number</code> <code> = 60 * 1000</code> - max ms between two retries
-    - [.onStart] <code>function</code> - Called when the flow begins (before Filestack handshake request is made).
-    - [.onUploadStart] <code>function</code> - Called when an upload begins (after S3 request is made).
-    - [.onProgress] <code>[progressCallback](#module_filestack..progressCallback)</code> - Called on progress event.
-    - [.onRetry] <code>[retryCallback](#module_filestack..retryCallback)</code> - Called if upload fails and retry is occurring
-    - [.onUploadComplete] <code>function</code> - Called when an upload is completing (before final completion request).
-- [storeOptions] <code>object</code> - Configure where the file is stored.
-    - .location <code>string</code> - Valid options are: `s3`, `gcs`, `dropbox`, `azure`, `rackspace`.
-    - .container <code>string</code> - Name of the storage container.
-    - [.region] <code>string</code> - Valid S3 region for the selected container (S3 only).
-    - .path <code>string</code> - Path where the file will be stored. A trailing slash will put the file in that folder path.
-    - .access <code>string</code> - Valid options are `private` or `public`.
-    
-**Example**  
-```js
-client.upload(file).then(res => console.log(res));
-```
-<a name="module_filestack..TransformOptions"></a>
-
-### filestack~TransformOptions : <code>object</code>
-**Kind**: inner typedef of <code>[filestack](#module_filestack)</code>  
+#### transformOptions : <code>object</code>
 **Params**
 
 - crop <code>object</code> - [Crop options.](https://www.filestack.com/docs/image-transformations/crop)
@@ -488,25 +430,65 @@ client.upload(file).then(res => console.log(res));
 - sepia <code>object</code> - [Sepia.](https://www.filestack.com/docs/image-transformations/filters#sepia)
     - .tone <code>number</code>
 
+<a name="module_filestack..init.upload"></a>
+
+### client.upload(file, [uploadOptions], [storeOptions], [token]) ⇒ <code>Promise</code>
+Initiates a direct-to-S3 multi-part upload. Uses Filestack S3 by default. Read how to configure your own S3 buckets [here](https://www.filestack.com/docs/cloud-storage/s3).
+
+**Resolve**: <code>object</code> - Metadata of uploaded file.  
+**Reject**: <code>error</code> - An Error object depending on where the flow halted.  
+**Params**
+
+- file <code>Blob</code> - must be a valid [File](https://developer.mozilla.org/en-US/docs/Web/API/File) or Blob.
+- [uploadOptions] <code>object</code>
+    - [.partSize] <code>number</code> <code> = 6 * 1024 * 1024</code> - Size of each uploaded part.
+    - [.concurrency] <code>number</code> <code> = 5</code> - Max number of concurrent parts uploading.
+    - [.retry] <code>number</code> <code> = 10</code> - Number of times to retry a failed part of the flow.
+    - [.progressInterval] <code>number</code> <code> = 1000</code> - Frequency (in milliseconds) at which progress events are dispatched.
+    - [.onProgress] [<code>progressCallback</code>](#module_filestack..progressCallback) - Called regularly to give progress updates.
+    - [.onRetry] [<code>retryCallback</code>](#module_filestack..retryCallback) - Called when a retry is initiated.
+- [storeOptions] <code>object</code> - Configure where the file is stored.
+    - [.filename] <code>string</code> - Define a custom filename for the Blob/File being uploaded.
+    - [.location] <code>string</code> <code> = &quot;s3&quot;</code> - Valid options are: `s3`, `gcs`, `dropbox`, `azure`, `rackspace`.
+    - [.region] <code>string</code> - Valid S3 region for the selected container (S3 only).
+    - [.container] <code>string</code> - Name of the storage container.
+    - [.path] <code>string</code> - Path where the file will be stored. A trailing slash will put the file in that folder path.
+    - [.access] <code>string</code> - Valid options are `private` or `public`.
+- [token] <code>object</code> - A control token that can be used to call cancel(), pause(), and resume().
+
+**Example**  
+```js
+const token = {};
+const onRetry = (obj) => {
+  console.log(`Retrying ${obj.location} for ${obj.filename}. Attempt ${obj.attempt} of 10.`);
+};
+
+client.upload(file, { onRetry }, { filename: 'foobar.jpg' }, token)
+  .then(res => console.log(res));
+
+token.pause();  // Pause flow
+token.resume(); // Resume flow
+token.cancel(); // Cancel flow (rejects)
+```
 <a name="module_filestack..progressCallback"></a>
 
-### filestack~progressCallback : <code>function</code>
-**Kind**: inner typedef of <code>[filestack](#module_filestack)</code>  
+#### progressCallback : <code>function</code>
 **Params**
 
 - event <code>object</code> - Progress event.
-    - .totalProgressPercent <code>number</code> - Percent of total upload.
-    - .progressTotal <code>number</code> - Total number of bytes uploaded thus far across all parts.
-    - .part <code>number</code> - Part #.
-    - .loaded <code>number</code> - Amount of data in this part that has been uploaded.
-    - .byteLength <code>number</code> - Total number of bytes in this part.
-    
-### filestack~retryCallback : <code>function</code>
-**Kind**: inner typedef of <code>[filestack](#module_filestack)</code>  
+    - .totalPercent <code>number</code> - Percent of total file upload progress.
+    - .totalBytes <code>number</code> - Total number of bytes uploaded thus far across all parts.
+
+<a name="module_filestack..retryCallback"></a>
+
+#### retryCallback : <code>function</code>
 **Params**
 
-- attempt <code>number</code> - Which attempt the upload is currently on.
-- nextAttempt <code>number</code> - ms before the attempt will start
+- retry <code>object</code> - Retry information object.
+    - .location <code>string</code> - Which part of the flow is being retried.
+    - .parts <code>Array.&lt;object&gt;</code> - Array of current parts at this point in the flow.
+    - .filename <code>string</code> - Name of the file being retried.
+    - .attempt <code>number</code> - Current attempt.
 
 
 * * *
