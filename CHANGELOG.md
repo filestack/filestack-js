@@ -1,5 +1,18 @@
 # filestack-js changelog
 
+## 0.6.0 (2017-05-10)
+**Picker changes**
+- Implement webcam source for taking pictures
+- Remove sidebar pagination, implement sidebar scrolling
+- Fix performance issue in summary screen related to thumbnails
+- Implement onClose callback
+- Add new field `originalPath` to file data returned from pick
+
+**Breaking changes**
+
+- The multi-part `upload` method was rewritten. Options to this method have slightly changed.
+- The signature of progress events has also changed, please see the readme.
+
 ## 0.5.2 (2017-04-20)
 - Fix one more transformations regression (sorry folks)
 
