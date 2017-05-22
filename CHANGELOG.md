@@ -1,5 +1,8 @@
 # filestack-js changelog
 
+## 0.6.1 (2017-05-22)
+- Add token parameter to upload method
+
 ## 0.6.0 (2017-05-10)
 **Picker changes**
 - Implement webcam source for taking pictures
