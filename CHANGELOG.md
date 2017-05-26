@@ -1,5 +1,12 @@
 # filestack-js changelog
 
+## 0.6.2 (2017-05-26)
+**Picker changes**
+- Fix multiple file selection bug on mobile
+- Fix bug where `uploadInBackground: false` was not respecting `storeTo` options
+- Change crop selection area to behave more like a mask
+- Fix issue when picker is loaded alongside a global Vue/Vuex instance
+
 ## 0.6.1 (2017-05-22)
 - Add token parameter to upload method
 
