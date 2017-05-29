@@ -4,7 +4,6 @@
 import jetpack from 'fs-jetpack';
 import minimist from 'minimist';
 import babel from 'rollup-plugin-babel';
-import babelrc from 'babelrc-rollup';
 import inject from 'rollup-plugin-inject';
 import replace from 'rollup-plugin-replace';
 import nodeResolve from 'rollup-plugin-node-resolve';
@@ -31,16 +30,16 @@ export default {
     allowReserved: true,
   },
   plugins: [
-    inject({
-      exclude: 'node_modules/**',
-      modules: {
-        ENV: jetpack.path(`config/env_${envName}.js`),
-      },
-    }),
     replace({
       delimiters: ['@{', '}'],
       values: {
         VERSION: manifest.version,
+      },
+    }),
+    inject({
+      exclude: 'node_modules/**',
+      modules: {
+        ENV: jetpack.path(`config/env_${envName}.js`),
       },
     }),
     nodeResolve({
@@ -49,7 +48,9 @@ export default {
       main: true,
     }),
     commonJs(),
-    babel(babelrc()),
+    babel({
+      exclude: 'node_modules/**',
+    }),
     uglify({
       compress: false,
       mangle: false,
