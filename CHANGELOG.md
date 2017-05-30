@@ -1,5 +1,10 @@
 # filestack-js changelog
 
+## 0.6.3 (2017-05-30)
+**Picker changes**
+- Fix bug with file upload progress related to background uploads
+- Fix issue with crop overlay dimensions being set incorrectly
+
 ## 0.6.2 (2017-05-26)
 **Picker changes**
 - Fix multiple file selection bug on mobile
