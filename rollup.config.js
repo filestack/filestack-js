@@ -25,7 +25,7 @@ const sourcemapType = () => {
 };
 
 export default {
-  entry: 'lib/filestack.js',
+  entry: 'lib/index.js',
   acorn: {
     allowReserved: true,
   },

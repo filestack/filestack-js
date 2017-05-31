@@ -15,7 +15,7 @@ const envName = argv.env || 'production';
 const manifest = jetpack.read('package.json', 'json');
 
 export default {
-  entry: 'lib/filestack.js',
+  entry: 'lib/index.js',
   acorn: {
     allowReserved: true,
   },
