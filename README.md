@@ -32,6 +32,19 @@ Via script tag:
 </script>
 ```
 
+## Polyfills
+
+**Note:** As of 0.7.0 filestack-js is not shipping with polyfills.
+
+This library requires an environment that implements the [`Promise`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise) object spec. 
+
+If you need to use filestack-js in IE11 you will need to add a `Promise` polyfill to your page or application.
+
+Polyfills we recommend (choose one):
+* https://github.com/taylorhakes/promise-polyfill
+* https://github.com/stefanpenner/es6-promise
+
+
 # API Reference
   
 * [filestack](#module_filestack)
@@ -96,7 +109,7 @@ client.setSecurity({ policy: 'policy', signature: 'signature' });
 <a name="module_filestack..init.pick"></a>
 
 ### client.pick([options]) ⇒ <code>Promise</code>
-Opens the picker UI.
+Opens the picker UI widget. The code is loaded dynamically from the Filestack CDN.
 
 **Resolve**: <code>object</code> - Object contains keys `filesUploaded` and `filesFailed` which are both arrays of file metadata.  
 **Params**
