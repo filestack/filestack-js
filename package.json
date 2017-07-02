@@ -3,6 +3,7 @@
   "version": "0.6.3",
   "description": "Official browser client for Filestack",
   "author": "Filestack",
+  "homepage": "https://filestack.com",
   "license": "ISC",
   "repository": {
     "type": "git",
