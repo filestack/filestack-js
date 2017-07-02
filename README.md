@@ -17,7 +17,7 @@
 
 ## What's in the box?
 
-* A wrapper for the [Filestack REST API](https://www.filestack.com/docs/rest-api/retrieve) built on [Superagent](https://visionmedia.github.io/superagent/).
+* A wrapper for the [Filestack REST API](https://www.filestack.com/docs/rest-api/retrieve).
 * A multi-part uploader backed by the Filestack CIN.
 * An interface to the [Filestack Transformation Engine](https://www.filestack.com/docs/image-transformations) for image processing.
 * The Filestack Picker - an upload widget for the web that integrates over a dozen cloud providers.
