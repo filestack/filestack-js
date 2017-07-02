@@ -1,19 +1,35 @@
-filestack-js
-======================
+<p align="center">
+  <a href="https://www.filestack.com"><img src="http://static.filestackapi.com/filestack.svg" align="center" width="50" /></a>  
+</p>
+<h1 align="center">filestack-js</h1>
+<p align="center">
+  <strong>Official web SDK for the Filestack API and content management system.</strong>
+</p>
+<p align="center">
+  <a href="http://npm.im/filestack-js"><img src="https://img.shields.io/npm/v/filestack-js.svg" /></a>
+  <a href="https://static.filestackapi.com/v3/filestack.js"><img src="http://img.badgesize.io/http://static.filestackapi.com/v3/filestack.js?compression=gzip" /></a>
+  <a href="https://static.filestackapi.com/v3/filestack.js"><img src="http://img.badgesize.io/http://static.filestackapi.com/v3/filestack.js" /></a>
+  <img src="https://img.shields.io/badge/module%20formats-umd%2C%20esm-green.svg" />
+  <br/>
+  <img src="https://badges.herokuapp.com/browsers?labels=none&googlechrome=latest&firefox=latest&microsoftedge=latest&iexplore=11&safari=latest&iphone=latest" />
+</p>
 
-Official browser client to the Filestack API's. Available via NPM and Filestack CDN.
 
-Filestack documentation can be found here: https://filestack.com/docs/
+## What's in the box?
 
-This library is shipped as both a UMD module and a ES2015 module for modern Javascript bundlers. There is also a separate minified UMD module available on the Filestack CDN.
+* A wrapper for the [Filestack REST API](https://www.filestack.com/docs/rest-api/retrieve) built on [Superagent](https://visionmedia.github.io/superagent/).
+* A multi-part uploader backed by the Filestack CIN.
+* An interface to the [Filestack Transformation Engine](https://www.filestack.com/docs/image-transformations) for image processing.
+* The Filestack Picker - an upload widget for the web that integrates over a dozen cloud providers.
 
 ## Installation
+
 ```sh
 npm install --save filestack-js
 ```
 ## Usage
 
-Via ES6 modules:
+**ES modules**:
 ```js
 import filestack from 'filestack-js';
 
@@ -21,44 +37,47 @@ const apikey = 'abc';
 const client = filestack.init(apikey);
 ```
 
-Via script tag:
-
-(Note http://static.filestackapi.com/v3/filestack.js will always point to the latest version. This is __not__ recommended for production.)
+**Script tag**:
 ```HTML
-<script src="http://static.filestackapi.com/v3/filestack-0.6.3.js"></script>
+<script src="//static.filestackapi.com/v3/filestack-0.7.0.js"></script>
 <script>
   const apikey = 'abc';
   const client = filestack.init(apikey);
 </script>
 ```
 
-## Polyfills
-
-**Note:** As of 0.7.0 filestack-js is not shipping with polyfills.
+## Promises
 
 This library requires an environment that implements the [`Promise`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise) object spec. 
+If you target IE11 you will need to add a `Promise` polyfill to your page or application.
 
-If you need to use filestack-js in IE11 you will need to add a `Promise` polyfill to your page or application.
+**Polyfills we recommend:**
 
-Polyfills we recommend (choose one):
+Module (for bundling):
 * https://github.com/taylorhakes/promise-polyfill
-* https://github.com/stefanpenner/es6-promise
 
+Script (for script tag):
+* https://cdn.polyfill.io/v2/polyfill.min.js?features=Promise
+
+## Known Issues
+
+Currently the picker requires support for third-party cookies. End users will need to accept third-party cookies to authenticate with cloud sources.
+We are actively working to change this.
 
 # API Reference
   
 * [filestack](#module_filestack)
-    * [init(apikey, [security])](#module_filestack..init) ⇒ <code>object</code>
-        * [.getSecurity()](#module_filestack..init.getSecurity) ⇒ <code>object</code>
-        * [.setSecurity(security)](#module_filestack..init.setSecurity) ⇒ <code>object</code>
-        * [.metadata(handle, [options])](#module_filestack..init.metadata) ⇒ <code>Promise</code>
-        * [.pick([options])](#module_filestack..init.pick) ⇒ <code>Promise</code>
-        * [.remove(handle)](#module_filestack..init.remove) ⇒ <code>Promise</code>
-        * [.retrieve(handle, [options])](#module_filestack..init.retrieve) ⇒ <code>Promise</code>
-        * [.storeURL(url, [options])](#module_filestack..init.storeURL) ⇒ <code>Promise</code>
-        * [.transform(url, options)](#module_filestack..init.transform) ⇒ <code>string</code>
-        * [.upload(file, [uploadOptions], [storeOptions])](#module_filestack..init.upload) ⇒ <code>Promise</code>
-    * [version](#module_filestack..version) ⇒ <code>string</code>
+  * [init(apikey, [security])](#module_filestack..init) ⇒ <code>object</code>
+    * [.getSecurity()](#module_filestack..init.getSecurity) ⇒ <code>object</code>
+    * [.setSecurity(security)](#module_filestack..init.setSecurity) ⇒ <code>object</code>
+    * [.metadata(handle, [options])](#module_filestack..init.metadata) ⇒ <code>Promise</code>
+    * [.pick([options])](#module_filestack..init.pick) ⇒ <code>Promise</code>
+    * [.remove(handle)](#module_filestack..init.remove) ⇒ <code>Promise</code>
+    * [.retrieve(handle, [options])](#module_filestack..init.retrieve) ⇒ <code>Promise</code>
+    * [.storeURL(url, [options])](#module_filestack..init.storeURL) ⇒ <code>Promise</code>
+    * [.transform(url, options)](#module_filestack..init.transform) ⇒ <code>string</code>
+    * [.upload(file, [uploadOptions], [storeOptions])](#module_filestack..init.upload) ⇒ <code>Promise</code>
+  * [version](#module_filestack..version) ⇒ <code>string</code>
 
 <a name="module_filestack..init"></a>
 
@@ -70,7 +89,7 @@ Initializes the client.
   - apikey <code>string</code> - Filestack API key. Get a free key [here](https://dev.filestack.com/register/free).  
   - [security] <code>object</code> - Read about [security policies](https://www.filestack.com/docs/security).  
     - .policy <code>string</code> - Filestack security policy encoded in base64.  
-    - .signature <code>string</code> - HMAC-SHA256 sIgnature for the security policy.  
+    - .signature <code>string</code> - HMAC-SHA256 signature for the security policy.  
 
 <a name="module_filestack..version"></a>
 
@@ -99,7 +118,7 @@ Set security parameters -- useful for changing policy on instantiated client.
 **Params**
   - security <code>object</code> - Read about [security policies](https://www.filestack.com/docs/security).
     - .policy <code>string</code> - Filestack security policy encoded in base64.
-    - .signature <code>string</code> - HMAC-SHA256 sIgnature for the security policy.
+    - .signature <code>string</code> - HMAC-SHA256 signature for the security policy.
 
 **Example**  
 ```js
@@ -109,7 +128,7 @@ client.setSecurity({ policy: 'policy', signature: 'signature' });
 <a name="module_filestack..init.pick"></a>
 
 ### client.pick([options]) ⇒ <code>Promise</code>
-Opens the picker UI widget. The code is loaded dynamically from the Filestack CDN.
+Attaches and opens the picker UI in the current DOM.
 
 **Resolve**: <code>object</code> - Object contains keys `filesUploaded` and `filesFailed` which are both arrays of file metadata.  
 **Params**
@@ -117,12 +136,13 @@ Opens the picker UI widget. The code is loaded dynamically from the Filestack CD
 - [options] <code>object</code>
     - .fromSources <code>Array.&lt;string&gt;</code> - Valid sources are:
       - `local_file_system` - __Default__
+      - `url` - __Default__
       - `imagesearch` - __Default__
       - `facebook` - __Default__
       - `instagram` - __Default__
       - `googledrive` - __Default__
       - `dropbox` - __Default__
-      - `webcam` - Desktop only. Please use `local_file_system` for mobile. Not currently supported in Safari or IE.
+      - `webcam` - Desktop only. Not currently supported in Safari and IE.
       - `evernote`
       - `flickr`
       - `box`
@@ -131,6 +151,7 @@ Opens the picker UI widget. The code is loaded dynamically from the Filestack CD
       - `picasa`
       - `onedrive`
       - `clouddrive`
+      - `customsource` - Configure this in your Filestack Dev Portal.
     - .accept <code>string</code> | <code>Array.&lt;string&gt;</code> - Restrict file types that are allowed to be picked. Formats accepted:
       - `.pdf` <- any file extension
       - `image/jpeg` <- any mime type commonly known by browsers
@@ -139,6 +160,8 @@ Opens the picker UI widget. The code is loaded dynamically from the Filestack CD
       - `audio/*` <- accept all types of audio files
       - `application/*` <- accept all types of application files
       - `text/*` <- accept all types of text files
+    - .customSourceContainer <code>string</code> - Set the default container for your custom source.
+    - .customSourcePath <code>string</code> - Set the default path for your custom source container.
     - .preferLinkOverStore <code>boolean</code> <code> = false</code> - For cloud sources whether to __link__ or __store__ files.
     - .lang <code>string</code> <code> = &quot;en&quot;</code> - Sets locale. Accepts: `da`, `de`, `en`, `es`, `fr`, `it`, `ja`, `nl`, `pl`, `pt`, `ru`, `zh`.
     - .minFiles <code>number</code> <code> = 1</code> - Minimum number of files required to start uploading.
@@ -147,6 +170,7 @@ Opens the picker UI widget. The code is loaded dynamically from the Filestack CD
     - .startUploadingWhenMaxFilesReached <code>boolean</code> <code> = false</code> - Whether to start uploading automatically when maxFiles is hit.
     - .hideWhenUploading <code>boolean</code> <code> = false</code> - Hide the picker UI once uploading begins.
     - .uploadInBackground <code>boolean</code> <code> = true</code> - Start uploading immediately on file selection.
+    - .disableThumbnails <code>boolean</code> <code> = false</code> - Disables local image thumbnail previews in the summary screen.
     - .disableTransformer <code>boolean</code> <code> = false</code> - When true removes ability to edit images.
     - .transformations <code>object</code> - Specify transforms for images passed to the transformations UI.
         - .crop <code>boolean</code> | <code>object</code> <code> = true</code> - Enable crop.
