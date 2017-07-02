@@ -9,7 +9,7 @@ import replace from 'rollup-plugin-replace';
 import nodeResolve from 'rollup-plugin-node-resolve';
 import commonJs from 'rollup-plugin-commonjs';
 import uglify from 'rollup-plugin-uglify';
-import uglify2 from 'uglify-js';
+import { minify } from 'uglify-es';
 
 const argv = minimist(process.argv);
 const envName = argv.env || 'production';
@@ -58,7 +58,7 @@ export default {
         // Leave topmost comment with version
         comments: (node, comment) => comment.line === 1,
       },
-    }, uglify2.minify),
+    }, minify),
   ],
   targets: [
     {
