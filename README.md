@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="https://www.filestack.com"><img src="http://static.filestackapi.com/filestack-js.svg" align="center" width="250" /></a>  
+  <a href="https://www.filestack.com"><img src="http://static.filestackapi.com/filestack-js.svg?refresh" align="center" width="250" /></a>  
 </p>
 <p align="center">
   <strong>Official web SDK for the Filestack API and content management system.</strong>
