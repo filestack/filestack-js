@@ -1,7 +1,7 @@
 {
   "name": "filestack-js",
   "version": "0.6.3",
-  "description": "Official browser client for Filestack",
+  "description": "Official web SDK for the Filestack API",
   "author": "Filestack",
   "homepage": "https://filestack.com",
   "license": "ISC",
