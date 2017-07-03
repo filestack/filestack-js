@@ -1,7 +1,6 @@
 <p align="center">
-  <a href="https://www.filestack.com"><img src="http://static.filestackapi.com/filestack.svg" align="center" width="50" /></a>  
+  <a href="https://www.filestack.com"><img src="http://static.filestackapi.com/filestack-js.svg" align="center" width="250" /></a>  
 </p>
-<h1 align="center">filestack-js</h1>
 <p align="center">
   <strong>Official web SDK for the Filestack API and content management system.</strong>
 </p>
@@ -13,12 +12,13 @@
   <br/>
   <img src="https://badges.herokuapp.com/browsers?labels=none&googlechrome=latest&firefox=latest&microsoftedge=latest&iexplore=11&safari=latest&iphone=latest" />
 </p>
+<hr/>
 
 
 ## What's in the box?
 
 * A wrapper for the [Filestack REST API](https://www.filestack.com/docs/rest-api/retrieve).
-* A multi-part uploader backed by the Filestack CIN.
+* A multi-part uploader powered by the [Filestack CIN](https://www.filestack.com/products/content-ingestion-network).
 * An interface to the [Filestack Transformation Engine](https://www.filestack.com/docs/image-transformations) for image processing.
 * The Filestack Picker - an upload widget for the web that integrates over a dozen cloud providers.
 
@@ -29,7 +29,7 @@ npm install --save filestack-js
 ```
 ## Usage
 
-**ES modules**:
+**ES module**:
 ```js
 import filestack from 'filestack-js';
 
@@ -37,7 +37,7 @@ const apikey = 'abc';
 const client = filestack.init(apikey);
 ```
 
-**Script tag**:
+**Script**:
 ```HTML
 <script src="//static.filestackapi.com/v3/filestack-0.7.0.js"></script>
 <script>
