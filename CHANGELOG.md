@@ -1,5 +1,25 @@
 # filestack-js changelog
 
+## 0.7.0 (2017-07-03)
+**Picker changes**
+- Cloud folder UX and interface have been overhauled 
+- Implemented Filestack whitelabel account feature (disable brand footer)
+- Add new screen for blocked applications
+- Add new option `disableThumbnails` to remove local file thumbnails for performance increase
+- Add new sources `url` and `customsource` (plus `customSourcePath` and `customSourceContainer` options)
+- Various style updates
+- Bug fixes including removing a TypeError on extension checking
+
+**Client changes**
+- Fix module loader breaking in Node environments
+- Fix memory leak in multi-part uploader
+- Abort multi-part uploads if ETag header does not exist on first chunk response
+
+**Breaking changes**
+
+- Polyfills have been removed from the distributable. Please see the readme section [Promises](https://github.com/filestack/filestack-js#promises)
+- `fsp-button-auth` is now `fsp-button--auth` 
+
 ## 0.6.3 (2017-05-30)
 **Picker changes**
 - Fix bug with file upload progress related to background uploads
