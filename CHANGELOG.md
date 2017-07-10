@@ -1,5 +1,9 @@
 # filestack-js changelog
 
+## 0.7.1 (2017-07-10)
+**Picker fixes**
+- Fix bug with broken URL upload when security is enabled
+
 ## 0.7.0 (2017-07-03)
 **Picker changes**
 - Cloud folder UX and interface have been overhauled 
