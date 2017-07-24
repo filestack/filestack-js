@@ -170,26 +170,35 @@ Attaches and opens the picker UI in the current DOM.
     - .startUploadingWhenMaxFilesReached <code>boolean</code> <code> = false</code> - Whether to start uploading automatically when maxFiles is hit.
     - .hideWhenUploading <code>boolean</code> <code> = false</code> - Hide the picker UI once uploading begins.
     - .uploadInBackground <code>boolean</code> <code> = true</code> - Start uploading immediately on file selection.
-    - .disableThumbnails <code>boolean</code> <code> = false</code> - Disables local image thumbnail previews in the summary screen.
     - .disableTransformer <code>boolean</code> <code> = false</code> - When true removes ability to edit images.
-    - .transformations <code>object</code> - Specify transforms for images passed to the transformations UI.
+    - .disableThumbnails <code>boolean</code> <code> = false</code> - Disables local image thumbnail previews in the summary screen.
+    - .transformations <code>object</code> - Specify options for images passed to the crop UI.
         - .crop <code>boolean</code> | <code>object</code> <code> = true</code> - Enable crop.
-            - .aspectRatio <code>number</code> - Maintain aspect ratio for crop selection. (e.g. 16/9 or 4/3)
-            - .circle <code>boolean</code> <code> = true</code> - Enable circle crop. __Disabled if `aspectRatio` is defined and not 1__.
-        - .minDimensions <code>array</code> - Minimum dimensions for picked image. Image will be upscaled if smaller. (e.g. [200, 300])
-        - .maxDimensions <code>array</code> - Maximum dimensions for picked image. Image will be downscaled if smaller. (e.g. [200, 300])
-        - .filters <code>Array.&lt;string&gt;</code> - Enable image filters. Pick from: `sepia`, `monochrome`. __All enabled by default__.
+            - .aspectRatio <code>number</code> - Maintain aspect ratio for crop selection. (e.g. 16/9, 800/600).
+            - .force <code>boolean</code> - Force all images to be cropped before uploading.
+        - .circle <code>boolean</code> <code> = true</code> - Enable circle crop. __Disabled if `crop.aspectRatio` is defined and not 1. Converts to PNG.__
+        - .rotate <code>boolean</code> <code> = true</code> - Enable image rotation.
+    - .imageDim <code>Array.&lt;number&gt;</code> - Specify image dimensions. e.g. `[800, 600]`. Only for JPEG, PNG, and BMP files.
+  Local and cropped images will be resized (upscaled or downscaled) to the specified dimensions before uploading.
+  The original height to width ratio is maintained. To resize all images based on the width, set [width, null], eg. [800, null].
+  For the height set [null, height], eg [null, 600].
+    - .imageMax <code>Array.&lt;number&gt;</code> - Specify maximum image dimensions. e.g. `[800, 600]`. Only for JPEG, PNG, and BMP files.
+  Images bigger than the specified dimensions will be resized to the maximum size while maintaining the original aspect ratio.
+  The output will not be exactly 800x600 unless the imageMax matches the aspect ratio of the original image.
+    - .imageMin <code>Array.&lt;number&gt;</code> - Specify minimum image dimensions. e.g. `[800, 600]`. Only for JPEG, PNG, and BMP files.
+  Images smaller than the specified dimensions will be upscaled to the minimum size while maintaining the original aspect ratio.
+  The output will not be exactly 800x600 unless the imageMin matches the aspect ratio of the original image.
     - .storeTo <code>object</code> - Options for file storage.
-        - .location <code>string</code> <code> = &quot;s3&quot;</code> - One of `s3`, `gcs`, `rackspace`, `azure`, `dropbox`.
+        - .location <code>string</code> - One of `s3`, `gcs`, `rackspace`, `azure`, `dropbox`.
         - .region <code>string</code> - Valid S3 region for the selected S3 bucket. __S3 only__.
         - .container <code>string</code>
         - .path <code>string</code>
         - .access <code>string</code> - One of `public` or `private`.
-    - .onFileSelected <code>[onFileSelected](#module_pick--pick..onFileSelected)</code> - Called whenever user selects a file.
-    - .onFileUploadStarted <code>[onFileUploadStarted](#module_pick--pick..onFileUploadStarted)</code> - Called when a file begins uploading.
-    - .onFileUploadProgress <code>[onFileUploadProgress](#module_pick--pick..onFileUploadProgress)</code> - Called during multi-part upload progress events. __Local files only__.
-    - .onFileUploadFinished <code>[onFileUploadFinished](#module_pick--pick..onFileUploadFinished)</code> - Called when a file is done uploading.
-    - .onFileUploadFailed <code>[onFileUploadFailed](#module_pick--pick..onFileUploadFailed)</code> - Called when uploading a file fails.
+    - .onFileSelected [<code>onFileSelected</code>](#module_pick--pick..onFileSelected) - Called whenever user selects a file.
+    - .onFileUploadStarted [<code>onFileUploadStarted</code>](#module_pick--pick..onFileUploadStarted) - Called when a file begins uploading.
+    - .onFileUploadProgress [<code>onFileUploadProgress</code>](#module_pick--pick..onFileUploadProgress) - Called during multi-part upload progress events. __Local files only__.
+    - .onFileUploadFinished [<code>onFileUploadFinished</code>](#module_pick--pick..onFileUploadFinished) - Called when a file is done uploading.
+    - .onFileUploadFailed [<code>onFileUploadFailed</code>](#module_pick--pick..onFileUploadFailed) - Called when uploading a file fails.
     - .onClose <code>function</code> - Called when the UI is exited.
 
 **Example**
@@ -476,7 +485,7 @@ Initiates a direct-to-S3 multi-part upload. Uses Filestack S3 by default. Read h
 **Reject**: <code>error</code> - An Error object depending on where the flow halted.  
 **Params**
 
-- file <code>Blob</code> - must be a valid [File](https://developer.mozilla.org/en-US/docs/Web/API/File) or Blob.
+- file <code>Blob</code> | <code>string</code> - must be a valid [File](https://developer.mozilla.org/en-US/docs/Web/API/File), Blob, or base64 encoded string.
 - [uploadOptions] <code>object</code>
     - [.partSize] <code>number</code> <code> = 6 * 1024 * 1024</code> - Size of each uploaded part.
     - [.concurrency] <code>number</code> <code> = 5</code> - Max number of concurrent parts uploading.
