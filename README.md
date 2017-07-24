@@ -163,7 +163,7 @@ Attaches and opens the picker UI in the current DOM.
     - .customSourceContainer <code>string</code> - Set the default container for your custom source.
     - .customSourcePath <code>string</code> - Set the default path for your custom source container.
     - .preferLinkOverStore <code>boolean</code> <code> = false</code> - For cloud sources whether to __link__ or __store__ files.
-    - .lang <code>string</code> <code> = &quot;en&quot;</code> - Sets locale. Accepts: `da`, `de`, `en`, `es`, `fr`, `it`, `ja`, `nl`, `pl`, `pt`, `ru`, `zh`.
+    - .lang <code>string</code> <code> = &quot;en&quot;</code> - Sets locale. Accepts: `da`, `de`, `en`, `es`, `fr`, `he`, `it`, `ja`, `nl`, `pl`, `pt`, `ru`, `zh`.
     - .minFiles <code>number</code> <code> = 1</code> - Minimum number of files required to start uploading.
     - .maxFiles <code>number</code> <code> = 1</code> - Maximum number of files allowed to upload.
     - .maxSize <code>number</code> - Restrict selected files to a maximum number of bytes. (e.g. `10 * 1024 * 1024` for 1MB limit).
@@ -200,6 +200,7 @@ Attaches and opens the picker UI in the current DOM.
     - .onFileUploadFinished [<code>onFileUploadFinished</code>](#module_pick--pick..onFileUploadFinished) - Called when a file is done uploading.
     - .onFileUploadFailed [<code>onFileUploadFailed</code>](#module_pick--pick..onFileUploadFailed) - Called when uploading a file fails.
     - .onClose <code>function</code> - Called when the UI is exited.
+    - .rejectOnCancel <code>boolean</code> - Reject the returned Promise when a user cancels the pick. The Promise will reject with a list of all files currently selected.
 
 **Example**
 ```js
