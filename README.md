@@ -475,6 +475,20 @@ client.storeURL(transformedUrl).then(res => console.log(res));
 - monochrome <code>boolean</code> - [Monochrome.](https://www.filestack.com/docs/image-transformations/filters#monochrome)
 - sepia <code>object</code> - [Sepia.](https://www.filestack.com/docs/image-transformations/filters#sepia)
     - .tone <code>number</code>
+- output <code>object</code> - [Output options.](https://www.filestack.com/docs/image-transformations/conversion)
+    - .format <code>string</code>
+    - .background <code>string</code>
+    - .page <code>Array.&lt;number&gt;</code> - Range format `[1, 10000]`.
+    - .density <code>Array.&lt;number&gt;</code> - Range format `[1, 500]`.
+    - .compress <code>boolean</code>
+    - .quality <code>number</code> | <code>string</code> - Can be number in range 1-100 or `input`.
+    - .input <code>boolean</code>
+    - .strip <code>boolean</code>
+    - .colorspace <code>string</code> - One of `rgb`, `cmyk`, or `input`.
+    - .secure <code>boolean</code>
+    - .docinfo <code>boolean</code>
+    - .pageformat <code>string</code> - One of `a3`, `a4`, `a5`, `b4`, `b5`, `letter`, `legal`, or `tabloid`.
+    - .pageorientation <code>string</code> - One of `landscape` or `portrait`.
 
 <a name="module_filestack..init.upload"></a>
 
