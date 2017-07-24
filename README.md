@@ -180,8 +180,8 @@ Attaches and opens the picker UI in the current DOM.
         - .rotate <code>boolean</code> <code> = true</code> - Enable image rotation.
     - .imageDim <code>Array.&lt;number&gt;</code> - Specify image dimensions. e.g. `[800, 600]`. Only for JPEG, PNG, and BMP files.
   Local and cropped images will be resized (upscaled or downscaled) to the specified dimensions before uploading.
-  The original height to width ratio is maintained. To resize all images based on the width, set [width, null], eg. [800, null].
-  For the height set [null, height], eg [null, 600].
+  The original height to width ratio is maintained. To resize all images based on the width, set [width, null], e.g. [800, null].
+  For the height set [null, height], e.g. [null, 600].
     - .imageMax <code>Array.&lt;number&gt;</code> - Specify maximum image dimensions. e.g. `[800, 600]`. Only for JPEG, PNG, and BMP files.
   Images bigger than the specified dimensions will be resized to the maximum size while maintaining the original aspect ratio.
   The output will not be exactly 800x600 unless the imageMax matches the aspect ratio of the original image.
