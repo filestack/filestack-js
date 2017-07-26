@@ -1,5 +1,35 @@
 # filestack-js changelog
 
+## 0.8.0 (2017-07-26)
+**Picker changes**
+- Fix typos in various languages including Italian and Danish
+- Add Hebrew language as `he`
+- Cancel uploads when the pick modal is closed (via close button or ESC key)
+- Convert all image transformations to run on the client
+- Implement force crop flow
+
+**New pick options**
+- `imageMax` -- set maximum dimensions for client-side image resizing 
+- `imageMin` -- set minimum dimensions for client-side image resizing 
+- `imageDim` -- set dimensions for client-side image resizing
+- `rejectOnCancel` -- reject the Promise returned by `pick` on user cancel
+- `transformations.crop.force` -- force all images to be cropped before uploading
+- `transformations.rotate` -- enable/disable image rotation
+- `transformations.circle` -- enable/disable image circle crop
+
+**Deprecated pick options**
+
+As of 0.8.0 the following options are no longer supported:
+
+- `transformations.maxDimensions` -- Replaced by `imageMax`
+- `transformations.minDimensions` -- Replaced by `imageMin`
+- `transformations.crop.circle` -- Replaced by `transformations.circle`
+- `transformations.filters` -- These are now gone, for now
+
+**Client changes**
+- `upload` will now accept a base64 encoded string which it will convert to a Blob.
+- Added new transform option `output` for file conversion URL generation
+
 ## 0.7.1 (2017-07-10)
 **Picker fixes**
 - Fix bug with broken URL upload when security is enabled
