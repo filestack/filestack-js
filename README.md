@@ -39,7 +39,7 @@ const client = filestack.init(apikey);
 
 **Script**:
 ```HTML
-<script src="//static.filestackapi.com/v3/filestack-0.7.0.js"></script>
+<script src="//static.filestackapi.com/v3/filestack-0.8.1.js"></script>
 <script>
   const apikey = 'abc';
   const client = filestack.init(apikey);
@@ -49,7 +49,7 @@ const client = filestack.init(apikey);
 ## Promises
 
 This library requires an environment that implements the [`Promise`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise) object spec. 
-If you target IE11 you will need to add a `Promise` polyfill to your page or application.
+If you target IE11 or iOS before 8.0 you will need to add a `Promise` polyfill to your page or application.
 
 **Polyfills we recommend:**
 
@@ -143,6 +143,8 @@ Attaches and opens the picker UI in the current DOM.
       - `googledrive` - __Default__
       - `dropbox` - __Default__
       - `webcam` - Desktop only. Not currently supported in Safari and IE.
+      - `video` - Desktop only. Not currently supported in Safari and IE.
+      - `audio` - Desktop only. Not currently supported in Safari and IE.
       - `evernote`
       - `flickr`
       - `box`
@@ -172,6 +174,7 @@ Attaches and opens the picker UI in the current DOM.
     - .uploadInBackground <code>boolean</code> <code> = true</code> - Start uploading immediately on file selection.
     - .disableTransformer <code>boolean</code> <code> = false</code> - When true removes ability to edit images.
     - .disableThumbnails <code>boolean</code> <code> = false</code> - Disables local image thumbnail previews in the summary screen.
+    - .videoResolution <code>string</code> <code> = &quot;640x480&quot;</code> - Sets the resolution of recorded video. One of "320x240", "640x480" or "1280x720".
     - .transformations <code>object</code> - Specify options for images passed to the crop UI.
         - .crop <code>boolean</code> | <code>object</code> <code> = true</code> - Enable crop.
             - .aspectRatio <code>number</code> - Maintain aspect ratio for crop selection. (e.g. 16/9, 800/600).
@@ -318,8 +321,8 @@ Used for accessing files via Filestack handles.
 client
   .retrieve('DCL5K46FS3OIxb5iuKby')
   .then((blob) => {
-     var urlCreator = window.URL || window.webkitURL;
-     var imageUrl = urlCreator.createObjectURL(blob);
+     const urlCreator = window.URL || window.webkitURL;
+     const imageUrl = urlCreator.createObjectURL(blob);
      document.querySelector('#myImage').src = imageUrl;
   })
   .catch((err) => {
