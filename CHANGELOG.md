@@ -1,5 +1,15 @@
 # filestack-js changelog
 
+## 0.8.1 (2017-08-04)
+**Picker changes**
+- Implement audio and video sources
+- Add `videoResolution` option for video source
+- Fix CSS bugs on iOS 8 Safari
+- Fix bug with cloud file selection/deselection
+
+**Client changes**
+- Uploads will no longer retry on HTTP 4xx responses
+
 ## 0.8.0 (2017-07-26)
 **Picker changes**
 - Fix typos in various languages including Italian and Danish
