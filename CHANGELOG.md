@@ -1,5 +1,8 @@
 # filestack-js changelog
 
+## 0.8.2 (2017-08-14)
+- Force picker script URL to use HTTPS protocol
+
 ## 0.8.1 (2017-08-04)
 **Picker changes**
 - Implement audio and video sources
