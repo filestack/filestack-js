@@ -356,7 +356,7 @@ client
 ```
 <a name="module_filestack..init.overwrite"></a>
 
-#### client.overwrite(handle) ⇒ <code>Promise</code>
+### client.overwrite(handle) ⇒ <code>Promise</code>
 Interface to the Filestack [Write API](https://www.filestack.com/docs/rest-api/write).
 Used for overwriting files, __requires security to be enabled__.
 
