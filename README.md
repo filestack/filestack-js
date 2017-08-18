@@ -73,7 +73,6 @@ We are actively working to change this.
     * [.metadata(handle, [options])](#module_filestack..init.metadata) ⇒ <code>Promise</code>
     * [.pick([options])](#module_filestack..init.pick) ⇒ <code>Promise</code>
     * [.remove(handle)](#module_filestack..init.remove) ⇒ <code>Promise</code>
-    * [.overwrite(handle)](#module_filestack..init.overwrite) ⇒ <code>Promise</code>
     * [.retrieve(handle, [options])](#module_filestack..init.retrieve) ⇒ <code>Promise</code>
     * [.storeURL(url, [options])](#module_filestack..init.storeURL) ⇒ <code>Promise</code>
     * [.transform(url, options)](#module_filestack..init.transform) ⇒ <code>string</code>
@@ -347,29 +346,6 @@ Used for removing files, __requires security to be enabled__.
 ```js
 client
   .remove('DCL5K46FS3OIxb5iuKby')
-  .then((res) => {
-    console.log(res);
-  })
-  .catch((err) => {
-    console.log(err);
-  }));
-```
-<a name="module_filestack..init.overwrite"></a>
-
-### client.overwrite(handle) ⇒ <code>Promise</code>
-Interface to the Filestack [Write API](https://www.filestack.com/docs/rest-api/write).
-Used for overwriting files, __requires security to be enabled__.
-
-**Resolve**: <code>object</code> - Result of overwrite.  
-**Reject**: <code>error</code> - A Superagent error object.  
-**Params**
-
-- handle <code>string</code> - Valid Filestack handle.
-
-**Example**  
-```js
-client
-  .overwrite('DCL5K46FS3OIxb5iuKby')
   .then((res) => {
     console.log(res);
   })
