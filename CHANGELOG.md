@@ -1,5 +1,8 @@
 # filestack-js changelog
 
+## 0.8.4 (2017-08-18)
+- Add cname option to init wrapper
+
 ## 0.8.3 (2017-08-18)
 **Picker changes**
 - Fix issue with originalPath for cloud folders not being human readable
