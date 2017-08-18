@@ -39,7 +39,7 @@ const client = filestack.init(apikey);
 
 **Script**:
 ```HTML
-<script src="//static.filestackapi.com/v3/filestack-0.8.1.js"></script>
+<script src="//static.filestackapi.com/v3/filestack-0.8.3.js"></script>
 <script>
   const apikey = 'abc';
   const client = filestack.init(apikey);
@@ -67,12 +67,13 @@ We are actively working to change this.
 # API Reference
   
 * [filestack](#module_filestack)
-  * [init(apikey, [security])](#module_filestack..init) ⇒ <code>object</code>
+  * [~init(apikey, [security], [cname])](#module_filestack..init) ⇒ <code>object</code>
     * [.getSecurity()](#module_filestack..init.getSecurity) ⇒ <code>object</code>
     * [.setSecurity(security)](#module_filestack..init.setSecurity) ⇒ <code>object</code>
     * [.metadata(handle, [options])](#module_filestack..init.metadata) ⇒ <code>Promise</code>
     * [.pick([options])](#module_filestack..init.pick) ⇒ <code>Promise</code>
     * [.remove(handle)](#module_filestack..init.remove) ⇒ <code>Promise</code>
+    * [.overwrite(handle)](#module_filestack..init.overwrite) ⇒ <code>Promise</code>
     * [.retrieve(handle, [options])](#module_filestack..init.retrieve) ⇒ <code>Promise</code>
     * [.storeURL(url, [options])](#module_filestack..init.storeURL) ⇒ <code>Promise</code>
     * [.transform(url, options)](#module_filestack..init.transform) ⇒ <code>string</code>
@@ -81,7 +82,7 @@ We are actively working to change this.
 
 <a name="module_filestack..init"></a>
 
-### init(apikey, [security]) ⇒ <code>object</code>
+### init(apikey, [security], [cname]) ⇒ <code>object</code>
 Initializes the client.
 
 **Returns**: <code>object</code> - Object containing client methods.  
@@ -90,6 +91,7 @@ Initializes the client.
   - [security] <code>object</code> - Read about [security policies](https://www.filestack.com/docs/security).  
     - .policy <code>string</code> - Filestack security policy encoded in base64.  
     - .signature <code>string</code> - HMAC-SHA256 signature for the security policy.  
+  - [cname] <code>string</code> - Custom domain to use for all URLs. This requires the custom CNAME feature on your Filestack app.
 
 <a name="module_filestack..version"></a>
 
@@ -352,6 +354,29 @@ client
     console.log(err);
   }));
 ```
+<a name="module_filestack..init.overwrite"></a>
+
+#### client.overwrite(handle) ⇒ <code>Promise</code>
+Interface to the Filestack [Write API](https://www.filestack.com/docs/rest-api/write).
+Used for overwriting files, __requires security to be enabled__.
+
+**Resolve**: <code>object</code> - Result of overwrite.  
+**Reject**: <code>error</code> - A Superagent error object.  
+**Params**
+
+- handle <code>string</code> - Valid Filestack handle.
+
+**Example**  
+```js
+client
+  .overwrite('DCL5K46FS3OIxb5iuKby')
+  .then((res) => {
+    console.log(res);
+  })
+  .catch((err) => {
+    console.log(err);
+  }));
+```
 <a name="module_filestack..init.metadata"></a>
 
 ### client.metadata(handle, [options]) ⇒ <code>Promise</code>
@@ -505,9 +530,11 @@ Initiates a direct-to-S3 multi-part upload. Uses Filestack S3 by default. Read h
 
 - file <code>Blob</code> | <code>string</code> - must be a valid [File](https://developer.mozilla.org/en-US/docs/Web/API/File), Blob, or base64 encoded string.
 - [uploadOptions] <code>object</code>
-    - [.partSize] <code>number</code> <code> = 6 * 1024 * 1024</code> - Size of each uploaded part.
-    - [.concurrency] <code>number</code> <code> = 5</code> - Max number of concurrent parts uploading.
-    - [.retry] <code>number</code> <code> = 10</code> - Number of times to retry a failed part of the flow.
+    - [.partSize] <code>number</code> <code> = 6 * 1024 * 1024</code> - Size of each uploaded part. This is overridden when intelligent ingestion is enabled.
+    - [.concurrency] <code>number</code> <code> = 3</code> - Max number of concurrent parts uploading.
+    - [.intelligent] <code>boolean</code> - Enable/disable intelligent ingestion. If true then intelligent ingestion must be enabled in your Filestack application.
+    - [.retry] <code>number</code> <code> = 5</code> - Number of times to retry a failed part of the flow.
+    - [.retryFactor] <code>number</code> <code> = 2</code> - Base factor for exponential backoff.
     - [.progressInterval] <code>number</code> <code> = 1000</code> - Frequency (in milliseconds) at which progress events are dispatched.
     - [.onProgress] [<code>progressCallback</code>](#module_filestack..progressCallback) - Called regularly to give progress updates.
     - [.onRetry] [<code>retryCallback</code>](#module_filestack..retryCallback) - Called when a retry is initiated.
