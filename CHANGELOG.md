@@ -1,5 +1,9 @@
 # filestack-js changelog
 
+## 0.8.5 (2017-08-21)
+**Picker changes**
+- Put filename back into originalPath
+
 ## 0.8.4 (2017-08-18)
 - Add cname option to init wrapper
 
