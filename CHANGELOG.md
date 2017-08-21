@@ -8,7 +8,6 @@
 - Fix issue with originalPath for cloud folders not being human readable
 
 **Client changes**
-- Implement missing overwrite method
 - Implement cname option in filestack.init
 - Add option to enable/disable intelligent ingestion uploads
 - Fix issues with how upload progress is reported
