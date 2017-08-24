@@ -1,5 +1,12 @@
 # filestack-js changelog
 
+## 0.9.0 (2017-08-24)
+**Picker changes**
+- Convert originalFile in metadata from File to object
+- Add onOpen and onUploadStarted callback options
+- Fix cloud folder fetching to ensure entire folder selection
+- Implement a fix for third-party cookie issues 
+
 ## 0.8.5 (2017-08-21)
 **Picker changes**
 - Put filename back into originalPath
