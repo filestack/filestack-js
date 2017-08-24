@@ -131,7 +131,7 @@ client.setSecurity({ policy: 'policy', signature: 'signature' });
 ### client.pick([options]) ⇒ <code>Promise</code>
 Attaches and opens the picker UI in the current DOM.
 
-**Resolve**: <code>object</code> - Object contains keys `filesUploaded` and `filesFailed` which are both arrays of file metadata.  
+**Resolve**: <code>object</code> - Object contains keys `filesUploaded` and `filesFailed` which are both arrays of [file metadata](#module_pick--pick..FileMetadata) objects.  
 **Params**
 
 - [options] <code>object</code>
@@ -203,16 +203,43 @@ Attaches and opens the picker UI in the current DOM.
     - .onFileUploadProgress [<code>onFileUploadProgress</code>](#module_pick--pick..onFileUploadProgress) - Called during multi-part upload progress events. __Local files only__.
     - .onFileUploadFinished [<code>onFileUploadFinished</code>](#module_pick--pick..onFileUploadFinished) - Called when a file is done uploading.
     - .onFileUploadFailed [<code>onFileUploadFailed</code>](#module_pick--pick..onFileUploadFailed) - Called when uploading a file fails.
+    - .onUploadStarted [<code>onUploadStarted</code>](#module_pick--pick..onUploadStarted) - Called when uploading starts (user initiates uploading).
     - .onClose <code>function</code> - Called when the UI is exited.
+    - .onOpen <code>function</code> - Called when the UI is mounted.
     - .rejectOnCancel <code>boolean</code> - Reject the returned Promise when a user cancels the pick. The Promise will reject with a list of all files currently selected.
 
 **Example**
 ```js
 client.pick({
   maxFiles: 20,
-  fromSources: ['local_file_system', 'facebook'],
-}).then(res => console.log(res));
+  uploadInBackground: false,
+  onOpen: () => console.log('opened!'),
+})
+.then((res) => {
+  console.log(res.filesUploaded)
+  console.log(res.filesFailed)
+});
 ```
+
+<a name="module_pick--pick..FileMetadata"></a>
+#### File metadata : <code>object</code>
+
+The metadata available on uploaded files returned from pick.
+
+| Name | Type | Description |
+| --- | --- | --- |
+| filename | <code>string</code> | Name of the file. |
+| handle | <code>string</code> | Filestack handle for the uploaded file. |
+| mimetype | <code>string</code> | The MIME type of the file. |
+| originalPath | <code>string</code> | The origin of the file, e.g. /Folder/file.jpg. |
+| size | <code>number</code> | Size in bytes of the uploaded file. |
+| source | <code>string</code> | The source from where the file was picked. |
+| url | <code>string</code> | The Filestack CDN URL for the uploaded file. |
+| originalFile | <code>object</code> \| <code>undefined</code> | Properties of the local binary file. |
+| status | <code>string</code> \| <code>undefined</code> | Indicates Filestack transit status. |
+| key | <code>string</code> \| <code>undefined</code> | The hash-prefixed path for files stored in S3. |
+| container | <code>string</code> \| <code>undefined</code> | The S3 container for the uploaded file. |
+
 <a name="module_pick--pick..onFileSelected"></a>
 
 #### onFileSelected : <code>function</code>
@@ -239,6 +266,14 @@ onFileSelected(file) {
   return file;
 }
 ```
+<a name="module_pick--pick..onUploadStarted"></a>
+
+#### onUploadStarted : <code>function</code>
+
+**Params**
+
+- files <code>array</code> - All currently selected files.
+
 <a name="module_pick--pick..onFileUploadStarted"></a>
 
 #### onFileUploadStarted : <code>function</code>
@@ -306,7 +341,7 @@ client
 Interface to the Filestack [Retrieve API](https://www.filestack.com/docs/rest-api/retrieve).
 Used for accessing files via Filestack handles.
 
-**Resolve**: <code>object</code> - Metadata of stored file or stored file, depending on metadata / head option.  
+**Resolve**: <code>object</code> - Metadata of stored file, depending on metadata / head option.  
 **Reject**: <code>error</code> - A Superagent error object.  
 **Params**
 
