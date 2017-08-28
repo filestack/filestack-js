@@ -39,7 +39,7 @@ const client = filestack.init(apikey);
 
 **Script**:
 ```HTML
-<script src="//static.filestackapi.com/v3/filestack.js"></script>
+<script src="//static.filestackapi.com/v3/filestack-0.9.0.js"></script>
 <script>
   const apikey = 'abc';
   const client = filestack.init(apikey);
@@ -58,11 +58,6 @@ Module (for bundling):
 
 Script (for script tag):
 * https://cdn.polyfill.io/v2/polyfill.min.js?features=Promise
-
-## Known Issues
-
-Currently the picker requires support for third-party cookies. End users will need to accept third-party cookies to authenticate with cloud sources.
-We are actively working to change this.
 
 # API Reference
   
