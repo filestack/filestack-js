@@ -1,5 +1,11 @@
 # filestack-js changelog
 
+## 0.9.1 (2017-08-30)
+**Picker changes**
+- Fix bug with customSourcePath on store and link calls
+- Implement disableStorageKey option to remove prefixes on stored files
+- Remove all argument mutation from the config parser
+
 ## 0.9.0 (2017-08-24)
 **Picker changes**
 - Convert originalFile in metadata from File to object
