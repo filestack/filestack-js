@@ -39,7 +39,7 @@ const client = filestack.init(apikey);
 
 **Script**:
 ```HTML
-<script src="//static.filestackapi.com/v3/filestack-0.9.0.js"></script>
+<script src="//static.filestackapi.com/v3/filestack-0.9.1.js"></script>
 <script>
   const apikey = 'abc';
   const client = filestack.init(apikey);
@@ -168,6 +168,7 @@ Attaches and opens the picker UI in the current DOM.
     - .startUploadingWhenMaxFilesReached <code>boolean</code> <code> = false</code> - Whether to start uploading automatically when maxFiles is hit.
     - .hideWhenUploading <code>boolean</code> <code> = false</code> - Hide the picker UI once uploading begins.
     - .uploadInBackground <code>boolean</code> <code> = true</code> - Start uploading immediately on file selection.
+    - .disableStorageKey <code>boolean</code> <code> = false</code> - When true removes the hash prefix on stored files.
     - .disableTransformer <code>boolean</code> <code> = false</code> - When true removes ability to edit images.
     - .disableThumbnails <code>boolean</code> <code> = false</code> - Disables local image thumbnail previews in the summary screen.
     - .videoResolution <code>string</code> <code> = &quot;640x480&quot;</code> - Sets the resolution of recorded video. One of "320x240", "640x480" or "1280x720".
