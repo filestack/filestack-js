@@ -71,7 +71,7 @@ Script (for script tag):
     * [.retrieve(handle, [options])](#module_filestack..init.retrieve) ⇒ <code>Promise</code>
     * [.storeURL(url, [options])](#module_filestack..init.storeURL) ⇒ <code>Promise</code>
     * [.transform(url, options)](#module_filestack..init.transform) ⇒ <code>string</code>
-    * [.upload(file, [uploadOptions], [storeOptions])](#module_filestack..init.upload) ⇒ <code>Promise</code>
+    * [.upload(file, [uploadOptions], [storeOptions], [token])](#module_filestack..init.upload) ⇒ <code>Promise</code>
   * [version](#module_filestack..version) ⇒ <code>string</code>
 
 <a name="module_filestack..init"></a>
