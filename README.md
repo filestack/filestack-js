@@ -233,8 +233,8 @@ The metadata available on uploaded files returned from pick.
 | url | <code>string</code> | The Filestack CDN URL for the uploaded file. |
 | originalFile | <code>object</code> \| <code>undefined</code> | Properties of the local binary file. |
 | status | <code>string</code> \| <code>undefined</code> | Indicates Filestack transit status. |
-| key | <code>string</code> \| <code>undefined</code> | The hash-prefixed path for files stored in S3. |
-| container | <code>string</code> \| <code>undefined</code> | The S3 container for the uploaded file. |
+| key | <code>string</code> \| <code>undefined</code> | The hash-prefixed cloud storage path. |
+| container | <code>string</code> \| <code>undefined</code> | The cloud container for the uploaded file. |
 
 <a name="module_pick--pick..onFileSelected"></a>
 
