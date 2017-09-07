@@ -196,7 +196,7 @@ Attaches and opens the picker UI in the current DOM.
         - .retry <code>number</code> <code> = 10</code> - Number of times to retry a failed part of the flow.
         - .retryFactor <code>number</code> <code> = 2</code> - Base factor for exponential backoff.
         - .timeout <code>number</code> <code> = 30000</code> - Time in milliseconds to wait before cancelling requests.
-        - .onRetry <code>module:filestack~retryCallback</code> - Called when a retry is initiated.
+        - .onRetry [<code>retryCallback</code>](#module_filestack..retryCallback) - Called when a retry is initiated.
     - .storeTo <code>object</code> - Options for file storage.
         - .location <code>string</code> - One of `s3`, `gcs`, `rackspace`, `azure`, `dropbox`.
         - .region <code>string</code> - Valid S3 region for the selected S3 bucket. __S3 only__.
