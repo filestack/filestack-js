@@ -67,6 +67,7 @@ Script (for script tag):
     * [.setSecurity(security)](#module_filestack..init.setSecurity) ⇒ <code>object</code>
     * [.metadata(handle, [options])](#module_filestack..init.metadata) ⇒ <code>Promise</code>
     * [.pick([options])](#module_filestack..init.pick) ⇒ <code>Promise</code>
+    * [.preview(handle, [options])](#module_filestack..init.preview)
     * [.remove(handle)](#module_filestack..init.remove) ⇒ <code>Promise</code>
     * [.retrieve(handle, [options])](#module_filestack..init.retrieve) ⇒ <code>Promise</code>
     * [.storeURL(url, [options])](#module_filestack..init.storeURL) ⇒ <code>Promise</code>
@@ -188,6 +189,14 @@ Attaches and opens the picker UI in the current DOM.
     - .imageMin <code>Array.&lt;number&gt;</code> - Specify minimum image dimensions. e.g. `[800, 600]`. Only for JPEG, PNG, and BMP files.
   Images smaller than the specified dimensions will be upscaled to the minimum size while maintaining the original aspect ratio.
   The output will not be exactly 800x600 unless the imageMin matches the aspect ratio of the original image.
+    - .uploadConfig <code>object</code> - Options for local file uploads.
+        - .partSize <code>number</code> <code> = 6</code> - * 1024 * 1024  - Size of each uploaded part. This is overridden when intelligent ingestion is enabled.
+        - .concurrency <code>number</code> <code> = 3</code> - Max number of concurrent parts uploading (chunks of files, not whole files).
+        - .intelligent <code>boolean</code> - Optionally disable intelligent ingestion if it's enabled on the application.
+        - .retry <code>number</code> <code> = 10</code> - Number of times to retry a failed part of the flow.
+        - .retryFactor <code>number</code> <code> = 2</code> - Base factor for exponential backoff.
+        - .timeout <code>number</code> <code> = 30000</code> - Time in milliseconds to wait before cancelling requests.
+        - .onRetry <code>module:filestack~retryCallback</code> - Called when a retry is initiated.
     - .storeTo <code>object</code> - Options for file storage.
         - .location <code>string</code> - One of `s3`, `gcs`, `rackspace`, `azure`, `dropbox`.
         - .region <code>string</code> - Valid S3 region for the selected S3 bucket. __S3 only__.
@@ -426,6 +435,25 @@ client
   .catch((err) => {
     console.log(err);
   }));
+```
+<a name="module_filestack..init.preview"></a>
+
+### client.preview(handle, [options])
+Used for viewing files via Filestack handles, __requires Document Viewer addon to account__.
+Opens document viewer in new window if ID option is not provided.
+
+**Params**
+
+- handle <code>string</code> - Valid Filestack handle.
+- [options] <code>object</code>
+    - [.id] <code>string</code> - Id for iframe container element.
+    - [.policy] <code>string</code> - Filestack security policy (overrides client session).
+    - [.signature] <code>string</code> - Filestack security signature (overrides client session).
+    - [.css] <code>string</code> - URL to custom CSS.
+
+**Example**  
+```js
+client.preview('KW9EJhYtS6y48Whm2S6D', { id: 'previewId', css: 'https://www.linktoyourcss.com'});
 ```
 <a name="module_filestack..init.transform"></a>
 
