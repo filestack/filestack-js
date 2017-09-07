@@ -1,5 +1,16 @@
 # filestack-js changelog
 
+## 0.9.2 (2017-09-07)
+**Picker changes**
+- Add new uploadConfig option to configure local file uploads
+- Fix UX related to failed uploads in the summary view
+- Update a few translations
+- Add a new error screen for invalid apikey
+
+**Client changes**
+- Implement preview method to open document viewer for Filestack handles
+- Add timeout to upload method options
+
 ## 0.9.1 (2017-08-30)
 **Picker changes**
 - Fix bug with customSourcePath on store and link calls
