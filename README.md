@@ -39,7 +39,7 @@ const client = filestack.init(apikey);
 
 **Script**:
 ```HTML
-<script src="//static.filestackapi.com/v3/filestack-0.9.2.js"></script>
+<script src="//static.filestackapi.com/v3/filestack-0.9.3.js"></script>
 <script>
   const apikey = 'abc';
   const client = filestack.init(apikey);
@@ -149,6 +149,7 @@ Attaches and opens the picker UI in the current DOM.
       - `gmail`
       - `picasa`
       - `onedrive`
+      - `onedriveforbusiness`
       - `clouddrive`
       - `customsource` - Configure this in your Filestack Dev Portal.
     - .accept <code>string</code> | <code>Array.&lt;string&gt;</code> - Restrict file types that are allowed to be picked. Formats accepted:
