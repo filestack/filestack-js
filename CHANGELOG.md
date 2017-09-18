@@ -1,5 +1,10 @@
 # filestack-js changelog
 
+## 0.9.3 (2017-09-18)
+**Picker changes**
+- Add `onedriveforbusiness` to sources
+- Fix issue related to raven-js global instrumenting
+
 ## 0.9.2 (2017-09-07)
 **Picker changes**
 - Add new uploadConfig option to configure local file uploads
