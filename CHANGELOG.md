@@ -1,5 +1,20 @@
 # filestack-js changelog
 
+## 0.9.4 (2017-09-26)
+**Picker changes**
+- Implement `allowManualRetry` option.
+
+`allowManualRetry` will override the default picker behavior when failed uploads occur. The modal will remain open to let users retry failed files manually. Network interruptions are also detected when this option is true, and uploads that fail due to network disruption will be auto-retried until the network returns or until a user manually retries.
+
+The UX for the summary screen has changed due to this feature, so users will now see completed, uploading, and failed files in separate sections. This change is visible to all users regardless of the option being enabled.
+
+Manual retry for the single image flow will land in a later release. This option currently only applies to files viewed in the summary screen and not in the transformer.
+
+**Client changes**
+- Increase upload request timeout default to 60s
+- Set an upper bound on exponential backoff interval
+- Expose logout method to clear cloud sessions
+
 ## 0.9.3 (2017-09-18)
 **Picker changes**
 - Add `onedriveforbusiness` to sources

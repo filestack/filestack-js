@@ -39,7 +39,7 @@ const client = filestack.init(apikey);
 
 **Script**:
 ```HTML
-<script src="//static.filestackapi.com/v3/filestack-0.9.3.js"></script>
+<script src="//static.filestackapi.com/v3/filestack-0.9.4.js"></script>
 <script>
   const apikey = 'abc';
   const client = filestack.init(apikey);
@@ -221,7 +221,7 @@ Attaches and opens the picker UI in the current DOM.
     - .onClose <code>function</code> - Called when the UI is exited.
     - .onOpen <code>function</code> - Called when the UI is mounted.
     - .rejectOnCancel <code>boolean</code> - Reject the returned Promise when a user cancels the pick. The Promise will reject with a list of all files currently selected.
-    - .allowManualRetry <code>boolean</code> <code> = false</code> - Prevent modal close on upload failure and allow users to retry. Currently only supported for maxFiles > 1.
+    - .allowManualRetry <code>boolean</code> <code> = false</code> - Prevent modal close on upload failure and allow users to retry.
 
 **Example**
 ```js
