@@ -65,6 +65,7 @@ Script (for script tag):
   * [~init(apikey, [security], [cname])](#module_filestack..init) ⇒ <code>object</code>
     * [.getSecurity()](#module_filestack..init.getSecurity) ⇒ <code>object</code>
     * [.setSecurity(security)](#module_filestack..init.setSecurity) ⇒ <code>object</code>
+    * [.logout()](#module_filestack..init.logout) ⇒ <code>Promise</code>
     * [.metadata(handle, [options])](#module_filestack..init.metadata) ⇒ <code>Promise</code>
     * [.pick([options])](#module_filestack..init.pick) ⇒ <code>Promise</code>
     * [.preview(handle, [options])](#module_filestack..init.preview)
@@ -121,6 +122,13 @@ Set security parameters -- useful for changing policy on instantiated client.
 ```js
 client.setSecurity({ policy: 'policy', signature: 'signature' });
 ```
+
+<a name="module_filestack..init.logout"></a>
+
+### client.logout() ⇒ <code>Promise</code>
+Logs out all current cloud sessions.
+
+**Returns**: <code>Promise</code> - Resolves/rejects when the request succeeds/fails.
 
 <a name="module_filestack..init.pick"></a>
 
@@ -213,6 +221,7 @@ Attaches and opens the picker UI in the current DOM.
     - .onClose <code>function</code> - Called when the UI is exited.
     - .onOpen <code>function</code> - Called when the UI is mounted.
     - .rejectOnCancel <code>boolean</code> - Reject the returned Promise when a user cancels the pick. The Promise will reject with a list of all files currently selected.
+    - .allowManualRetry <code>boolean</code> <code> = false</code> - Prevent modal close on upload failure and allow users to retry. Currently only supported for maxFiles > 1.
 
 **Example**
 ```js

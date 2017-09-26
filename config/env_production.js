@@ -1,3 +1,3 @@
 export default {
-  picker: 'https://static.filestackapi.com/picker/v3/picker-0.10.3.js',
+  picker: 'https://static.filestackapi.com/picker/v3/picker-0.10.4.js',
 };
