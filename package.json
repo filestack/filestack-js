@@ -1,6 +1,6 @@
 {
   "name": "filestack-js",
-  "version": "0.9.4",
+  "version": "0.9.5-rc1",
   "description": "Official web SDK for the Filestack API",
   "author": "Filestack",
   "homepage": "https://filestack.com",
@@ -48,7 +48,7 @@
     "eslint-plugin-import": "^1.16.0",
     "fs-jetpack": "^0.10.2",
     "http-server": "^0.9.0",
-    "loader": "http://static.filestackapi.com/packages/loader/loader-2.0.4.tar.gz",
+    "loader": "http://static.filestackapi.com/packages/loader/loader-2.0.7.tar.gz",
     "minimist": "^1.2.0",
     "pre-commit": "^1.1.3",
     "release-o-tron": "http://static.filestackapi.com/packages/release-o-tron/release-o-tron-1.3.6.tar.gz",
