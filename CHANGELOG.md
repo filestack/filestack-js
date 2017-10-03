@@ -1,5 +1,8 @@
 # filestack-js changelog
 
+## 0.9.5 (2017-10-03)
+- Fixed a possible race condition in the module loader. See [#57](https://github.com/filestack/filestack-js/issues/57).
+
 ## 0.9.4 (2017-09-26)
 **Picker changes**
 - Implement `allowManualRetry` option.
