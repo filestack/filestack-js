@@ -204,7 +204,7 @@ Attaches and opens the picker UI in the current DOM.
         - .intelligent <code>boolean</code> - Optionally disable intelligent ingestion if it's enabled on the application.
         - .retry <code>number</code> <code> = 10</code> - Number of times to retry a failed part of the flow.
         - .retryFactor <code>number</code> <code> = 2</code> - Base factor for exponential backoff.
-        - .timeout <code>number</code> <code> = 30000</code> - Time in milliseconds to wait before cancelling requests.
+        - .timeout <code>number</code> <code> = 60000</code> - Time in milliseconds to wait before cancelling requests.
         - .onRetry [<code>retryCallback</code>](#module_filestack..retryCallback) - Called when a retry is initiated.
     - .storeTo <code>object</code> - Options for file storage.
         - .location <code>string</code> - One of `s3`, `gcs`, `rackspace`, `azure`, `dropbox`.
@@ -578,7 +578,8 @@ Initiates a direct-to-S3 multi-part upload. Uses Filestack S3 by default. Read h
     - [.partSize] <code>number</code> <code> = 6 * 1024 * 1024</code> - Size of each uploaded part. This is overridden when intelligent ingestion is enabled.
     - [.concurrency] <code>number</code> <code> = 3</code> - Max number of concurrent parts uploading.
     - [.intelligent] <code>boolean</code> - Enable/disable intelligent ingestion. If true then intelligent ingestion must be enabled in your Filestack application.
-    - [.retry] <code>number</code> <code> = 5</code> - Number of times to retry a failed part of the flow.
+    - [.timeout] <code>number</code> <code> = 60000</code> - Time in milliseconds to wait before cancelling requests.
+    - [.retry] <code>number</code> <code> = 10</code> - Number of times to retry a failed part of the flow.
     - [.retryFactor] <code>number</code> <code> = 2</code> - Base factor for exponential backoff.
     - [.progressInterval] <code>number</code> <code> = 1000</code> - Frequency (in milliseconds) at which progress events are dispatched.
     - [.onProgress] [<code>progressCallback</code>](#module_filestack..progressCallback) - Called regularly to give progress updates.
