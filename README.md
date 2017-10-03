@@ -174,7 +174,7 @@ Attaches and opens the picker UI in the current DOM.
     - .lang <code>string</code> <code> = &quot;en&quot;</code> - Sets locale. Accepts: `da`, `de`, `en`, `es`, `fr`, `he`, `it`, `ja`, `nl`, `pl`, `pt`, `ru`, `zh`.
     - .minFiles <code>number</code> <code> = 1</code> - Minimum number of files required to start uploading.
     - .maxFiles <code>number</code> <code> = 1</code> - Maximum number of files allowed to upload.
-    - .maxSize <code>number</code> - Restrict selected files to a maximum number of bytes. (e.g. `10 * 1024 * 1024` for 1MB limit).
+    - .maxSize <code>number</code> - Restrict selected files to a maximum number of bytes. (e.g. `10 * 1024 * 1024` for 10MB limit).
     - .startUploadingWhenMaxFilesReached <code>boolean</code> <code> = false</code> - Whether to start uploading automatically when maxFiles is hit.
     - .hideWhenUploading <code>boolean</code> <code> = false</code> - Hide the picker UI once uploading begins.
     - .uploadInBackground <code>boolean</code> <code> = true</code> - Start uploading immediately on file selection.
