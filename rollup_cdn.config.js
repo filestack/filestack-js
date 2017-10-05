@@ -20,6 +20,9 @@ export default {
     allowReserved: true,
   },
   plugins: [
+    babel({
+      exclude: 'node_modules/**',
+    }),
     replace({
       delimiters: ['@{', '}'],
       values: {
@@ -34,9 +37,6 @@ export default {
     }),
     nodeResolve(),
     commonJs(),
-    babel({
-      exclude: 'node_modules/**',
-    }),
     uglify({
       output: {
         // Leave topmost comment with version

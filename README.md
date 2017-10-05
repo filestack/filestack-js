@@ -68,6 +68,8 @@ Script (for script tag):
     * [.logout()](#module_filestack..init.logout) ⇒ <code>Promise</code>
     * [.metadata(handle, [options])](#module_filestack..init.metadata) ⇒ <code>Promise</code>
     * [.pick([options])](#module_filestack..init.pick) ⇒ <code>Promise</code>
+    * [.cropFiles(filesOrUrls, [pickOptions])](#module_filestack..init.cropFiles) ⇒ <code>Promise</code>
+    * [.makeDropPane(paneOptions, [pickOptions])](#module_filestack..init.makeDropPane)
     * [.preview(handle, [options])](#module_filestack..init.preview)
     * [.remove(handle)](#module_filestack..init.remove) ⇒ <code>Promise</code>
     * [.retrieve(handle, [options])](#module_filestack..init.retrieve) ⇒ <code>Promise</code>
@@ -222,6 +224,7 @@ Attaches and opens the picker UI in the current DOM.
     - .onOpen <code>function</code> - Called when the UI is mounted.
     - .rejectOnCancel <code>boolean</code> - Reject the returned Promise when a user cancels the pick. The Promise will reject with a list of all files currently selected.
     - .allowManualRetry <code>boolean</code> <code> = false</code> - Prevent modal close on upload failure and allow users to retry.
+    - .rootId <code>string</code> <code> = &quot;__filestack-picker&quot;</code> - Id for the root DOM node of the mounted app.
 
 **Example**
 ```js
@@ -254,6 +257,7 @@ The metadata available on uploaded files returned from pick.
 | status | <code>string</code> \| <code>undefined</code> | Indicates Filestack transit status. |
 | key | <code>string</code> \| <code>undefined</code> | The hash-prefixed cloud storage path. |
 | container | <code>string</code> \| <code>undefined</code> | The cloud container for the uploaded file. |
+| uploadId | <code>string</code> | A uuid for tracking this file in callbacks. |
 
 <a name="module_pick--pick..onFileSelected"></a>
 
@@ -324,6 +328,75 @@ onFileSelected(file) {
 - event <code>object</code> - Progress event.
     - .totalPercent <code>number</code> - Percent of file uploaded.
     - .totalBytes <code>number</code> - Total number of bytes uploaded for this file.
+
+<a name="module_filestack..init.makeDropPane"></a>
+
+### client.makeDropPane(paneOptions, [pickOptions]) 
+Appends a drop zone into the DOM node specified by `paneOptions.id`. This feature is powered by the picker and supports the validation and callback options through `pickOptions`.
+
+**Params**
+- paneOptions <code>object</code>
+    - .id <code>string</code> - __Required__: Id for the DOM node that will mount the drop pane.
+    - .overlay <code>boolean</code> <code> = true</code> - Toggle the full-page drop zone overlay.
+    - .onDragEnter <code>function</code> - Callback for dragenter events.
+    - .onDragLeave <code>function</code> - Callback for dragleave events.
+    - .onDragOver <code>function</code> - Callback for dragover events.
+    - .onDrop <code>function</code> - Callback for drop events.
+    - .onSuccess <code>function</code> - Callback that is passed a list of uploaded file metadata.
+    - .onError <code>function</code> - Callback that is passed a list of failed file metadata.
+    - .onProgress <code>function</code> - Callback that is passed a number representing total progress percent for all dropped files.
+    - .onClick <code>function</code> - Callback for drop pane click event.
+    - .disableClick <code>boolean</code> - Disable file input on click.
+    - .showIcon <code>boolean</code> <code> = true</code> - Toggle icon element in drop pane.
+    - .showProgress <code>boolean</code> <code> = true</code> - Toggle upload progress display.
+    - .customText <code>string</code> - Customize the text content in the drop pane.
+    - .cropFiles <code>boolean</code> - Toggle the crop UI for dropped files.
+- [pickOptions] - See the options for `client.pick`. `fromSources` is ignored.
+
+**Example**  
+```html
+<div id="dropzone" style="width:500px;height:300px;"></div>
+```
+
+```js
+client.makeDropPane({
+  id: 'dropzone',
+  onSuccess: res => console.log(res),
+}, {
+  maxFiles: 2,
+});
+```
+
+<a name="module_filestack..init.cropFiles"></a>
+
+### client.cropFiles(filesOrUrls, [pickOptions]) ⇒ <code>Promise</code> ⏏
+Opens the crop UI for the specified list of files or URLs.
+
+**Resolve**: <code>object</code> - Object contains keys `filesUploaded` and `filesFailed` which are both arrays of file metadata.  
+**Params**
+- filesOrUrls <code>array</code> - An array of URL or File/Blob values to transform.
+- [pickOptions] - See the options for `client.pick`. `fromSources` is ignored.
+
+**Example**  
+```html
+<input id="fileSelect" type="file">
+```
+
+```js
+const inputEl = document.getElementById('fileSelect');
+const pickOptions = { transformations: { crop: true, circle: false } };
+inputEl.addEventListener('change', (e) => {
+  client.cropFiles(e.target.files, pickOptions)
+    .then(res => console.log(res));
+});
+
+// Or pass an array of URL strings
+const urls = [
+  'https://d1wtqaffaaj63z.cloudfront.net/images/fox_in_forest1.jpg',
+  'https://d1wtqaffaaj63z.cloudfront.net/images/sail.jpg',
+];
+client.cropFiles(urls).then(res => console.log(res));
+```
 
 <a name="module_filestack..init.storeURL"></a>
 
