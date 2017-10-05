@@ -39,7 +39,7 @@ const client = filestack.init(apikey);
 
 **Script**:
 ```HTML
-<script src="//static.filestackapi.com/v3/filestack-0.9.5.js"></script>
+<script src="//static.filestackapi.com/v3/filestack-0.9.6.js"></script>
 <script>
   const apikey = 'abc';
   const client = filestack.init(apikey);

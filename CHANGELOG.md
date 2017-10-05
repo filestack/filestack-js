@@ -1,5 +1,13 @@
 # filestack-js changelog
 
+## 0.9.6 (2017-10-05)
+**Picker changes**
+- Implement makeDropPane for mounting a drop zone into the DOM (see README for options)
+- Implement cropFiles for using the picker's crop UI on a specific list of files
+- Add new `uploadId` to file metadata for tracking the file in callbacks
+- Add new `rootId` to pick options for specifying an id for the root DOM node
+- Fix UX bug with background uploads and summary row styles
+
 ## 0.9.5 (2017-10-03)
 - Fixed a possible race condition in the module loader. See [#57](https://github.com/filestack/filestack-js/issues/57).
 
