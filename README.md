@@ -201,7 +201,7 @@ Attaches and opens the picker UI in the current DOM.
   Images smaller than the specified dimensions will be upscaled to the minimum size while maintaining the original aspect ratio.
   The output will not be exactly 800x600 unless the imageMin matches the aspect ratio of the original image.
     - .uploadConfig <code>object</code> - Options for local file uploads.
-        - .partSize <code>number</code> <code> = 6</code> - * 1024 * 1024  - Size of each uploaded part. This is overridden when intelligent ingestion is enabled.
+        - .partSize <code>number</code> <code> = 6 * 1024 * 1024</code> - Size of each uploaded part. This is overridden when intelligent ingestion is enabled.
         - .concurrency <code>number</code> <code> = 3</code> - Max number of concurrent parts uploading (chunks of files, not whole files).
         - .intelligent <code>boolean</code> - Optionally disable intelligent ingestion if it's enabled on the application.
         - .retry <code>number</code> <code> = 10</code> - Number of times to retry a failed part of the flow.
