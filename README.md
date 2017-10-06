@@ -225,6 +225,8 @@ Attaches and opens the picker UI in the current DOM.
     - .rejectOnCancel <code>boolean</code> - Reject the returned Promise when a user cancels the pick. The Promise will reject with a list of all files currently selected.
     - .allowManualRetry <code>boolean</code> <code> = false</code> - Prevent modal close on upload failure and allow users to retry.
     - .rootId <code>string</code> <code> = &quot;__filestack-picker&quot;</code> - Id for the root DOM node of the mounted app.
+    - .globalDropZone <code>boolean</code> - Toggle the drop zone to be active on all views. Default is active only on local file source.
+    - .exposeOriginalFile <code>boolean</code> - When true the originalFile metadata will be the actual File object instead of a POJO.
 
 **Example**
 ```js
