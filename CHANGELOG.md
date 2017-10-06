@@ -1,5 +1,13 @@
 # filestack-js changelog
 
+## 0.9.7 (2017-10-06)
+**Picker changes**
+- Fire all file callbacks regardless of uploadInBackground value
+- Default global drop zone to false, add new option globalDropZone to enable it
+- Add exposeOriginalFile option to give access to underlying File instances
+- Fix bug with allowManualRetry and background uploads
+- Fix UI bug with selected cloud files when uploadInBackground is true
+
 ## 0.9.6 (2017-10-05)
 **Picker changes**
 - Implement makeDropPane for mounting a drop zone into the DOM (see README for options)
