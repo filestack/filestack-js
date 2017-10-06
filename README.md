@@ -255,7 +255,7 @@ The metadata available on uploaded files returned from pick.
 | size | <code>number</code> | Size in bytes of the uploaded file. |
 | source | <code>string</code> | The source from where the file was picked. |
 | url | <code>string</code> | The Filestack CDN URL for the uploaded file. |
-| originalFile | <code>object | File</code> \| <code>undefined</code> | Properties of the local binary file. |
+| originalFile | <code>object</code> \| <code>undefined</code> | Properties of the local binary file. |
 | status | <code>string</code> \| <code>undefined</code> | Indicates Filestack transit status. |
 | key | <code>string</code> \| <code>undefined</code> | The hash-prefixed cloud storage path. |
 | container | <code>string</code> \| <code>undefined</code> | The cloud container for the uploaded file. |
