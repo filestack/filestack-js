@@ -2,7 +2,7 @@
   "root": true,
   "extends": "airbnb-base",
   "globals": {
-    "ENV": false
+    "envGetter": false
   },
   "rules": {
     "arrow-body-style": 0,

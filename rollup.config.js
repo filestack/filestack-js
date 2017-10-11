@@ -42,7 +42,7 @@ export default {
     inject({
       exclude: 'node_modules/**',
       modules: {
-        ENV: jetpack.path(`config/env_${envName}.js`),
+        envGetter: jetpack.path(`config/env_${envName}.js`),
       },
     }),
     nodeResolve({
