@@ -1,5 +1,15 @@
 # filestack-js changelog
 
+## 0.9.8 (2017-10-12)
+**Picker changes**
+- Add modalSize option for setting width and height of desktop modal
+- Change image grid thumbnail styles to prevent stretching 
+- Add support for CNAME for static picker files (thanks to @MichalPodeszwa)
+- Fix duplicated uploads bug when `startUploadingWhenMaxFilesReached` and `uploadInBackground` are true
+- Fix bug where infinite scroll would fetch files twice
+- Fix issue with `exposeOriginalFile` not being respected in all callbacks
+- Optimize all downloaded SVG assets for faster loading times
+
 ## 0.9.7 (2017-10-06)
 **Picker changes**
 - Fire all file callbacks regardless of uploadInBackground value

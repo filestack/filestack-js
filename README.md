@@ -39,7 +39,7 @@ const client = filestack.init(apikey);
 
 **Script**:
 ```HTML
-<script src="//static.filestackapi.com/v3/filestack-0.9.7.js"></script>
+<script src="//static.filestackapi.com/v3/filestack-0.9.8.js"></script>
 <script>
   const apikey = 'abc';
   const client = filestack.init(apikey);
@@ -227,6 +227,7 @@ Attaches and opens the picker UI in the current DOM.
     - .rootId <code>string</code> <code> = &quot;__filestack-picker&quot;</code> - Id for the root DOM node of the mounted app.
     - .globalDropZone <code>boolean</code> - Toggle the drop zone to be active on all views. Default is active only on local file source.
     - .exposeOriginalFile <code>boolean</code> - When true the originalFile metadata will be the actual File object instead of a POJO.
+    - .modalSize <code>Array.&lt;number&gt;</code> - Specify [width, height] in pixels of the desktop modal.
 
 **Example**
 ```js
