@@ -1,5 +1,14 @@
 # filestack-js changelog
 
+## 0.9.9 (2017-10-18)
+**Picker changes**
+- Disable drag mode on crop interface (only 0.9.8 had this behavior)
+- Increase crop box drag anchor area to help mobile gestures
+
+**Client changes**
+- Add new `intelligentChunkSize` option to override the initial FII chunk size
+- Increase default request timeout to 2 minutes
+
 ## 0.9.8 (2017-10-12)
 **Picker changes**
 - Add modalSize option for setting width and height of desktop modal
