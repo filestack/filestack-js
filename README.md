@@ -656,7 +656,7 @@ Initiates a direct-to-S3 multi-part upload. Uses Filestack S3 by default. Read h
     - [.concurrency] <code>number</code> <code> = 3</code> - Max number of concurrent parts uploading.
     - [.intelligent] <code>boolean</code> - Enable/disable intelligent ingestion. If true then intelligent ingestion must be enabled in your Filestack application.
     - [.intelligentChunkSize] <code>number</code> - Set the default chunk size for the intelligent flow. Defaults to 8MB on desktop, 1MB on mobile.
-    - [.timeout] <code>number</code> <code> = 60000</code> - Time in milliseconds to wait before cancelling requests.
+    - [.timeout] <code>number</code> <code> = 120000</code> - Time in milliseconds to wait before cancelling requests.
     - [.retry] <code>number</code> <code> = 10</code> - Number of times to retry a failed part of the flow.
     - [.retryFactor] <code>number</code> <code> = 2</code> - Base factor for exponential backoff.
     - [.progressInterval] <code>number</code> <code> = 1000</code> - Frequency (in milliseconds) at which progress events are dispatched.
