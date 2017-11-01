@@ -1,5 +1,9 @@
 # filestack-js changelog
 
+## 0.9.11 (2017-11-01)
+**Client changes**
+- Fix bug with form data being parsed incorrectly when storing URLs
+
 ## 0.9.10 (2017-11-01)
 **Picker changes**
 - Fix browser crash in Chrome when bulk resizing images
