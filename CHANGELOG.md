@@ -1,5 +1,10 @@
 # filestack-js changelog
 
+## 0.9.10 (2017-11-01)
+**Picker changes**
+- Fix browser crash in Chrome when bulk resizing images
+- Add some UX around currently resizing images in summary view (Upload button now says Resizing)
+
 ## 0.9.9 (2017-10-18)
 **Picker changes**
 - Disable drag mode on crop interface (only 0.9.8 had this behavior)
