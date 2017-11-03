@@ -282,7 +282,8 @@ onFileSelected(file) {
   }
 }
 
-// Using to change selected file name
+// Using to change selected file name 
+// NOTE: This currently only works for local uploads
 onFileSelected(file) {
   file.name = 'foo';
   // It's important to return altered file by the end of this function.
