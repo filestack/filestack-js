@@ -203,8 +203,8 @@ Attaches and opens the picker UI in the current DOM.
     - .uploadConfig <code>object</code> - Options for local file uploads.
         - .partSize <code>number</code> <code> = 6 * 1024 * 1024</code> - Size of each uploaded part. This is overridden when intelligent ingestion is enabled.
         - .concurrency <code>number</code> <code> = 3</code> - Max number of concurrent parts uploading (chunks of files, not whole files).
-        - .intelligent <code>boolean</code> - Optionally disable intelligent ingestion if it's enabled on the application.
-        - .intelligentChunkSize <code>number</code> - Set the default chunk size for the intelligent flow. Defaults to 8MB on desktop, 1MB on mobile.
+        - .intelligent <code>boolean</code> | <code>string</code> - Enable/disable intelligent ingestion. If truthy then intelligent ingestion must be enabled in your Filestack application. Passing true/false toggles the global intelligent flow (all parts are chunked and committed). Passing `'fallback'` will only use FII when network conditions may require it (only failing parts will be chunked).
+        - .intelligentChunkSize <code>number</code> - Set the default chunk size for intelligent part uploads. Defaults to 8MB on desktop, 1MB on mobile.
         - .retry <code>number</code> <code> = 10</code> - Number of times to retry a failed part of the flow.
         - .retryFactor <code>number</code> <code> = 2</code> - Base factor for exponential backoff.
         - .timeout <code>number</code> <code> = 120000</code> - Time in milliseconds to wait before cancelling requests.
@@ -652,13 +652,14 @@ Initiates a direct-to-S3 multi-part upload. Uses Filestack S3 by default. Read h
 
 - file <code>Blob</code> | <code>string</code> - must be a valid [File](https://developer.mozilla.org/en-US/docs/Web/API/File), Blob, or base64 encoded string.
 - [uploadOptions] <code>object</code>
-    - [.partSize] <code>number</code> <code> = 6 * 1024 * 1024</code> - Size of each uploaded part. This is overridden when intelligent ingestion is enabled.
+    - [.partSize] <code>number</code> <code> = 6 * 1024 * 1024</code> - Size of each uploaded part. This is hardcoded to 8MB when intelligent ingestion is enabled. To control chunk sizes please use `intelligentChunkSize`.
     - [.concurrency] <code>number</code> <code> = 3</code> - Max number of concurrent parts uploading.
-    - [.intelligent] <code>boolean</code> - Enable/disable intelligent ingestion. If true then intelligent ingestion must be enabled in your Filestack application.
-    - [.intelligentChunkSize] <code>number</code> - Set the default chunk size for the intelligent flow. Defaults to 8MB on desktop, 1MB on mobile.
-    - [.timeout] <code>number</code> <code> = 120000</code> - Time in milliseconds to wait before cancelling requests.
+    - [.intelligent] <code>boolean</code> | <code>string</code> - Enable/disable intelligent ingestion. If truthy then intelligent ingestion must be enabled in your Filestack application. Passing true/false toggles the global intelligent flow (all parts are chunked and committed). Passing `'fallback'` will only use FII when network conditions may require it (only failing parts will be chunked).
+    - [.intelligentChunkSize] <code>number</code> - Set the default chunk size for intelligent part uploads. Defaults to 8MB on desktop, 1MB on mobile.
     - [.retry] <code>number</code> <code> = 10</code> - Number of times to retry a failed part of the flow.
     - [.retryFactor] <code>number</code> <code> = 2</code> - Base factor for exponential backoff.
+    - [.retryMaxTime] <code>number</code> <code> = 10000</code> - Upper bound in milliseconds for retry wait time.
+    - [.timeout] <code>number</code> <code> = 120000</code> - Time in milliseconds to wait before cancelling requests.
     - [.progressInterval] <code>number</code> <code> = 1000</code> - Frequency (in milliseconds) at which progress events are dispatched.
     - [.onProgress] [<code>progressCallback</code>](#module_filestack..progressCallback) - Called regularly to give progress updates.
     - [.onRetry] [<code>retryCallback</code>](#module_filestack..retryCallback) - Called when a retry is initiated.
