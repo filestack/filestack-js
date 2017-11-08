@@ -1,5 +1,13 @@
 # filestack-js changelog
 
+## 0.9.12 (2017-11-08)
+**Client changes**
+- Introduce `'fallback'` mode for intelligent uploads. When `intelligent: 'fallback'` is specified
+parts will only go through the intelligent ingestion flow when network conditions are degraded. The default 
+behavior of `intelligent: true` remains unchanged -- when true all parts go through the intelligent flow regardless of network state. 
+
+Note: This feature still requires intelligent ingestion to be enabled on your Filestack application.
+
 ## 0.9.11 (2017-11-01)
 **Client changes**
 - Fix bug with form data being parsed incorrectly when storing URLs
