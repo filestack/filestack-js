@@ -1,5 +1,16 @@
 # filestack-js changelog
 
+## 0.10.0 (2017-12-07)
+**Picker changes**
+- Add new option `concurrency` to control maximum amount of running uploads
+- Fix a memory issue related to image resize and upload concurrency
+- Fix issue where `'fallback'` for intelligent uploads was not respected
+- Fix issue where editing cloud images stripped EXIF metadata
+- Fix `disableThumbnails` option to respect edited cloud images
+- Refactor resize logic to provide better UX -- image resize operations no longer block user actions (like upload and edit)
+- Update Polish and Mandarin translations
+- Add Korean (`ko`), Norwegian (`no`), Swedish (`sv`), and Vietnamese (`vi`) translations
+
 ## 0.9.12 (2017-11-08)
 **Client changes**
 - Introduce `'fallback'` mode for intelligent uploads. When `intelligent: 'fallback'` is specified
