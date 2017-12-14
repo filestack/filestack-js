@@ -1,5 +1,9 @@
 # filestack-js changelog
 
+## 0.10.1 (2017-12-14)
+**Picker changes**
+- Fix regression with `uploadConfig.timeout` not being respected
+
 ## 0.10.0 (2017-12-07)
 **Picker changes**
 - Add new option `concurrency` to control maximum amount of running uploads
