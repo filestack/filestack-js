@@ -1,5 +1,18 @@
 # filestack-js changelog
 
+## 0.11.0 (2018-01-12)
+**Picker changes**
+- Remove global event handlers from drop pane components on destroy
+
+**Client changes**
+- Update `preview` to use the new file viewer service (/preview instead of /api/preview)
+- Update `preview` to support storage aliases (e.g. src://my-alias/my-file)
+- Add preview option `v1` for users who wish to continue using the deprecated file viewer
+
+**Note**
+The new file viewer has been redesigned so custom CSS may no longer work as intended. Users can continue
+using the old viewer by passing `{ v1: true }` in the `client.preview` options.
+
 ## 0.10.1 (2017-12-14)
 **Picker changes**
 - Fix regression with `uploadConfig.timeout` not being respected
