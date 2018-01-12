@@ -529,20 +529,25 @@ client
 
 ### client.preview(handle, [options])
 Used for viewing files via Filestack handles, __requires Document Viewer addon to account__.
-Opens document viewer in new window if ID option is not provided.
+Opens document viewer in new window if `id` option is not provided.
 
 **Params**
 
-- handle <code>string</code> - Valid Filestack handle.
+- handle <code>string</code> - Valid Filestack handle or storage alias.
 - [options] <code>object</code>
     - [.id] <code>string</code> - Id for iframe container element.
     - [.policy] <code>string</code> - Filestack security policy (overrides client session).
     - [.signature] <code>string</code> - Filestack security signature (overrides client session).
-    - [.css] <code>string</code> - URL to custom CSS.
+    - [.css] <code>string</code> - URL to custom CSS file.
+    - [.v1] <code>boolean</code> - If true use the deprecated Filestack preview service (/api/preview).
 
 **Example**  
 ```js
+// Preview a file using its Filestack handle
 client.preview('KW9EJhYtS6y48Whm2S6D', { id: 'previewId', css: 'https://www.linktoyourcss.com'});
+
+// Or use a storage alias
+client.preview('src://my-s3/mydoc.pdf', { id: 'previewId' });
 ```
 <a name="module_filestack..init.transform"></a>
 
