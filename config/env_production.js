@@ -1,8 +1,9 @@
 const DEFAULT_CNAME = 'filestackapi.com';
+const PICKER_VERSION = '0.12.4';
 
 const envGetter = (cname) => {
   return {
-    picker: `https://static.${cname || DEFAULT_CNAME}/picker/v3/picker-0.12.3.js`,
+    picker: `https://static.${cname || DEFAULT_CNAME}/picker/v3/picker-${PICKER_VERSION}.js`,
   };
 };
 
