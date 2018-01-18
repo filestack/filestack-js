@@ -1,5 +1,9 @@
 # filestack-js changelog
 
+## 0.11.1 (2018-01-18)
+**Picker changes**
+- Fix a regression introduced in 0.10 where deselection of files prevented further uploads
+
 ## 0.11.0 (2018-01-12)
 **Picker changes**
 - Remove global event handlers from drop pane components on destroy
