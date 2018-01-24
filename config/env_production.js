@@ -1,5 +1,5 @@
 const DEFAULT_CNAME = 'filestackapi.com';
-const PICKER_VERSION = '0.12.5';
+const PICKER_VERSION = '0.12.6';
 
 const envGetter = (cname) => {
   return {
