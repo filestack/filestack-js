@@ -1,5 +1,10 @@
 # filestack-js changelog
 
+## 0.11.2 (2018-01-24)
+**Picker changes**
+- Prevent ICC profile from being stripped on transformed images
+- Update Norwegian translations
+
 ## 0.11.1 (2018-01-18)
 **Picker changes**
 - Fix a regression introduced in 0.10 where deselection of files prevented further uploads
