@@ -1,0 +1,14 @@
+{
+  "requestUrl": "/multipart/start",
+  "contentType": "application/json",
+  "method": "POST",
+  "statusCode": 200,
+  "data": {
+    "uri": "/filestack-uploads-production-us-east-1/AJrB9kEilS1SQeHIDf3wtz/ZUt6FlmFS2ag5oWDMXWx_./test/data/testfile.txt",
+    "region": "us-east-1",
+    "upload_id": "1YV1FYlZpNzDlOp21dl2P_d.JNGK3HyNhl_VrQbO987yOvlaFZ8HZrNTiKHyP_vDB3Tsb.Xd5mSW4FyLjYjPsnsp1kecKPW5j5JXa7OO8J0x07EbwE34TPcR2MuQ0TcT",
+    "location_url": "upload-us-east-1.filestackapi.com",
+    "upload_type": "intelligent_ingestion"
+  },
+  "isBase64": false
+}

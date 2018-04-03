@@ -1,0 +1,7 @@
+---
+name: Filestack Demo - RequireJs
+description: Load filestack-js with requirejs
+normalize_css: no
+resources:
+  - https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.5/require.min.js
+...

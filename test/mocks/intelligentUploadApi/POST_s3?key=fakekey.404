@@ -1,0 +1,6 @@
+{
+  "requestUrl": "/s3?key=fakekey",
+  "contentType": "application/javascript",
+  "statusCode": 200,
+  "data": {}
+}

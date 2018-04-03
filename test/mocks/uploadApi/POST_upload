@@ -1,0 +1,17 @@
+{
+  "requestUrl": "/multipart/upload",
+  "contentType": "application/json",
+  "method": "POST",
+  "statusCode": 200,
+  "data": {
+    "url": "https://s3.amazonaws.com/filestack-uploads-staging-us-east-1/aouha0SDRRWuGVbI17U2_dutton.gif?partNumber=1&uploadId=ZKXAEc0mwNgfOetqQO7OXDqdlx79Tl2xduGbE8ERqLKCdjcJPrlU263PuwG_BWAIYJXM_e3chRDAnuTO7CdLKdOQ.8.ZfsK4wPysjxdNvaOA0PaYah_ty5VD70zrvxp3",
+    "headers": {
+      "Authorization": "AWS4-HMAC-SHA256 Credential=AKIAISIPCDAQIU54OJCQ/20170904/us-east-1/s3/aws4_request, SignedHeaders=content-length;content-md5;host;x-amz-date, Signature=201e71f7dcdf91302ec5715c8f0f2f5acca2664fac58a3f9043a296b7209f90b",
+      "Content-MD5": "xJOqSVXwWRZDxBFeiIDssQ==",
+      "x-amz-content-sha256": "UNSIGNED-PAYLOAD",
+      "x-amz-date": "20170904T190520Z"
+    },
+    "location_url": "upload-stage-eu-west-1.filestackapi.com"
+  },
+  "isBase64": false
+}

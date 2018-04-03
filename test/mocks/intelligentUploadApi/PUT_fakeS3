@@ -1,0 +1,11 @@
+{
+  "requestUrl": "/fakeS3",
+  "method": "PUT",
+  "statusCode": 200,
+  "data": {},
+  "headers": {
+    "Access-Control-Expose-Headers": "ETag",
+    "ETag": "c493aa4955f0591643c4115e8880ecb1"
+  },
+  "isBase64": false
+}

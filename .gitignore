@@ -1,4 +1,13 @@
-dist_cdn
 node_modules
-.DS_Store
+build
+src/**.js
+
+coverage
 *.log
+.env
+.nyc_output
+.DS_Store
+
+# VS Code
+.vscode
+!.vscode/tasks.js

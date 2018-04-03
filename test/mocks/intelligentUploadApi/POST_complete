@@ -1,0 +1,15 @@
+{
+  "requestUrl": "/multipart/complete",
+  "contentType": "application/json",
+  "method": "POST",
+  "statusCode": 200,
+  "data": {
+    "handle": "7xSJALUhSlCDCNujt5Ku",
+    "url": "https://agnostic-cdn.filestackapi.com/7xSJALUhSlCDCNujt5Ku",
+    "filename": "fish.gif",
+    "size": 12,
+    "mimetype": "image/gif",
+    "status": "InTransit"
+  },
+  "isBase64": false
+}

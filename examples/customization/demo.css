@@ -1,0 +1,42 @@
+/* change picker appearance  */
+.fsp-picker {
+    background: rgba(0,0,0,.288)!important;
+}
+
+/* update styles for drop area */
+.fsp-picker .fsp-drop-area {
+    background: rgba(0,0,0,.03);
+    border-radius: 0;
+}
+
+/* customize picker modal  */
+.fsp-picker .fsp-modal {
+    background: #fff;
+    border-radius: 0;
+    border:none;
+    box-shadow: 0 11px 15px -7px rgba(0,0,0,.2), 0 24px 38px 3px rgba(0,0,0,.14), 0 9px 46px 8px rgba(0,0,0,.12)
+}
+
+.fsp-picker .fsp-header {
+    color: rgba(0,0,0,.54);
+}
+
+.fsp-picker .fsp-url-source__input,
+.fsp-picker .fsp-url-source__submit-button {
+    border: none;
+    border-radius: 0;
+    height: 30px;
+    border-bottom: 1px solid #2e68fb;
+}
+
+.fsp-picker .fsp-url-source__input:focus {
+    outline: none;
+    border: none;
+    border-bottom: 1px solid #2e68fb;
+}
+
+.fsp-picker .fsp-url-source__submit-button {
+    width: 30px;
+    border: 1px solid #2e68fb;
+    padding:0;
+}

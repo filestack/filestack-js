@@ -1,0 +1,29 @@
+{
+  "unit": {
+    "storeApiUrl": "http://localhost:3000/api/store",
+    "fileApiUrl": "http://localhost:3000/api/file",
+    "uploadApiUrl": "http://localhost:3000/upload",
+    "cloudApiUrl": "http://localhost:3000/cloud",
+    "intelligentUploadApiUrl": "http://localhost:3000/intelligentUpload",
+    "processApiUrl": "https://process-stage.filestackapi.com",
+    "cdnUrl": "https://process-stage.filestackapi.com",
+    "testImageUrl": "https://d1wtqaffaaj63z.cloudfront.net/images/Zanzibar_Red_Colobus_Monkey.jpg",
+    "proxy500": "http://localhost:3001",
+    "proxyAbort": "http://localhost:3002",
+    "proxy400": "http://localhost:3003"
+  },
+  "integration": {
+    "storeApiUrl": "https://www-stage.filestackapi.com/api/store",
+    "cloudApiUrl": "https://cloud-rc.filestackapi.com",
+    "fileApiUrl": "https://www-stage.filestackapi.com/api/file",
+    "intelligentUploadApiUrl": "https://rc-upload.filestackapi.com",
+    "uploadApiUrl": "https://upload-stage.filestackapi.com",
+    "processApiUrl": "https://process-stage.filestackapi.com",
+    "cdnUrl": "https://process-stage.filestackapi.com",
+    "testImageUrl": "https://d1wtqaffaaj63z.cloudfront.net/images/Zanzibar_Red_Colobus_Monkey.jpg",
+    "proxy500": "http://localhost:3001",
+    "proxyAbort": "http://localhost:3002",
+    "proxy400": "http://localhost:3003",
+    "proxySlow": "http://localhost:3004"
+  }
+}

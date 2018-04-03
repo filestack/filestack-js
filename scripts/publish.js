@@ -1,28 +1,86 @@
-/* eslint no-console:0 */
+/**
+ * S3 Uploader ripped from release-o-tron
+ */
 
-const jetpack = require('fs-jetpack');
-const releaseOTron = require('release-o-tron');
+const path = require('path');
+const AWS = require('aws-sdk');
+const jetpack = require('fs-jetpack'); // kuba never dies
+const mime = require('mime-types');
+const version = require('../package.json').version;
+const s3 = new AWS.S3();
 
-const distDir = jetpack.dir('dist_cdn', { empty: true });
-
-const envName = releaseOTron.utils.getEnvironmentForCurrentGitBranch();
-const target = releaseOTron.utils.getPublishTargetForCurrentGitBranch();
-
-const build = () => {
-  return releaseOTron.utils.spawn('npm', ['run', 'build-cdn', '--', `--env=${envName}`]);
+const figureOutFileMimetype = (file) => {
+  const type = mime.lookup(path.extname(file.path));
+  if (type !== false) {
+    return type;
+  }
+  return 'application/octet-stream';
 };
 
-releaseOTron.utils.ensureRepoDoesNotHaveUncommitedChanges()
-.then(releaseOTron.utils.ensureRepoInSyncWithOrigin)
-.then(releaseOTron.utils.ensureNewReleaseWasCreated)
-.then(build)
-.then(() => {
-  return releaseOTron.s3.upload({
-    cwd: distDir.path(),
-    matching: ['**/*'],
-  }, {
-    bucket: target.bucket,
-    folder: target.folder,
+const getFilesToBeUploaded = (from) => {
+  const cwd = jetpack.cwd(from.cwd);
+  return cwd.findAsync({
+      matching: from.matching
+    })
+    .then((paths) => {
+      return paths.map((path) => {
+        return {
+          path,
+          content: cwd.read(path, 'buffer'),
+        };
+      });
+    });
+};
+
+const pushOneFileToS3 = (file, to) => {
+  return new Promise((resolve, reject) => {
+    const path = `${to.folder}/${file.path}`;
+    s3.putObject({
+      Bucket: to.bucket,
+      Key: path,
+      Body: file.content,
+      ContentType: figureOutFileMimetype(file),
+    }, (err) => {
+      if (err) {
+        console.error('Upload ERROR:', err);
+        reject(err);
+      } else {
+        console.log(`Uploaded: ${path}`);
+        resolve();
+      }
+    });
   });
-})
-.catch(console.error);
+};
+
+const pushFilesToS3 = (files, to) => {
+  const promises = files.map((file) => {
+    return pushOneFileToS3(file, to);
+  });
+  return Promise.all(promises);
+};
+
+const upload = (from, to) => {
+  return getFilesToBeUploaded(from)
+    .then((files) => {
+      return pushFilesToS3(files, to);
+    });
+};
+
+// Publish versions
+
+const bucket = 'static.filestackapi.com';
+const major = version.split('.').shift();
+
+const latest = {
+  bucket,
+  folder: `filestack-js/${major}.x.x`,
+};
+
+const current = {
+  bucket,
+  folder: `filestack-js/${version}`,
+};
+
+[latest, current].forEach((version) => {
+  upload({ cwd: './build/browser', matching: 'filestack*' }, version);
+});

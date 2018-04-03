@@ -1,0 +1,7 @@
+{
+  "requestUrl": "/api/file/fakesecurelink?key=fakesecurkey&policy=fakepolicy&signature=fakesignature",
+  "contentType": "application/json",
+  "method": "HEAD",
+  "statusCode": 201,
+  "isBase64": false
+}

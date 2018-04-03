@@ -1,78 +1,68 @@
-/* eslint-disable no-console */
-// Build for filestack.js published to npm
+const alias = require('rollup-plugin-alias');
+const builtins = require('rollup-plugin-node-builtins');
+const commonjs = require('rollup-plugin-commonjs');
+const globals = require('rollup-plugin-node-globals');
+const nodeResolve = require('rollup-plugin-node-resolve');
+const replace = require('rollup-plugin-replace');
+const version = require('./package.json').version;
 
-import jetpack from 'fs-jetpack';
-import minimist from 'minimist';
-import babel from 'rollup-plugin-babel';
-import inject from 'rollup-plugin-inject';
-import replace from 'rollup-plugin-replace';
-import nodeResolve from 'rollup-plugin-node-resolve';
-import commonJs from 'rollup-plugin-commonjs';
-import uglify from 'rollup-plugin-uglify';
-import { minify } from 'uglify-es';
-
-const argv = minimist(process.argv);
-const envName = argv.env || 'production';
-const manifest = jetpack.read('package.json', 'json');
-
-const sourcemapType = () => {
-  if (envName === 'production' || envName === 'staging') {
-    // For production and staging sourcemaps are in separate file.
-    return true;
-  }
-  // For debugging it's better to have sourcemaps in same file.
-  return 'inline';
+const adapters = {
+  './lib/api/security': 'build/module/adapters/security.browser.js',
+  './file_utils': 'build/module/adapters/file_utils.browser.js',
 };
 
-export default {
-  entry: 'lib/index.js',
-  acorn: {
-    allowReserved: true,
+const namedExports = {
+  'node_modules/tcomb-validation/index.js': [
+    'Boolean',
+    'Function',
+    'Integer',
+    'Number',
+    'String',
+    'enums',
+    'refinement',
+    'union',
+    'tuple',
+    'struct',
+    'validate',
+    'maybe',
+    'list'
+  ],
+  'node_modules/superagent/lib/client.js': [
+    'get',
+    'post',
+    'put',
+    'delete',
+    'head'
+  ],
+  'node_modules/bowser/src/bowser.js': [ 'mobile' ],
+  'node_modules/spark-md5/spark-md5.js': [ 'ArrayBuffer' ]
+};
+
+const plugins = [
+  alias(adapters),
+  builtins(),
+  nodeResolve({
+    browser: true,
+  }),
+  commonjs({
+    include: 'node_modules/**',
+    namedExports: namedExports,
+  }),
+  globals(),
+  replace({
+    'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
+    'process.env.TEST_ENV': JSON.stringify(process.env.TEST_ENV),
+  }),
+];
+
+module.exports = {
+  input: 'build/module/index.js',
+  onwarn: function(warning) {
+    // Skip certain warnings
+    // should intercept ... but doesn't in some rollup versions
+    if ( warning.code === 'THIS_IS_UNDEFINED' ) { return; }
+    // console.warn everything else
+    console.warn( warning.message );
   },
-  plugins: [
-    babel({
-      exclude: 'node_modules/**',
-    }),
-    replace({
-      delimiters: ['@{', '}'],
-      values: {
-        VERSION: manifest.version,
-      },
-    }),
-    inject({
-      exclude: 'node_modules/**',
-      modules: {
-        envGetter: jetpack.path(`config/env_${envName}.js`),
-      },
-    }),
-    nodeResolve({
-      module: true,
-      jsnext: true,
-      main: true,
-    }),
-    commonJs(),
-    uglify({
-      compress: false,
-      mangle: false,
-      output: {
-        // Leave topmost comment with version
-        comments: (node, comment) => comment.line === 1,
-      },
-    }, minify),
-  ],
-  targets: [
-    {
-      dest: manifest.main,
-      format: 'umd',
-      banner: `/* v${manifest.version} */`,
-      moduleName: 'filestack',
-      sourceMap: sourcemapType(),
-    },
-    {
-      dest: manifest.module,
-      format: 'es',
-      banner: `/* v${manifest.version} */`,
-      sourceMap: sourcemapType(),
-    },
-  ],
+  plugins
 };

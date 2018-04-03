@@ -1,0 +1,14 @@
+{
+  "requestUrl": "/api/file/NRbYPKrlQYSsdBubnbbF/metadata?policy=eyJleHBpcnkiOjE1MDgxNDE1MDR9&signature=2908b220968450ebdc718c90fcb894524dc1f2821d0304638507cb604367269f",
+  "contentType": "application/json",
+  "method": "GET",
+  "statusCode": 200,
+  "data": {
+    "mimetype": "image/jpeg",
+    "uploaded": 1504120815691.0068,
+    "size": 120305,
+    "writeable": true,
+    "filename": "Zanzibar_Red_Colobus_Monkey.jpg"
+  },
+  "isBase64": false
+}

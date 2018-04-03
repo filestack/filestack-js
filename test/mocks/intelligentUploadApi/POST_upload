@@ -1,0 +1,17 @@
+{
+  "requestUrl": "/multipart/upload",
+  "contentType": "application/json",
+  "method": "POST",
+  "statusCode": 200,
+  "data": {
+    "url": "https://s3.amazonaws.com/filestack-uploads-production-us-east-1/ii/AJrB9kEilS1SQeHIDf3wtz/1YV1FYlZpNzDlOp21dl2P_d.JNGK3HyNhl_VrQbO987yOvlaFZ8HZrNTiKHyP_vDB3Tsb.Xd5mSW4FyLjYjPsnsp1kecKPW5j5JXa7OO8J0x07EbwE34TPcR2MuQ0TcT/1/0?",
+    "headers": {
+      "Authorization": "AWS4-HMAC-SHA256 Credential=AKIAIZPVO2IP3EGGABFA/20170908/us-east-1/s3/aws4_request, SignedHeaders=content-length;content-md5;host;x-amz-date, Signature=8a1405069f86d8deff5b054adb04b327228bafb8c2750aed87e69f0bc72031ea",
+      "Content-MD5": "9lIZM9md0mPSWbXW/Ouv1w==",
+      "x-amz-content-sha256": "UNSIGNED-PAYLOAD",
+      "x-amz-date": "20170908T042929Z"
+    },
+    "location_url": "upload-us-east-1.filestackapi.com"
+  },
+  "isBase64": false
+}

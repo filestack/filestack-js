@@ -1,0 +1,5 @@
+--require ./test/setup_node.js
+-r jsdom-global/register
+--full-trace
+--timeout 30000
+build/main/lib/**/*.spec.js
