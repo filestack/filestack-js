@@ -64,7 +64,7 @@ Node projects which depend on filestack-js will follow the `main` field in `pack
 The pre-bundled browser module is also available in UMD format. This is useful if you are using script tags on a web page instead of bundling your application. It can be retrieved from both the Filestack CDN and the unpkg CDN:
 
 * [Filestack CDN](https://static.filestackapi.com/filestack-js/1.x.x/filestack.min.js)
-* [unpkg]()
+* [unpkg](TODO)
 
 ## Live examples (JSFiddle)
 
@@ -87,7 +87,7 @@ npm run examples
 
 ## Picker Quick Start
 
-If you are here to use the picker widget, it can be initialized from the Filestack client by calling `client.picker(options)`. Options for the picker are [documented here](TODO).
+If you are here to use the picker widget, it can be initialized from the Filestack client by calling `client.picker(options)`. Options for the picker are [documented here](https://filestack.github.io/filestack-js/interfaces/pickeroptions.html).
 
 The picker instance returned from `client.picker` can be controlled with a few methods:
 
