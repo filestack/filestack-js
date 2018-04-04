@@ -64,7 +64,7 @@ Node projects which depend on filestack-js will follow the `main` field in `pack
 The pre-bundled browser module is also available in UMD format. This is useful if you are using script tags on a web page instead of bundling your application. It can be retrieved from both the Filestack CDN and the unpkg CDN:
 
 * [Filestack CDN](https://static.filestackapi.com/filestack-js/1.x.x/filestack.min.js)
-* [unpkg](TODO)
+* [unpkg](https://unpkg.com/filestack-js@next)
 
 ## Live examples (JSFiddle)
 
