@@ -452,12 +452,12 @@ class PickerLoader {
 
   async close(): Promise<void> {
     const picker = await this._initialized;
-    picker.close();
+    await picker.close();
   }
 
   async cancel(): Promise<void> {
     const picker = await this._initialized;
-    picker.cancel();
+    await picker.cancel();
   }
 
   private async loadModule(client: Client, options: PickerOptions): Promise<PickerInstance> {
