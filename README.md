@@ -5,10 +5,10 @@
   <strong>Javascript SDK for the Filestack API and content management system.</strong>
 </p>
 <p align="center">
-  <a href="https://npmjs.com/package/filestack-js"><img src="https://img.shields.io/npm/v/filestack-js.svg" /></a>
-  <a href="https://static.filestackapi.com/v3/filestack.js"><img src="http://img.badgesize.io/http://static.filestackapi.com/v3/filestack.js?compression=gzip&color=green" /></a>
-  <a href="https://static.filestackapi.com/v3/filestack.js"><img src="http://img.badgesize.io/http://static.filestackapi.com/v3/filestack.js?color=green" /></a>
-  <img src="https://img.shields.io/badge/module%20formats-umd%2C%20esm-green.svg" />
+  <a href="https://npmjs.com/package/filestack-js"><img src="https://img.shields.io/npm/v/filestack-js/next.svg" /></a>
+  <a href="https://static.filestackapi.com/filestack-js/1.x.x/filestack.min.js"><img src="http://img.badgesize.io/http://static.filestackapi.com/filestack-js/1.x.x/filestack.min.js?compression=gzip&color=green" /></a>
+  <a href="https://static.filestackapi.com/filestack-js/1.x.x/filestack.min.js"><img src="http://img.badgesize.io/http://static.filestackapi.com/filestack-js/1.x.x/filestack.min.js?color=green" /></a>
+  <img src="https://img.shields.io/badge/module%20formats-umd%2C%20esm%2C%20cjs-green.svg" />
   <br/>
   <img src="https://badges.herokuapp.com/browsers?labels=none&googlechrome=latest&firefox=latest&microsoftedge=latest&iexplore=11&safari=latest&iphone=latest" />
 </p>
