@@ -97,7 +97,7 @@ export interface ClientOptions {
  * ### Example
  * ```js
  * // ES module
- * import filestack from 'filestack-js';
+ * import * as filestack from 'filestack-js';
  * const client = filestack.init('apikey');
  * ```
  *

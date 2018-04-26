@@ -16,7 +16,7 @@
  */
 
 import { loadModule, knownModuleIds } from 'filestack-loader';
-import { StoreOptions, Client } from './client';
+import { Client } from './client';
 import { FSProgressEvent, UploadOptions } from './api/upload/types';
 
 export interface PickerInstance {
@@ -180,6 +180,29 @@ export interface PickerDropPaneOptions {
   showProgress?: boolean;
 }
 
+export interface PickerStoreOptions {
+  /**
+   * Location for stored file. One of 's3', 'gcs', 'azure', 'rackspace', or 'dropbox'.
+   */
+  location?: string;
+  /**
+   * Specify storage container.
+   */
+  container?: string;
+  /**
+   * Set container path. Indicate a folder by adding a trailing slash. Without a trailing slash all files will be stored to the same object.
+   */
+  path?: string;
+  /**
+   * Specify S3 region.
+   */
+  region?: string;
+  /**
+   * S3 container access. 'public' or 'private'.
+   */
+  access?: string;
+}
+
 export interface PickerOptions {
   /**
    * Restrict file types that are allowed to be picked. Formats accepted:
@@ -227,7 +250,7 @@ export interface PickerOptions {
    */
   displayMode?: PickerDisplayMode;
   /**
-   * Max number of files to upload concurrently.
+   * Max number of files to upload concurrently. Default is 4.
    */
   concurrency?: number;
   /**
@@ -371,7 +394,7 @@ export interface PickerOptions {
    */
   preferLinkOverStore?: boolean;
   /**
-   * Define a unique id for the application mount point. May be useful for more advanced use cases.
+   * Define a unique id for the application mount point. May be useful for more advanced use cases. For example, if you wish to have more than one picker instance open at once, then each will need their own unique rootId.
    */
   rootId?: string;
   /**
@@ -381,7 +404,7 @@ export interface PickerOptions {
   /**
    * Options for file storage.
    */
-  storeTo?: StoreOptions;
+  storeTo?: PickerStoreOptions;
   /**
    * Specify options for images passed to the crop UI.
    */
