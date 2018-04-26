@@ -242,7 +242,7 @@ export interface PickerOptions {
    */
   fromSources?: string[];
   /**
-   * Container where picker should be appended.
+   * Container where picker should be appended. Only relevant for `inline` and `dropPane` display modes.
    */
   container?: string | Node;
   /**
@@ -394,7 +394,12 @@ export interface PickerOptions {
    */
   preferLinkOverStore?: boolean;
   /**
-   * Define a unique id for the application mount point. May be useful for more advanced use cases. For example, if you wish to have more than one picker instance open at once, then each will need their own unique rootId.
+   * Define a unique id for the application mount point.
+   * May be useful for more advanced use cases.
+   * For example, if you wish to have more than one picker instance open at once,
+   * then each will need their own unique rootId.
+   *
+   * **Note:** This option is ignored when `displayMode` is `dropPane`.
    */
   rootId?: string;
   /**
