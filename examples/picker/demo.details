@@ -1,5 +1,5 @@
 ---
 name: Filestack Demo - Picker
-description: Open filestack picker example
+description: Example of the Filestack Picker in default overlay mode
 normalize_css: no
 ...

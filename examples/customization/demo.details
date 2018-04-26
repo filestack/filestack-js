@@ -1,5 +1,5 @@
 ---
-name: Filestack Demo - css customization
+name: Filestack Demo - CSS Customization
 description: Easy customization with BEM standard (http://getbem.com/)
 normalize_css: no
 ...

@@ -1,5 +1,5 @@
 ---
-name: Filestack Demo - Picker
-description: Open filestack picker in inline mode example
+name: Filestack Demo - Picker Inline Mode
+description: Example of the Filestack picker in inline mode 
 normalize_css: no
 ...

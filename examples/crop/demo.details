@@ -1,5 +1,5 @@
 ---
-name: Filestack Demo - cropFiles
-description: Crop files using client
+name: Filestack Demo - Picker Crop 
+description: Pass files directly to the picker in force crop mode
 normalize_css: no
 ...
