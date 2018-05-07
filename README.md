@@ -14,7 +14,7 @@
 </p>
 <hr/>
 
-**Important: This is the readme for 1.0.0-rc1. If you need previous versions please switch to the appropriate git tag.**
+**Important: This is the readme for 1.0.0-rc2. If you need previous versions please switch to the appropriate git tag.**
 
 ## What's in the box?
 
