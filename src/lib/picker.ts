@@ -120,7 +120,7 @@ export interface PickerResponse {
 }
 
 export interface PickerFileCallback {
-  (file: PickerFileMetadata): void;
+  (file: PickerFileMetadata): void | Promise<any>;
 }
 
 export interface PickerFileErrorCallback {
@@ -358,9 +358,22 @@ export interface PickerOptions {
    * // Using to change selected file name
    * // NOTE: This currently only works for local uploads
    * onFileSelected(file) {
-   *   file.name = 'foo';
-   *   // It's important to return altered file by the end of this function.
-   *   return file;
+   *   // It's important to return a new file by the end of this function.
+   *   return { ...file, name: 'foo' };
+   * }
+   * ```
+   *
+   * The callback function can also return a Promise to allow asynchronous validation logic.
+   * You can pass a file object to `resolve` for changing the file name, it will behave the same as when
+   * the file is returned from the non-async callback.
+   *
+   * ```js
+   * onFileSelected(file) {
+   *   return new Promise((resolve, reject) => {
+   *     // Do something async
+   *     resolve();
+   *     // Or reject the selection with reject()
+   *   });
    * }
    * ```
    */
