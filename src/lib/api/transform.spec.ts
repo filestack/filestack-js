@@ -202,6 +202,20 @@ describe('transform', () => {
     });
   });
 
+  describe('rotate', () => {
+    it('should construct valid parameters', () => {
+      const testConfig: t.TransformOptions = {
+        rotate: {
+          deg: 'exif',
+        },
+      };
+
+      const result = transform(url, testConfig);
+      const expected = `${cdnUrl}/rotate=deg:exif/${url}`;
+      assert.equal(result, expected);
+    });
+  });
+
   describe('output', () => {
     it('should construct valid parameters', () => {
       const testConfig = {

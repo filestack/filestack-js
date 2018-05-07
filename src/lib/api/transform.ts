@@ -146,7 +146,7 @@ export interface TransformOptions {
     dim: [number, number, number, number]
   };
   rotate?: {
-    deg: number;
+    deg: number | string;
     color?: string;
     background?: string;
   };
@@ -344,7 +344,7 @@ const vColor = t.String;
 /**
  * @private
  */
-const vRotate = vRange(1, 359);
+const vRotate = t.union([t.enums.of('exif'), vRange(1, 359) ]);
 
 /**
  * @private
