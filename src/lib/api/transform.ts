@@ -303,7 +303,7 @@ export interface TransformOptions {
   upscale?: {
     upscale?: boolean;
     noise?: ENoiseType;
-    styles?: EStyleType;
+    style?: EStyleType;
   } | true;
   ascii?: {
     background?: string;
