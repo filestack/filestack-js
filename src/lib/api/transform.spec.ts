@@ -72,11 +72,11 @@ describe('transform', () => {
     assert.equal(result, expected);
   });
 
-  it('should return null if there are no transforms', () => {
+  it('should return base url if there are no transforms', () => {
     const testConfig = {};
     const result = transform(url, testConfig);
 
-    assert.equal(result, null);
+    assert.equal(result, `${processURL}/${url}`);
   });
 
   it('should return flatten nested options array', () => {
@@ -165,13 +165,13 @@ describe('transform', () => {
     assert.equal(result, expected);
   });
 
-  it('should return null if there is empty transform option', () => {
+  it('should return base url with handle if there is empty transform option', () => {
     const testConfig = {
       polaroid: {},
     };
 
     const result = transform(url, testConfig);
-    assert.equal(result, null);
+    assert.equal(result, `${processURL}/${url}`);
   });
 
   describe('blackwhite', () => {

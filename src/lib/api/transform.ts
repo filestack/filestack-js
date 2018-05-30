@@ -127,14 +127,56 @@ export enum ECropfacesType {
 }
 
 /**
+ * Convert to format
+ */
+export enum EVideoTypes {
+    h264 = 'h264',
+    h264_hi = 'h264.hi',
+    webm = 'webm',
+    'webm-hi' = 'webm.hi',
+    ogg = 'ogg',
+    'ogg-hi' = 'ogg.hi',
+    'hls-variant' = 'hls.variant',
+    mp3 = 'mp3',
+    oga = 'oga',
+    m4a = 'm4a',
+    aac = 'aac',
+    hls = 'hls.variant.audio'
+}
+
+/**
+ * Video storage location
+ */
+export enum EVideoLocations {
+  s3 = 's3',
+  azure = 'azure',
+  gcs = 'gcs',
+  rackspace = 'rackspace',
+  dropbox = 'dropbox,'
+}
+
+export enum EVideoAccess {
+  private = 'private',
+  public = 'public',
+}
+
+export enum EVideoAccessMode {
+  preserve = 'preserve',
+  constrain = 'constrain',
+  letterbox = 'letterbox',
+  pad = 'pad',
+  crop = 'crop',
+}
+
+/**
  * @see https://www.filestack.com/docs/image-transformations
  */
 export interface TransformOptions {
   flip?: boolean;
   flop?: boolean;
-  monochrome?: boolean;
-  enhance?: boolean;
+  enchance?: boolean;
   redeye?: boolean;
+  monochrome?: boolean;
   negative?: boolean;
   resize?: {
     width?: number;
@@ -197,8 +239,8 @@ export interface TransformOptions {
     background?: string;
   } | true;
   torn_edges?: {
-    spread?: number;
-    background?: number;
+    spread?: [number, number];
+    background?: string;
   } | true;
   shadow?: {
     blur?: number;
@@ -286,11 +328,47 @@ export interface TransformOptions {
     compress?: boolean;
     density?: number;
     background?: string;
+    secure?: boolean;
+    docinfo?: boolean;
+    pageformat?: string;
+    pageorientation?: string;
   };
   cache?: {
     cache?: boolean;
     expiry: number;
   };
+  // audio/video
+  video_convert? : {
+    aspect_mode: EVideoAccessMode;
+    preset?: EVideoTypes;
+    force?: boolean;
+    title?: string;
+    extname?: string;
+    filename?: string;
+    location?: EVideoLocations;
+    path?: string;
+    access?: EVideoAccess;
+    container?: string;
+    audio_bitrate?: number;
+    upscale: boolean;
+    video_bitrate?: number;
+    audio_sample_rate?: number;
+    audio_channels?: number;
+    clip_length?: string;
+    clip_offset?: string;
+    width?: number;
+    height?: number;
+    two_pass?: boolean;
+    fps?: number;
+    keyframe_interval?: number;
+    watermark_url?: string;
+    watermark_top?: number;
+    watermark_bottom?: number;
+    watermark_right?: number;
+    watermark_left?: number;
+    watermark_width?: number;
+    watermark_height?: number;
+  }
 }
 
 // ===== Custom Validators =====
@@ -501,7 +579,7 @@ const validationSchema: any[] = [
     props: {
       amount: vRange(0, 100),
       blurmode: vBlurMode,
-      background: t.Boolean,
+      background: vColor,
     },
   }, {
     name: 'polaroid',
@@ -515,7 +593,7 @@ const validationSchema: any[] = [
     name: 'torn_edges',
     canBeBoolean: true,
     props: {
-      spread: vRange(1, 10000),
+      spread: t.tuple([vRange(1, 10000), vRange(1, 10000)]),
       background: vColor,
     },
   }, {
@@ -588,7 +666,7 @@ const validationSchema: any[] = [
     props: {
       brightness: vRange(0, 10000),
       hue: vRange(0, 359),
-      saturate: vRange(0, 10000),
+      saturation: vRange(0, 10000),
     },
   }, {
     name: 'partial_pixelate',
@@ -663,6 +741,10 @@ const validationSchema: any[] = [
       compress: t.Boolean,
       density: vRange(1, 500),
       background: vColor,
+      secure: t.Boolean,
+      docinfo: t.Boolean,
+      pageformat: t.enums.of('a3 A3 a4 A4 a5 A5 b4 B4 b5 B5 letter legal tabloid'),
+      pageorientation: t.enums.of('portrait landscape'),
     },
   }, {
     name: 'crop_faces',
@@ -703,6 +785,39 @@ const validationSchema: any[] = [
       amount: vRange(2, 100),
       blur: vRange(0, 20),
       type: vShapeType,
+    },
+  }, {
+    name: 'video_convert',
+    props: {
+      preset: t.enums.of('h264 h264.hi webm webm.hi ogg ogg.hi hls.variant mp3 oga m4a aac hls.variant.audio'),
+      force: t.Boolean,
+      title: t.String,
+      extname: t.String,
+      filename: t.String,
+      location: t.enums.of('S3 s3 azure gcs rackspace dropbox'),
+      path: t.String,
+      access: t.enums.of('private public'),
+      container: t.String,
+      audio_bitrate: vRange(0, 999),
+      video_bitrate: vRange(1, 5000),
+      audio_sample_rate: vRange(0, 99999),
+      audio_channels: vRange(1, 12),
+      upscale: t.Boolean,
+      aspect_mode: t.enums.of('preserve constrain letterbox pad crop'),
+      clip_length: t.String,
+      clip_offset: t.String,
+      width: t.Number,
+      height: t.Number,
+      two_pass: t.Boolean,
+      fps: vRange(1, 300),
+      keyframe_interval: vRange(1, 300),
+      watermark_url: t.String,
+      watermark_top: t.Number,
+      watermark_bottom: t.Number,
+      watermark_right: t.Number,
+      watermark_left: t.Number,
+      watermark_width: t.Number,
+      watermark_height: t.Number,
     },
   },
 ];
@@ -824,7 +939,7 @@ export const transform = (session: Session, url: string, options: TransformOptio
   const baseURL = resolveCdnUrl(session, url);
 
   if (!transformsArray.length) {
-    return null;
+    return `${baseURL}/${url}`;
   }
 
   const transformString = transformsArray.join('/');
