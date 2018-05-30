@@ -593,7 +593,7 @@ const validationSchema: any[] = [
     name: 'torn_edges',
     canBeBoolean: true,
     props: {
-      spread: t.tuple([vRange(1, 10000), vRange(1, 1000)]),
+      spread: t.tuple([vRange(1, 10000), vRange(1, 10000)]),
       background: vColor,
     },
   }, {
