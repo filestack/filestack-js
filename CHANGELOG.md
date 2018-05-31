@@ -1,5 +1,150 @@
 # filestack-js changelog
 
+## 1.0.0 (2018-05-31)
+
+The source code for this repository has been made available under the Apache 2.0 license. Contributions are more than welcome, and we will be working to improve
+the contribution experience over time. It should be noted that the source code for the picker UI is not yet licensed for sharing. 
+
+### Module Updates
+
+* Browser and Node runtimes are now both supported. This is accomplished using the appropriate module fields in `package.json`. [Read more.](https://github.com/filestack/filestack-js#module-overview)
+* All modules have been rewritten in TypeScript. Generated docs are now derived from the interfaces used within the source code. [API Docs](https://filestack.github.io/filestack-js/index.html)
+
+### Breaking Changes
+
+* `filestack.init` now takes 2 arguments, `apikey` and `options`. [Read more.](https://filestack.github.io/filestack-js/globals.html#init)
+* No more default export. The ES module must be imported using qualified imports, such as `import * as filestack from 'filestack-js'`.
+* Custom source in the picker must now use `customSourceName` to configure the name of the source in the UI. This is no longer pulled from the Filestack application.
+* `rejectOnCancel` has been removed from the picker options.
+* `hideWhenUploading` has been renamed to `hideModalWhenUploading`, since it applies only when `displayMode` is `'overlay'`
+* `pick`, `makeDropPane`, and `cropFiles` have been replaced by a unifying `picker` instance that exposes methods for controlling the picker lifecycle. Supporting this change are two new picker options, `displayMode` and `container`, which allow users to configure how their pickers are integrated into the document.
+
+#### Migration path for filestack.init:
+
+```js
+const security = {
+  policy: '12345',
+  signature: 'abcdef'
+};
+
+const cname = 'fs.mydomain.com';
+
+// pre 1.0
+
+filestack.init(apikey, security, cname);
+
+// ---> 1.0
+
+const options = {
+  security,
+  cname,
+};
+
+filestack.init(apikey, options);
+```
+
+### Picker Changes 
+
+We have changed the interface for using the picker. This was necessitated by new features and motivated by developer feedback. Because the picker now supports being embedded in addition to being a one-time modal, the Promise interface has been removed. This means `client.pick` is replaced by `client.picker`, which returns a Picker instance that exposes methods `open`, `close`, `cancel`, and `crop`. The picker instance can be configured to open in `overlay`, `inline`, or `dropPane` modes. 
+
+The recommended way moving forward is to replace your usage of `client.pick` with `picker.open` and set up any callbacks you need as options when instantiating the picker.
+
+For example:
+
+```js
+
+// pre-1.0
+
+const client = filestack.init('apikey');
+
+const pickOptions = {
+  accept: ['image/jpeg', '.jpg', '.jpeg'],
+  maxFiles: 4,
+  imageMax: [1280, 720]
+  // etc.
+};
+
+client.pick(pickOptions).then(callback);
+
+
+// ---> 1.0
+
+const client = filestack.init('apikey');
+
+const pickOptions = {
+  accept: ['image/jpeg', '.jpg', '.jpeg'],
+  maxFiles: 4,
+  imageMax: [1280, 720],
+  onUploadDone: callback, 
+};
+
+client.picker(pickOptions).open();
+```
+
+In line with this change, we have removed the helper methods `cropFiles` and `makeDropPane`, but the same functionality can still be retained.
+
+The old `makeDropPane` method can be achieved with this adapter:
+
+```js
+const makeDropPane = (dropPaneOptions, pickerOptions) => {
+  const options = {
+    ...pickerOptions,
+    displayMode: 'dropPane',
+    container: dropPaneOptions.id, // container can be a CSS selector or DOM node
+    dropPane: dropPaneOptions,
+  };
+
+  const picker = client.picker(options);
+  picker.open();
+  // close drop pane with picker.close()
+};
+```
+
+`cropFiles` is replaced by the `crop` method on the picker instance. This can only be used when displayMode is overlay (default) or inline. The crop method will take the input files and apply the force crop mode automatically for those files.
+
+```js
+const pickerOptions = {
+  onUploadDone: res => console.log(res),
+};
+
+const picker = client.picker(pickerOptions);
+picker.crop('http://link-to-an-image'); // can pass an array of Blobs or URLs
+```
+
+### OAuth Changes
+
+The OAuth flow for our cloud service has been updated to remove the need for cross-origin cookies. Unfortunately this is only possible by leveraging a feature of the OAuth 2 specification, which some cloud sources do not yet support. Because of this the following cloud sources are currently unsupported in the new picker:
+
+* Flickr
+* Evernote
+
+Due to how these services implement OAuth we cannot reliably track end-user sessions in our system. These providers will still operate in previous versions, and we will continue to search for a solution moving forward.
+
+### Picker Changes Summary
+
+* New options `displayMode` and `container` to enable better DOM integration
+* MutationObserver is now used to clean up picker resources when its root node is destroyed in the DOM
+* `onOpen` now passes the picker instance and adds the `app` property to it which is a reference to the Vue instance
+* Non-local source views can now be toggled between list and grid
+* Shift-click for range selection is now supported in cloud source views
+* Fix issue related to folder limit in drag events
+* Fix issue where infinite scroll for some cloud sources made duplicate requests
+* Fix issue where `accept` parameter was not passed to mobile local file selection
+* Change `accept` to reject files without extensions if extension types are whitelisted
+* The modal sidebar will now auto-hide if only one source exists in `fromSources`
+* First-time render speed has been improved due to removing a blocking network request
+* Cross-origin cookies have been removed in favor of localStorage. This should resolve issues in Safari 11 and removes the need for the OAuth relay hosted by Filestack. This also means that Filestack cloud sessions will not persist across separate domains.
+* New option `customSourceName` for specifying the name of the custom source. This needs to be used if you were defining your custom source name in the dev portal. 
+* `webcam`, `audio` and `video` sources on mobile are no longer hidden. Their behavior will be to open the device menu instead of using the desktop functionality.
+* Update Dutch translations
+* Add Catalan translations
+
+### API Client Updates
+
+* `transform` has been rewritten and now supports all image tasks from the Filestack catalog. [Read more.](https://filestack.github.io/filestack-js/interfaces/transformoptions.html)
+* `preview` will now respect the CNAME option passed to the client when constructing URLs.
+* New option `sessionCache` to enable/disable storing the Filestack Cloud API token in the browser. Defaults to false. When true then users will not need to re-authorize their cloud sources if their session has not expired yet on the backend.
+
 ## 0.11.2 (2018-01-24)
 **Picker changes**
 - Prevent ICC profile from being stripped on transformed images
