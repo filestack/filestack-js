@@ -309,7 +309,7 @@ export interface PickerOptions {
    */
   imageMin?: [number, number];
   /**
-   * Sets locale. Accepts: da, de, en, es, fr, he, it, ja, ko, nl, no, pl, pt, sv, ru, vi, zh.
+   * Sets locale. Accepts: ca, da, de, en, es, fr, he, it, ja, ko, nl, no, pl, pt, sv, ru, vi, zh.
    */
   lang?: string;
   /**
