@@ -1,4 +1,14 @@
-# filestack-js changelog
+# Change Log
+
+All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
+
+<a name="1.0.1"></a>
+## [1.0.1](https://github.com/filestack/filestack-js/compare/1.0.0...1.0.1) (2018-05-31)
+
+
+### Bug Fixes
+
+* **picker:** fix syntax error in IE11 related to untransformed module import ([51e4873](https://github.com/filestack/filestack-js/commit/51e4873))
 
 ## 1.0.0 (2018-05-31)
 
