@@ -152,7 +152,7 @@ export enum EVideoLocations {
   azure = 'azure',
   gcs = 'gcs',
   rackspace = 'rackspace',
-  dropbox = 'dropbox,'
+  dropbox = 'dropbox',
 }
 
 export enum EVideoAccess {
