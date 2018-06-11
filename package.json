@@ -27,9 +27,9 @@
     "test:integration": "npm run build && npm run lint && TEST_ENV=integration karma start && TEST_ENV=integration nyc mocha",
     "docs": "trash build/docs && typedoc src && opn build/docs/index.html",
     "docs:publish": "npm run docs && gh-pages -d build/docs",
-    "release": "npm run docs:publish && standard-version",
+    "release": "standard-version",
     "prepare": "gulp build:prod",
-    "publish": "node scripts/publish.js",
+    "publish": "npm run docs:publish && node scripts/publish.js",
     "examples": "npm run build && node ./examples/examples.js"
   },
   "engines": {
