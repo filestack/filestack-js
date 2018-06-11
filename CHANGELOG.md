@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="1.0.2"></a>
+## [1.0.2](https://github.com/filestack/filestack-js/compare/1.0.0...1.0.2) (2018-06-11)
+
+
+### Bug Fixes
+
+* **picker:** fix syntax error in IE11 related to untransformed module import ([51e4873](https://github.com/filestack/filestack-js/commit/51e4873))
+* **transform:** correct typo in video locations enum ([6fcf41b](https://github.com/filestack/filestack-js/commit/6fcf41b))
+
+
+
 <a name="1.0.1"></a>
 ## [1.0.1](https://github.com/filestack/filestack-js/compare/1.0.0...1.0.1) (2018-05-31)
 
