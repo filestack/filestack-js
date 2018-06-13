@@ -178,6 +178,8 @@ export interface TransformOptions {
   redeye?: boolean;
   monochrome?: boolean;
   negative?: boolean;
+  tags?: boolean;
+  sfw?: boolean;
   resize?: {
     width?: number;
     height?: number;
@@ -525,6 +527,12 @@ const validationSchema: any[] = [
     validator: t.Boolean,
   }, {
     name: 'flop',
+    validator: t.Boolean,
+  }, {
+    name: 'tags',
+    validator: t.Boolean,
+  }, {
+    name: 'sfw',
     validator: t.Boolean,
   }, {
     name: 'monochrome',
