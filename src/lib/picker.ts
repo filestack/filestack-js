@@ -278,6 +278,10 @@ export interface PickerOptions {
    */
   disableThumbnails?: boolean;
   /**
+   * Configure the drop pane behavior, i.e. when `displayMode` is `dropPane`.
+   */
+  dropPane: PickerDropPaneOptions;
+  /**
    * When true the `originalFile` metadata will be the actual `File` object instead of a POJO
    */
   exposeOriginalFile?: boolean;
