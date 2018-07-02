@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="1.2.0"></a>
+# [1.2.0](https://github.com/filestack/filestack-js/compare/1.0.0...1.2.0) (2018-07-02)
+
+### Picker Updates
+
+* add new option `customText` for replacing strings in the picker UI [Read more](https://filestack.github.io/filestack-js/interfaces/pickeroptions.html#customtext)
+* add new `cropped` and `rotated` fields to the returned picker metadata [Read more](https://filestack.github.io/filestack-js/interfaces/pickerfilemetadata.html)
+* fix issue related to minified CSS namespace collision in animations
+* update Danish and Korean translations
+
 <a name="1.1.0"></a>
 # [1.1.0](https://github.com/filestack/filestack-js/compare/1.0.0...1.1.0) (2018-06-13)
 
