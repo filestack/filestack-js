@@ -63,11 +63,48 @@ export interface PickerInstance {
   crop: (files: any[]) => Promise<void>;
 }
 
+export interface PickerCroppedData {
+  cropArea: {
+    /**
+     * [x, y]
+     */
+    position: [number, number];
+    /**
+     * [width, height]
+     */
+    size: [number, number];
+  };
+    /**
+     * [width, height]
+     */
+  originalImageSize: [number, number];
+}
+
+export enum RotateDirection {
+  cw = 'CW',
+  ccw= 'CCW',
+}
+
+export interface PickerRotatedData {
+  /**
+   * Amount rotated in degrees.
+   */
+  value: number;
+  /**
+   * Can be CW or CCW (clockwise / counter-clockwise)
+   */
+  direction: RotateDirection;
+}
+
 export interface PickerFileMetadata {
   /**
    * The cloud container for the uploaded file.
    */
   container?: string;
+  /**
+   * Position and size information for cropped images.
+   */
+  cropped?: PickerCroppedData;
   /**
    * Name of the file.
    */
@@ -92,6 +129,10 @@ export interface PickerFileMetadata {
    * The origin of the file, e.g. /Folder/file.jpg.
    */
   originalPath: string;
+  /**
+   * Direction and value information for rotated images.
+   */
+  rotated?: PickerRotatedData;
   /**
    * Size in bytes of the uploaded file.
    */
@@ -203,6 +244,92 @@ export interface PickerStoreOptions {
   access?: string;
 }
 
+export interface PickerCustomText {
+  // Actions
+  Upload: string;
+  'Deselect All': string;
+  'View/Edit Selected': string;
+  'Sign Out': string;
+
+  // Source Labels
+  'My Device': string;
+  'Web Search': string;
+  'Take Photo': string;
+  'Link (URL)': string;
+  'Record Video': string;
+  'Record Audio': string;
+
+  // Custom Source
+  'Custom Source': string;
+
+  // Footer Text
+  Add: string;
+  'more file': string;
+  'more files': string;
+
+  // Cloud
+  Connect: string;
+  'Select Files from': string;
+  'You need to authenticate with ': string;
+  'A new page will open to connect your account.': string;
+  'We only extract images and never modify or delete them.': string;
+
+  // Summary
+  Files: string;
+  Images: string;
+  Uploaded: string;
+  Uploading: string;
+  Completed: string;
+  Filter: string;
+  'Cropped Images': string;
+  'Edited Images': string;
+  'Selected Files': string;
+  'Crop is required on images': string;
+
+  // Transform
+  Crop: string;
+  Circle: string;
+  Rotate: string;
+  Mask: string;
+  Revert: string;
+  Edit: string;
+  Reset: string;
+  Done: string;
+  Save: string;
+  Next: string;
+  'Edit Image': string;
+  'This image cannot be edited': string;
+
+  // Retry messaging
+  'Connection Lost': string;
+  'Failed While Uploading': string;
+  'Retrying in': string;
+  'Try again': string;
+  'Try now': string;
+
+  // Local File Source
+  'or Drag and Drop, Copy and Paste Files': string;
+  'Select Files to Upload': string;
+  'Select From': string;
+  'Drop your files anywhere': string;
+
+  // Input placeholders
+  'Enter a URL': string;
+  'Search images': string;
+
+  // Webcam Source
+  'Webcam Disabled': string;
+  'Webcam Not Supported': string;
+  'Please enable your webcam to take a photo.': string;
+  'Your current browser does not support webcam functionality.': string;
+  'We suggest using Chrome or Firefox.': string;
+
+  // Error Notifications
+  'File {displayName} is not an accepted file type. The accepted file types are {types}': string;
+  'File {displayName} is too big. The accepted file size is less than {roundFileSize}': string;
+  'Our file upload limit is {maxFiles} {filesText}': string;
+}
+
 export interface PickerOptions {
   /**
    * Restrict file types that are allowed to be picked. Formats accepted:
@@ -265,6 +392,12 @@ export interface PickerOptions {
    * Set the display name for the custom source.
    */
   customSourceName?: string;
+  /**
+   * Provide an object for mapping picker strings to your own strings.
+   * Strings surrounded by brackets, `{ foobar }`, are interpolated with runtime values.
+   * Source labels are also available to override, e.g. Facebook, Instagram, Dropbox, etc.
+   */
+  customText?: PickerCustomText;
   /**
    * When true removes the hash prefix on stored files.
    */
