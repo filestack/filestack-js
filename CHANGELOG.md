@@ -3,7 +3,7 @@
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
 <a name="1.2.0"></a>
-# [1.2.0](https://github.com/filestack/filestack-js/compare/1.0.0...1.2.0) (2018-07-02)
+# [1.2.0](https://github.com/filestack/filestack-js/compare/1.1.0...1.2.0) (2018-07-02)
 
 ### Picker Updates
 
@@ -13,7 +13,7 @@ All notable changes to this project will be documented in this file. See [standa
 * update Danish and Korean translations
 
 <a name="1.1.0"></a>
-# [1.1.0](https://github.com/filestack/filestack-js/compare/1.0.0...1.1.0) (2018-06-13)
+# [1.1.0](https://github.com/filestack/filestack-js/compare/1.0.2...1.1.0) (2018-06-13)
 
 
 ### Features
