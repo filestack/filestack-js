@@ -61,12 +61,12 @@ export const getFile = (filePath: string): Promise<FileObj> => {
     fs.open(filePath, 'r', (err, fd) => {
       if (err) return reject(err);
       const stats = fs.statSync(filePath);
-      const file: FileObj = {
+      const file = {
         fd,
         name: path.basename(filePath),
         size: stats.size,
         type: mime.getType(filePath),
-      };
+      } as FileObj;
       return resolve(file);
     });
   });

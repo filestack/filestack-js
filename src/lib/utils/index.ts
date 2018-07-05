@@ -140,7 +140,7 @@ export const throttle = function throttle(fn: any, interval: number, callFirst?:
  * @param step
  */
 export const range = (start: number, stop: number, step: number = 1) => {
-  const toReturn = [];
+  const toReturn: any[] = [];
   for (; start < stop; start += step) {
     toReturn.push(start);
   }

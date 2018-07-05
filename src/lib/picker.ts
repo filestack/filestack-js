@@ -614,7 +614,7 @@ class PickerLoader {
 
   private _initialized: Promise<PickerInstance>;
 
-  constructor(client: Client, options: PickerOptions) {
+  constructor(client: Client, options?: PickerOptions) {
     this._initialized = this.loadModule(client, options);
   }
 
@@ -638,7 +638,7 @@ class PickerLoader {
     await picker.cancel();
   }
 
-  private async loadModule(client: Client, options: PickerOptions): Promise<PickerInstance> {
+  private async loadModule(client: Client, options?: PickerOptions): Promise<PickerInstance> {
     const { session: { urls: { pickerUrl: url } } } = client;
     const Picker = await loadModule(url, knownModuleIds.picker);
     return new Picker(client, options);
