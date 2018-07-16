@@ -28,7 +28,7 @@ import { checkOptions, removeEmpty } from '../utils';
  * @param handle
  * @param security
  */
-export const remove = (session: Session, handle?: string, security?: Security, skipStorage?: boolean): Promise<any> => {
+export const remove = (session: Session, handle?: string, skipStorage?: boolean, security?: Security): Promise<any> => {
   if (!handle || typeof handle !== 'string') {
     throw new Error('A valid Filestack handle is required for remove');
   }

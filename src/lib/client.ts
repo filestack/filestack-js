@@ -218,7 +218,7 @@ export class Client {
    */
   remove(handle: string, security?: Security): Promise<any> {
     /* istanbul ignore next */
-    return remove(this.session, handle, security);
+    return remove(this.session, handle, false, security);
   }
   /**
    * Remove a file **only** from the Filestack system. The file remains in storage.
@@ -243,7 +243,7 @@ export class Client {
    */
   removeMetadata(handle: string, security?: Security): Promise<any> {
     /* istanbul ignore next */
-    return remove(this.session, handle, security, true);
+    return remove(this.session, handle, true, security);
   }
   /**
    * Store a file from its URL.

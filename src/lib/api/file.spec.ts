@@ -200,6 +200,25 @@ describe('remove', function removeFunc() {
       });
   });
 
+  it('should get an ok response when skip_storage is true', (done) => {
+    // have to create a file before we can test deleting it
+    storeURL(secureSession, ENV.urls.testImageUrl)
+      .then((res: any) => {
+        const handle = res.handle;
+        remove(secureSession, handle, true)
+          .then((result: any) => {
+            assert.equal(result.statusCode, 200);
+            done();
+          })
+          .catch((err) => {
+            done(err);
+          });
+      })
+      .catch((err) => {
+        done(err);
+      });
+  });
+
   it('should call promise catch with error', (done) => {
     const sessionClone = JSON.parse(JSON.stringify(secureSession));
     sessionClone.urls.fileApiUrl = 'somebadurl';

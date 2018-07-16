@@ -13,11 +13,11 @@
     "proxy400": "http://localhost:3003"
   },
   "integration": {
-    "storeApiUrl": "https://www-stage.filestackapi.com/api/store",
+    "storeApiUrl": "https://www.filestackapi.com/api/store",
     "cloudApiUrl": "https://cloud-rc.filestackapi.com",
-    "fileApiUrl": "https://www-stage.filestackapi.com/api/file",
+    "fileApiUrl": "https://www.filestackapi.com/api/file",
     "intelligentUploadApiUrl": "https://rc-upload.filestackapi.com",
-    "uploadApiUrl": "https://upload-stage.filestackapi.com",
+    "uploadApiUrl": "https://upload.filestackapi.com",
     "processApiUrl": "https://process-stage.filestackapi.com",
     "cdnUrl": "https://process-stage.filestackapi.com",
     "testImageUrl": "https://d1wtqaffaaj63z.cloudfront.net/images/Zanzibar_Red_Colobus_Monkey.jpg",
