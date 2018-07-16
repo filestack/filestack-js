@@ -141,7 +141,7 @@ export enum EVideoTypes {
     oga = 'oga',
     m4a = 'm4a',
     aac = 'aac',
-    hls = 'hls.variant.audio'
+    hls = 'hls.variant.audio',
 }
 
 /**
@@ -340,7 +340,7 @@ export interface TransformOptions {
     expiry: number;
   };
   // audio/video
-  video_convert? : {
+  video_convert?: {
     aspect_mode: EVideoAccessMode;
     preset?: EVideoTypes;
     force?: boolean;
@@ -370,7 +370,7 @@ export interface TransformOptions {
     watermark_left?: number;
     watermark_width?: number;
     watermark_height?: number;
-  }
+  };
 }
 
 // ===== Custom Validators =====
@@ -914,7 +914,7 @@ const optionToString = (key: string, values: any): string => {
  * @throws Error
  * @param options Transformation options
  */
-export const transform = (session: Session, url: string, options: TransformOptions = {}): string | null => {
+export const transform = (session: Session, url: string, options: TransformOptions = {}): string => {
   options = toSnakeCase(options);
 
   // strict will not allow additional params
