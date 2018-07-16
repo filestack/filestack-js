@@ -51,7 +51,7 @@ prism.create({
   mockFilenameGenerator: function(config, req) {
     return generateName(req);
   },
-  host: 'www-stage.filestackapi.com',
+  host: 'www.filestackapi.com',
   changeOrigin: true,
 });
 
@@ -63,7 +63,7 @@ prism.create({
   mockFilenameGenerator: function(config, req) {
     return generateName(req);
   },
-  host: 'www-stage.filestackapi.com',
+  host: 'www.filestackapi.com',
   changeOrigin: true,
 });
 
@@ -79,7 +79,7 @@ prism.create({
     const step = req.originalUrl.split('/').pop();
     return req.method + '_' + step;
   },
-  host: 'upload-stage.filestackapi.com',
+  host: 'upload.filestackapi.com',
 });
 
 prism.create({
@@ -96,7 +96,7 @@ prism.create({
     const step = req.originalUrl.split('/').pop();
     return req.method + '_' + step;
   },
-  host: 'rc-upload.filestackapi.com',
+  host: 'upload.filestackapi.com',
 });
 
 var app = connect().use(cors()).use(prism.middleware);

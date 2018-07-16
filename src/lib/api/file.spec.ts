@@ -72,9 +72,8 @@ describe('metadata', function metadataFunc() {
 
   it('should call promise catch with error', (done) => {
     const sessionClone = JSON.parse(JSON.stringify(session));
-    sessionClone.urls.fileApiUrl = 'somebadurl';
+    sessionClone.urls.fileApiUrl = 'http://www.somebadurl.com';
 
-    this.timeout(100);
     metadata(sessionClone, filelink)
       .then(() => {
         done(new Error('Request passed'));
@@ -226,7 +225,6 @@ describe('remove', function removeFunc() {
     storeURL(secureSession, ENV.urls.testImageUrl)
       .then((res: any) => {
         const handle = res.handle;
-        this.timeout(100);
 
         remove(sessionClone, handle)
         .then(() => {
