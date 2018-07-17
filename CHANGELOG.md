@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="1.3.1"></a>
+## [1.3.1](https://github.com/filestack/filestack-js/compare/v1.3.0...v1.3.1) (2018-07-17)
+
+
+### Bug Fixes
+
+* **transform:** Transform cache option can be boolean ([#127](https://github.com/filestack/filestack-js/issues/127)) ([b4e15d4](https://github.com/filestack/filestack-js/commit/b4e15d4))
+
+
+
 <a name="1.3.0"></a>
 # [1.3.0](https://github.com/filestack/filestack-js/compare/v1.2.1...v1.3.0) (2018-07-17)
 
