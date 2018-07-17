@@ -28,7 +28,7 @@ import { checkOptions, removeEmpty } from '../utils';
  * @param handle
  * @param security
  */
-export const remove = (session: Session, handle?: string, security?: Security): Promise<any> => {
+export const remove = (session: Session, handle?: string, skipStorage?: boolean, security?: Security): Promise<any> => {
   if (!handle || typeof handle !== 'string') {
     throw new Error('A valid Filestack handle is required for remove');
   }
@@ -39,11 +39,15 @@ export const remove = (session: Session, handle?: string, security?: Security): 
 
   const fileApiUrl = session.urls.fileApiUrl;
   const baseURL = `${fileApiUrl}/${handle}`;
-  const options = {
+  const options: any = {
     key: session.apikey,
     policy: (security && security.policy) || session.policy,
     signature: (security && security.signature) || session.signature,
   };
+
+  if (skipStorage) {
+    options.skip_storage = true;
+  }
 
   return new Promise((resolve, reject) => {
     request

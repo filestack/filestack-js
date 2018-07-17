@@ -23,7 +23,7 @@ import * as t from 'tcomb-validation';
 /**
  * Security options for picker
  *
- * @see https://www.filestack.com/docs/security/creating-policies
+ * @see https://www.filestack.com/docs/concepts/security
  */
 export interface SecurityOptions {
   expiry?: number;

@@ -74,7 +74,7 @@ export interface ClientOptions {
    * Security object with policy and signature keys.
    * Can be used to limit client capabilities and protect public URLs.
    * It is intended to be used with server-side policy and signature generation.
-   * Read about [security policies](https://www.filestack.com/docs/security).
+   * Read about [security policies](https://www.filestack.com/docs/concepts/security).
    */
   security?: Security;
   /**
@@ -147,8 +147,7 @@ export class Client {
     return this.cloud.logout(name);
   }
   /**
-   * Interface to the Filestack [Metadata API](https://www.filestack.com/docs/rest-api/meta-data).
-   * Used for retrieving detailed data of stored files.
+   * Retrieve detailed data of stored files.
    *
    * ### Example
    *
@@ -162,6 +161,7 @@ export class Client {
    *     console.log(err);
    *   }));
    * ```
+   * @see [File API - Metadata](https://www.filestack.com/docs/api/file#metadata).
    * @param handle Valid Filestack handle.
    * @param options Metadata fields to enable on response.
    * @param security Optional security override.
@@ -196,8 +196,9 @@ export class Client {
     return preview(this.session, handle, options);
   }
   /**
-   * Interface to the Filestack [Remove API](https://www.filestack.com/docs/rest-api/remove).
-   * Used for removing files, __requires a valid security policy and signature__. The policy and signature will be pulled from the client session, or it can be overridden with the security parameter.
+   * Remove a file from storage and the Filestack system.
+   *
+   * __Requires a valid security policy and signature__. The policy and signature will be pulled from the client session, or it can be overridden with the security parameter.
    *
    * ### Example
    *
@@ -211,15 +212,42 @@ export class Client {
    *     console.log(err);
    *   }));
    * ```
+   * @see [File API - Delete](https://www.filestack.com/docs/api/file#delete)
    * @param handle Valid Filestack handle.
    * @param security Optional security override.
    */
   remove(handle: string, security?: Security): Promise<any> {
     /* istanbul ignore next */
-    return remove(this.session, handle, security);
+    return remove(this.session, handle, false, security);
   }
   /**
-   * Interface to the Filestack [Store API](https://www.filestack.com/docs/rest-api/store). Used for storing from a URL.
+   * Remove a file **only** from the Filestack system. The file remains in storage.
+   *
+   * __Requires a valid security policy and signature__. The policy and signature will be pulled from the client session, or it can be overridden with the security parameter.
+   *
+   * ### Example
+   *
+   * ```js
+   * client
+   *   .removeMetadata('DCL5K46FS3OIxb5iuKby')
+   *   .then((res) => {
+   *     console.log(res);
+   *   })
+   *   .catch((err) => {
+   *     console.log(err);
+   *   }));
+   * ```
+   * @see [File API - Delete](https://www.filestack.com/docs/api/file#delete)
+   * @param handle Valid Filestack handle.
+   * @param security Optional security override.
+   */
+  removeMetadata(handle: string, security?: Security): Promise<any> {
+    /* istanbul ignore next */
+    return remove(this.session, handle, true, security);
+  }
+  /**
+   * Store a file from its URL.
+   *
    * ### Example
    *
    * ```js
@@ -227,6 +255,7 @@ export class Client {
    *   .storeURL('https://d1wtqaffaaj63z.cloudfront.net/images/NY_199_E_of_Hammertown_2014.jpg')
    *   .then(res => console.log(res));
    * ```
+   * @see [File API - Store](https://www.filestack.com/docs/api/file#store)
    * @param url       Valid URL to a file.
    * @param options   Configure file storage.
    * @param token     Optional control token to call .cancel()
@@ -238,7 +267,8 @@ export class Client {
   }
 
   /**
-   * Interface to the Filestack Retrieve API. Used for accessing files via Filestack handles.
+   * Access files via their Filestack handles.
+   *
    * If head option is provided - request headers are returned in promise
    * If metadata option is provided - metadata object is returned in promise
    * Otherwise file blob is returned
@@ -256,11 +286,11 @@ export class Client {
    * })
    * ```
    *
+   * @see [File API - Download](https://www.filestack.com/docs/api/file#download)
    * @param handle    Valid file handle
    * @param options   RetrieveOptions
    * @param security  Optional security override.
    * @throws          Error
-   * @returns         Promise<json | Blob>
    */
   retrieve(handle: string, options?: RetrieveOptions, security?: Security): Promise<Object | Blob> {
     /* istanbul ignore next */
@@ -268,7 +298,7 @@ export class Client {
   }
 
   /**
-   * Interface to the Filestack [transformation engine](https://www.filestack.com/docs/image-transformations).
+   * Interface to the Filestack [Processing API](https://www.filestack.com/docs/api/processing).
    * Convert a URL, handle, or storage alias to another URL which links to the transformed file.
    * You can optionally store the returned URL with client.storeURL.
    *
@@ -294,17 +324,18 @@ export class Client {
    * // optionally store the new URL
    * client.storeURL(transformedUrl).then(res => console.log(res));
    * ```
+   * @see [Filestack Processing API](https://www.filestack.com/docs/api/processing)
    * @param url     Valid URL (http(s)://), file handle, or storage alias (src://) to an image.
    * @param options Transformations are applied in the order specified by this object.
    * @returns       A new URL that points to the transformed resource.
    */
-  transform(url: string, options: TransformOptions): string | null {
+  transform(url: string, options: TransformOptions) {
     /* istanbul ignore next */
     return transform(this.session, url, options);
   }
 
   /**
-   * Initiates a multi-part upload flow.
+   * Initiates a multi-part upload flow. Use this for Filestack CIN and FII uploads.
    *
    * In Node runtimes the file argument is treated as a file path.
    * Uploading from a Node buffer is not yet implemented.

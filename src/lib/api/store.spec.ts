@@ -78,7 +78,7 @@ describe('storeURL', function storeFunc() {
 
   it('should reject on request error', (done) => {
     const sessionCopy = JSON.parse(JSON.stringify(session));
-    sessionCopy.urls.storeApiUrl = ENV.urls.proxy400;
+    sessionCopy.urls.storeApiUrl = 'http://www.somebadurl.com';
 
     storeURL(sessionCopy, ENV.urls.testImageUrl)
       .then(() => {
@@ -95,7 +95,8 @@ describe('storeURL', function storeFunc() {
       cancel: () => console.log('cancel not implemented'),
     };
 
-    storeURL(session, ENV.urls.testImageUrl, {}, token)
+    setTimeout(() => {
+      storeURL(session, ENV.urls.testImageUrl, {}, token)
       .then(() => {
         done(new Error('Success shouldnt be called'));
       })
@@ -103,7 +104,8 @@ describe('storeURL', function storeFunc() {
         assert.ok(err instanceof Error);
         done();
       });
+    }, 10);
 
-    setTimeout(() => token.cancel());
+    setTimeout(() => token.cancel(), 12);
   });
 });
