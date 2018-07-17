@@ -867,8 +867,12 @@ const optionToString = (key: string, values: any): string => {
 
   // if we just want to enable feature
   if (typeof values === 'boolean') {
-    if (!values) {
+    if (values === undefined) {
       return '';
+    }
+
+    if (!values) {
+      return `${key}=false`;
     }
 
     return key;
