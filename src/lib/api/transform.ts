@@ -173,6 +173,7 @@ export enum EVideoAccessMode {
  */
 export interface TransformOptions {
   flip?: boolean;
+  compress?: boolean;
   flop?: boolean;
   enchance?: boolean;
   redeye?: boolean;
@@ -525,6 +526,9 @@ const validationSchema: any[] = [
   {
     name: 'flip',
     validator: t.Boolean,
+  },{
+    name: 'compress',
+    validator: t.Boolean,
   }, {
     name: 'flop',
     validator: t.Boolean,
@@ -734,6 +738,7 @@ const validationSchema: any[] = [
     },
   }, {
     name: 'cache',
+    canBeBoolean: true,
     props: {
       cache: t.Boolean,
       expiry: t.Integer,
@@ -862,8 +867,12 @@ const optionToString = (key: string, values: any): string => {
 
   // if we just want to enable feature
   if (typeof values === 'boolean') {
-    if (!values) {
+    if (values === undefined) {
       return '';
+    }
+
+    if (!values) {
+      return `${key}=false`;
     }
 
     return key;
