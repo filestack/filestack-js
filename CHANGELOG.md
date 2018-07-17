@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="1.3.0"></a>
+# [1.3.0](https://github.com/filestack/filestack-js/compare/v1.2.1...v1.3.0) (2018-07-17)
+
+
+### Features
+
+* **transforms:** add compress option ([#126](https://github.com/filestack/filestack-js/issues/126)) ([a2a0e2d](https://github.com/filestack/filestack-js/commit/a2a0e2d))
+
+
+
 <a name="1.2.1"></a>
 ## [1.2.1](https://github.com/filestack/filestack-js/compare/v1.2.0...v1.2.1) (2018-07-05)
 
