@@ -738,6 +738,7 @@ const validationSchema: any[] = [
     },
   }, {
     name: 'cache',
+    canBeBoolean: true,
     props: {
       cache: t.Boolean,
       expiry: t.Integer,
