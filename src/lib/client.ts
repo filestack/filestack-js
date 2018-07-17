@@ -74,7 +74,7 @@ export interface ClientOptions {
    * Security object with policy and signature keys.
    * Can be used to limit client capabilities and protect public URLs.
    * It is intended to be used with server-side policy and signature generation.
-   * Read about [security policies](https://www.filestack.com/docs/security).
+   * Read about [security policies](https://www.filestack.com/docs/concepts/security).
    */
   security?: Security;
   /**
