@@ -21,7 +21,7 @@ import { checkOptions } from '../utils';
 import * as t from 'tcomb-validation';
 
 /**
- * Security options for picker
+ * Configures a security policy
  *
  * @see https://www.filestack.com/docs/concepts/security
  */
