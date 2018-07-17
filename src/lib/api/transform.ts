@@ -173,6 +173,7 @@ export enum EVideoAccessMode {
  */
 export interface TransformOptions {
   flip?: boolean;
+  compress?: boolean;
   flop?: boolean;
   enchance?: boolean;
   redeye?: boolean;
@@ -370,7 +371,7 @@ export interface TransformOptions {
     watermark_left?: number;
     watermark_width?: number;
     watermark_height?: number;
-  }
+  };
 }
 
 // ===== Custom Validators =====
@@ -524,6 +525,9 @@ const toTcombSchema = (schema: CustomSchemaInterface): t.Struct<{}> => {
 const validationSchema: any[] = [
   {
     name: 'flip',
+    validator: t.Boolean,
+  },{
+    name: 'compress',
     validator: t.Boolean,
   }, {
     name: 'flop',
