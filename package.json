@@ -18,7 +18,7 @@
     "build": "gulp build",
     "build:main": "gulp typescript:main",
     "build:module": "gulp typescript:module",
-    "build:browser": "gulp rollup",
+    "build:browser": "gulp build:rollup",
     "lint": "tslint --project . src/**/*.ts",
     "prism:mock": "node test/prism.js",
     "prism:record": "node test/prism.js --record",

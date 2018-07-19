@@ -56,6 +56,7 @@ describe('transform', () => {
       polaroid: true,
       flip: false,
       flop: true,
+      compress: false,
     };
 
     const result = transform(url, testConfig);
@@ -228,6 +229,40 @@ describe('transform', () => {
 
       const result = transform(url, testConfig);
       const expected = `${cdnUrl}/output=background:black,density:250,compress:true/${url}`;
+      assert.equal(result, expected);
+    });
+  });
+
+  describe('cache', () => {
+    it('should construct valid parameters', () => {
+      const testConfig = {
+        cache: false,
+      };
+
+      const result = transform(url, testConfig);
+      const expected = `${cdnUrl}/cache=false/${url}`;
+      assert.equal(result, expected);
+
+      const testConfig2 = {
+        cache: {
+          expiry: 12345,
+        },
+      };
+
+      const result2 = transform(url, testConfig2);
+      const expected2 = `${cdnUrl}/cache=expiry:12345/${url}`;
+      assert.equal(result2, expected2);
+    });
+  });
+
+  describe('compress', () => {
+    it('should construct valid parameters', () => {
+      const testConfig = {
+        compress: true,
+      };
+
+      const result = transform(url, testConfig);
+      const expected = `${cdnUrl}/compress/${url}`;
       assert.equal(result, expected);
     });
   });
