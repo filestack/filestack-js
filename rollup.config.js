@@ -40,20 +40,25 @@ const namedExports = {
 
 const plugins = [
   alias(adapters),
-  builtins(),
   nodeResolve({
     browser: true,
+    preferBuiltins: true,
   }),
   commonjs({
     include: 'node_modules/**',
     namedExports: namedExports,
   }),
-  globals(),
   replace({
     'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
     'process.env.TEST_ENV': JSON.stringify(process.env.TEST_ENV),
   }),
 ];
+
+// We use Node style testing so the Karma bundle needs some Node globals
+if (process.env.TEST_ENV) {
+  plugins.push(builtins());
+  plugins.push(globals());
+}
 
 module.exports = {
   input: 'build/module/index.js',

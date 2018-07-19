@@ -81,7 +81,7 @@ module.exports = function karmaConfig(config) {
       },
       electron: {
         base: 'Electron',
-        flags: ['--show'],
+        // flags: ['--show'],
       },
     },
     browsers: process.env.CI ? [
