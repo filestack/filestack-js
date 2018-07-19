@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="1.4.0"></a>
+# [1.4.0](https://github.com/filestack/filestack-js/compare/v1.3.2...v1.4.0) (2018-07-19)
+
+
+### Bug Fixes
+
+* downgrade rollup to fix ES module bundling ([6c05b40](https://github.com/filestack/filestack-js/commit/6c05b40))
+* respect empty values for transform tasks without props ([4b4f9a6](https://github.com/filestack/filestack-js/commit/4b4f9a6))
+
+
+### Features
+
+* add removeMetadata method to allow file delete calls with skip_storage param ([#125](https://github.com/filestack/filestack-js/issues/125)) ([45e628a](https://github.com/filestack/filestack-js/commit/45e628a))
+
+
+
 <a name="1.3.2"></a>
 ## [1.3.2](https://github.com/filestack/filestack-js/compare/v1.3.1...v1.3.2) (2018-07-17)
 
