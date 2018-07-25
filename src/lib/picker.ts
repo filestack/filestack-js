@@ -207,6 +207,9 @@ export interface PickerDropPaneOptions {
   onDragLeave?: () => void;
   onDragOver?: (evt: DragEvent) => void;
   onDrop?: (evt: DragEvent) => void;
+  /**
+   * `onSuccess` must be used instead of `onUploadDone`. The drop pane uses its own callbacks for compatibility purposes. This might eventually change.
+   */
   onSuccess?: (files: PickerFileMetadata[]) => void;
   onError?: (files: PickerFileMetadata[]) => void;
   onProgress?: (percent: number) => void;
