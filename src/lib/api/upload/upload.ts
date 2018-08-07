@@ -17,7 +17,7 @@
 
 import * as bowser from 'bowser';
 import * as t from 'tcomb-validation';
-import { getPart, getFile, closeFile } from './file_utils';
+import { getPart, getFile } from './file_utils';
 import { getName } from './utils';
 import { commitPart, slicePartIntoChunks, uploadChunk } from './intelligent';
 import { start, getS3PartData, uploadToS3, complete } from './network';
@@ -110,6 +110,7 @@ const uploadPart = async (part: PartObj, ctx: Context): Promise<any> => {
   if (cfg.intelligent === true || part.intelligentOverride) {
     const goChunk = flowControl(ctx, (chunk: any) => uploadChunk(chunk, ctx));
     part.chunks = slicePartIntoChunks(part, part.chunkSize);
+
     await Promise.all(part.chunks.map(throat(cfg.concurrency, goChunk)));
     return commitPart(part, ctx);
   }
@@ -271,9 +272,6 @@ const uploadFile = async (ctx: Context, token: any): Promise<any> => {
     cancelAllRequests();
     clearInterval(state.progressTick);
     state.status = statuses.FAILED;
-    if (file.fd) {
-      closeFile(file.fd);
-    }
   };
 
   const cancel = new Promise((_, reject) => {
@@ -359,6 +357,7 @@ const uploadFile = async (ctx: Context, token: any): Promise<any> => {
 
   const goPart = flowControl(ctx, async (partObj: PartObj) => {
     const part = await getPart(partObj, ctx);
+
     if (part.size === 0) {
       return Promise.reject(new Error('Upload aborted due to empty chunk.'));
     }
@@ -383,6 +382,7 @@ const uploadFile = async (ctx: Context, token: any): Promise<any> => {
 
   const totalParts = Math.ceil(file.size / config.partSize);
   const allParts = range(0, totalParts).map((p: any) => makePart(p, ctx));
+
   const partsFlow = Promise.all(allParts.map(throat(config.concurrency, goPart)));
   startProgress(config.onProgress);
   const etags = await cancellable(partsFlow);
@@ -398,9 +398,6 @@ const uploadFile = async (ctx: Context, token: any): Promise<any> => {
 
       state.status = statuses.DONE;
       finishProgress(config.onProgress);
-      if (file.fd) {
-        closeFile(file.fd);
-      }
 
       if (res.body && res.body.error && res.body.error.text) {
         return Promise.reject(new Error(`File upload error: ${res.body.error.text}`));
@@ -435,6 +432,7 @@ export const upload = (
     if ((file.size !== undefined && file.size === 0) || file.length === 0) {
       return Promise.reject(new Error('file has a size of 0.'));
     }
+
     const allowedOptions = [
       { name: 'host', type: t.String },
       { name: 'path', type: t.Boolean },
@@ -471,7 +469,7 @@ export const upload = (
     if (storeOpts.filename) {
       customName = storeOpts.filename;
     } else if (file.name === undefined) {
-      // Blobs don't have names, Files do. Give a placeholder name for blobs.
+      // Blobs and buffers don't have names, Files do. Give a placeholder name for blobs.
       if (file.type) {
         const ext = file.type.split('/').pop();
         customName = `untitled.${ext}`;
