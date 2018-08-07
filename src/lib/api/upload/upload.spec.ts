@@ -227,6 +227,7 @@ describe('upload', function uploadTest() {
       done();
     })
     .catch((err: Error) => {
+      console.log(err);
       done(err);
     });
   });
@@ -273,6 +274,7 @@ describe('upload', function uploadTest() {
       done();
     })
     .catch((err: Error) => {
+      console.log(err);
       done(err);
     });
   });
