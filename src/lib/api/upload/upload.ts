@@ -58,6 +58,7 @@ const statuses = {
  * @param func  function that returns a Promise
  */
 const flowControl = (ctx: Context, func: any) => {
+  // console.log(ctx.state);
   return (...args: any[]) => {
     if (ctx.state.status === statuses.FAILED) {
       return Promise.resolve();

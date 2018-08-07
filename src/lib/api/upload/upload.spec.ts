@@ -344,6 +344,7 @@ if (ENV.testEnv === 'unit') {
         const onRetry = sinon.spy();
         upload(session, smallFile, {
           host: ENV.urls.proxy400,
+          retry: 0,
           onRetry,
         })
         .then(() => done('Error was not thrown'))

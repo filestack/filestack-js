@@ -33,10 +33,17 @@ import * as isutf8 from 'isutf8';
  */
 export const getPart = (part: PartObj, { config, file }: Context): Promise<PartObj> => {
   return new Promise((resolve) => {
-    let filePart = Buffer.alloc(config.partSize);
+    let alloc = config.partSize;
+
+    // for last part we need to allocate buffer memory that we need
+    if (file.buffer.byteLength - part.number * config.partSize < alloc) {
+      alloc = file.buffer.byteLength - part.number * config.partSize;
+    }
+
+    let filePart = Buffer.alloc(alloc);
 
     file.buffer.copy(filePart, 0, part.number * config.partSize, config.partSize);
-    filePart = filePart.slice(0, filePart.length);
+    filePart = filePart.slice(0, filePart.byteLength);
 
     const partObj: PartObj = {
       ...part,

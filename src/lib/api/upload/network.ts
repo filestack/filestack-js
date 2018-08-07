@@ -137,11 +137,13 @@ export const uploadToS3 = (part: ArrayBuffer, params: any, onProgress: any, cfg:
   /* istanbul ignore next */
   const host = getHost(`${cfg.host}/fakeS3`) || params.url;
   const timeout = cfg.timeout || (part.byteLength / 100);
+  // console.log(part.byteLength );
   const req = request
     .put(host)
     .set(params.headers)
     .timeout(timeout)
     .send(part);
+
   // Don't call progress handler if user didn't specify a callback
   if (onProgress) {
     return req.on('progress', onProgress);
