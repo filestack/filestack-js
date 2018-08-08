@@ -403,6 +403,9 @@ const uploadFile = async (ctx: Context, token: any): Promise<any> => {
 
       state.status = statuses.DONE;
       finishProgress(config.onProgress);
+      if (file.buffer) {
+        file.buffer = null;
+      }
 
       if (res.body && res.body.error && res.body.error.text) {
         return Promise.reject(new Error(`File upload error: ${res.body.error.text}`));
