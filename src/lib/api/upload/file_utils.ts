@@ -17,9 +17,12 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
-import * as mime from 'mime';
+// import * as mime from 'mime';
+import * as mimetype from 'file-type';
 import { calcMD5 } from './md5';
 import { Context, PartObj, FileObj } from './types';
+import * as isutf8 from 'isutf8';
+import * as isSvg from 'is-svg';
 
 /**
  * Given a file with a valid descriptor this will return a part object
@@ -30,53 +33,73 @@ import { Context, PartObj, FileObj } from './types';
  * @param config  Current upload configuration settings
  */
 export const getPart = (part: PartObj, { config, file }: Context): Promise<PartObj> => {
-  return new Promise((resolve, reject) => {
-    let buffer = Buffer.alloc(config.partSize);
-    fs.read(file.fd, buffer, 0, config.partSize, part.number * config.partSize, (err, nread) => {
-      if (err) return reject(err);
-      if (nread === 0) {
-        fs.close(file.fd, (err: any) => {
-          if (err) return reject(err);
-        });
-      }
-      buffer = buffer.slice(0, nread);
-      const partObj: PartObj = {
-        ...part,
-        buffer,
-        size: buffer.byteLength,
-        md5: calcMD5(buffer),
-      };
-      return resolve(partObj);
-    });
+  return new Promise((resolve) => {
+    let alloc = config.partSize;
+
+    // for last part we need to allocate buffer memory that we need
+    if (file.buffer.byteLength - part.number * config.partSize < alloc) {
+      alloc = file.buffer.byteLength - part.number * config.partSize;
+    }
+
+    let filePart = Buffer.alloc(alloc);
+
+    file.buffer.copy(filePart, 0, part.number * config.partSize, config.partSize);
+    filePart = filePart.slice(0, filePart.byteLength);
+
+    const partObj: PartObj = {
+      ...part,
+      buffer: filePart,
+      size: filePart.byteLength,
+      md5: calcMD5(filePart.buffer),
+    };
+
+    return resolve(partObj);
   });
 };
 
 /**
  * Given a file path, returns a file object
  * @private
- * @param filePath  A valid path to a file on your filesystem.
+ * @param inputFile  A valid path to a file on your filesystem or buffer.
  */
-export const getFile = (filePath: string): Promise<FileObj> => {
+export const getFile = (inputFile: string | Buffer): Promise<FileObj> => {
+  if (inputFile instanceof Buffer) {
+    return Promise.resolve({
+      buffer: inputFile,
+      name: undefined,
+      size: inputFile.byteLength,
+      type: getMimetype(inputFile),
+    });
+  }
+
   return new Promise((resolve, reject) => {
-    fs.open(filePath, 'r', (err, fd) => {
+    fs.readFile(inputFile, (err, buffer) => {
       if (err) return reject(err);
-      const stats = fs.statSync(filePath);
+      const stats = fs.statSync(inputFile);
       const file = {
-        fd,
-        name: path.basename(filePath),
+        buffer,
+        name: path.basename(inputFile),
         size: stats.size,
-        type: mime.getType(filePath),
+        type: getMimetype(buffer),
       } as FileObj;
       return resolve(file);
     });
   });
 };
 
-/**
- * Close file descriptor
- * @private
- * @param fd  A valid file descriptor
- */
-export const closeFile = (fd: number) => {
-  return fs.closeSync(fd);
+const getMimetype = (buffer) => {
+  const meta = mimetype(buffer);
+  if (meta) {
+    return meta.mime;
+  }
+
+  if (isSvg(buffer)) {
+    return 'image/svg+xml';
+  }
+
+  if (isutf8(buffer)) {
+    return 'text/plain';
+  }
+
+  return 'application/octet-stream';
 };

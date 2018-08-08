@@ -18,12 +18,16 @@
 import * as assert from 'assert';
 import * as sinon from 'sinon';
 import { upload } from './index';
+import * as fs from 'fs';
 
 declare var ENV: any;
+
+const testFilePath = './test/data/testfile.txt';
+const testImageFilePath = './test/data/fish.gif';
 const session = ENV.session;
 const secureSession = ENV.secureSession;
 const makeFile = (data: string, type: string = 'image/gif') => {
-  return ENV.isNode ? './test/data/testfile.txt' : new Blob([data], { type });
+  return ENV.isNode ? testFilePath : new Blob([data], { type });
 };
 const makeEmptyFile = () => {
   return ENV.isNode ? './test/data/emptyfile.txt' : new Blob([''], { type: 'application/text' });
@@ -85,14 +89,62 @@ describe('upload', function uploadTest() {
     });
   });
 
-  it('should upload a base64 string successfully and return a handle', (done) => {
-    if (ENV.isNode) {
+  it('(node) should upload file (buffer) successfully and return a handle (gif)', (done) => {
+    if (!ENV.isNode) {
       return done();
     }
-    upload(session, b64string, {
+
+    const file = fs.readFileSync(testImageFilePath);
+
+    upload(session, file, {
       retry: 0,
+      partSize: 2000,
+    }, {
+      filename: 'filestack.gif',
+    })
+    .then((res: any) => {
+      assert.ok(res.handle);
+      assert.ok(res.url);
+      done();
+    })
+    .catch((err: Error) => {
+      done(err);
+    });
+  });
+
+  it('(node) should upload (buffer) file successfully and return a handle (txt)', (done) => {
+    if (!ENV.isNode) {
+      return done();
+    }
+
+    const file = fs.readFileSync(testFilePath);
+
+    upload(session, file, {
+      retry: 0,
+      partSize: 2000,
     }, {
       filename: 'filestack.txt',
+    })
+    .then((res: any) => {
+      assert.ok(res.handle);
+      assert.ok(res.url);
+      done();
+    })
+    .catch((err: Error) => {
+      done(err);
+    });
+  });
+
+  it('(node) should upload file (buffer) successfully without name and return a handle (txt)', (done) => {
+    if (!ENV.isNode) {
+      return done();
+    }
+
+    const file = fs.readFileSync(testFilePath);
+
+    upload(session, file, {
+      retry: 0,
+      partSize: 2000,
     })
     .then((res: any) => {
       assert.ok(res.handle);
@@ -242,6 +294,7 @@ describe('upload', function uploadTest() {
       done();
     })
     .catch((err: Error) => {
+      console.log(err);
       done(err);
     });
   });
@@ -311,6 +364,7 @@ if (ENV.testEnv === 'unit') {
         const onRetry = sinon.spy();
         upload(session, smallFile, {
           host: ENV.urls.proxy400,
+          retry: 0,
           onRetry,
         })
         .then(() => done('Error was not thrown'))

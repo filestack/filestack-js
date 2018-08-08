@@ -19,7 +19,7 @@
  * @private
  */
 export interface FileObj {
-  fd: number;
+  buffer: Buffer;
   name: string;
   size: number;
   type: string;
