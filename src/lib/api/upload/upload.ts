@@ -273,6 +273,10 @@ const uploadFile = async (ctx: Context, token: any): Promise<any> => {
     cancelAllRequests();
     clearInterval(state.progressTick);
     state.status = statuses.FAILED;
+
+    if (file.buffer) {
+      file.buffer = null;
+    }
   };
 
   const cancel = new Promise((_, reject) => {
