@@ -89,7 +89,7 @@ describe('upload', function uploadTest() {
     });
   });
 
-  it('(node) should upload file  successfully and return a handle (gif)', (done) => {
+  it('(node) should upload file (buffer) successfully and return a handle (gif)', (done) => {
     if (!ENV.isNode) {
       return done();
     }
@@ -112,7 +112,7 @@ describe('upload', function uploadTest() {
     });
   });
 
-  it('(node) should upload file successfully and return a handle (txt)', (done) => {
+  it('(node) should upload (buffer) file successfully and return a handle (txt)', (done) => {
     if (!ENV.isNode) {
       return done();
     }
@@ -124,6 +124,27 @@ describe('upload', function uploadTest() {
       partSize: 2000,
     }, {
       filename: 'filestack.txt',
+    })
+    .then((res: any) => {
+      assert.ok(res.handle);
+      assert.ok(res.url);
+      done();
+    })
+    .catch((err: Error) => {
+      done(err);
+    });
+  });
+
+  it('(node) should upload file (buffer) successfully without name and return a handle (txt)', (done) => {
+    if (!ENV.isNode) {
+      return done();
+    }
+
+    const file = fs.readFileSync(testFilePath);
+
+    upload(session, file, {
+      retry: 0,
+      partSize: 2000,
     })
     .then((res: any) => {
       assert.ok(res.handle);
@@ -227,7 +248,6 @@ describe('upload', function uploadTest() {
       done();
     })
     .catch((err: Error) => {
-      console.log(err);
       done(err);
     });
   });

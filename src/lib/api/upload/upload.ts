@@ -467,6 +467,7 @@ export const upload = (
     const storeOpts = { ...storeOptions };
     const opts = { ...options };
     let customName;
+
     if (storeOpts.filename) {
       customName = storeOpts.filename;
     } else if (file.name === undefined) {
@@ -478,6 +479,7 @@ export const upload = (
         customName = 'untitled';
       }
     }
+
     // Default location param
     if (storeOpts.location === undefined) {
       storeOpts.location = 's3';

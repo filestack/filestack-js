@@ -22,6 +22,7 @@ import * as mimetype from 'file-type';
 import { calcMD5 } from './md5';
 import { Context, PartObj, FileObj } from './types';
 import * as isutf8 from 'isutf8';
+import * as isSvg from 'is-svg';
 
 /**
  * Given a file with a valid descriptor this will return a part object
@@ -90,6 +91,10 @@ const getMimetype = (buffer) => {
   const meta = mimetype(buffer);
   if (meta) {
     return meta.mime;
+  }
+
+  if (isSvg(buffer)) {
+    return 'image/svg+xml';
   }
 
   if (isutf8(buffer)) {
