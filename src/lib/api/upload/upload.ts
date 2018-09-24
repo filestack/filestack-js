@@ -456,6 +456,7 @@ export const upload = (
       { name: 'timeout', type: t.Integer },
       { name: 'intelligent', type: t.union([t.Boolean, t.enums.of('fallback')]) },
       { name: 'intelligentChunkSize', type: t.Number },
+      { name: 'workflowIds', type: t.list(t.String) },
     ];
     const allowedStoreOptions = [
       { name: 'location', type: t.enums.of('s3 gcs rackspace azure dropbox') },
