@@ -170,6 +170,7 @@ export const complete = (etags: string, { config, file, params }: Context): Prom
   /* istanbul ignore next */
   const host = getHost(config.host) || getLocationURL(params.location_url);
   const locationRegion = params.location_region;
+
   const fields = {
     apikey: config.apikey,
     size: file.size,
@@ -178,6 +179,11 @@ export const complete = (etags: string, { config, file, params }: Context): Prom
     parts: formatETags(etags),
     ...params,
   };
+
+  if (config.workflowIds && config.workflowIds.length) {
+    fields['workflow_ids'] = JSON.stringify(config.workflowIds);
+  }
+
   // Intelligent Ingestion
   if (config.intelligent) {
     fields.multipart = true;
