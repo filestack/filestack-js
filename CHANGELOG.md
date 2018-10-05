@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="1.6.1"></a>
+## [1.6.1](https://github.com/filestack/filestack-js/compare/v1.6.0...v1.6.1) (2018-10-05)
+
+
+### Bug Fixes
+
+* **picker/cname:** Load assets from given cname instead of fielstackapi domain - picker v1.2.2 ([#156](https://github.com/filestack/filestack-js/issues/156)) ([e3ea711](https://github.com/filestack/filestack-js/commit/e3ea711))
+
+
+
 <a name="1.6.0"></a>
 # [1.6.0](https://github.com/filestack/filestack-js/compare/v1.5.1...v1.6.0) (2018-09-24)
 
