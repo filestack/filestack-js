@@ -456,8 +456,8 @@ export const upload = (
       { name: 'timeout', type: t.Integer },
       { name: 'intelligent', type: t.union([t.Boolean, t.enums.of('fallback')]) },
       { name: 'intelligentChunkSize', type: t.Number },
-      { name: 'workflowIds', type: t.list(t.String) },
     ];
+
     const allowedStoreOptions = [
       { name: 'location', type: t.enums.of('s3 gcs rackspace azure dropbox') },
       { name: 'region', type: t.String },
@@ -465,6 +465,7 @@ export const upload = (
       { name: 'container', type: t.String },
       { name: 'filename', type: t.String },
       { name: 'access', type: t.enums.of('public private') },
+      { name: 'workflowIds', type: t.list(t.String) },
     ];
 
     // Throw if any options are invalid
@@ -517,6 +518,7 @@ export const upload = (
       customName,
       mimetype: options.mimetype,
       store: {
+        workflowIds: storeOpts.workflowIds,
         store_location: storeOpts.location,
         store_region: storeOpts.region,
         store_container: storeOpts.container,

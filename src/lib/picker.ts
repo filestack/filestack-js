@@ -245,6 +245,11 @@ export interface PickerStoreOptions {
    * S3 container access. 'public' or 'private'.
    */
   access?: string;
+
+  /**
+   * Workflows ids to run after upload
+   */
+  workflowsIds?: string[];
 }
 
 export interface PickerCustomText {
