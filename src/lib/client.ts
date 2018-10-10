@@ -66,6 +66,11 @@ export interface StoreOptions {
    * S3 container access. 'public' or 'private'.
    */
   access?: string;
+
+  /**
+   * Workflows ids to run after upload
+   */
+  workflowIds?: string[];
 }
 
 export interface ClientOptions {

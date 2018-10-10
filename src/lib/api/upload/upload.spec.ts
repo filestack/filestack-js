@@ -471,7 +471,8 @@ if (ENV.testEnv === 'unit') {
       it('should upload a file successfully with provided workflows ids', (done) => {
         upload(session, smallFile, {
           retry: 0,
-          mimetype: 'image/gif',
+          mimetype: 'image/gif'
+        }, {
           workflowIds: ['test', 'test1']
         })
         .then((res: any) => {
