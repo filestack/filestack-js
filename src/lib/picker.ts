@@ -249,7 +249,7 @@ export interface PickerStoreOptions {
   /**
    * Workflows ids to run after upload
    */
-  workflowsIds?: string[];
+  workflowIds?: string[];
 }
 
 export interface PickerCustomText {
