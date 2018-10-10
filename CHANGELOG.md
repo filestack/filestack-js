@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="1.7.1"></a>
+## [1.7.1](https://github.com/filestack/filestack-js/compare/v1.7.0...v1.7.1) (2018-10-10)
+
+
+### Bug Fixes
+
+* **pickerOptions/workflows:** Fix workflowIds name in options ([#160](https://github.com/filestack/filestack-js/issues/160)) ([b53af12](https://github.com/filestack/filestack-js/commit/b53af12))
+
+
+
 <a name="1.7.0"></a>
 # [1.7.0](https://github.com/filestack/filestack-js/compare/v1.6.1...v1.7.0) (2018-10-10)
 
