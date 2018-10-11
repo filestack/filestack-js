@@ -46,6 +46,7 @@ export const storeURL = (
     { name: 'region', type: t.String },
     { name: 'container', type: t.String },
     { name: 'access', type: t.enums.of('public private') },
+    { name: 'workflowIds', type: t.list(t.String) },
   ];
 
   checkOptions('storeURL', allowed, opts);
