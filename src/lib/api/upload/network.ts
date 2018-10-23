@@ -190,6 +190,13 @@ export const complete = (etags: string, { config, file, params }: Context): Prom
     fields.multipart = true;
     delete fields.parts;
   }
+
+  // Security
+  if (config.policy && config.signature) {
+    fields.policy = config.policy;
+    fields.signature = config.signature;
+  }
+
   const formData = getFormData(fields, config);
   const req = requestWithSource('post', `${host}/multipart/complete`);
   /* istanbul ignore next */
@@ -197,5 +204,6 @@ export const complete = (etags: string, { config, file, params }: Context): Prom
     req.set('Filestack-Upload-Region', locationRegion);
   }
   req.timeout(config.timeout);
+
   return req.field(formData);
 };
