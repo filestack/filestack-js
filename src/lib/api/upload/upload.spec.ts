@@ -473,7 +473,9 @@ if (ENV.testEnv === 'unit') {
           retry: 0,
           mimetype: 'image/gif'
         }, {
-          workflowIds: ['test', 'test1']
+          workflows: ['test', {
+            id: 'test'
+          }]
         })
         .then((res: any) => {
           assert.ok(res.handle);

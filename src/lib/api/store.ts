@@ -39,6 +39,14 @@ export const storeURL = (
   if (!url || typeof url !== 'string') {
     throw new Error('url is required for storeURL');
   }
+
+  const workflowsUniton = t.union([
+    t.String,
+    t.struct({
+      id: t.String,
+    })
+  ]);
+
   const allowed = [
     { name: 'filename', type: t.String },
     { name: 'location', type: t.enums.of('s3 gcs rackspace azure dropbox') },
@@ -46,7 +54,7 @@ export const storeURL = (
     { name: 'region', type: t.String },
     { name: 'container', type: t.String },
     { name: 'access', type: t.enums.of('public private') },
-    { name: 'workflowIds', type: t.list(t.String) },
+    { name: 'workflows', type: t.list(workflowsUniton) },
   ];
 
   checkOptions('storeURL', allowed, opts);

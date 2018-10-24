@@ -41,6 +41,10 @@ export interface Security {
   signature: string;
 }
 
+export interface WorkflowConfig {
+  id: string;
+}
+
 export interface StoreOptions {
   /**
    * Filename for stored file
@@ -70,7 +74,7 @@ export interface StoreOptions {
   /**
    * Workflows ids to run after upload
    */
-  workflowIds?: string[];
+  workflows?: (string | WorkflowConfig)[];
 }
 
 export interface ClientOptions {

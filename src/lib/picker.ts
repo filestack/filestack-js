@@ -16,7 +16,7 @@
  */
 
 import { loadModule, knownModuleIds } from 'filestack-loader';
-import { Client } from './client';
+import { Client, WorkflowConfig } from './client';
 import { FSProgressEvent, UploadOptions } from './api/upload/types';
 
 export interface PickerInstance {
@@ -249,7 +249,7 @@ export interface PickerStoreOptions {
   /**
    * Workflows ids to run after upload
    */
-  workflowIds?: string[];
+  workflows?: string[] | WorkflowConfig[];
 }
 
 export interface PickerCustomText {

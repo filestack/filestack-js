@@ -181,8 +181,8 @@ export const complete = (etags: string, { config, file, params }: Context): Prom
   };
 
   if (config.store.workflowIds && config.store.workflowIds.length) {
-    fields['workflow_ids'] = JSON.stringify(config.store.workflowIds);
-    delete config.store.workflowIds;
+    fields['workflows'] = JSON.stringify(config.store.workflows);
+    delete config.store.workflows;
   }
 
   // Intelligent Ingestion
