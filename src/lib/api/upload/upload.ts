@@ -458,6 +458,20 @@ export const upload = (
       { name: 'intelligentChunkSize', type: t.Number },
     ];
 
+    const wString = t.String;
+    const wStruct = t.struct({
+      id: t.String,
+    })
+
+    const workflowsUniton = t.union([
+      wString,
+      wStruct
+    ]);
+
+    workflowsUniton.dispatch = function (x) {
+      return x.id ? wStruct : wString
+    }
+
     const allowedStoreOptions = [
       { name: 'location', type: t.enums.of('s3 gcs rackspace azure dropbox') },
       { name: 'region', type: t.String },
@@ -465,7 +479,7 @@ export const upload = (
       { name: 'container', type: t.String },
       { name: 'filename', type: t.String },
       { name: 'access', type: t.enums.of('public private') },
-      { name: 'workflowIds', type: t.list(t.String) },
+      { name: 'workflows', type: t.list(workflowsUniton) },
     ];
 
     // Throw if any options are invalid
@@ -518,7 +532,7 @@ export const upload = (
       customName,
       mimetype: options.mimetype,
       store: {
-        workflowIds: storeOpts.workflowIds,
+        workflows: storeOpts.workflows,
         store_location: storeOpts.location,
         store_region: storeOpts.region,
         store_container: storeOpts.container,
