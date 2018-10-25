@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="1.7.6"></a>
+## [1.7.6](https://github.com/filestack/filestack-js/compare/v1.7.5...v1.7.6) (2018-10-25)
+
+
+### Bug Fixes
+
+* **workflows:** fix condition in workflows ([03738ba](https://github.com/filestack/filestack-js/commit/03738ba))
+
+
+
 <a name="1.7.5"></a>
 ## [1.7.5](https://github.com/filestack/filestack-js/compare/v1.7.4...v1.7.5) (2018-10-25)
 
