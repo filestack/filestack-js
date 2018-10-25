@@ -180,7 +180,7 @@ export const complete = (etags: string, { config, file, params }: Context): Prom
     ...params,
   };
 
-  if (config.store.workflow && config.store.workflow.length) {
+  if (config.store.workflows && config.store.workflows.length) {
     fields['workflows'] = JSON.stringify(config.store.workflows);
     delete config.store.workflows;
   }
