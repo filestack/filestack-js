@@ -40,12 +40,19 @@ export const storeURL = (
     throw new Error('url is required for storeURL');
   }
 
+  const wString = t.String;
+  const wStruct = t.struct({
+    id: t.String,
+  })
+
   const workflowsUniton = t.union([
-    t.String,
-    t.struct({
-      id: t.String,
-    })
+    wString,
+    wStruct
   ]);
+
+  workflowsUniton.dispatch = function (x) {
+    return x.id ? wStruct : wString
+  }
 
   const allowed = [
     { name: 'filename', type: t.String },

@@ -458,12 +458,19 @@ export const upload = (
       { name: 'intelligentChunkSize', type: t.Number },
     ];
 
+    const wString = t.String;
+    const wStruct = t.struct({
+      id: t.String,
+    })
+
     const workflowsUniton = t.union([
-      t.String,
-      t.struct({
-        id: t.String,
-      })
+      wString,
+      wStruct
     ]);
+
+    workflowsUniton.dispatch = function (x) {
+      return x.id ? wStruct : wString
+    }
 
     const allowedStoreOptions = [
       { name: 'location', type: t.enums.of('s3 gcs rackspace azure dropbox') },
