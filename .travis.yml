@@ -11,3 +11,5 @@ cache:
 
 before_install:
   - npm i -g npm@latest
+  - nvm install
+  - nvm use
