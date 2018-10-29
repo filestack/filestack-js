@@ -44,10 +44,23 @@ export const getLocationURL = (url: string) => {
 export const getFormData = (fields: any, { store }: UploadConfig): {} => {
   const fd: any = {};
   Object.keys(fields).forEach((key: string) => {
-    if (fields[key]) fd[key] = fields[key];
+    if (typeof fields[key] === 'object') {
+      fields[key] = JSON.stringify(fields[key]);
+    }
+
+    if (fields[key]) {
+      fd[key] = fields[key];
+    }
   });
+
   Object.keys(store).forEach((key: string) => {
-    if (store[key]) fd[key] = store[key];
+    if (typeof store[key] === 'object') {
+      store[key] = JSON.stringify(store[key]);
+    }
+
+    if (store[key]) {
+      fd[key] = store[key];
+    }
   });
   return fd;
 };
@@ -60,6 +73,7 @@ export const getFormData = (fields: any, { store }: UploadConfig): {} => {
  * @returns {Promise}
  */
 export const start = ({ config, file }: Context): Promise<any> => {
+
   const fields: any = {
     apikey: config.apikey,
     filename: getName(file, config),
@@ -180,11 +194,6 @@ export const complete = (etags: string, { config, file, params }: Context): Prom
     ...params,
   };
 
-  if (config.store.workflows && config.store.workflows.length) {
-    fields['workflows'] = JSON.stringify(config.store.workflows);
-    delete config.store.workflows;
-  }
-
   // Intelligent Ingestion
   if (config.intelligent) {
     fields.multipart = true;
@@ -198,6 +207,7 @@ export const complete = (etags: string, { config, file, params }: Context): Prom
   }
 
   const formData = getFormData(fields, config);
+
   const req = requestWithSource('post', `${host}/multipart/complete`);
   /* istanbul ignore next */
   if (locationRegion) {

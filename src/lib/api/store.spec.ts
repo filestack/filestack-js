@@ -108,4 +108,17 @@ describe('storeURL', function storeFunc() {
 
     setTimeout(() => token.cancel(), 12);
   });
+
+  it('should support workflows', (done) => {
+    const options = { workflows: ['test', {id: 'test' }] };
+    storeURL(session, ENV.urls.testImageUrl, options)
+      .then((res) => {
+        assert.ok(res);
+        done();
+      })
+      .catch((err) => {
+        done(err);
+      });
+  });
+
 });
