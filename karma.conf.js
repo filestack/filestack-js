@@ -93,7 +93,7 @@ module.exports = function karmaConfig(config) {
     ] : [
       'electron',
     ],
-    browserNoActivityTimeout: 600000,
+    browserNoActivityTimeout: 2 * 600000,
 
     files: [
       'https://cdn.polyfill.io/v2/polyfill.js',
