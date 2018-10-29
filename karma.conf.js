@@ -86,7 +86,6 @@ module.exports = function karmaConfig(config) {
     },
     browsers: process.env.CI ? [
       // 'bs_ie11',
-      'bs_safari_osx_sierra',
       'bs_safari_osx_stable',
       'bs_chrome_windows',
       'bs_firefox_windows',
