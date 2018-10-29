@@ -65,12 +65,12 @@ module.exports = function karmaConfig(config) {
         browser_version: '10.0',
         resolution: '1024x768',
       },
-      bs_safari_osx_capitan: {
+      bs_safari_osx_stable: {
         base: 'BrowserStack',
         os: 'OS X',
-        os_version: 'El Capitan',
+        os_version: 'Mojave',
         browser: 'Safari',
-        browser_version: '9.1',
+        browser_version: '12',
         resolution: '1024x768',
       },
       bs_iphone6: {
@@ -86,10 +86,12 @@ module.exports = function karmaConfig(config) {
     },
     browsers: process.env.CI ? [
       // 'bs_ie11',
-      'bs_safari_osx_capitan',
+      'bs_safari_osx_sierra',
+      'bs_safari_osx_stable',
       'bs_chrome_windows',
       'bs_firefox_windows',
       'bs_edge_windows',
+      'electron',
     ] : [
       'electron',
     ],
