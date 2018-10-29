@@ -28,7 +28,7 @@ const mockClouds = {
   },
 };
 
-describe.skip('cloud', function cloud() {
+describe('cloud', function cloud() {
   this.timeout(60000);
 
   it('should construct an instance of CloudClient', () => {
@@ -63,6 +63,10 @@ describe.skip('cloud', function cloud() {
   });
 
   it('should save token if sessionCache is true -- BROWSER ONLY', (done) => {
+    if (typeof localStorage === 'undefined') {
+      return done();
+    }
+
     const client = new CloudClient(session, { sessionCache: true });
     client.list(mockClouds)
       .then((res: any) => {

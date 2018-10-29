@@ -211,8 +211,8 @@ describe('upload', function uploadTest() {
 
     setTimeout(() => {
       token.pause();
-      setTimeout(() => token.resume());
-    });
+      setTimeout(() => token.resume(), 10);
+    }, 10);
   });
 
   it('should upload a file and report progress', (done) => {
@@ -349,7 +349,27 @@ describe('upload', function uploadTest() {
       done();
     });
 
-    setTimeout(() => token.cancel());
+    // wait until upload will start
+    setTimeout(() => token.cancel(), 10);
+  });
+
+  it('should upload a file successfully with provided workflows ids', (done) => {
+    upload(session, smallFile, {
+      mimetype: 'image/gif',
+    }, {
+      filename: 'dutton.gif',
+      workflows: ['test', {
+        id: 'test',
+      }]
+    })
+    .then((res: any) => {
+      assert.ok(res.handle);
+      assert.ok(res.url);
+      done();
+    })
+    .catch((err: Error) => {
+      done(err);
+    });
   });
 });
 
@@ -465,25 +485,6 @@ if (ENV.testEnv === 'unit') {
           assert.equal(onRetry.lastCall.args[0].parts[0].intelligentOverride, true);
           assert.ok(err);
           done();
-        });
-      });
-
-      it('should upload a file successfully with provided workflows ids', (done) => {
-        upload(session, smallFile, {
-          retry: 0,
-          mimetype: 'image/gif'
-        }, {
-          workflows: ['test', {
-            id: 'test'
-          }]
-        })
-        .then((res: any) => {
-          assert.ok(res.handle);
-          assert.ok(res.url);
-          done();
-        })
-        .catch((err: Error) => {
-          done(err);
         });
       });
     });

@@ -88,9 +88,9 @@ const getRange = ({ config, file }: Context, partNumber: number) => {
  * @private
  */
 const sliceFile = (ctx: Context, partNumber: number) => {
-  const slice = File.prototype.slice;
   const { start, end } = getRange(ctx, partNumber);
-  return slice.call(ctx.file, start, end);
+
+  return ctx.file.slice(start, end);
 };
 
 /**

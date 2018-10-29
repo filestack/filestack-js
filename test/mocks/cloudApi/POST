@@ -1,0 +1,10 @@
+{
+    "requestUrl": "/cloud/folder/list",
+    "contentType": "application/json",
+    "statusCode": 200,
+    "data": {
+        "facebook": {},
+        "token": "testtoken"
+    },
+    "isBase64": false
+}
