@@ -7,9 +7,10 @@ cache:
   directories:
   - node_modules
 before_install:
-- npm i -g npm@latest
 - nvm install
 - nvm use
+- npm i -g npm@latest
+
 env:
   global:
   - secure: uveWmRaiGKxKAYEP86LTSGmTmUvIXqBi0uNai087MDKvzdPuMQZSay3DSN9MLxAskbch1OjKoRCpkKy+z6tJsQL5z8tptpEcI5mD7LJU8U2akskEXANgqH8nPjqC0YPMPU2y8gWSLd/y22VaIKsF8WxXmVpjc57EXrXQtSqCUI9PI3cnyw9eqcv6Pf+3iXLEL4nr+ORvq+bQgEYk8U6ME+49KULRz+R4VhltZxy5F7T0vFEpAyRfsVYyKBwPss1NXE/M+EMqECRgTyXe1+roDO+DFHP+L0qrOrNEbjJSY5iYDfYOIfdtNYz6rvSbTl9jmsLYphb/BJy4eEB1DV38/K3WJ510gi0n3lWgFPlZB9Wh3S7LXQh4yieHbB2ddWYtX6IP9LNeNpdn/vgJwmuNyiAYsEdeqYdPSUynJ50RlwDVCLd4GkB5qpMBjMgtfXiY4NkqDECjc0BykjKqBZR4iWlDKygFVmBHAgzWrylNAhhiHcClRBLXaRoLa4/lJrpfefVShs5G+y5vxfptDFIbeQs6R2k6Xy5JTx36qMUZoVvdLyg+FqAjaadUGzVNadGw8Sk2DrVODigGB9Zbrmvay8yOYJL2/3JVD2SJua7wEaJnltIItG2F1smR4EcyxDKcOOUhPeat+vm2bXCCYf1MEgw+46iNIxIS05BD+B2aumk=
