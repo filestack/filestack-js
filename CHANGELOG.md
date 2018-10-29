@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="1.7.7"></a>
+## [1.7.7](https://github.com/filestack/filestack-js/compare/v1.7.6...v1.7.7) (2018-10-29)
+
+
+### Bug Fixes
+
+* **browser_utils:** fix slice file in browser utils ([#166](https://github.com/filestack/filestack-js/issues/166)) ([9210eb7](https://github.com/filestack/filestack-js/commit/9210eb7))
+
+
+
 <a name="1.7.6"></a>
 ## [1.7.6](https://github.com/filestack/filestack-js/compare/v1.7.5...v1.7.6) (2018-10-25)
 
