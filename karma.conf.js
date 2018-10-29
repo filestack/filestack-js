@@ -90,8 +90,7 @@ module.exports = function karmaConfig(config) {
       'bs_safari_osx_stable',
       'bs_chrome_windows',
       'bs_firefox_windows',
-      'bs_edge_windows',
-      'electron',
+      'bs_edge_windows'
     ] : [
       'electron',
     ],
