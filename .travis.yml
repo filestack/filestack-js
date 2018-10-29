@@ -2,13 +2,8 @@ language: node_js
 git:
   submodules: false
   depth: 1
-node_js: stable
-cache:
-  directories:
-  - node_modules
+
 before_install:
-- nvm install
-- nvm use
 - npm i -g npm@latest
 
 env:
