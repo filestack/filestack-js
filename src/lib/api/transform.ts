@@ -181,6 +181,15 @@ export interface TransformOptions {
   negative?: boolean;
   tags?: boolean;
   sfw?: boolean;
+  store?: {
+    filename?: string,
+    localion?: string,
+    path?: string,
+    container?: string,
+    region?: string;
+    access?: string;
+    base64decode?: boolean;
+  };
   resize?: {
     width?: number;
     height?: number;
@@ -550,6 +559,17 @@ const validationSchema: any[] = [
   }, {
     name: 'negative',
     validator: t.Boolean,
+  }, {
+    name: 'store',
+    props: {
+      filename: t.String,
+      localion: t.String,
+      path: t.String,
+      container: t.enums.of('s3 gcs rackspace azure dropbox'),
+      region: t.String,
+      access: t.enums.of('public private'),
+      base64decode: t.Boolean,
+    },
   }, {
     name: 'resize',
     props: {
