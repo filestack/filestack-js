@@ -54,6 +54,7 @@ export const getUrl = (
   const css = options.css && encodeURIComponent(`"${options.css}"`);
   const previewTask = css ? `preview=css:${css}` : 'preview';
 
+  // @todo move to utils?
   if (handle.indexOf('src:') !== -1) {
     baseUrl.push(`${session.apikey}/${previewTask}`);
   } else {

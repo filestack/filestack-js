@@ -4,11 +4,12 @@ const commonjs = require('rollup-plugin-commonjs');
 const globals = require('rollup-plugin-node-globals');
 const nodeResolve = require('rollup-plugin-node-resolve');
 const replace = require('rollup-plugin-replace');
-const version = require('./package.json').version;
+const json = require('rollup-plugin-json');
 
 const adapters = {
   './lib/api/security': 'build/module/adapters/security.browser.js',
   './file_utils': 'build/module/adapters/file_utils.browser.js',
+  './is_mobile': 'build/module/adapters/is_mobile.browser.js',
 };
 
 const namedExports = {
@@ -27,6 +28,7 @@ const namedExports = {
     'maybe',
     'list'
   ],
+  // 'node_modules/ajv/lib/ajv.js': ['*'],
   'node_modules/superagent/lib/client.js': [
     'get',
     'post',
@@ -34,12 +36,18 @@ const namedExports = {
     'delete',
     'head'
   ],
+  'node_modules/ajv/lib/ajv.js': ['Ajv'],
   'node_modules/bowser/src/bowser.js': [ 'mobile' ],
   'node_modules/spark-md5/spark-md5.js': [ 'ArrayBuffer' ]
 };
 
 const plugins = [
   alias(adapters),
+  json({
+    include: 'node_modules/**',
+    preferConst: true, // Default: false
+    indent: '  ',
+  }),
   nodeResolve({
     browser: true,
     preferBuiltins: true,
@@ -62,6 +70,7 @@ if (process.env.TEST_ENV) {
 
 module.exports = {
   input: 'build/module/index.js',
+  // external: ['ajv'],
   onwarn: function(warning) {
     // Skip certain warnings
     // should intercept ... but doesn't in some rollup versions

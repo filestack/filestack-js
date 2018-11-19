@@ -26,9 +26,6 @@ declare var ENV: any;
 const session = ENV.session;
 
 describe('resolveCdnUrl', () => {
-  it('should return cdnUrl without handle', () => {
-    assert.equal(resolveCdnUrl(session, ''), 'https://process-stage.filestackapi.com');
-  });
 
   it('should throw exception when using http or src handle and there is no apiKey', () => {
     const sessionClone = JSON.parse(JSON.stringify(session));

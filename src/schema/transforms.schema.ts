@@ -14,34 +14,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-export const schema = {
-  $schema: 'http://json-schema.org/draft-07/schema#',
+export const TransformSchema = {
+  '$schema': 'http://json-schema.org/draft-07/schema#',
+  '$id': 'https://filestack.com/schemas/transforms.json',
   title: 'Filestack Transformations',
   description: 'Filestack transformations parameters',
   type: 'object',
+  additionalProperties: false,
   definitions: {
-    regionsDef: {
-      type: 'string',
-      enum: ['us-east-1', 'us-west-1', 'us-west-2', 'eu-west-1', 'eu-central-1', 'ap-northeast-1', 'ap-northeast-2', 'ap-southeast-1', 'ap-southeast-2', 'sa-east-1'],
-    },
-    locationsDef: {
-      type: 'string',
-      enum: ['s3', 'rackspace', 'gcs', 'azure',' dropbox'],
-    },
-    colorDef: {
-      oneOf: [{
-        type: 'string',
-        pattern: '^([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$',
-      }, {
-        type: 'string',
-        enum: ['aliceblue', 'antiquewhite', 'aqua', 'aquamarine', 'azure', 'beige', 'bisque', 'black', 'blanchedalmond', 'blue', 'blueviolet', 'brown', 'burlywood', 'cadetblue', 'chartreuse', 'chocolate', 'coral', 'cornflowerblue', 'cornsilk', 'crimson', 'cyan', 'darkblue', 'darkcyan', 'darkgoldenrod', 'darkgray', 'darkgreen', 'darkgrey', 'darkkhaki', 'darkmagenta', 'darkolivegreen', 'darkorange', 'darkorchid', 'darkred', 'darksalmon', 'darkseagreen', 'darkslateblue', 'darkslategray', 'darkslategrey', 'darkturquoise', 'darkviolet', 'deeppink', 'deepskyblue', 'dimgray', 'dimgrey', 'dodgerblue', 'firebrick', 'floralwhite', 'forestgreen', 'fractal', 'fuchsia', 'gainsboro', 'ghostwhite', 'gold', 'goldenrod', 'gray0', 'gray1', 'gray2', 'gray3', 'gray4', 'gray5', 'gray6', 'gray7', 'gray8', 'gray9', 'gray10', 'gray11', 'gray12', 'gray13', 'gray14', 'gray15', 'gray16', 'gray17', 'gray18', 'gray19', 'gray20', 'gray21', 'gray22', 'gray23', 'gray24', 'gray25', 'gray26', 'gray27', 'gray28', 'gray29', 'gray30', 'gray31', 'gray32', 'gray33', 'gray34', 'gray35', 'gray36', 'gray37', 'gray38', 'gray39', 'gray40', 'gray41', 'gray42', 'gray43', 'gray44', 'gray45', 'gray46', 'gray47', 'gray48', 'gray49', 'gray50', 'gray51', 'gray52', 'gray53', 'gray54', 'gray55', 'gray56', 'gray57', 'gray58', 'gray59', 'gray60', 'gray61', 'gray62', 'gray63', 'gray64', 'gray65', 'gray66', 'gray67', 'gray68', 'gray69', 'gray70', 'gray71', 'gray72', 'gray73', 'gray74', 'gray75', 'gray76', 'gray77', 'gray78', 'gray79', 'gray80', 'gray81', 'gray82', 'gray83', 'gray84', 'gray85', 'gray86', 'gray87', 'gray88', 'gray89', 'gray90', 'gray91', 'gray92', 'gray93', 'gray94', 'gray95', 'gray96', 'gray97', 'gray98', 'gray99', 'gray100', 'gray', 'green', 'greenyellow', 'grey', 'honeydew', 'hotpink', 'indianred', 'indigo', 'ivory', 'khaki', 'lavender', 'lavenderblush', 'lawngreen', 'lemonchiffon', 'lightblue', 'lightcoral', 'lightcyan', 'lightgoldenrodyellow', 'lightgray', 'lightgreen', 'lightgrey', 'lightpink', 'lightsalmon', 'lightseagreen', 'lightskyblue', 'lightslategray', 'lightslategrey', 'lightsteelblue', 'lightyellow', 'lime', 'limegreen', 'linen', 'magenta', 'maroon', 'mediumaquamarine', 'mediumblue', 'mediumorchid', 'mediumpurple', 'mediumseagreen', 'mediumslateblue', 'mediumspringgreen', 'mediumturquoise', 'mediumvioletred', 'midnightblue', 'mintcream', 'mistyrose', 'moccasin', 'navajowhite', 'navy', 'none', 'oldlace', 'olive', 'olivedrab', 'orange', 'orangered', 'orchid', 'palegoldenrod', 'palegreen', 'paleturquoise', 'palevioletred', 'papayawhip', 'peachpuff', 'peru', 'pink', 'plum', 'powderblue', 'purple', 'red', 'rosybrown', 'royalblue', 'saddlebrown', 'salmon', 'sandybrown', 'seagreen', 'seashell', 'sienna', 'silver', 'skyblue', 'slateblue', 'slategray', 'slategrey', 'snow', 'springgreen', 'steelblue', 'tan', 'teal', 'thistle', 'tomato', 'turquoise', 'violet', 'wheat', 'white', 'whitesmoke', 'yellow', 'yellowgreen', ],
-      }],
-    },
     facesDef: {
+      '$id': '#facesDef',
       oneOf: [{
         type: 'string',
-        enum: 'all',
+        enum: ['all'],
       }, {
         type: 'integer',
         minimum: 1,
@@ -57,6 +42,7 @@ export const schema = {
       }],
     },
     objectsDef: {
+      '$id': '#objectsDef',
       type: 'array',
       minItems: 1,
       maxItems: 50,
@@ -64,7 +50,6 @@ export const schema = {
         type: 'array',
         additionalItems: false,
         minItems: 4,
-        maxItems: 4,
         items: [{
           type: 'integer',
           minimum: 0,
@@ -85,6 +70,7 @@ export const schema = {
       }],
     },
     positionDef: {
+      '$id': '#positionDef',
       default: ['middle', 'center'],
       oneOf: [
         {
@@ -103,7 +89,6 @@ export const schema = {
           uniqueItems: true,
           additionalItems: false,
           minItems: 2,
-          maxItems: 2,
           default: ['middle', 'center'],
           items: [
             {
@@ -140,6 +125,7 @@ export const schema = {
       oneOf: [{
         type: 'boolean',
       }, {
+        type: 'object',
         properties: {
           metadata: {
             type: 'boolean',
@@ -229,7 +215,7 @@ export const schema = {
           default: 'clip',
         },
         align: {
-          $ref: '#/definitions/positionDef',
+          '$ref': '#positionDef',
           default: 'center',
         },
       },
@@ -244,7 +230,26 @@ export const schema = {
       type: 'object',
       properties: {
         dim: {
-          $ref: '#/definitions/objectsDef',
+          type: 'array',
+          additionalItems: false,
+          minItems: 4,
+          items: [{
+            type: 'integer',
+            minimum: 0,
+            maximum: 100000,
+          }, {
+            type: 'integer',
+            minimum: 0,
+            maximum: 100000,
+          }, {
+            type: 'integer',
+            minimum: 1,
+            maximum: 100000,
+          }, {
+            type: 'integer',
+            minimum: 1,
+            maximum: 100000,
+          }],
         },
       },
       required: ['dim'],
@@ -266,446 +271,520 @@ export const schema = {
           type: 'boolean',
         },
         background: {
-          $ref: '#/definitions/colorDef',
+          '$ref': 'defs.json#/definitions/colorDef',
           default: 'FFFFFFFF',
         },
       },
       additionalProperties: false,
     },
     detect_faces: {
-      type: 'object',
-      properties: {
-        maxsize: {
-          type: 'number',
-          minimum: 0,
-          maximum: 10000,
-          default: 0.35,
+      oneOf: [{
+        type: 'boolean',
+      }, {
+        type: 'object',
+        properties: {
+          maxsize: {
+            type: 'number',
+            minimum: 0,
+            maximum: 10000,
+            default: 0.35,
+          },
+          minsize: {
+            type: 'number',
+            minimum: 0,
+            maximum: 10000,
+            default: 0.35,
+          },
+          export: {
+            type: 'boolean',
+          },
+          color: {
+            '$ref': 'defs.json#/definitions/colorDef',
+            default: '000000FF',
+          },
         },
-        minsize: {
-          type: 'number',
-          minimum: 0,
-          maximum: 10000,
-          default: 0.35,
-        },
-        export: {
-          type: 'boolean',
-        },
-        color: {
-          $ref: '#/definitions/colorDef',
-          default: '000000FF',
-        },
-      },
-      additionalProperties: false,
+        additionalProperties: false,
+      }],
     },
     crop_faces: {
-      type: 'object',
-      properties: {
-        faces: {
-          default: 1,
-          $ref: '#definitions/facesDef',
+      oneOf: [{
+        type: 'boolean',
+      }, {
+        type: 'object',
+        properties: {
+          faces: {
+            default: 1,
+            '$ref': '#facesDef',
+          },
+          width: {
+            type: 'number',
+            minimum: 1,
+            maximum: 10000,
+          },
+          height: {
+            type: 'number',
+            minimum: 1,
+            maximum: 10000,
+          },
+          maxsize: {
+            type: 'number',
+            minimum: 0,
+            maximum: 10000,
+            default: 0.35,
+          },
+          minsize: {
+            type: 'number',
+            minimum: 0,
+            maximum: 10000,
+            default: 0.35,
+          },
+          buffer: {
+            type: 'integer',
+            minimum: 0,
+            maximum: 10000,
+          },
+          mode: {
+            type: 'string',
+            enum: ['crop', 'thumb', 'fill'],
+            default: 'thumb',
+          },
         },
-        width: {
-          type: 'number',
-          minimum: 1,
-          maximum: 10000,
-        },
-        height: {
-          type: 'number',
-          minimum: 1,
-          maximum: 10000,
-        },
-        maxsize: {
-          type: 'number',
-          minimum: 0,
-          maximum: 10000,
-          default: 0.35,
-        },
-        minsize: {
-          type: 'number',
-          minimum: 0,
-          maximum: 10000,
-          default: 0.35,
-        },
-        buffer: {
-          type: 'integer',
-          minimum: 0,
-          maximum: 10000,
-        },
-        mode: {
-          type: 'string',
-          enum: ['crop', 'thumb', 'fill'],
-          default: 'thumb',
-        },
-      },
-      additionalProperties: false,
+        additionalProperties: false,
+      }],
     },
     pixelate_faces: {
-      type: 'object',
-      properties: {
-        faces: {
-          $ref: '#definitions/facesDef',
-          default: 'all',
+      oneOf: [{
+        type: 'boolean',
+      }, {
+        type: 'object',
+        properties: {
+          faces: {
+            '$ref': '#facesDef',
+            default: 'all',
+          },
+          maxsize: {
+            type: 'number',
+            minimum: 0,
+            maximum: 10000,
+            default: 0.35,
+          },
+          minsize: {
+            type: 'number',
+            minimum: 0,
+            maximum: 10000,
+            default: 0.35,
+          },
+          buffer: {
+            type: 'integer',
+            minimum: 0,
+            maximum: 10000,
+          },
+          amount: {
+            type: 'integer',
+            minimum: 2,
+            maximum: 100,
+            default: 10,
+          },
+          blur: {
+            type: 'number',
+            minimum: 0,
+            maximum: 20,
+            default: 4,
+          },
+          type: {
+            type: 'string',
+            enum: ['rect', 'oval'],
+            default: 'rect',
+          },
         },
-        maxsize: {
-          type: 'number',
-          minimum: 0,
-          maximum: 10000,
-          default: 0.35,
-        },
-        minsize: {
-          type: 'number',
-          minimum: 0,
-          maximum: 10000,
-          default: 0.35,
-        },
-        buffer: {
-          type: 'integer',
-          minimum: 0,
-          maximum: 10000,
-        },
-        amount: {
-          type: 'integer',
-          minimum: 2,
-          maximum: 100,
-          default: 10,
-        },
-        blur: {
-          type: 'number',
-          minimum: 0,
-          maximum: 20,
-          default: 4,
-        },
-        type: {
-          type: 'string',
-          enum: ['rect', 'oval'],
-          default: 'rect',
-        },
-      },
-      additionalProperties: false,
+        additionalProperties: false,
+      }],
     },
     blur_faces: {
-      type: 'object',
-      properties: {
-        faces: {
-          $ref: '#definitions/facesDef',
-          default: 'all',
+      oneOf: [{
+        type: 'boolean',
+      }, {
+        type: 'object',
+        properties: {
+          faces: {
+            '$ref': '#facesDef',
+            default: 'all',
+          },
+          maxsize: {
+            type: 'number',
+            minimum: 0,
+            maximum: 10000,
+            default: 0.35,
+          },
+          minsize: {
+            type: 'number',
+            minimum: 0,
+            maximum: 10000,
+            default: 0.35,
+          },
+          buffer: {
+            type: 'integer',
+            minimum: 0,
+            maximum: 10000,
+          },
+          amount: {
+            type: 'number',
+            minimum: 0,
+            maximum: 10,
+            default: 10,
+          },
+          blur: {
+            type: 'number',
+            minimum: 0,
+            maximum: 20,
+            default: 4,
+          },
+          type: {
+            type: 'string',
+            enum: ['rect', 'oval'],
+            default: 'rect',
+          },
         },
-        maxsize: {
-          type: 'number',
-          minimum: 0,
-          maximum: 10000,
-          default: 0.35,
-        },
-        minsize: {
-          type: 'number',
-          minimum: 0,
-          maximum: 10000,
-          default: 0.35,
-        },
-        buffer: {
-          type: 'integer',
-          minimum: 0,
-          maximum: 10000,
-        },
-        amount: {
-          type: 'number',
-          minimum: 0,
-          maximum: 10,
-          default: 10,
-        },
-        blur: {
-          type: 'number',
-          minimum: 0,
-          maximum: 20,
-          default: 4,
-        },
-        type: {
-          type: 'string',
-          enum: ['rect', 'oval'],
-          default: 'rect',
-        },
-      },
-      additionalProperties: false,
+        additionalProperties: false,
+      }],
     },
     rounded_corners: {
-      type: 'object',
-      properties: {
-        radius: {
-          oneOf: [{
-            type: 'integer',
-            minimum: 1,
-            maximum: 10000,
-          }, {
-            type: 'string',
-            enum: ['max'],
-          }],
+      oneOf: [{
+        type: 'boolean',
+      }, {
+        type: 'object',
+        properties: {
+          radius: {
+            oneOf: [{
+              type: 'integer',
+              minimum: 1,
+              maximum: 10000,
+            }, {
+              type: 'string',
+              enum: ['max'],
+            }],
+          },
+          blur: {
+            type: 'number',
+            minimum: 0,
+            maximum: 20,
+            default: 0.3,
+          },
+          background: {
+            '$ref': 'defs.json#/definitions/colorDef',
+          },
         },
-        blur: {
-          type: 'number',
-          minimum: 0,
-          maximum: 20,
-          default: 0.3,
-        },
-        background: {
-          $ref: '#/definitions/colorDef',
-        },
-      },
-      additionalProperties: false,
+        additionalProperties: false,
+      }],
     },
     vignette: {
-      type: 'object',
-      properties: {
-        amount: {
-          type: 'integer',
-          minimum: 0,
-          maximum: 100,
-          default: 20,
+      oneOf: [{
+        type: 'boolean',
+      }, {
+        type: 'object',
+        properties: {
+          amount: {
+            type: 'integer',
+            minimum: 0,
+            maximum: 100,
+            default: 20,
+          },
+          blurmode: {
+            type: 'string',
+            enum: ['gaussian', 'linear'],
+            default: 'gaussian',
+          },
+          background: {
+            '$ref': 'defs.json#/definitions/colorDef',
+          },
         },
-        blurmode: {
-          type: 'string',
-          enum: ['gaussian', 'linear'],
-          default: 'gaussian',
-        },
-        background: {
-          $ref: '#/definitions/colorDef',
-        },
-      },
-      additionalProperties: false,
+        additionalProperties: false,
+      }],
     },
     polaroid: {
-      type: 'object',
-      properties: {
-        rotate: {
-          type: 'integer',
-          minimum: 0,
-          maximum: 359,
+      oneOf: [{
+        type: 'boolean',
+      }, {
+        type: 'object',
+        properties: {
+          rotate: {
+            type: 'integer',
+            minimum: 0,
+            maximum: 359,
+          },
+          color: {
+            '$ref': 'defs.json#/definitions/colorDef',
+            default: 'snow',
+          },
+          background: {
+            '$ref': 'defs.json#/definitions/colorDef',
+          },
         },
-        color: {
-          $ref: '#/definitions/colorDef',
-          default: 'snow',
-        },
-        background: {
-          $ref: '#/definitions/colorDef',
-        },
-      },
-      additionalProperties: false,
+        additionalProperties: false,
+      }],
     },
     torn_edges: {
-      type: 'object',
-      properties: {
-        spread: {
-          type: 'array',
-          additionalItems: false,
-          maxItems: 2,
-          minItems: 2,
-          items: [{
-            type: 'integer',
-            minimum: 1,
-            maximum: 10000,
-            default: 1,
-          }, {
-            type: 'integer',
-            minimum: 1,
-            maximum: 10000,
-            default: 10,
-          }],
+      oneOf: [{
+        type: 'boolean',
+      }, {
+        type: 'object',
+        properties: {
+          spread: {
+            type: 'array',
+            additionalItems: false,
+            minItems: 2,
+            items: [{
+              type: 'integer',
+              minimum: 1,
+              maximum: 10000,
+              default: 1,
+            }, {
+              type: 'integer',
+              minimum: 1,
+              maximum: 10000,
+              default: 10,
+            }],
+          },
+          background: {
+            '$ref': 'defs.json#/definitions/colorDef',
+          },
         },
-        background: {
-          $ref: '#/definitions/colorDef',
-        },
-      },
-      additionalProperties: false,
+        additionalProperties: false,
+      }],
     },
     shadow: {
-      type: 'object',
-      properties: {
-        blur: {
-          type: 'number',
-          minimum: 0,
-          maximum: 20,
-          default: 100,
-        },
-        opacity: {
-          type: 'integer',
-          minimum: 0,
-          maximum: 100,
-          default: 60,
-        },
-        vector: {
-          type: 'array',
-          additionalItems: false,
-          maxItems: 2,
-          minItems: 2,
-          items: [{
+      oneOf: [{
+        type: 'boolean',
+      }, {
+        type: 'object',
+        properties: {
+          blur: {
+            type: 'number',
+            minimum: 0,
+            maximum: 20,
+            default: 100,
+          },
+          opacity: {
             type: 'integer',
-            minimum: -1000,
-            maximum: 1000,
-            default: 4,
-          }, {
-            type: 'integer',
-            minimum: -1000,
-            maximum: 1000,
-            default: 4,
-          }],
+            minimum: 0,
+            maximum: 100,
+            default: 60,
+          },
+          vector: {
+            type: 'array',
+            additionalItems: false,
+            minItems: 2,
+            items: [{
+              type: 'integer',
+              minimum: -1000,
+              maximum: 1000,
+              default: 4,
+            }, {
+              type: 'integer',
+              minimum: -1000,
+              maximum: 1000,
+              default: 4,
+            }],
+          },
+          color: {
+            '$ref': 'defs.json#/definitions/colorDef',
+          },
+          background: {
+            '$ref': 'defs.json#/definitions/colorDef',
+          },
         },
-        color: {
-          $ref: '#/definitions/colorDef',
-        },
-        background: {
-          $ref: '#/definitions/colorDef',
-        },
-      },
-      additionalProperties: false,
+        additionalProperties: false,
+      }],
     },
     circle: {
-      type: 'object',
-      properties: {
-        background: {
-          $ref: '#/definitions/colorDef',
+      oneOf: [{
+        type: 'boolean',
+      }, {
+        type: 'object',
+        properties: {
+          background: {
+            '$ref': 'defs.json#/definitions/colorDef',
+          },
         },
-      },
-      additionalProperties: false,
+        additionalProperties: false,
+      }],
     },
     border: {
-      type: 'object',
-      properties: {
-        color: {
-          $ref: '#/definitions/colorDef',
+      oneOf: [{
+        type: 'boolean',
+      }, {
+        type: 'object',
+        properties: {
+          color: {
+            '$ref': 'defs.json#/definitions/colorDef',
+          },
+          background: {
+            '$ref': 'defs.json#/definitions/colorDef',
+          },
+          width: {
+            type: 'integer',
+            minimum: 0,
+            maximum: 1000,
+          },
         },
-        background: {
-          $ref: '#/definitions/colorDef',
-        },
-        width: {
-          type: 'integer',
-          minimum: 0,
-          maximum: 1000,
-        },
-      },
-      additionalProperties: false,
+        additionalProperties: false,
+      }],
     },
     sharpen: {
-      type: 'object',
-      properties: {
-        amount: {
-          type: 'integer',
-          minimum: 0,
-          maximum: 20,
-          default: 2,
+      oneOf: [{
+        type: 'boolean',
+      }, {
+        type: 'object',
+        properties: {
+          amount: {
+            type: 'integer',
+            minimum: 0,
+            maximum: 20,
+            default: 2,
+          },
         },
-      },
-      additionalProperties: false,
+        additionalProperties: false,
+      }],
     },
     blur: {
-      type: 'object',
-      properties: {
-        amount: {
-          type: 'integer',
-          minimum: 0,
-          maximum: 20,
-          default: 2,
+      oneOf: [{
+        type: 'boolean',
+      }, {
+        type: 'object',
+        properties: {
+          amount: {
+            type: 'integer',
+            minimum: 0,
+            maximum: 20,
+            default: 2,
+          },
         },
-      },
-      additionalProperties: false,
+        additionalProperties: false,
+      }],
     },
     blackwhite: {
-      type: 'object',
-      properties: {
-        threshold: {
-          type: 'integer',
-          minimum: 0,
-          maximum: 100,
-          default: 50,
+      oneOf: [{
+        type: 'boolean',
+      }, {
+        type: 'object',
+        properties: {
+          threshold: {
+            type: 'integer',
+            minimum: 0,
+            maximum: 100,
+            default: 50,
+          },
         },
-      },
-      additionalProperties: false,
+        additionalProperties: false,
+      }],
     },
     sepia: {
-      type: 'object',
-      properties: {
-        tone: {
-          type: 'integer',
-          minimum: 0,
-          maximum: 100,
-          default: 80,
+      oneOf: [{
+        type: 'boolean',
+      }, {
+        type: 'object',
+        properties: {
+          tone: {
+            type: 'integer',
+            minimum: 0,
+            maximum: 100,
+            default: 80,
+          },
         },
-      },
-      additionalProperties: false,
+        additionalProperties: false,
+      }],
     },
     pixelate: {
-      type: 'object',
-      properties: {
-        amount: {
-          type: 'integer',
-          minimum: 2,
-          maximum: 100,
-          default: 2,
+      oneOf: [{
+        type: 'boolean',
+      }, {
+        type: 'object',
+        properties: {
+          amount: {
+            type: 'integer',
+            minimum: 2,
+            maximum: 100,
+            default: 2,
+          },
         },
-      },
-      additionalProperties: false,
+        additionalProperties: false,
+      }],
     },
     oil_paint: {
-      type: 'object',
-      properties: {
-        amount: {
-          type: 'integer',
-          minimum: 2,
-          maximum: 100,
-          default: 2,
+      oneOf: [{
+        type: 'boolean',
+      }, {
+        type: 'object',
+        properties: {
+          amount: {
+            type: 'integer',
+            minimum: 2,
+            maximum: 100,
+            default: 2,
+          },
         },
-      },
-      additionalProperties: false,
+        additionalProperties: false,
+      }],
     },
     modulate: {
-      type: 'object',
-      properties: {
-        brightness: {
-          type: 'integer',
-          minimum: 0,
-          maximum: 10000,
-          default: 100,
+      oneOf: [{
+        type: 'boolean',
+      }, {
+        type: 'object',
+        properties: {
+          brightness: {
+            type: 'integer',
+            minimum: 0,
+            maximum: 10000,
+            default: 100,
+          },
+          saturation: {
+            type: 'integer',
+            minimum: 0,
+            maximum: 10000,
+            default: 100,
+          },
+          hue: {
+            type: 'integer',
+            minimum: 0,
+            maximum: 359,
+            default: 0,
+          },
         },
-        saturation: {
-          type: 'integer',
-          minimum: 0,
-          maximum: 10000,
-          default: 100,
-        },
-        hue: {
-          type: 'integer',
-          minimum: 0,
-          maximum: 359,
-          default: 0,
-        },
-      },
-      additionalProperties: false,
+        additionalProperties: false,
+      }],
     },
     asci: {
-      type: 'object',
-      properties: {
-        foreground: {
-          $ref: '#/definitions/colorDef',
-          default: '000000FF',
+      oneOf: [{
+        type: 'boolean',
+      }, {
+        type: 'object',
+        properties: {
+          foreground: {
+            '$ref': 'defs.json#/definitions/colorDef',
+            default: '000000FF',
+          },
+          background: {
+            '$ref': 'defs.json#/definitions/colorDef',
+            default: 'FFFFFFFF',
+          },
+          colored: {
+            type: 'boolean',
+            default: false,
+          },
+          size: {
+            type: 'integer',
+            minimum: 10,
+            maximum: 100,
+            default: 100,
+          },
+          reverse: {
+            type: 'boolean',
+            default: false,
+          },
         },
-        background: {
-          $ref: '#/definitions/colorDef',
-          default: 'FFFFFFFF',
-        },
-        colored: {
-          type: 'boolean',
-          default: false,
-        },
-        size: {
-          type: 'integer',
-          minimum: 10,
-          maximum: 100,
-          default: 100,
-        },
-        reverse: {
-          type: 'boolean',
-          default: false,
-        },
-      },
-      additionalProperties: false,
+        additionalProperties: false,
+      }],
     },
     collage: {
       type: 'object',
@@ -735,7 +814,7 @@ export const schema = {
           maximum: 10000,
         },
         color: {
-          $ref: '#/definitions/colorDef',
+          '$ref': 'defs.json#/definitions/colorDef',
           default: 'FFFFFFFF',
         },
         fit: {
@@ -751,67 +830,75 @@ export const schema = {
       additionalProperties: false,
     },
     urlscreenshot: {
-      type: 'object',
-      properties: {
-        agent: {
-          type : 'string',
-          enum: ['desktop', 'mobile'],
-          default: 'desktop',
+      oneOf: [{
+        type: 'boolean',
+      }, {
+        type: 'object',
+        properties: {
+          agent: {
+            type : 'string',
+            enum: ['desktop', 'mobile'],
+            default: 'desktop',
+          },
+          width: {
+            type: 'integer',
+            minimum: 1,
+            maximum: 1920,
+            default: 1024,
+          },
+          height: {
+            type: 'integer',
+            minimum: 1,
+            maximum: 8000,
+            default: 768,
+          },
+          mode: {
+            type: 'string',
+            enum: ['all', 'window'],
+            default: 'all',
+          },
+          delay: {
+            type: 'integer',
+            minimum: 0,
+            maximum: 20000,
+            default: 1000,
+          },
+          orientation: {
+            type: 'string',
+            enum: ['portrait', 'landscape'],
+            default: 'portrait',
+          },
+          device: {
+            type: 'string',
+            default: '',
+          },
         },
-        width: {
-          type: 'integer',
-          minimum: 1,
-          maximum: 1920,
-          default: 1024,
-        },
-        height: {
-          type: 'integer',
-          minimum: 1,
-          maximum: 8000,
-          default: 768,
-        },
-        mode: {
-          type: 'string',
-          enum: ['all', 'window'],
-          default: 'all',
-        },
-        delay: {
-          type: 'integer',
-          minimum: 0,
-          maximum: 20000,
-          default: 1000,
-        },
-        orientation: {
-          type: 'string',
-          enum: ['portrait', 'landscape'],
-          default: 'portrait',
-        },
-        device: {
-          type: 'string',
-          default: '',
-        },
-      },
-      additionalProperties: false,
+        additionalProperties: false,
+      }],
     },
     upscale: {
-      type: 'object',
-      properties: {
-        noise: {
-          type: 'string',
-          enum: ['none', 'low', 'medium', 'high'],
-          default: 'none',
+      oneOf: [{
+        type: 'boolean',
+      }, {
+        type: 'object',
+        properties: {
+          noise: {
+            type: 'string',
+            enum: ['none', 'low', 'medium', 'high'],
+            default: 'none',
+          },
+          upscale: {
+            type: 'boolean',
+            default: true,
+          },
+          style: {
+            type: 'string',
+            enum: ['artwork', 'photo'],
+            default: 'photo',
+          },
         },
-        upscale: {
-          type: 'boolean',
-          default: true,
-        },
-        style: {
-          type: 'string',
-          enum: ['artwork', 'photo'],
-          default: 'photo',
-        },
-      },
-      additionalProperties: false,
+        additionalProperties: false,
+      }],
     },
     output: {
       type: 'object',
@@ -826,7 +913,7 @@ export const schema = {
           minimum: 1,
           maximum: 99999,
         },
-        destiny: {
+        density: {
           type: 'integer',
           minimum: 1,
           maximum: 500,
@@ -863,7 +950,7 @@ export const schema = {
           default: 'rgb',
         },
         background: {
-          $ref: '#/definitions/colorDef',
+          '$ref': 'defs.json#/definitions/colorDef',
         },
         pageformat: {
           type: 'string',
@@ -876,19 +963,23 @@ export const schema = {
       },
     },
     pjpg: {
-      type: 'object',
-      additionalProperties: false,
-      properties: {
-        quality: {
-          type: 'integer',
-          minimum: 0,
-          maximum: 100,
+      oneOf: [{
+        type: 'boolean',
+      }, {
+        type: 'object',
+        additionalProperties: false,
+        properties: {
+          quality: {
+            type: 'integer',
+            minimum: 0,
+            maximum: 100,
+          },
+          metadata: {
+            type: 'boolean',
+            default: false,
+          },
         },
-        metadata: {
-          type: 'boolean',
-          default: false,
-        },
-      },
+      }],
     },
     quality: {
       type: 'object',
@@ -1021,7 +1112,7 @@ export const schema = {
           type: 'string',
         },
         location: {
-          $ref: '#/definitions/locationsDef',
+          '$ref': 'defs.json#/definitions/locationsDef',
         },
         path: {
           type: 'string',
@@ -1037,33 +1128,54 @@ export const schema = {
       },
     },
     store: {
-      type: 'object',
-      additionalProperties: false,
-      properties: {
-        filename: {
-          type: 'string',
+      oneOf: [{
+        type: 'boolean',
+      }, {
+        type: 'object',
+        additionalProperties: false,
+        properties: {
+          filename: {
+            type: 'string',
+          },
+          location: {
+            '$ref': 'defs.json#/definitions/locationsDef',
+          },
+          path: {
+            type: 'string',
+          },
+          container: {
+            type: 'string',
+          },
+          region: {
+            '$ref': 'defs.json#/definitions/regionsDef',
+          },
+          access: {
+            type: 'string',
+            enum: ['public', 'private'],
+            default: 'private',
+          },
+          base64decode: {
+            type: 'boolean',
+          },
+          workflows: {
+            type: 'array',
+            additionalItems: false,
+            minItems: 1,
+            maxItems: 20,
+            items: [{
+              type: 'string',
+            }, {
+              type: 'object',
+              additionalProperties: false,
+              properties: {
+                id: {
+                  type: 'string',
+                },
+              },
+            }],
+          },
         },
-        location: {
-          $ref: '#/definitions/locationsDef',
-        },
-        path: {
-          type: 'string',
-        },
-        container: {
-          type: 'string',
-        },
-        region: {
-          $ref: '#/definitions/regionsDef',
-        },
-        access: {
-          type: 'string',
-          enum: ['public', 'private'],
-          default: 'private',
-        },
-        base64decode: {
-          type: 'boolean',
-        },
-      },
+      }],
     },
     watermark: {
       type: 'object',
@@ -1077,7 +1189,7 @@ export const schema = {
           maximum: 500,
         },
         position: {
-          $ref: '#/definitions/positionDef',
+          '$ref': '#positionDef',
         },
       },
       required: [
@@ -1089,7 +1201,7 @@ export const schema = {
       type: 'object',
       properties: {
         objects: {
-          $ref: '#/definitions/objectsDef',
+          '$ref': '#objectsDef',
         },
         amount: {
           type: 'number',
@@ -1106,12 +1218,13 @@ export const schema = {
           enum: ['rect', 'oval'],
         },
       },
+      required: ['objects'],
     },
     partial_pixelate: {
       type: 'object',
       properties: {
         objects: {
-          $ref: '#/definitions/objectsDef',
+          '$ref': '#objectsDef',
         },
         amount: {
           type: 'number',
@@ -1128,6 +1241,7 @@ export const schema = {
           enum: ['rect', 'oval'],
         },
       },
+      required: ['objects'],
     },
     security: {
       type: 'object',
@@ -1140,6 +1254,7 @@ export const schema = {
           type: 'string',
         },
       },
+      required: ['policy', 'signature'],
     },
   },
 };

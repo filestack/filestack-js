@@ -16,12 +16,13 @@
  */
 
 import * as assert from 'assert';
-import { schema } from './transforms.schema';
+import { getValidator, TransformSchema } from './';
 
-import { Validator } from 'jsonschema';
+describe('Transforms Schema', () => {
 
-describe.only('Transforms Schema', () => {
-  const v = new Validator();
+  const validate = getValidator(TransformSchema);
+
+  const assertFail = (val) => assert.ok(!val);
 
   it('should load json schema', () => {
     // console.log(schema);
@@ -29,44 +30,39 @@ describe.only('Transforms Schema', () => {
 
   describe('Watermark', () => {
     it('should validate correct params', () => {
-      const validation = v.validate({
+      assert.ok(validate({
         watermark: {
           file: 'testfilehandle',
           size: 300,
           position: 'top',
         },
-      }, schema);
-
-      assert.ok(validation.errors.length === 0);
+      }));
     });
 
     it('should validate correct params (position array)', () => {
-      const validation = v.validate({
+      assert.ok(validate({
         watermark: {
           file: 'testfilehandle',
           size: 300,
           position: ['top', 'left'],
         },
-      }, schema);
-
-      assert.ok(validation.errors.length === 0);
+      }));
     });
 
     it('should fail on wrong position params [top, bottom]', () => {
-      const validation = v.validate({
+      assertFail(validate({
         watermark: {
           file: 'testfilehandle',
           size: 300,
           position: ['top', 'bottom'],
         },
-      }, schema);
-      assert.ok(validation.errors.length > 0);
+      }));
     });
   });
 
   describe('Partial Blur', () => {
     it('should validate correct params', () => {
-      const validation = v.validate({
+      assert.ok(validate({
         partial_blur: {
           objects: [
             [1, 1, 2, 2],
@@ -76,13 +72,11 @@ describe.only('Transforms Schema', () => {
           blur: 12,
           type: 'rect',
         },
-      }, schema);
-
-      assert.ok(validation.errors.length === 0);
+      }));
     });
 
     it('should fail on wrong params (amount, blur, type)', () => {
-      const validation = v.validate({
+      assertFail(validate({
         partial_blur: {
           objects: [
             [1, 1, 2, 2],
@@ -92,13 +86,11 @@ describe.only('Transforms Schema', () => {
           blur: 300,
           type: 'wrong_type',
         },
-      }, schema);
-
-      assert.ok(validation.errors.length === 3);
+      }));
     });
 
     it('should fail on wrong params (objects)', () => {
-      const validation = v.validate({
+      assertFail(validate({
         partial_blur: {
           objects: [
             [1, 1, 2],
@@ -107,14 +99,13 @@ describe.only('Transforms Schema', () => {
           amount: 10,
           blur: 20,
         },
-      }, schema);
-      assert.ok(validation.errors.length === 1);
+      }));
     });
   });
 
   describe('Partial Pixelate', () => {
     it('should validate correct params', () => {
-      const validation = v.validate({
+      assert.ok(validate({
         partial_pixelate: {
           objects: [
             [1, 1, 2, 2],
@@ -124,13 +115,11 @@ describe.only('Transforms Schema', () => {
           blur: 12.2,
           type: 'oval',
         },
-      }, schema);
-
-      assert.ok(validation.errors.length === 0);
+      }));
     });
 
     it('should fail on wrong params (amount, blur, type)', () => {
-      const validation = v.validate({
+      assertFail(validate({
         partial_pixelate: {
           objects: [
             [1, 1, 2, 2],
@@ -140,13 +129,11 @@ describe.only('Transforms Schema', () => {
           blur: 300,
           type: 'wrong_type',
         },
-      }, schema);
-
-      assert.ok(validation.errors.length === 3);
+      }));
     });
 
     it('should fail on wrong params (objects)', () => {
-      const validation = v.validate({
+      assertFail(validate({
         partial_pixelate: {
           objects: [
             [1, 1, 2],
@@ -155,132 +142,113 @@ describe.only('Transforms Schema', () => {
           amount: 10,
           blur: 20,
         },
-      }, schema);
-
-      assert.ok(validation.errors.length === 1);
+      }));
     });
   });
 
   describe('Crop', () => {
     it('should validate correct params', () => {
-      const validation = v.validate({
+      assert.ok(validate({
         crop: {
-          dim: [
-            [1, 1, 2, 2],
-            [1, 1, 32, 15],
-          ],
+          dim: [1, 1, 2, 2],
         },
-      }, schema);
-
-      assert.ok(validation.errors.length === 0);
+      }));
     });
 
-    it('should fail on wrong params empty', () => {
-      const validation = v.validate({
+    it('should fail on empty dim params', () => {
+      assertFail(validate({
         crop: {
           dim: [],
         },
-      }, schema);
-
-      assert.ok(validation.errors.length === 1);
+      }));
     });
 
-    it('should fail on wrong params (objects)', () => {
-      const validation = v.validate({
+    it('should fail on wrong params (minimum value for 2 first items)', () => {
+      assertFail(validate({
         crop: {
-          dim: [
-            [1, 1, 0, 0],
-            [1, 1, 32, 15],
-          ],
+          dim: [2, 1, 0, 2],
         },
-      }, schema);
+      }));
+    });
 
-      assert.ok(validation.errors.length === 2);
+    it('should fail on wrong params (5 items in array)', () => {
+      assertFail(validate({
+        crop: {
+          dim: [1, 1, 2, 2, 4],
+        },
+      }));
     });
   });
 
   describe('Resize', () => {
     it('should validate correct params', () => {
-      const validation = v.validate({
+      assert.ok(validate({
         resize: {
           width: 10,
           height: 20,
           fit: 'crop',
           align: ['top', 'left'],
         },
-      }, schema);
-
-      assert.ok(validation.errors.length === 0);
+      }));
     });
 
     it('should validate correct when only one width or height is provided', () => {
-      const validation = v.validate({
+      assert.ok(validate({
         resize: {
           width: 10,
           fit: 'crop',
           align: 'left',
         },
-      }, schema);
+      }));
 
-      const validation1 = v.validate({
+      assert.ok(validate({
         resize: {
           height: 10,
           fit: 'crop',
           align: 'left',
         },
-      }, schema);
-
-      assert.ok(validation.errors.length === 0);
-      assert.ok(validation1.errors.length === 0);
+      }));
     });
 
     it('should fail on wrong params (missing width and height)', () => {
-      const validation = v.validate({
+      assertFail(validate({
         resize: {
           fit: 'crop',
           align: 'left',
         },
-      }, schema);
-
-      assert.ok(validation.errors.length === 1);
+      }));
     });
   });
 
   describe('Resize', () => {
     it('should validate correct params', () => {
-      const validation = v.validate({
+      assert.ok(validate({
         rotate: {
           deg: 'exif',
           exif: false,
           background: 'fff',
         },
-      }, schema);
-
-      assert.ok(validation.errors.length === 0);
+      }));
     });
 
     it('should validate correct params', () => {
-      const validation = v.validate({
+      assert.ok(validate({
         rotate: {
           deg: 200,
           exif: true,
           background: 'ffffff',
         },
-      }, schema);
-
-      assert.ok(validation.errors.length === 0);
+      }));
     });
 
     it('should fail on wrong params (wrong exif rotation)', () => {
-      const validation = v.validate({
+      assertFail(validate({
         rotate: {
           deg: 123,
           exif: 'true',
           background: 'ffffff',
         },
-      }, schema);
-
-      assert.ok(validation.errors.length === 1);
+      }));
     });
   });
 });

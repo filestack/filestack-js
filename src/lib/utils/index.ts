@@ -36,6 +36,7 @@ export const resolveCdnUrl = (session: Session, handle: string): string => {
       throw new Error('Api key is required when storage alias is provided');
     }
 
+    // apikey is required for alias or external sources call
     return `${cdnURL}/${session.apikey}`;
   }
 

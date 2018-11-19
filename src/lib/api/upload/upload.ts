@@ -15,9 +15,9 @@
  * limitations under the License.
  */
 
-import * as bowser from 'bowser';
 import * as t from 'tcomb-validation';
 import { getPart, getFile } from './file_utils';
+import { isMobile } from './is_mobile';
 import { getName } from './utils';
 import { commitPart, slicePartIntoChunks, uploadChunk } from './intelligent';
 import { start, getS3PartData, uploadToS3, complete } from './network';
@@ -88,7 +88,7 @@ const makePart = (num: number, ctx: Context): PartObj => {
     chunks: [],
     chunkSize: ctx.config.intelligentChunkSize
       ? ctx.config.intelligentChunkSize
-      : bowser.mobile
+      : isMobile()
       ? 1 * 1024 * 1024
       : 8 * 1024 * 1024,
     intelligentOverride: false,
@@ -461,16 +461,16 @@ export const upload = (
     const wString = t.String;
     const wStruct = t.struct({
       id: t.String,
-    })
+    });
 
     const workflowsUniton = t.union([
       wString,
-      wStruct
+      wStruct,
     ]);
 
     workflowsUniton.dispatch = function (x) {
-      return x.id ? wStruct : wString
-    }
+      return x.id ? wStruct : wString;
+    };
 
     const allowedStoreOptions = [
       { name: 'location', type: t.enums.of('s3 gcs rackspace azure dropbox') },

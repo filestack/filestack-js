@@ -30,6 +30,8 @@ import {
   ECropfacesType
 } from './lib/api/transform';
 
+import { TransformSchema } from './schema/transforms.schema';
+
 /**
  * Initialize client with given config
  *
@@ -47,6 +49,7 @@ export const version = '@{VERSION}';
 
 export {
   TransformOptions,
+  TransformSchema,
   EStyleType,
   EShapeType,
   ENoiseType,
@@ -57,5 +60,5 @@ export {
   EAlignFacesOptions,
   ECropfacesType,
   SecurityOptions,
-  getSecurity
+  getSecurity,
 };

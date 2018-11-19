@@ -78,7 +78,7 @@ describe('storeURL', function storeFunc() {
 
   it('should reject on request error', (done) => {
     const sessionCopy = JSON.parse(JSON.stringify(session));
-    sessionCopy.urls.storeApiUrl = 'http://www.somebadurl.com';
+    sessionCopy.urls.cdnUrl = 'http://www.somebadurl.com';
 
     storeURL(sessionCopy, ENV.urls.testImageUrl)
       .then(() => {
@@ -110,7 +110,7 @@ describe('storeURL', function storeFunc() {
   });
 
   it('should support workflows', (done) => {
-    const options = { workflows: ['test', {id: 'test' }] };
+    const options = { workflows: ['test', { id: 'test' }] };
     storeURL(session, ENV.urls.testImageUrl, options)
       .then((res) => {
         assert.ok(res);

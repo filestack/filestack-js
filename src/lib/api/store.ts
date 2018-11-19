@@ -15,9 +15,7 @@
  * limitations under the License.
  */
 
-import * as t from 'tcomb-validation';
 import { request } from './request';
-import { checkOptions, removeEmpty } from '../utils';
 import { Security, StoreOptions } from '../client';
 import { transform } from './transform';
 
@@ -41,72 +39,33 @@ export const storeURL = (
     throw new Error('url is required for storeURL');
   }
 
-  // const wString = t.String;
-  // const wStruct = t.struct({
-  //   id: t.String,
-  // });
+  session.policy = security && security.policy || session.policy;
+  session.signature = security && security.signature || session.signature;
 
-  // const workflowsUniton = t.union([
-  //   wString,
-  //   wStruct,
-  // ]);
-
-  // workflowsUniton.dispatch = function (x) {
-  //   return x.id ? wStruct : wString;
-  // };
-
-  // const allowed = [
-  //   { name: 'filename', type: t.String },
-  //   { name: 'location', type: t.enums.of('s3 gcs rackspace azure dropbox') },
-  //   { name: 'path', type: t.String },
-  //   { name: 'region', type: t.String },
-  //   { name: 'container', type: t.String },
-  //   { name: 'access', type: t.enums.of('public private') },
-  //   // { name: 'workflows', type: t.list(workflowsUniton) },
-  // ];
-
-  // checkOptions('storeURL', allowed, opts);
-
-  // const location = options.location || 's3';
-  const policy = security && security.policy || session.policy;
-  const signature = security && security.signature || session.signature;
-
-  const transformOb = transform(session, url, {
+  const baseURL = transform(session, url, {
     store : opts,
   });
-  console.log(transformOb);
-  // const baseURL = `${session.urls.storeApiUrl}/${location}`.replace('{{apikey}}', options.key);
-  // let baseUrl = `${session.urls.cdnUrl}/${options.key}`;
-
-  // if (policy && signature) {
-  //   baseUrl = `${baseUrl}/security=policy:${policy},signature:${signature}/`;
-  // }
-
-  // baseUrl = `${baseUrl}/`
 
   return new Promise((resolve, reject) => {
-    // const req = request
-    //   .post(baseURL)
-    //   .query(removeEmpty(options))
-    //   .field('url', url);
+    const req = request.get(baseURL);
 
-    // if (token) {
-    //   token.cancel = () => {
-    //     req.abort();
-    //     reject(new Error('Upload cancelled'));
-    //   };
-    // }
+    if (token) {
+      token.cancel = () => {
+        req.abort();
+        reject(new Error('Upload cancelled'));
+      };
+    }
 
-    // req.then((res: any) => {
-    //   if (res.body && res.body.url) {
-    //     const handle = res.body.url.split('/').pop();
-    //     const response = { ...res.body, handle, mimetype: res.body.type };
-    //     resolve(response);
-    //   } else {
-    //     resolve(res.body);
-    //   }
-    // }).catch((err) => {
-    //   reject(err);
-    // });
+    return req.then((res: any) => {
+      if (res.body && res.body.url) {
+        const handle = res.body.url.split('/').pop();
+        const response = { ...res.body, handle, mimetype: res.body.type };
+        return resolve(response);
+      }
+
+      return resolve(res.body);
+    }).catch((err) => {
+      reject(err);
+    });
   });
 };

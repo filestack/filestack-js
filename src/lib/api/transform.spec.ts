@@ -21,7 +21,6 @@ import * as t from './transform';
 declare var ENV: any;
 const session = ENV.session;
 const secureSession = ENV.secureSession;
-const processURL = session.urls.processApiUrl;
 const cdnUrl = session.urls.cdnUrl;
 
 describe('transform', () => {
@@ -69,7 +68,7 @@ describe('transform', () => {
       polaroid: true,
     };
     const result = transformSecure(url, testConfig);
-    const expected = `${processURL}/polaroid/security=policy:${secureSession.policy},signature:${secureSession.signature}/${url}`;
+    const expected = `${cdnUrl}/polaroid/security=policy:${secureSession.policy},signature:${secureSession.signature}/${url}`;
     assert.equal(result, expected);
   });
 
@@ -77,7 +76,7 @@ describe('transform', () => {
     const testConfig = {};
     const result = transform(url, testConfig);
 
-    assert.equal(result, `${processURL}/${url}`);
+    assert.equal(result, `${cdnUrl}/${url}`);
   });
 
   it('should return flatten nested options array', () => {
@@ -114,7 +113,7 @@ describe('transform', () => {
     };
 
     const result = transform(storeAlias, testConfig);
-    const expected = `${processURL}/${session.apikey}/polaroid/flop/${storeAlias}`;
+    const expected = `${cdnUrl}/${session.apikey}/polaroid/flop/"${storeAlias}"`;
     assert.equal(result, expected);
   });
 
@@ -128,7 +127,7 @@ describe('transform', () => {
     };
 
     const result = transform(storeAlias, testConfig);
-    const expected = `${processURL}/${session.apikey}/polaroid/flop/${storeAlias}`;
+    const expected = `${cdnUrl}/${session.apikey}/polaroid/flop/"${storeAlias}"`;
     assert.equal(result, expected);
   });
 
@@ -150,7 +149,7 @@ describe('transform', () => {
     };
 
     const result = transform(storeAlias, testConfig);
-    const expected = `${cdnUrl}/${session.apikey}/polaroid/flop/${storeAlias}`;
+    const expected = `${cdnUrl}/${session.apikey}/polaroid/flop/"${storeAlias}"`;
     assert.equal(result, expected);
   });
 
@@ -172,7 +171,7 @@ describe('transform', () => {
     };
 
     const result = transform(url, testConfig);
-    assert.equal(result, `${processURL}/${url}`);
+    assert.equal(result, `${cdnUrl}/${url}`);
   });
 
   describe('blackwhite', () => {

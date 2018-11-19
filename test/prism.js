@@ -59,11 +59,11 @@ prism.create({
   name: 'storeApi',
   mode,
   mocksPath,
-  context: '/api/store',
+  context: '/cdn',
   mockFilenameGenerator: function(config, req) {
     return generateName(req);
   },
-  host: 'www.filestackapi.com',
+  host: 'cdn.filestackcontent.com',
   changeOrigin: true,
 });
 

@@ -1,7 +1,7 @@
 {
-  "requestUrl": "/api/store/S3?key=AiSKOgshQQM6gsZxOvX1dz&location=S3",
+  "requestUrl": "/",
   "contentType": "application/json",
-  "method": "POST",
+  "method": "GET",
   "statusCode": 200,
   "data": {
     "url": "https://agnostic-cdn.filestackapi.com/bEtYfoSiQJ6dfJWE2Lia",
