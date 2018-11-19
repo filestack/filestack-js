@@ -71,16 +71,35 @@ const upload = (from, to) => {
 const bucket = 'static.filestackapi.com';
 const major = version.split('.').shift();
 
-const latest = {
-  bucket,
-  folder: `filestack-js/${major}.x.x`,
-};
+const args = process.argv.slice(2);
+const versionsToPublish = [];
 
-const current = {
-  bucket,
-  folder: `filestack-js/${version}`,
-};
+if (args.indexOf('--latest') > -1) {
+  console.log(`publishing to latest version ${major}.x.x`);
+  // versionsToPublish.push({
+  //   bucket,
+  //   folder: `filestack-js/${major}.x.x`,
+  // });
+}
 
-[latest, current].forEach((version) => {
+if (args.indexOf('--current') > -1) {
+  console.log(`publishing to current version ${version}`);
+
+  versionsToPublish.push({
+    bucket,
+    folder: `filestack-js/${version}`,
+  });
+}
+
+if (args.indexOf('--pre') > -1) {
+  console.log(`publishing to prerelase version ${version}-pre`);
+  versionsToPublish.push({
+    bucket,
+    folder: `filestack-js/${version}-pre`,
+  });
+}
+
+
+versionsToPublish.forEach((version) => {
   upload({ cwd: './build/browser', matching: 'filestack*' }, version);
 });
