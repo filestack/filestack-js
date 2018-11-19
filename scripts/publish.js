@@ -85,10 +85,10 @@ if (args.indexOf('--latest') > -1) {
 if (args.indexOf('--current') > -1) {
   console.log(`publishing to current version ${version}`);
 
-  versionsToPublish.push({
-    bucket,
-    folder: `filestack-js/${version}`,
-  });
+  // versionsToPublish.push({
+  //   bucket,
+  //   folder: `filestack-js/${version}`,
+  // });
 }
 
 if (args.indexOf('--pre') > -1) {
@@ -98,7 +98,6 @@ if (args.indexOf('--pre') > -1) {
     folder: `filestack-js/${version}-pre`,
   });
 }
-
 
 versionsToPublish.forEach((version) => {
   upload({ cwd: './build/browser', matching: 'filestack*' }, version);

@@ -303,7 +303,9 @@ const uploadFile = async (ctx: Context, token: any): Promise<any> => {
    */
   const retry = (location: string, func: any, err: any, part?: PartObj): Promise<any> => {
     let attempt = state.retries[location] || 0;
-    console.log('retry');
+
+    console.error(`Cannot upload file ${err}, Method: ${err.method}, Status: ${err.status}, Timeout: ${err.timeout}`);
+
     const waitTime = Math.min(config.retryMaxTime, (config.retryFactor ** attempt) * 1000);
     const promise = new Promise((resolve, reject) => {
       if (attempt === config.retry
@@ -320,11 +322,16 @@ const uploadFile = async (ctx: Context, token: any): Promise<any> => {
       // FII S3 retry (resize chunk)
       if (part && (config.intelligent || part.intelligentOverride) && (
         // Browser S3 network error
-        (err.method === 'PUT' && (err.crossDomain || err.status === 400 || err.timeout))
+        (err.method === 'PUT' && (err.crossDomain || err.status === 400 ))
+
+        // if connection is aborted we dont have request method
+        ||  (err.code === 'ECONNABORTED' && err.timeout)
         // Node S3 network error
         || (err.code === 'ECONNRESET' || err.code === 'ETIMEDOUT')
       )) {
+
         part.chunkSize /= 2;
+
         if (config.onRetry) {
           config.onRetry({
             location,
@@ -352,6 +359,7 @@ const uploadFile = async (ctx: Context, token: any): Promise<any> => {
       }
       return exec();
     });
+
     return cancellable(promise);
   };
 
