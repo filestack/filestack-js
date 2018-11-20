@@ -32,7 +32,7 @@
     "docs:publish": "npm run docs && gh-pages -d build/docs",
     "release": "standard-version",
     "prepare": "gulp build:prod",
-    "prepublish": "gulp build:prod && node scripts/publish.js --pre",
+    "publish:pre": "gulp build:prod && node scripts/publish.js --pre",
     "publish": "npm run docs:publish && node scripts/publish.js --current --latest",
     "examples": "npm run build && node ./examples/examples.js"
   },
