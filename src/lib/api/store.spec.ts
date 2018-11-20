@@ -41,6 +41,18 @@ describe('storeURL', function storeFunc() {
       });
   });
 
+  it('should replace ":" and "," with "_" in url', (done) => {
+    const options = { filename: 'test:t,est.jpg' };
+    storeURL(session, ENV.urls.testImageUrl, options)
+      .then((res) => {
+        assert.ok(res);
+        done();
+      })
+      .catch((err) => {
+        done(err);
+      });
+  });
+
   it('should get an ok response with a valid url', (done) => {
     storeURL(session, ENV.urls.testImageUrl)
       .then((res) => {
