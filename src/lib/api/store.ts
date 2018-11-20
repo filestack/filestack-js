@@ -42,6 +42,15 @@ export const storeURL = (
   session.policy = security && security.policy || session.policy;
   session.signature = security && security.signature || session.signature;
 
+  // replace url separators with _
+  if (opts.filename.indexOf(':') > -1) {
+    opts.filename = opts.filename.replace(/:/g, '_');
+  }
+
+  if (opts.filename.indexOf(',') > -1) {
+    opts.filename = opts.filename.replace(/,/g, '_');
+  }
+
   const baseURL = transform(session, url, {
     store : opts,
   });

@@ -76,10 +76,10 @@ const versionsToPublish = [];
 
 if (args.indexOf('--latest') > -1) {
   console.log(`publishing to latest version ${major}.x.x`);
-  // versionsToPublish.push({
-  //   bucket,
-  //   folder: `filestack-js/${major}.x.x`,
-  // });
+  versionsToPublish.push({
+    bucket,
+    folder: `filestack-js/${major}.x.x`,
+  });
 }
 
 if (args.indexOf('--current') > -1) {
