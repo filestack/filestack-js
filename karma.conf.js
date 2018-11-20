@@ -84,15 +84,27 @@ module.exports = function karmaConfig(config) {
         base: 'Electron',
         // flags: ['--show'],
       },
+      chrome_headless: {
+        base: 'Chrome',
+        flags: [
+            '--headless',
+            '--disable-gpu',
+            // Without a remote debugging port, Google Chrome exits immediately.
+            '--remote-debugging-port=9222'
+        ],
+        debug: true
+      }
     },
     browsers: process.env.CI ? [
+      // 'bs_iphone6',
       // 'bs_ie11',
-      // 'bs_safari_osx_stable',// for now disabled, need to firgure out whats happend (timeouted)
+      'bs_safari_osx_stable',// for now disabled, need to firgure out whats happend (timeouted)
       'bs_chrome_windows',
       'bs_firefox_windows',
       'bs_edge_windows'
     ] : [
-      'electron',
+      // 'electron',
+      'chrome_headless'
     ],
     browserNoActivityTimeout: 2 * 600000,
 

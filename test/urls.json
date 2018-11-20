@@ -6,7 +6,7 @@
     "cloudApiUrl": "http://localhost:3000/cloud",
     "intelligentUploadApiUrl": "http://localhost:3000/intelligentUpload",
     "processApiUrl": "https://process-stage.filestackapi.com",
-    "cdnUrl": "https://process-stage.filestackapi.com",
+    "cdnUrl": "http://localhost:3000/cdn",
     "testImageUrl": "https://d1wtqaffaaj63z.cloudfront.net/images/Zanzibar_Red_Colobus_Monkey.jpg",
     "proxy500": "http://localhost:3001",
     "proxyAbort": "http://localhost:3002",

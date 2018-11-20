@@ -41,6 +41,18 @@ describe('storeURL', function storeFunc() {
       });
   });
 
+  it('should replace ":" and "," with "_" in url', (done) => {
+    const options = { filename: 'test:t,est.jpg' };
+    storeURL(session, ENV.urls.testImageUrl, options)
+      .then((res) => {
+        assert.ok(res);
+        done();
+      })
+      .catch((err) => {
+        done(err);
+      });
+  });
+
   it('should get an ok response with a valid url', (done) => {
     storeURL(session, ENV.urls.testImageUrl)
       .then((res) => {
@@ -78,7 +90,7 @@ describe('storeURL', function storeFunc() {
 
   it('should reject on request error', (done) => {
     const sessionCopy = JSON.parse(JSON.stringify(session));
-    sessionCopy.urls.storeApiUrl = 'http://www.somebadurl.com';
+    sessionCopy.urls.cdnUrl = 'http://www.somebadurl.com';
 
     storeURL(sessionCopy, ENV.urls.testImageUrl)
       .then(() => {
@@ -110,7 +122,7 @@ describe('storeURL', function storeFunc() {
   });
 
   it('should support workflows', (done) => {
-    const options = { workflows: ['test', {id: 'test' }] };
+    const options = { workflows: ['test', { id: 'test' }] };
     storeURL(session, ENV.urls.testImageUrl, options)
       .then((res) => {
         assert.ok(res);

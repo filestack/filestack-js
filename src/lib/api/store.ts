@@ -15,10 +15,9 @@
  * limitations under the License.
  */
 
-import * as t from 'tcomb-validation';
 import { request } from './request';
-import { checkOptions, removeEmpty } from '../utils';
 import { Security, StoreOptions } from '../client';
+import { transform } from './transform';
 
 /**
  *
@@ -40,45 +39,24 @@ export const storeURL = (
     throw new Error('url is required for storeURL');
   }
 
-  const wString = t.String;
-  const wStruct = t.struct({
-    id: t.String,
-  })
+  session.policy = security && security.policy || session.policy;
+  session.signature = security && security.signature || session.signature;
 
-  const workflowsUniton = t.union([
-    wString,
-    wStruct
-  ]);
-
-  workflowsUniton.dispatch = function (x) {
-    return x.id ? wStruct : wString
+  // replace url separators with _
+  if (opts.filename.indexOf(':') > -1) {
+    opts.filename = opts.filename.replace(/:/g, '_');
   }
 
-  const allowed = [
-    { name: 'filename', type: t.String },
-    { name: 'location', type: t.enums.of('s3 gcs rackspace azure dropbox') },
-    { name: 'path', type: t.String },
-    { name: 'region', type: t.String },
-    { name: 'container', type: t.String },
-    { name: 'access', type: t.enums.of('public private') },
-    { name: 'workflows', type: t.list(workflowsUniton) },
-  ];
+  if (opts.filename.indexOf(',') > -1) {
+    opts.filename = opts.filename.replace(/,/g, '_');
+  }
 
-  checkOptions('storeURL', allowed, opts);
-
-  const options: any = { ...opts };
-  const location = options.location || 's3';
-  options.key = session.apikey;
-  options.policy = security && security.policy || session.policy;
-  options.signature = security && security.signature || session.signature;
-
-  const baseURL = `${session.urls.storeApiUrl}/${location}`;
+  const baseURL = transform(session, url, {
+    store : opts,
+  });
 
   return new Promise((resolve, reject) => {
-    const req = request
-      .post(baseURL)
-      .query(removeEmpty(options))
-      .field('url', url);
+    const req = request.get(baseURL);
 
     if (token) {
       token.cancel = () => {
@@ -87,14 +65,14 @@ export const storeURL = (
       };
     }
 
-    req.then((res: any) => {
+    return req.then((res: any) => {
       if (res.body && res.body.url) {
         const handle = res.body.url.split('/').pop();
         const response = { ...res.body, handle, mimetype: res.body.type };
-        resolve(response);
-      } else {
-        resolve(res.body);
+        return resolve(response);
       }
+
+      return resolve(res.body);
     }).catch((err) => {
       reject(err);
     });

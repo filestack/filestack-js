@@ -135,13 +135,13 @@ export const metadata = (session: Session, handle?: string, opts?: MetadataOptio
       .query(removeEmpty(options))
       .end((err: Error, res: any) => {
         if (err) {
-          reject(err);
-        } else {
-          resolve({
-            ...res.body,
-            handle,
-          });
+          return reject(err);
         }
+
+        resolve({
+          ...res.body,
+          handle,
+        });
       });
   });
 };

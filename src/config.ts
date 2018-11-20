@@ -18,19 +18,17 @@
 /**
  * @private
  */
-const PICKER_VERSION = '1.2.3';
+const PICKER_VERSION = '1.2.6';
 
 /**
  * @private
  */
 export interface Hosts {
   [url: string]: string;
-  storeApiUrl: string;
   fileApiUrl: string;
   uploadApiUrl: string;
   cloudApiUrl: string;
   cdnUrl: string;
-  processApiUrl: string;
   pickerUrl: string;
 }
 
@@ -50,24 +48,20 @@ export let config: Config;
 if (process.env.NODE_ENV === 'production') {
   config = {
     urls: {
-      storeApiUrl: 'https://www.filestackapi.com/api/store',
       fileApiUrl: 'https://www.filestackapi.com/api/file',
       uploadApiUrl: 'https://upload.filestackapi.com',
       cloudApiUrl: 'https://cloud.filestackapi.com',
       cdnUrl: 'https://cdn.filestackcontent.com',
-      processApiUrl: 'https://process.filestackapi.com',
       pickerUrl: `https://static.filestackapi.com/picker/${PICKER_VERSION}/picker.js`,
     },
   };
 } else {
   config = {
     urls: {
-      storeApiUrl: 'https://www.filestackapi.com/api/store',
       fileApiUrl: 'https://www.filestackapi.com/api/file',
       uploadApiUrl: 'https://upload.filestackapi.com',
       cloudApiUrl: 'https://cloud.filestackapi.com',
       cdnUrl: 'https://cdn.filestackcontent.com',
-      processApiUrl: 'https://process.filestackapi.com',
       pickerUrl: `https://static.filestackapi.com/picker/${PICKER_VERSION}/picker.js`,
     },
   };

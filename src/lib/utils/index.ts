@@ -29,26 +29,14 @@ export const throat = throatImpl;
  * @param handle file handle (hash, src://alias, url)
  */
 export const resolveCdnUrl = (session: Session, handle: string): string => {
-  const processURL = session.urls.processApiUrl;
   const cdnURL = session.urls.cdnUrl;
 
-  if (!handle || handle.length === 0) {
-    return cdnURL;
-  }
-
-  if (handle.indexOf('http:')  > -1 || handle.indexOf('https:')  > -1) {
-    if (!session.apikey) {
-      throw new Error('Api key is required when external url is provided');
-    }
-
-    return `${processURL}/${session.apikey}`;
-  }
-
-  if (handle.indexOf('src:') > -1) {
+  if (handle && (handle.indexOf('src:') === 0 || handle.indexOf('http') === 0)) {
     if (!session.apikey) {
       throw new Error('Api key is required when storage alias is provided');
     }
 
+    // apikey is required for alias or external sources call
     return `${cdnURL}/${session.apikey}`;
   }
 
