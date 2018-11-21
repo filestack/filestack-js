@@ -23,7 +23,7 @@ module.exports = function karmaConfig(config) {
     browserStack: {
       username: process.env.BROWSERSTACK_USERNAME,
       accessKey: process.env.BROWSERSTACK_ACCESS_KEY,
-      timeout: 600,
+      timeout: 2000,
       forcelocal: true,
     },
     customLaunchers: {
