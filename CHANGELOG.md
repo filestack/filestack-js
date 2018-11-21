@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="1.8.0"></a>
+# [1.8.0](https://github.com/filestack/filestack-js/compare/v1.7.7...v1.8.0) (2018-11-21)
+
+
+### Bug Fixes
+
+* **har-validator:** fix har-validator in package json ([d4475a0](https://github.com/filestack/filestack-js/commit/d4475a0))
+* **har-validator:** fix version for har-validator ([1a5d343](https://github.com/filestack/filestack-js/commit/1a5d343))
+* **har-validator:** fix version in package-json lock ([#172](https://github.com/filestack/filestack-js/issues/172)) ([5f585a6](https://github.com/filestack/filestack-js/commit/5f585a6))
+* **storeURL:** fix if statement for replacing special chars in store url ([41188ec](https://github.com/filestack/filestack-js/commit/41188ec))
+
+
+
 <a name="1.7.7"></a>
 ## [1.7.7](https://github.com/filestack/filestack-js/compare/v1.7.6...v1.7.7) (2018-10-29)
 
