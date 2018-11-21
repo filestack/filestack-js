@@ -4,6 +4,7 @@ const rollupConfig = require('./rollup.config.js');
 module.exports = function karmaConfig(config) {
   config.set({
     singleRun: true,
+    concurrency: 2,
     failOnEmptyTestSuite: false,
     frameworks: ['browserify', 'mocha'],
     reporters: ['progress'],
