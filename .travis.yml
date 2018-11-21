@@ -3,6 +3,10 @@ git:
   submodules: false
   depth: 1
 
+addons:
+  firefox: latest
+  chrome: stable
+
 before_install:
 - npm i -g npm@latest
 

@@ -85,6 +85,9 @@ module.exports = function karmaConfig(config) {
         base: 'Electron',
         // flags: ['--show'],
       },
+      firefox_headless: {
+        base: 'FirefoxHeadless',
+      },
       chrome_headless: {
         base: 'Chrome',
         flags: [
@@ -99,12 +102,15 @@ module.exports = function karmaConfig(config) {
     browsers: process.env.CI ? [
       // 'bs_iphone6',
       // 'bs_ie11',
-      'bs_safari_osx_stable',// for now disabled, need to firgure out whats happend (timeouted)
-      'bs_chrome_windows',
-      'bs_firefox_windows',
-      'bs_edge_windows'
+      // 'bs_safari_osx_stable',// for now disabled, need to firgure out whats happend (timeouted)
+      // 'bs_chrome_windows',
+      // 'bs_firefox_windows',
+      'bs_edge_windows',
+      'chrome_headless',
+      'firefox_headless',
     ] : [
       // 'electron',
+      'firefox_headless',
       'chrome_headless'
     ],
     browserNoActivityTimeout: 2 * 600000,

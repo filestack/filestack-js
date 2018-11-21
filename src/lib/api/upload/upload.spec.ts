@@ -416,7 +416,7 @@ if (ENV.testEnv === 'unit') {
 
     describe('intelligent ingestion server error', function intelligentSrvErr() {
       this.timeout(80000);
-      it.only('should retry on server error and increment retry amount', (done) => {
+      it('should retry on server error and increment retry amount', (done) => {
         const onRetry = sinon.spy();
         upload(ENV.intelligentSession, smallFile, {
           host: ENV.urls.proxy500,
