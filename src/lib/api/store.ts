@@ -43,11 +43,11 @@ export const storeURL = (
   session.signature = security && security.signature || session.signature;
 
   // replace url separators with _
-  if (opts.filename.indexOf(':') > -1) {
+  if (opts && opts.filename && opts.filename.indexOf(':') > -1) {
     opts.filename = opts.filename.replace(/:/g, '_');
   }
 
-  if (opts.filename.indexOf(',') > -1) {
+  if (opts && opts.filename && opts.filename.indexOf(',') > -1) {
     opts.filename = opts.filename.replace(/,/g, '_');
   }
 

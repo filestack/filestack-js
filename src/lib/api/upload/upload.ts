@@ -304,7 +304,7 @@ const uploadFile = async (ctx: Context, token: any): Promise<any> => {
   const retry = (location: string, func: any, err: any, part?: PartObj): Promise<any> => {
     let attempt = state.retries[location] || 0;
 
-    console.error(`Cannot upload file ${err}, Method: ${err.method}, Status: ${err.status}, Timeout: ${err.timeout}`);
+    // console.error(`Cannot upload file ${err}, Method: ${err.method}, Status: ${err.status}, Timeout: ${err.timeout}`);
 
     const waitTime = Math.min(config.retryMaxTime, (config.retryFactor ** attempt) * 1000);
     const promise = new Promise((resolve, reject) => {
