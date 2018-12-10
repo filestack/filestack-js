@@ -454,7 +454,10 @@ const escapeValue = (value: any): any => {
     return value;
   }
 
-  if (value.indexOf('http:') > -1|| value.indexOf('https:') > -1 || value.indexOf('src:') > -1) {
+  if (value.indexOf('http:') > -1
+      || value.indexOf('https:') > -1
+      || value.indexOf('src:') > -1
+      || value.indexOf('/') > -1) {
     return `"${value}"`;
   }
 

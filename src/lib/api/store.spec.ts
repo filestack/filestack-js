@@ -53,6 +53,18 @@ describe('storeURL', function storeFunc() {
       });
   });
 
+  it('should upload file correctly with "/" in path', (done) => {
+    const options = { filename: 'test.jpg' , path: 'test/path'};
+    storeURL(session, ENV.urls.testImageUrl, options)
+      .then((res) => {
+        assert.ok(res);
+        done();
+      })
+      .catch((err) => {
+        done(err);
+      });
+  });
+
   it('should get an ok response with a valid url', (done) => {
     storeURL(session, ENV.urls.testImageUrl)
       .then((res) => {
