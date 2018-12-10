@@ -421,7 +421,7 @@ export interface PickerOptions {
   /**
    * Configure the drop pane behavior, i.e. when `displayMode` is `dropPane`.
    */
-  dropPane: PickerDropPaneOptions;
+  dropPane?: PickerDropPaneOptions;
   /**
    * When true the `originalFile` metadata will be the actual `File` object instead of a POJO
    */
