@@ -174,6 +174,14 @@ describe('transform', () => {
     assert.equal(result, `${cdnUrl}/${url}`);
   });
 
+  it('should return correct store URL with "/" in path', () => {
+    const options = { filename: 'test.jpg' , path: 'test/path'};
+    const result = transform(url, { store: options});
+
+    assert.equal(result, `${cdnUrl}/store=filename:test.jpg,path:"test/path"/fakelink`)
+  });
+
+
   describe('blackwhite', () => {
     it('should construct valid parameters', () => {
       const testConfig = {
