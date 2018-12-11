@@ -103,6 +103,7 @@ describe('transform', () => {
     assert.equal(result, expected);
   });
 
+
   it('should handle storage with url handle', () => {
     const storeAlias = 'https://test.com/file.js';
 
@@ -179,6 +180,13 @@ describe('transform', () => {
     const result = transform(url, { store: options});
 
     assert.equal(result, `${cdnUrl}/store=filename:test.jpg,path:"test/path"/fakelink`)
+  });
+
+  it('should handle upper cased path', () => {
+    const options = { filename: 'test.jpg' , path: 'tEsT/path'};
+    const result = transform(url, { store: options});
+
+    assert.equal(result, `${cdnUrl}/store=filename:test.jpg,path:"tEsT/path"/fakelink`)
   });
 
 
