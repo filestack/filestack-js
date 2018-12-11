@@ -494,11 +494,12 @@ const escapeValue = (value: any): any => {
  * @param options Transformation options
  */
 export const transform = (session: Session, url: string, options: TransformOptions = {}): string => {
-  options = toSnakeCase(valuesToLowerCase(options));
+  options = toSnakeCase(options);
 
   const validate = getValidator(TransformSchema);
 
-  if (!validate(options)) {
+  // use lower case only for validation
+  if (!validate(valuesToLowerCase(JSON.parse(JSON.stringify(options)))) ) {
     throw new FilestackError('Validation error', validate.errors);
   }
 
