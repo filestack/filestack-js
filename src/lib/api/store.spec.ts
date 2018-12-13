@@ -29,6 +29,18 @@ describe('storeURL', function storeFunc() {
     assert.throws(() => storeURL(session));
   });
 
+  it('should handle store without params', (done) => {
+    const options = {};
+    storeURL(session, ENV.urls.testImageUrl, options)
+      .then((res) => {
+        assert.ok(res);
+        done();
+      })
+      .catch((err) => {
+        done(err);
+      });
+  });
+
   it('should support uppercase string options', (done) => {
     const options = { location: 'S3' };
     storeURL(session, ENV.urls.testImageUrl, options)

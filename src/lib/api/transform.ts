@@ -420,7 +420,7 @@ const optionToString = (key: string, values: any): string => {
   }
 
   if (typeof values === 'object' && !Object.keys(values).length) {
-    return '';
+    return key;
   }
 
   // if we just want to enable feature
