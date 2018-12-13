@@ -380,6 +380,13 @@ export interface PickerOptions {
    * Container where picker should be appended. Only relevant for `inline` and `dropPane` display modes.
    */
   container?: string | Node;
+
+  /**
+   * Turn on cleaning JPEG image exif. Method can keep image orientation
+   */
+  cleanupImageExif?: boolean | {
+    keepOrientation: boolean
+  };
   /**
    * Picker display mode, one of `'inline'`, `'overlay'`, `'dropPane'` - default is `'overlay'`.
    */
@@ -551,6 +558,7 @@ export interface PickerOptions {
    * For cloud sources whether to link or store files. Defaults to `false`.
    */
   preferLinkOverStore?: boolean;
+
   /**
    * Define a unique id for the application mount point.
    * May be useful for more advanced use cases.
