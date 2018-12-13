@@ -146,6 +146,21 @@ export enum EVideoTypes {
     hls = 'hls.variant.audio',
 }
 
+export enum EUrlscreenshotAgent {
+  desktop = 'desktop',
+  mobile = 'mobile',
+}
+
+export enum EUrlscreenshotMode {
+  all = 'all',
+  window = 'window',
+}
+
+export enum EUrlscreenshotOrientation {
+  portrait = 'portrait',
+  landscape = 'landscape',
+}
+
 /**
  * Video storage location
  */
@@ -383,6 +398,15 @@ export interface TransformOptions {
     watermark_width?: number;
     watermark_height?: number;
   };
+  urlscreenshot?: {
+    agent?: EUrlscreenshotAgent;
+    width?: number;
+    height?: number;
+    mode?: EUrlscreenshotMode;
+    delay?: number;
+    orientation?: EUrlscreenshotOrientation;
+    device?: string;
+  } | true;
 }
 
 /**
