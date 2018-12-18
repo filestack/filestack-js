@@ -1,13 +1,13 @@
 <p align="center">
-  <a href="https://www.filestack.com"><img src="http://static.filestackapi.com/filestack-js.svg?refresh" align="center" width="250" /></a>  
+  <a href="https://www.filestack.com"><img src="https://static.filestackapi.com/filestack-js.svg?refresh" align="center" width="250" /></a>  
 </p>
 <p align="center">
   <strong>Javascript SDK for the Filestack API and content management system.</strong>
 </p>
 <p align="center">
   <a href="https://npmjs.com/package/filestack-js"><img src="https://img.shields.io/npm/v/filestack-js.svg" /></a>
-  <a href="https://static.filestackapi.com/filestack-js/1.x.x/filestack.min.js"><img src="http://img.badgesize.io/http://static.filestackapi.com/filestack-js/1.x.x/filestack.min.js?compression=gzip&color=green" /></a>
-  <a href="https://static.filestackapi.com/filestack-js/1.x.x/filestack.min.js"><img src="http://img.badgesize.io/http://static.filestackapi.com/filestack-js/1.x.x/filestack.min.js?color=green" /></a>
+  <a href="https://static.filestackapi.com/filestack-js/1.x.x/filestack.min.js"><img src="https://img.badgesize.io/https://static.filestackapi.com/filestack-js/1.x.x/filestack.min.js?compression=gzip&color=green" /></a>
+  <a href="https://static.filestackapi.com/filestack-js/1.x.x/filestack.min.js"><img src="https://img.badgesize.io/https://static.filestackapi.com/filestack-js/1.x.x/filestack.min.js?color=green" /></a>
   <img src="https://img.shields.io/badge/module%20formats-umd%2C%20esm%2C%20cjs-green.svg" />
   <br/>
   <img src="https://badges.herokuapp.com/browsers?labels=none&googlechrome=latest&firefox=latest&microsoftedge=latest&iexplore=11&safari=latest&iphone=latest" />
@@ -66,17 +66,17 @@ The pre-bundled browser module is also available in UMD format. This is useful i
 
 ## Live examples (JSFiddle)
 
-[Upload image](http://jsfiddle.net/gh/get/library/pure/filestack/filestack-js/tree/master/examples/upload)  
-[Open picker](http://jsfiddle.net/gh/get/library/pure/filestack/filestack-js/tree/master/examples/picker)  
-[Open picker in inline mode](http://jsfiddle.net/gh/get/library/pure/filestack/filestack-js/tree/master/examples/picker-inline)  
-[Crop images](http://jsfiddle.net/gh/get/library/pure/filestack/filestack-js/tree/master/examples/crop)  
-[Multiple drop panes](http://jsfiddle.net/gh/get/library/pure/filestack/filestack-js/tree/master/examples/multiple-drop-panes)  
-[Preview](http://jsfiddle.net/gh/get/library/pure/filestack/filestack-js/tree/master/examples/preview)  
-[Import using RequireJS](http://jsfiddle.net/gh/get/library/pure/filestack/filestack-js/tree/master/examples/requirejs)  
-[Retrieve image data](http://jsfiddle.net/gh/get/library/pure/filestack/filestack-js/tree/master/examples/retrieve)  
-[Transform image](http://jsfiddle.net/gh/get/library/pure/filestack/filestack-js/tree/master/examples/transform)  
-[Custom Picker CSS](http://jsfiddle.net/gh/get/library/pure/filestack/filestack-js/tree/master/examples/customization)  
-[Assign file to user](http://jsfiddle.net/gh/get/library/pure/filestack/filestack-js/tree/master/examples/assign-file-to-user)  
+[Upload image](https://jsfiddle.net/gh/get/library/pure/filestack/filestack-js/tree/master/examples/upload)  
+[Open picker](https://jsfiddle.net/gh/get/library/pure/filestack/filestack-js/tree/master/examples/picker)  
+[Open picker in inline mode](https://jsfiddle.net/gh/get/library/pure/filestack/filestack-js/tree/master/examples/picker-inline)  
+[Crop images](https://jsfiddle.net/gh/get/library/pure/filestack/filestack-js/tree/master/examples/crop)  
+[Multiple drop panes](https://jsfiddle.net/gh/get/library/pure/filestack/filestack-js/tree/master/examples/multiple-drop-panes)  
+[Preview](https://jsfiddle.net/gh/get/library/pure/filestack/filestack-js/tree/master/examples/preview)  
+[Import using RequireJS](https://jsfiddle.net/gh/get/library/pure/filestack/filestack-js/tree/master/examples/requirejs)  
+[Retrieve image data](https://jsfiddle.net/gh/get/library/pure/filestack/filestack-js/tree/master/examples/retrieve)  
+[Transform image](https://jsfiddle.net/gh/get/library/pure/filestack/filestack-js/tree/master/examples/transform)  
+[Custom Picker CSS](https://jsfiddle.net/gh/get/library/pure/filestack/filestack-js/tree/master/examples/customization)  
+[Assign file to user](https://jsfiddle.net/gh/get/library/pure/filestack/filestack-js/tree/master/examples/assign-file-to-user)  
 
 Examples can be run locally with: 
 ```
