@@ -172,7 +172,14 @@ describe('transform', () => {
     };
 
     const result = transform(url, testConfig);
-    assert.equal(result, `${cdnUrl}/${url}`);
+    assert.equal(result, `${cdnUrl}/polaroid/${url}`);
+  });
+
+  it('should handle store without params', () => {
+    const options = {};
+    const result = transform(url, { store: options});
+
+    assert.equal(result, `${cdnUrl}/store/${url}`);
   });
 
   it('should return correct store URL with "/" in path', () => {
