@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="1.9.0"></a>
+# [1.9.0](https://github.com/filestack/filestack-js/compare/v1.8.3...v1.9.0) (2018-12-18)
+
+
+### Features
+
+* **picker:** Add exif removal option to picker ([9ca93b4](https://github.com/filestack/filestack-js/commit/9ca93b4))
+
+
+
 <a name="1.8.3"></a>
 ## [1.8.3](https://github.com/filestack/filestack-js/compare/v1.8.2...v1.8.3) (2018-12-11)
 
