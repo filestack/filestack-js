@@ -210,7 +210,7 @@ export interface TransformOptions {
   resize?: {
     width?: number;
     height?: number;
-    fit?: boolean;
+    fit?: EFitOptions;
     align?: EAlignFacesOptions;
   };
   crop?: {
