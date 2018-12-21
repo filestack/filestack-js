@@ -582,7 +582,7 @@ export const transform = (session: Session, url: string | string[], options: Tra
   const baseURL = resolveCdnUrl(session, url);
 
   if (b64) {
-    return generateB64Url(options, baseURL, url);
+    return generateB64Url(options || {}, baseURL, url);
   }
 
   Object.keys(options).forEach((key: keyof TransformOptions) => {
