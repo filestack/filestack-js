@@ -19,6 +19,7 @@ import { Session } from '../client';
 import { resolveCdnUrl } from './../utils/index';
 import { TransformSchema, getValidator, valuesToLowerCase } from './../../schema/';
 import { FilestackError } from './../../FilestackError';
+import { btoa } from 'abab';
 
 declare var ENV: any;
 
@@ -489,6 +490,42 @@ const escapeValue = (value: any): any => {
 };
 
 /**
+ * Generates new b64 fromat for transforms
+ *
+ * @param transforms - transforms object
+ * @param cndUrl - url for filestack cdn
+ * @param handle - string or serialized array of multiple handles
+ */
+const generateB64Url = (transforms: TransformOptions, cndUrl: string, handle: string): string => {
+  let toBase = [];
+
+  for (const opt in transforms) {
+    let params = transforms[opt];
+
+    if (opt === 'cache' && params === false) {
+      params = {
+        expiry: 0,
+      };
+    } else if (typeof params === 'boolean' && params || typeof params !== 'boolean' && Object.keys(params).length === 0) {
+      params =  undefined;
+    } else if (typeof params === 'boolean' && !params) {
+      continue;
+    }
+
+    toBase.push({
+      name: opt,
+      params,
+    });
+  }
+
+  if (toBase.length === 0) {
+    return `${cndUrl}/b64://${btoa(handle)}`;
+  }
+
+  return `${cndUrl}/b64/${btoa(JSON.stringify(toBase))}/b64://${btoa(handle)}`;
+};
+
+/**
  * Creates filestack transform url.
  * Transform params can be provided in camelCase or snakeCase style
  *
@@ -516,14 +553,15 @@ const escapeValue = (value: any): any => {
  * @private
  * @throws Error
  * @param options Transformation options
+ * @param url url, handle or array of elements
  */
-export const transform = (session: Session, url: string, options: TransformOptions = {}): string => {
+export const transform = (session: Session, url: string | string[], options: TransformOptions = {}, b64: Boolean = true): string => {
   options = toSnakeCase(options);
 
   const validate = getValidator(TransformSchema);
 
   // use lower case only for validation
-  if (!validate(valuesToLowerCase(JSON.parse(JSON.stringify(options)))) ) {
+  if (!validate(valuesToLowerCase(JSON.parse(JSON.stringify(options))))) {
     throw new FilestackError('Validation error', validate.errors);
   }
 
@@ -536,6 +574,17 @@ export const transform = (session: Session, url: string, options: TransformOptio
     };
   }
 
+  if (Array.isArray(url)) {
+    url = arrayToString(url);
+  }
+
+  // See URL format: https://www.filestack.com/docs/image-transformations
+  const baseURL = resolveCdnUrl(session, url);
+
+  if (b64) {
+    return generateB64Url(options, baseURL, url);
+  }
+
   Object.keys(options).forEach((key: keyof TransformOptions) => {
     transformsArray.push(optionToString(key, options[key]));
   });
@@ -544,9 +593,6 @@ export const transform = (session: Session, url: string, options: TransformOptio
   transformsArray = transformsArray.filter((val) => {
     return val.length;
   });
-
-  // See URL format: https://www.filestack.com/docs/image-transformations
-  const baseURL = resolveCdnUrl(session, url);
 
   if (!transformsArray.length) {
     return `${baseURL}/${url}`;

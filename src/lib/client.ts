@@ -334,13 +334,14 @@ export class Client {
    * client.storeURL(transformedUrl).then(res => console.log(res));
    * ```
    * @see [Filestack Processing API](https://www.filestack.com/docs/api/processing)
-   * @param url     Valid URL (http(s)://), file handle, or storage alias (src://) to an image.
+   * @param url     Single or multiple valid URLs (http(s)://), file handles, or storage aliases (src://) to an image.
    * @param options Transformations are applied in the order specified by this object.
+   * @param b64     Use new more safe format for generating transforms url (default=true)
    * @returns       A new URL that points to the transformed resource.
    */
-  transform(url: string, options: TransformOptions) {
+  transform(url: string | string[], options: TransformOptions, b64: Boolean = true) {
     /* istanbul ignore next */
-    return transform(this.session, url, options);
+    return transform(this.session, url, options, b64);
   }
 
   /**
