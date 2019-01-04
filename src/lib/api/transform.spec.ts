@@ -628,7 +628,7 @@ describe('transform b64', () => {
             background: 'black',
             density: 250,
             compress: true,
-          }
+          },
         },
       ]))}/b64://${btoa(url)}`;
 

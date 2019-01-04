@@ -53,7 +53,7 @@ export interface SecurityOptions {
 export const getSecurity = (policyOptions: SecurityOptions, appSecret: string): Security => {
   const allowed = [
     { name: 'expiry', type: t.Integer },
-    { name: 'call', type: t.enums.of('pick read stat write writeUrl store convert remove exif') },
+    { name: 'call', type: t.list(t.enums.of('pick read stat write writeUrl store convert remove exif')) },
     { name: 'handle', type: t.String },
     { name: 'url', type: t.String },
     { name: 'maxSize', type: t.Integer },
