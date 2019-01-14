@@ -34,23 +34,19 @@ import * as isSvg from 'is-svg';
  */
 export const getPart = (part: PartObj, { config, file }: Context): Promise<PartObj> => {
   return new Promise((resolve) => {
-    let alloc = config.partSize;
+    let length = config.partSize;
+    const start = config.partSize * part.number;
 
-    // for last part we need to allocate buffer memory that we need
-    if (file.buffer.byteLength - part.number * config.partSize < alloc) {
-      alloc = file.buffer.byteLength - part.number * config.partSize;
+    if (file.buffer.byteLength < start + length) {
+      length = file.buffer.byteLength - start;
     }
 
-    let filePart = Buffer.alloc(alloc);
-
-    file.buffer.copy(filePart, 0, part.number * config.partSize, config.partSize);
-    filePart = filePart.slice(0, filePart.byteLength);
-
+    const filePart = file.buffer.slice(start, start + length);
     const partObj: PartObj = {
       ...part,
       buffer: filePart,
       size: filePart.byteLength,
-      md5: calcMD5(filePart.buffer),
+      md5: calcMD5(filePart),
     };
 
     return resolve(partObj);

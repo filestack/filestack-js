@@ -322,7 +322,7 @@ const uploadFile = async (ctx: Context, token: any): Promise<any> => {
       // FII S3 retry (resize chunk)
       if (part && (config.intelligent || part.intelligentOverride) && (
         // Browser S3 network error
-        (err.method === 'PUT' && (err.crossDomain || err.status === 400 ))
+        (err.method === 'PUT' && (err.crossDomain || err.status === 400))
 
         // if connection is aborted we dont have request method
         ||  (err.code === 'ECONNABORTED' && err.timeout)
