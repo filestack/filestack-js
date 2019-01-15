@@ -2,6 +2,32 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="1.10.0"></a>
+# [1.10.0](https://github.com/filestack/filestack-js/compare/v1.9.0...v1.10.0) (2019-01-15)
+
+
+### Bug Fixes
+
+* **security:** fix call validator ([#188](https://github.com/filestack/filestack-js/issues/188)) ([adf9388](https://github.com/filestack/filestack-js/commit/adf9388))
+* **upload:** fix problems with file partitioning ([#187](https://github.com/filestack/filestack-js/issues/187)) ([9c09c4c](https://github.com/filestack/filestack-js/commit/9c09c4c))
+
+
+### Features
+
+* **picker:** Update picker version ([#189](https://github.com/filestack/filestack-js/issues/189)) ([771edb4](https://github.com/filestack/filestack-js/commit/771edb4))
+
+
+
+<a name="1.9.0"></a>
+# [1.9.0](https://github.com/filestack/filestack-js/compare/v1.8.3...v1.9.0) (2018-12-18)
+
+
+### Features
+
+* **picker:** Add exif removal option to picker ([9ca93b4](https://github.com/filestack/filestack-js/commit/9ca93b4))
+
+
+
 <a name="1.8.3"></a>
 ## [1.8.3](https://github.com/filestack/filestack-js/compare/v1.8.2...v1.8.3) (2018-12-11)
 
