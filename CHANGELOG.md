@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="1.11.0"></a>
+# [1.11.0](https://github.com/filestack/filestack-js/compare/v1.10.0...v1.11.0) (2019-01-23)
+
+
+### Features
+
+* **transforms:** add base64 support to transforms ([83f07e2](https://github.com/filestack/filestack-js/commit/83f07e2))
+
+
+
 <a name="1.10.0"></a>
 # [1.10.0](https://github.com/filestack/filestack-js/compare/v1.9.0...v1.10.0) (2019-01-15)
 
