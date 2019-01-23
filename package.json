@@ -1,6 +1,6 @@
 {
   "name": "filestack-js",
-  "version": "1.9.0",
+  "version": "1.10.0",
   "description": "Official JavaScript library for Filestack",
   "main": "build/main/index.js",
   "module": "build/module/index.js",
@@ -41,6 +41,7 @@
   },
   "dependencies": {
     "abab": "^2.0.0",
+    "ajv": "^6.5.5",
     "file-type": "^8.1.0",
     "filestack-loader": "^3.0.4",
     "is-svg": "^3.0.0",
@@ -48,7 +49,6 @@
     "spark-md5": "^3.0.0",
     "superagent": "^3.8.3",
     "tcomb-validation": "^3.4.1",
-    "ajv": "^6.5.5",
     "tslib": "^1.9.3"
   },
   "devDependencies": {
