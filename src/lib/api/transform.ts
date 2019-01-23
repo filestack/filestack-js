@@ -552,7 +552,7 @@ const generateB64Url = (transforms: TransformOptions, cndUrl: string, handle: st
  * @param options Transformation options
  * @param url url, handle or array of elements
  */
-export const transform = (session: Session, url: string | string[], options: TransformOptions = {}, b64: Boolean = true): string => {
+export const transform = (session: Session, url: string | string[], options: TransformOptions = {}, b64: Boolean = false): string => {
   options = toSnakeCase(options);
 
   const validate = getValidator(TransformSchema);
