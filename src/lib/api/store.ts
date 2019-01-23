@@ -52,7 +52,7 @@ export const storeURL = (
   }
 
   const baseURL = transform(session, url, {
-    store : opts,
+    store : opts || {},
   });
 
   return new Promise((resolve, reject) => {
