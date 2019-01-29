@@ -251,4 +251,111 @@ describe('Transforms Schema', () => {
       }));
     });
   });
+
+  describe('Pdfinfo', () => {
+    it('should validate correct params with bool value', () => {
+      assert.ok(validate({
+        pdfinfo: true,
+      }));
+    });
+
+    it('should validate correct params with color info', () => {
+      assert.ok(validate({
+        pdfinfo: {
+          colorinfo: true,
+        },
+      }));
+    });
+  });
+
+  describe('Pdfconvert', () => {
+    describe('Pages', () => {
+      it('should validate on correct page 1', () => {
+        assert.ok(validate({
+          pdfconvert: {
+            pages: 1,
+          },
+        }));
+      });
+
+      it('should validate on correct page 1-', () => {
+        assert.ok(validate({
+          pdfconvert: {
+            pages: '1-',
+          },
+        }));
+      });
+
+      it('should validate on correct page -1', () => {
+        assert.ok(validate({
+          pdfconvert: {
+            pages: '-1',
+          },
+        }));
+      });
+
+      it('should validate on correct page 1,2,3', () => {
+        assert.ok(validate({
+          pdfconvert: {
+            pages: '1,2,3',
+          },
+        }));
+      });
+
+      it('should return error on fail page "1a"', () => {
+        assertFail(validate({
+          pdfconvert: {
+            pages: '1a',
+          },
+        }));
+      });
+
+    });
+
+    describe('Page orientation', () => {
+      it('should pass on correct orientation "landscape"', () => {
+        assert.ok(validate({
+          pdfconvert: {
+            pageorientation: 'landscape',
+          },
+        }));
+      });
+
+      it('should pass on correct orientation "portrait"', () => {
+        assert.ok(validate({
+          pdfconvert: {
+            pageorientation: 'portrait',
+          },
+        }));
+      });
+
+      it('should fail on wrong orientation "landscape1"', () => {
+        assertFail(validate({
+          pdfconvert: {
+            pageorientation: 'landscape1',
+          },
+        }));
+      });
+    });
+
+    describe('Page format', () => {
+      ['a2', 'a3', 'a4', 'a5', 'b4', 'b5', 'letter', 'legal', 'tabloid'].forEach((val) => {
+        it(`should when correct page format is provided ${val}`, () => {
+          assert.ok(validate({
+            pdfconvert: {
+              pageformat: val,
+            },
+          }));
+        });
+      });
+
+      it('should fail on wrong page format ie a22', () => {
+        assertFail(validate({
+          pdfconvert: {
+            pageformat: 'a22',
+          },
+        }));
+      });
+    });
+  });
 });

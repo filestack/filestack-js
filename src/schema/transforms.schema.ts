@@ -22,6 +22,21 @@ export const TransformSchema = {
   type: 'object',
   additionalProperties: false,
   definitions: {
+    pageFormatDef: {
+      '$id': '#pageFormatDef',
+      type: 'string',
+      enum: ['a2', 'a3', 'a4', 'a5', 'b4', 'b5', 'letter', 'legal', 'tabloid'],
+    },
+    pageRangeDef: {
+      '$id': '#pageRangeDef',
+      oneOf: [{
+        type: 'string',
+      }, {
+        type: 'number',
+      }],
+      pattern: '^(\\d+(?:-\\d+)?)$|^(-\\d+)$|^(\\d+-)$|^(\\d+\\,?){1,}$',
+      errorMessage: 'Param should be provided in one of the following formats: "1,2,3,5", "1-3", "1-", "-2" ',
+    },
     facesDef: {
       '$id': '#facesDef',
       oneOf: [{
@@ -954,7 +969,7 @@ export const TransformSchema = {
         },
         pageformat: {
           type: 'string',
-          enum: ['a3', 'a4', 'a5', 'b4', 'b5', 'letter', 'legal', 'tabloid'],
+          enum: ['a2', 'a3', 'a4', 'a5', 'b4', 'b5', 'letter', 'legal', 'tabloid'],
         },
         pageorientation: {
           type: 'string',
@@ -1255,6 +1270,41 @@ export const TransformSchema = {
         },
       },
       required: ['policy', 'signature'],
+    },
+    pdfinfo: {
+      oneOf: [{
+        type: 'boolean',
+      }, {
+        type: 'object',
+        properties: {
+          colorinfo: {
+            type: 'boolean',
+          },
+        },
+      }],
+    },
+    pdfconvert: {
+      type: 'object',
+      additionalProperties: false,
+      properties: {
+        pageorientation: {
+          type: 'string',
+          enum: ['portrait', 'landscape'],
+        },
+        pageformat: {
+          '$ref': '#pageFormatDef',
+        },
+        pages: {
+          '$ref': '#pageRangeDef',
+        },
+      },
+      oneOf: [{
+        required: ['pageorientation'],
+      }, {
+        required: ['pageformat'],
+      }, {
+        required: ['pages'],
+      }],
     },
   },
 };
