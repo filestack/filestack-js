@@ -1303,7 +1303,7 @@ export const TransformSchema = {
           '$ref': '#pageRangeDef',
         },
       },
-      oneOf: [{
+      anyOf: [{
         required: ['pageorientation'],
       }, {
         required: ['pageformat'],

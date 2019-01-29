@@ -321,6 +321,7 @@ describe('Transforms Schema', () => {
         it(`should when correct page format is provided ${val}`, () => {
           assert.ok(validate({
             pdfconvert: {
+              pages: [1,2],
               pageformat: val,
             },
           }));
