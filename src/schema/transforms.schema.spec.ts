@@ -270,36 +270,14 @@ describe('Transforms Schema', () => {
 
   describe('Pdfconvert', () => {
     describe('Pages', () => {
-      it('should validate on correct page 1', () => {
-        assert.ok(validate({
-          pdfconvert: {
-            pages: 1,
-          },
-        }));
-      });
-
-      it('should validate on correct page 1-', () => {
-        assert.ok(validate({
-          pdfconvert: {
-            pages: '1-',
-          },
-        }));
-      });
-
-      it('should validate on correct page -1', () => {
-        assert.ok(validate({
-          pdfconvert: {
-            pages: '-1',
-          },
-        }));
-      });
-
-      it('should validate on correct page 1,2,3', () => {
-        assert.ok(validate({
-          pdfconvert: {
-            pages: '1,2,3',
-          },
-        }));
+      [[1,2], ['1-', 3], ['-2']].forEach((val) => {
+        it(`should validate on correct page "${val}"`, () => {
+          assert.ok(validate({
+            pdfconvert: {
+              pages: val,
+            },
+          }));
+        });
       });
 
       it('should return error on fail page "1a"', () => {

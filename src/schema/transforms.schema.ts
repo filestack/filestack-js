@@ -29,13 +29,18 @@ export const TransformSchema = {
     },
     pageRangeDef: {
       '$id': '#pageRangeDef',
-      oneOf: [{
-        type: 'string',
-      }, {
-        type: 'number',
+      type: 'array',
+      uniqueItems: true,
+      items: [{
+        oneOf: [{
+          type: 'integer',
+          minimum: 1,
+        }, {
+          type: 'string',
+          pattern: '^(\\d+(?:-\\d+)?)$|^(-\\d+)$|^(\\d+-)$',
+          errorMessage: 'Param should be provided in one of the following formats: "1,2,3,5", "1-3", "1-", "-2" ',
+        }],
       }],
-      pattern: '^(\\d+(?:-\\d+)?)$|^(-\\d+)$|^(\\d+-)$|^(\\d+\\,?){1,}$',
-      errorMessage: 'Param should be provided in one of the following formats: "1,2,3,5", "1-3", "1-", "-2" ',
     },
     facesDef: {
       '$id': '#facesDef',

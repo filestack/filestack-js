@@ -414,7 +414,7 @@ export interface TransformOptions {
   pdfconvert?: {
     pageorientation?: string
     pageformat?: string
-    pages?: string | number
+    pages?: (string | number)[]
   };
 }
 
