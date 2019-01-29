@@ -408,6 +408,14 @@ export interface TransformOptions {
     orientation?: EUrlscreenshotOrientation;
     device?: string;
   } | true;
+  pdfinfo?: {
+    colorinfo?: boolean
+  } | true;
+  pdfconvert?: {
+    pageorientation?: string
+    pageformat?: string
+    pages?: (string | number)[]
+  };
 }
 
 /**
