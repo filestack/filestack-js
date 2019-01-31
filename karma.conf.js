@@ -73,7 +73,7 @@ module.exports = function karmaConfig(config) {
       // 'bs_safari_osx_stable',// for now disabled, need to firgure out whats happend (timeouted)
       // 'bs_chrome_windows',
       // 'bs_firefox_windows',
-      'bs_edge_windows_latest',
+      // 'bs_edge_windows_latest',
       'chrome_headless',
       'firefox_headless',
     ] : [
