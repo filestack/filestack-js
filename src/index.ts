@@ -17,19 +17,6 @@
 
 import { SecurityOptions, getSecurity } from './lib/api/security';
 import { Client, ClientOptions } from './lib/client';
-import {
-  TransformOptions,
-  EStyleType,
-  EShapeType,
-  ENoiseType,
-  EFitOptions,
-  EColorspaceType,
-  EBlurMode,
-  EAlignOptions,
-  EAlignFacesOptions,
-  ECropfacesType
-} from './lib/api/transform';
-
 import { TransformSchema } from './schema/transforms.schema';
 
 /**
@@ -47,18 +34,11 @@ export const init = (apikey: string, options?: ClientOptions): Client => {
  */
 export const version = '@{VERSION}';
 
+export * from './lib/api/transform';
+export * from './lib/filelink';
+
 export {
-  TransformOptions,
   TransformSchema,
-  EStyleType,
-  EShapeType,
-  ENoiseType,
-  EFitOptions,
-  EColorspaceType,
-  EBlurMode,
-  EAlignOptions,
-  EAlignFacesOptions,
-  ECropfacesType,
   SecurityOptions,
   getSecurity,
 };

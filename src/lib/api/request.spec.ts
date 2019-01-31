@@ -29,6 +29,7 @@ describe('requestWithSource', () => {
   });
   it('should insert the Filestack-Source header', () => {
     const req = requestWithSource('post', 'http://testing');
+    // @ts-ignore
     assert.ok(req.header['Filestack-Source']);
   });
 });

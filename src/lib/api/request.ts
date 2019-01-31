@@ -15,14 +15,7 @@
  * limitations under the License.
  */
 
-import * as agent from 'superagent';
-
-/**
- * @private
- */
-export interface CustomReq extends agent.SuperAgentStatic {
-  [method: string]: any;
-}
+import * as request from 'superagent';
 
 /**
  *
@@ -30,14 +23,8 @@ export interface CustomReq extends agent.SuperAgentStatic {
  * @param method
  * @param url
  */
-const requestWithSource = (method: string, url: string): CustomReq => {
-  const newReq: CustomReq = agent;
-  return newReq[method](url).set('Filestack-Source', 'JS-@{VERSION}');
+const requestWithSource = (method: string, url: string): request.SuperAgentRequest => {
+  return request[method](url).set('Filestack-Source', 'JS-@{VERSION}');
 };
-
-/**
- * @private
- */
-const request: agent.SuperAgentStatic = agent;
 
 export { request, requestWithSource };

@@ -18,6 +18,7 @@
 import throatImpl from './throat';
 import * as t from 'tcomb-validation';
 import { Session } from '../client';
+import { Hosts } from './../../config';
 
 export const throat = throatImpl;
 
@@ -41,6 +42,20 @@ export const resolveCdnUrl = (session: Session, handle: string): string => {
   }
 
   return cdnURL;
+};
+
+export const resolveHost = (hosts: Hosts, cname: string): Hosts => {
+  let result = hosts;
+
+  if (cname) {
+    const hosts = /filestackapi.com|filestackcontent.com/i;
+
+    Object.keys(hosts).forEach((key) => {
+      result[key] = hosts[key].replace(hosts, cname);
+    });
+  }
+
+  return result;
 };
 
 /**

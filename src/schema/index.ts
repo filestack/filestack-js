@@ -15,7 +15,5 @@
  * limitations under the License.
  */
 
-export * from './definitions.schema';
 export * from './transforms.schema';
-export * from './security.schema';
 export * from './validator';
