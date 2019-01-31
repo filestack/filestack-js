@@ -47,7 +47,7 @@ describe('transform', () => {
       },
     };
     const result = transform(url, testConfig);
-    const expected = `${cdnUrl}/vignette=amount:100,blurmode:linear/shadow=blur:10,opacity:35,vector:[25,25]/${url}`;
+    const expected = `${cdnUrl}/${session.apikey}/vignette=amount:100,blurmode:linear/shadow=blur:10,opacity:35,vector:[25,25]/${url}`;
     assert.equal(result, expected);
   });
 
@@ -60,7 +60,7 @@ describe('transform', () => {
     };
 
     const result = transform(url, testConfig);
-    const expected = `${cdnUrl}/polaroid/flop/${url}`;
+    const expected = `${cdnUrl}/${session.apikey}/polaroid/flop/${url}`;
     assert.equal(result, expected);
   });
 
@@ -69,7 +69,7 @@ describe('transform', () => {
       polaroid: true,
     };
     const result = transformSecure(url, testConfig);
-    const expected = `${cdnUrl}/polaroid/security=policy:${secureSession.policy},signature:${secureSession.signature}/${url}`;
+    const expected = `${cdnUrl}/${secureSession.apikey}/polaroid/security=policy:${secureSession.policy},signature:${secureSession.signature}/${url}`;
     assert.equal(result, expected);
   });
 
@@ -77,7 +77,7 @@ describe('transform', () => {
     const testConfig = {};
     const result = transform(url, testConfig);
 
-    assert.equal(result, `${cdnUrl}/${url}`);
+    assert.equal(result, `${cdnUrl}/${session.apikey}/${url}`);
   });
 
   it('should return flatten nested options array', () => {
@@ -88,7 +88,7 @@ describe('transform', () => {
     };
 
     const result = transform(url, testConfig);
-    const expected = `${cdnUrl}/partial_pixelate=objects:[[10,20,200,250],[275,91,500,557]]/${url}`;
+    const expected = `${cdnUrl}/${session.apikey}/partial_pixelate=objects:[[10,20,200,250],[275,91,500,557]]/${url}`;
     assert.equal(result, expected);
   });
 
@@ -100,7 +100,7 @@ describe('transform', () => {
     };
 
     const result = transform(url, testConfig);
-    const expected = `${cdnUrl}/partial_pixelate=objects:[[10,20,200,250],[275,91,500,557]]/${url}`;
+    const expected = `${cdnUrl}/${session.apikey}/partial_pixelate=objects:[[10,20,200,250],[275,91,500,557]]/${url}`;
     assert.equal(result, expected);
   });
 
@@ -162,7 +162,7 @@ describe('transform', () => {
     };
 
     const result = transform(url, testConfig);
-    const expected = `${cdnUrl}/detect_faces=minsize:0.2/${url}`;
+    const expected = `${cdnUrl}/${session.apikey}/detect_faces=minsize:0.2/${url}`;
     assert.equal(result, expected);
   });
 
@@ -172,28 +172,28 @@ describe('transform', () => {
     };
 
     const result = transform(url, testConfig);
-    assert.equal(result, `${cdnUrl}/polaroid/${url}`);
+    assert.equal(result, `${cdnUrl}/${session.apikey}/polaroid/${url}`);
   });
 
   it('should handle store without params', () => {
     const options = {};
     const result = transform(url, { store: options });
 
-    assert.equal(result, `${cdnUrl}/store/${url}`);
+    assert.equal(result, `${cdnUrl}/${session.apikey}/store/${url}`);
   });
 
   it('should return correct store URL with "/" in path', () => {
     const options = { filename: 'test.jpg' , path: 'test/path' };
     const result = transform(url, { store: options });
 
-    assert.equal(result, `${cdnUrl}/store=filename:test.jpg,path:"test/path"/${url}`);
+    assert.equal(result, `${cdnUrl}/${session.apikey}/store=filename:test.jpg,path:"test/path"/${url}`);
   });
 
   it('should handle upper cased path', () => {
     const options = { filename: 'test.jpg' , path: 'tEsT/path' };
     const result = transform(url, { store: options });
 
-    assert.equal(result, `${cdnUrl}/store=filename:test.jpg,path:"tEsT/path"/${url}`);
+    assert.equal(result, `${cdnUrl}/${session.apikey}/store=filename:test.jpg,path:"tEsT/path"/${url}`);
   });
 
   describe('blackwhite', () => {
@@ -205,7 +205,7 @@ describe('transform', () => {
       };
 
       const result = transform(url, testConfig);
-      const expected = `${cdnUrl}/blackwhite=threshold:100/${url}`;
+      const expected = `${cdnUrl}/${session.apikey}/blackwhite=threshold:100/${url}`;
       assert.equal(result, expected);
     });
   });
@@ -219,7 +219,7 @@ describe('transform', () => {
       };
 
       const result = transform(url, testConfig);
-      const expected = `${cdnUrl}/crop=dim:[0,0,200,200]/${url}`;
+      const expected = `${cdnUrl}/${session.apikey}/crop=dim:[0,0,200,200]/${url}`;
       assert.equal(result, expected);
     });
   });
@@ -233,7 +233,7 @@ describe('transform', () => {
       };
 
       const result = transform(url, testConfig);
-      const expected = `${cdnUrl}/rotate=deg:exif/${url}`;
+      const expected = `${cdnUrl}/${session.apikey}/rotate=deg:exif/${url}`;
       assert.equal(result, expected);
     });
   });
@@ -249,7 +249,7 @@ describe('transform', () => {
       };
 
       const result = transform(url, testConfig);
-      const expected = `${cdnUrl}/output=background:black,density:250,compress:true/${url}`;
+      const expected = `${cdnUrl}/${session.apikey}/output=background:black,density:250,compress:true/${url}`;
       assert.equal(result, expected);
     });
   });
@@ -261,7 +261,7 @@ describe('transform', () => {
       };
 
       const result = transform(url, testConfig);
-      const expected = `${cdnUrl}/cache=false/${url}`;
+      const expected = `${cdnUrl}/${session.apikey}/cache=false/${url}`;
       assert.equal(result, expected);
 
       const testConfig2 = {
@@ -271,7 +271,7 @@ describe('transform', () => {
       };
 
       const result2 = transform(url, testConfig2);
-      const expected2 = `${cdnUrl}/cache=expiry:12345/${url}`;
+      const expected2 = `${cdnUrl}/${session.apikey}/cache=expiry:12345/${url}`;
       assert.equal(result2, expected2);
     });
   });
@@ -283,7 +283,7 @@ describe('transform', () => {
       };
 
       const result = transform(url, testConfig);
-      const expected = `${cdnUrl}/compress/${url}`;
+      const expected = `${cdnUrl}/${session.apikey}/compress/${url}`;
       assert.equal(result, expected);
     });
   });
@@ -313,7 +313,7 @@ describe('transform b64', () => {
     };
 
     const result = transform(url, testConfig, true);
-    const expected = `${cdnUrl}/b64/${btoa(JSON.stringify([
+    const expected = `${cdnUrl}/${session.apikey}/b64/${btoa(JSON.stringify([
       {
         name: 'vignette',
         params: {
@@ -341,7 +341,7 @@ describe('transform b64', () => {
     };
 
     const result = transform(url, testConfig);
-    const expected = `${cdnUrl}/b64/${btoa(JSON.stringify([
+    const expected = `${cdnUrl}/${session.apikey}/b64/${btoa(JSON.stringify([
       {
         name: 'polaroid',
       },
@@ -358,7 +358,7 @@ describe('transform b64', () => {
     };
 
     const result = transformSecure(url, testConfig);
-    const expected = `${cdnUrl}/b64/${btoa(JSON.stringify([
+    const expected = `${cdnUrl}/${secureSession.apikey}/b64/${btoa(JSON.stringify([
       {
         name: 'polaroid',
       },
@@ -378,7 +378,7 @@ describe('transform b64', () => {
     const testConfig = {};
     const result = transform(url, testConfig);
 
-    const expected = `${cdnUrl}/b64://${btoa(url)}`;
+    const expected = `${cdnUrl}/${session.apikey}/b64://${btoa(url)}`;
 
     assert.equal(result, expected);
   });
@@ -391,7 +391,7 @@ describe('transform b64', () => {
     };
 
     const result = transform(url, testConfig);
-    const expected = `${cdnUrl}/b64/${btoa(JSON.stringify([
+    const expected = `${cdnUrl}/${session.apikey}/b64/${btoa(JSON.stringify([
       {
         name: 'partial_pixelate',
         params: {
@@ -411,7 +411,7 @@ describe('transform b64', () => {
     };
 
     const result = transform(url, testConfig);
-    const expected = `${cdnUrl}/b64/${btoa(JSON.stringify([
+    const expected = `${cdnUrl}/${session.apikey}/b64/${btoa(JSON.stringify([
       {
         name: 'partial_pixelate',
         params: {
@@ -433,7 +433,7 @@ describe('transform b64', () => {
     };
 
     const result = transform(storeAlias, testConfig);
-    const expected = `${cdnUrl}/fakekey/b64/${btoa(JSON.stringify([
+    const expected = `${cdnUrl}/${session.apikey}/b64/${btoa(JSON.stringify([
       {
         name: 'polaroid',
       }, {
@@ -454,7 +454,7 @@ describe('transform b64', () => {
     };
 
     const result = transform(storeAlias, testConfig);
-    const expected = `${cdnUrl}/fakekey/b64/${btoa(JSON.stringify([
+    const expected = `${cdnUrl}/${session.apikey}/b64/${btoa(JSON.stringify([
       {
         name: 'polaroid',
       }, {
@@ -473,7 +473,7 @@ describe('transform b64', () => {
     };
 
     const result = transform(url, testConfig);
-    const expected = `${cdnUrl}/b64/${btoa(JSON.stringify([
+    const expected = `${cdnUrl}/${session.apikey}/b64/${btoa(JSON.stringify([
       {
         name: 'detect_faces',
         params: {
@@ -492,7 +492,7 @@ describe('transform b64', () => {
 
     const result = transform(url, testConfig);
 
-    const expected = `${cdnUrl}/b64/${btoa(JSON.stringify([
+    const expected = `${cdnUrl}/${session.apikey}/b64/${btoa(JSON.stringify([
       {
         name: 'polaroid',
       },
@@ -505,7 +505,7 @@ describe('transform b64', () => {
     const options = {};
     const result = transform(url, { store: options });
 
-    const expected = `${cdnUrl}/b64/${btoa(JSON.stringify([
+    const expected = `${cdnUrl}/${session.apikey}/b64/${btoa(JSON.stringify([
       {
         name: 'store',
       },
@@ -518,7 +518,7 @@ describe('transform b64', () => {
     const options = { filename: 'test.jpg' , path: 'test/path' };
     const result = transform(url, { store: options });
 
-    const expected = `${cdnUrl}/b64/${btoa(JSON.stringify([
+    const expected = `${cdnUrl}/${session.apikey}/b64/${btoa(JSON.stringify([
       {
         name: 'store',
         params: options,
@@ -532,7 +532,7 @@ describe('transform b64', () => {
     const options = { filename: 'test.jpg' , path: 'tEsT/path '};
     const result = transform(url, { store: options });
 
-    const expected = `${cdnUrl}/b64/${btoa(JSON.stringify([
+    const expected = `${cdnUrl}/${session.apikey}/b64/${btoa(JSON.stringify([
       {
         name: 'store',
         params: options,
@@ -551,7 +551,7 @@ describe('transform b64', () => {
       };
 
       const result = transform(url, testConfig);
-      const expected = `${cdnUrl}/b64/${btoa(JSON.stringify([
+      const expected = `${cdnUrl}/${session.apikey}/b64/${btoa(JSON.stringify([
         {
           name: 'blackwhite',
           params: {
@@ -573,7 +573,7 @@ describe('transform b64', () => {
       };
 
       const result = transform(url, testConfig);
-      const expected = `${cdnUrl}/b64/${btoa(JSON.stringify([
+      const expected = `${cdnUrl}/${session.apikey}/b64/${btoa(JSON.stringify([
         {
           name: 'crop',
           params: {
@@ -596,7 +596,7 @@ describe('transform b64', () => {
 
       const result = transform(url, testConfig);
 
-      const expected = `${cdnUrl}/b64/${btoa(JSON.stringify([
+      const expected = `${cdnUrl}/${session.apikey}/b64/${btoa(JSON.stringify([
         {
           name: 'rotate',
           params: {
@@ -621,7 +621,7 @@ describe('transform b64', () => {
 
       const result = transform(url, testConfig);
 
-      const expected = `${cdnUrl}/b64/${btoa(JSON.stringify([
+      const expected = `${cdnUrl}/${session.apikey}/b64/${btoa(JSON.stringify([
         {
           name: 'output',
           params: {
@@ -643,7 +643,7 @@ describe('transform b64', () => {
       };
 
       const result = transform(url, testConfig);
-      const expected = `${cdnUrl}/b64/${btoa(JSON.stringify([
+      const expected = `${cdnUrl}/${session.apikey}/b64/${btoa(JSON.stringify([
         {
           name: 'cache',
           params: false,
@@ -659,7 +659,7 @@ describe('transform b64', () => {
       };
 
       const result2 = transform(url, testConfig2);
-      const expected2 = `${cdnUrl}/b64/${btoa(JSON.stringify([
+      const expected2 = `${cdnUrl}/${session.apikey}/b64/${btoa(JSON.stringify([
         {
           name: 'cache',
           params: {
@@ -679,7 +679,7 @@ describe('transform b64', () => {
       };
 
       const result = transform(url, testConfig);
-      const expected = `${cdnUrl}/b64/${btoa(JSON.stringify([
+      const expected = `${cdnUrl}/${session.apikey}/b64/${btoa(JSON.stringify([
         {
           name: 'compress',
         },

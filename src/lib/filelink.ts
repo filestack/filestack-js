@@ -430,7 +430,6 @@ const handleRegexp = new RegExp('^([_\\w\\-]+){20}$');
  * link.flip().flop().store();
  *
  * console.log(link.toString());
- * console.log(link.toJSON());
  * // enable base64 support
  * link.setBase64(true)
  *
@@ -574,7 +573,7 @@ export class Filelink {
    * @returns
    * @memberof Filelink
    */
-  toJSON() {
+  getTransformations() {
     return this.transforms;
   }
 
