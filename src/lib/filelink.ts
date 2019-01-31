@@ -280,7 +280,7 @@ export interface BlurParams {
   amount: number;
 }
 
-export interface BlackWhiteParams {
+export interface BlackwhiteParams {
   threshold: number;
 }
 
@@ -292,7 +292,7 @@ export interface PixelateParams {
   amount: number;
 }
 
-export interface OilPaintParams {
+export interface OilpaintParams {
   amount: number;
 }
 
@@ -669,7 +669,7 @@ export class Filelink {
    * @memberof Filelink
    */
   flip() {
-    return this.addTask('flip');
+    return this.addTask('flip', true);
   }
 
   /**
@@ -680,7 +680,7 @@ export class Filelink {
    * @memberof Filelink
    */
   flop() {
-    return this.addTask('flop');
+    return this.addTask('flop', true);
   }
 
   /**
@@ -691,7 +691,7 @@ export class Filelink {
    * @memberof Filelink
    */
   enchance() {
-    return this.addTask('enchance');
+    return this.addTask('enchance', true);
   }
 
   /**
@@ -702,7 +702,7 @@ export class Filelink {
    * @memberof Filelink
    */
   redeye() {
-    return this.addTask('redeye');
+    return this.addTask('redeye', true);
   }
 
   /**
@@ -713,7 +713,7 @@ export class Filelink {
    * @memberof Filelink
    */
   monochrome() {
-    return this.addTask('monochrome');
+    return this.addTask('monochrome', true);
   }
 
   /**
@@ -724,7 +724,7 @@ export class Filelink {
    * @memberof Filelink
    */
   negative() {
-    return this.addTask('negative');
+    return this.addTask('negative', true);
   }
 
   /**
@@ -735,7 +735,7 @@ export class Filelink {
    * @memberof Filelink
    */
   tags() {
-    return this.addTask('tags');
+    return this.addTask('tags', true);
   }
 
   /**
@@ -746,18 +746,18 @@ export class Filelink {
    * @memberof Filelink
    */
   sfw() {
-    return this.addTask('swf');
+    return this.addTask('swf', true);
   }
 
   /**
    * Adds store transformation
    *
    * @see https://www.filestack.com/docs/api/processing/#store
-   * @param {StoreParams} params
+   * @param {(StoreParams | boolean)} params
    * @returns this
    * @memberof Filelink
    */
-  store(params: StoreParams) {
+  store(params?: StoreParams | boolean) {
     return this.addTask('store', params);
   }
 
@@ -813,11 +813,11 @@ export class Filelink {
    * Adds detect_faces transformation
    *
    * @see https://www.filestack.com/docs/api/processing/#facial-detection
-   * @param {DetectFacesParams} params
+   * @param {(DetectFacesParams | boolean)} params
    * @returns this
    * @memberof Filelink
    */
-  detectFaces(params: DetectFacesParams) {
+  detectFaces(params?: DetectFacesParams | boolean) {
     return this.addTask('detect_faces', params);
   }
 
@@ -861,11 +861,11 @@ export class Filelink {
    * Adds rounded corners transformation
    *
    * @see https://www.filestack.com/docs/api/processing/#rounder-corners
-   * @param {RoundedCornersParams} params
+   * @param {(RoundedCornersParams | boolean)} params
    * @returns this
    * @memberof Filelink
    */
-  roundedCorners(params: RoundedCornersParams) {
+  roundedCorners(params?: RoundedCornersParams | boolean) {
     return this.addTask('rounded_corners', params);
   }
 
@@ -873,11 +873,11 @@ export class Filelink {
    * Adds polaroid transformation
    *
    * @see https://www.filestack.com/docs/api/processing/#polaroid
-   * @param {PolaroidParams} params
+   * @param {(PolaroidParams | boolean)} params
    * @returns this
    * @memberof Filelink
    */
-  polaroid(params: PolaroidParams) {
+  polaroid(params?: PolaroidParams | boolean) {
     return this.addTask('polarid', params);
   }
 
@@ -885,11 +885,11 @@ export class Filelink {
    * Adds vignette transformation
    *
    * @see https://www.filestack.com/docs/api/processing/#vignette
-   * @param {VignetteParams} params
+   * @param {(VignetteParams | boolean)} params
    * @returns this
    * @memberof Filelink
    */
-  vignette(params: VignetteParams) {
+  vignette(params?: VignetteParams | boolean) {
     return this.addTask('vignette', params);
   }
 
@@ -897,11 +897,11 @@ export class Filelink {
    * Adds torn edges transformation
    *
    * @see https://www.filestack.com/docs/api/processing/#torn-edges
-   * @param {TornEdgesParams} params
+   * @param {(TornEdgesParams | boolean)} params
    * @returns this
    * @memberof Filelink
    */
-  tornEdges(params: TornEdgesParams) {
+  tornEdges(params?: TornEdgesParams | boolean) {
     return this.addTask('torn_edges', params);
   }
 
@@ -909,11 +909,11 @@ export class Filelink {
    * Adds shadow transformation
    *
    * @see https://www.filestack.com/docs/api/processing/#shadow
-   * @param {ShadowParams} params
+   * @param {(ShadowParams | boolean)} params
    * @returns this
    * @memberof Filelink
    */
-  shadow(params: ShadowParams) {
+  shadow(params?: ShadowParams | boolean) {
     return this.addTask('shadow', params);
   }
 
@@ -921,11 +921,11 @@ export class Filelink {
    * Adds circle transformation
    *
    * @see https://www.filestack.com/docs/api/processing/#circle
-   * @param {CircleParams} params
+   * @param {(CircleParams | boolean)} params
    * @returns this
    * @memberof Filelink
    */
-  circle(params: CircleParams) {
+  circle(params?: CircleParams | boolean) {
     return this.addTask('circle', params);
   }
 
@@ -933,11 +933,11 @@ export class Filelink {
    * Adds border transformation
    *
    * @see https://www.filestack.com/docs/api/processing/#border
-   * @param {BorderParams} params
+   * @param {(BorderParams | boolean)} params
    * @returns this
    * @memberof Filelink
    */
-  border(params: BorderParams) {
+  border(params?: BorderParams | boolean) {
     return this.addTask('border', params);
   }
 
@@ -945,11 +945,11 @@ export class Filelink {
    * Adds sharpen transformation
    *
    * @see https://www.filestack.com/docs/api/processing/#sharpen
-   * @param {SharpenParams} params
+   * @param {(SharpenParams | boolean)} params
    * @returns this
    * @memberof Filelink
    */
-  sharpen(params: SharpenParams) {
+  sharpen(params?: SharpenParams | boolean) {
     return this.addTask('sharpen', params);
   }
 
@@ -957,11 +957,11 @@ export class Filelink {
    * Adds blur transformation
    *
    * @see https://www.filestack.com/docs/api/processing/#blur
-   * @param {BlurParams} params
+   * @param {(BlurParams | boolean)} params
    * @returns this
    * @memberof Filelink
    */
-  blur(params: BlurParams) {
+  blur(params?: BlurParams | boolean) {
     return this.addTask('blur', params);
   }
 
@@ -969,11 +969,11 @@ export class Filelink {
    * Adds blackwhite transformation
    *
    * @see https://www.filestack.com/docs/api/processing/#blackwhite
-   * @param {BlackWhiteParams} params
+   * @param {(BlackwhiteParams | boolean)} params
    * @returns this
    * @memberof Filelink
    */
-  blackWhite(params: BlackWhiteParams) {
+  blackwhite(params?: BlackwhiteParams | boolean) {
     return this.addTask('blackwhite', params);
   }
 
@@ -981,11 +981,11 @@ export class Filelink {
    * Adds sepia transformation
    *
    * @see https://www.filestack.com/docs/api/processing/#sepia
-   * @param {SepiaParams} params
+   * @param {(SepiaParams | boolean)} params
    * @returns this
    * @memberof Filelink
    */
-  sepia(params: SepiaParams) {
+  sepia(params?: SepiaParams | boolean) {
     return this.addTask('sepia', params);
   }
 
@@ -993,11 +993,11 @@ export class Filelink {
    * Adds pixelate transformation
    *
    * @see https://www.filestack.com/docs/api/processing/#pixelate
-   * @param {PixelateParams} params
+   * @param {(PixelateParams | boolean)} params
    * @returns this
    * @memberof Filelink
    */
-  pixelate(params: PixelateParams) {
+  pixelate(params?: PixelateParams | boolean) {
     return this.addTask('pixelate', params);
   }
 
@@ -1005,11 +1005,11 @@ export class Filelink {
    * Adds oilpaint transformation
    *
    * @see https://www.filestack.com/docs/api/processing/#oilpaint
-   * @param {OilPaintParams} params
+   * @param {(OilPaintParams | boolean)} params
    * @returns this
    * @memberof Filelink
    */
-  oilPaint(params: OilPaintParams) {
+  oilpaint(params?: OilpaintParams | boolean) {
     return this.addTask('oilpaint', params);
   }
 
@@ -1017,11 +1017,11 @@ export class Filelink {
    * Adds modulate transformation
    *
    * @see https://www.filestack.com/docs/api/processing/#modulate
-   * @param {ModulateParams} params
+   * @param {(ModulateParams | boolean)} params
    * @returns this
    * @memberof Filelink
    */
-  modulate(params: ModulateParams) {
+  modulate(params?: ModulateParams | boolean) {
     return this.addTask('modulate', params);
   }
 
@@ -1065,11 +1065,11 @@ export class Filelink {
    * Adds upscale transformation
    *
    * @see https://www.filestack.com/docs/api/processing/#upscale
-   * @param {UpscaleParams} params
+   * @param {(UpscaleParams | boolean)} params
    * @returns this
    * @memberof Filelink
    */
-  upscale(params: UpscaleParams) {
+  upscale(params?: UpscaleParams | boolean) {
     return this.addTask('upscale', params);
   }
 
@@ -1077,11 +1077,11 @@ export class Filelink {
    * Adds ascii transformation
    *
    * @see https://www.filestack.com/docs/api/processing/#ascii
-   * @param {AsciiParams} params
+   * @param {(AsciiParams | boolean)} params
    * @returns this
    * @memberof Filelink
    */
-  ascii(params: AsciiParams) {
+  ascii(params?: AsciiParams | boolean) {
     return this.addTask('ascii', params);
   }
 
@@ -1137,11 +1137,11 @@ export class Filelink {
    * Adds URLScreenshot transformation
    *
    * @see https://www.filestack.com/docs/api/processing/#urlscreenshot
-   * @param {URLScreenshotParams} params
+   * @param {(URLScreenshotParams | boolean)} params
    * @returns this
    * @memberof Filelink
    */
-  URLScreenshot(params: URLScreenshotParams) {
+  URLScreenshot(params?: URLScreenshotParams | boolean) {
     return this.addTask('urlscreenshot', params);
   }
 
@@ -1149,11 +1149,11 @@ export class Filelink {
    * Adds pdfinfo transformation
    *
    * @see https://www.filestack.com/docs/api/processing/#pdfinfo
-   * @param {PdfInfoParams} params
+   * @param {(PdfInfoParams | boolean)} params
    * @returns this
    * @memberof Filelink
    */
-  PDFInfo(params: PdfInfoParams) {
+  PDFInfo(params?: PdfInfoParams | boolean) {
     return this.addTask('pdfinfo', params);
   }
 
@@ -1161,11 +1161,11 @@ export class Filelink {
    * Adds pdfconvert transformation
    *
    * @see https://www.filestack.com/docs/api/processing/#pdfconvert
-   * @param {PdfConvertParams} params
+   * @param {(PdfConvertParams | boolean)} params
    * @returns this
    * @memberof Filelink
    */
-  PDFConvert(params: PdfConvertParams) {
+  PDFConvert(params?: PdfConvertParams | boolean) {
     return this.addTask('pdfconvert', params);
   }
 
