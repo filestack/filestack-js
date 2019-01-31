@@ -686,7 +686,7 @@ export class Filelink {
   /**
    * Add security to link
    *
-   * @see https://www.filestack.com/docs/api/processing/#security
+   * @see https://www.filestack.com/docs/api/processing/#redeye
    * @returns
    * @memberof Filelink
    */
