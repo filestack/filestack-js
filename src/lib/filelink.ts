@@ -292,7 +292,7 @@ export interface PixelateParams {
   amount: number;
 }
 
-export interface OilpaintParams {
+export interface OilPaintParams {
   amount: number;
 }
 
@@ -420,15 +420,6 @@ export interface PdfConvertParams {
   pages?: (string | number)[];
 }
 
-// export type TransformOptions = StoreParams & ResizeParams & RotateParams & CropParams & DetectFacesParams & CropFacesParams & PixelateFacesParams
-//                                & BlurFacesParams & RoundedCornersParams & VignetteParams & PolaroidParams & TornEdgesParams & ShadowParams
-//                                & CircleParams & BorderParams & SharpenParams & BlurParams & BlackWhiteParams & SepiaParams & PixelateFacesParams
-//                                & OilPaintParams & ModulateParams & PartialBlurParams & PartialPixelateParams;
-
-// const src = (new Filelink('testhandle')).flip().flop();
-// img.src = src;
-// console.log(src.toString());
-
 const handleRegexp = new RegExp('^([_\\w\\-]+){20}$');
 
 /**
@@ -511,13 +502,12 @@ export class Filelink {
 
   /**
    * Class for generating tranformation urls
-   * @param {(string | string[])} source - handle or multiple handles (ie for collage)
-   * @param {string} [apikey] - your apikey - required fro all external sources
+   * @param {(string | string[])} source - handle or multiple handles (i.e. for collage)
+   * @param {string} [apikey] - your apikey - required for all external sources
    *
    * @memberof Filelink
    */
   constructor(source: string | string[], apikey?: string) {
-    // console.log('====================');
     this.source = source;
     const isExternal = this.isSourceExternal();
 
@@ -607,7 +597,6 @@ export class Filelink {
     let source = this.source;
 
     if (this.b64) {
-      // console.log(JSON.stringify(this.transforms));
       if (this.transforms.length > 0) {
         transformsString = `b64/${btoa(JSON.stringify(this.transforms))}`;
       }
@@ -684,14 +673,14 @@ export class Filelink {
   }
 
   /**
-   * Adds enchance transformation
+   * Adds enhance transformation
    *
-   * @see https://www.filestack.com/docs/api/processing/#enchance
+   * @see https://www.filestack.com/docs/api/processing/#enhance
    * @returns this
    * @memberof Filelink
    */
-  enchance() {
-    return this.addTask('enchance', true);
+  enhance() {
+    return this.addTask('enhance', true);
   }
 
   /**
@@ -739,14 +728,14 @@ export class Filelink {
   }
 
   /**
-   * Adds swf transformation
+   * Adds sfw transformation
    *
-   * @see https://www.filestack.com/docs/api/processing/#swf
+   * @see https://www.filestack.com/docs/api/processing/#sfw
    * @returns this
    * @memberof Filelink
    */
   sfw() {
-    return this.addTask('swf', true);
+    return this.addTask('sfw', true);
   }
 
   /**
@@ -860,7 +849,7 @@ export class Filelink {
   /**
    * Adds rounded corners transformation
    *
-   * @see https://www.filestack.com/docs/api/processing/#rounder-corners
+   * @see https://www.filestack.com/docs/api/processing/#rounded-corners
    * @param {(RoundedCornersParams | boolean)} params
    * @returns this
    * @memberof Filelink
@@ -878,7 +867,7 @@ export class Filelink {
    * @memberof Filelink
    */
   polaroid(params?: PolaroidParams | boolean) {
-    return this.addTask('polarid', params);
+    return this.addTask('polaroid', params);
   }
 
   /**
@@ -1004,13 +993,13 @@ export class Filelink {
   /**
    * Adds oilpaint transformation
    *
-   * @see https://www.filestack.com/docs/api/processing/#oilpaint
+   * @see https://www.filestack.com/docs/api/processing/#oil-paint
    * @param {(OilPaintParams | boolean)} params
    * @returns this
    * @memberof Filelink
    */
-  oilpaint(params?: OilpaintParams | boolean) {
-    return this.addTask('oilpaint', params);
+  oilPaint(params?: OilPaintParams | boolean) {
+    return this.addTask('oil_paint', params);
   }
 
   /**
@@ -1192,7 +1181,7 @@ export class Filelink {
   }
 
   /**
-   * Validate single task agains schema
+   * Validate single task against schema
    *
    * @private
    * @param {*} name
@@ -1257,7 +1246,6 @@ export class Filelink {
    */
   private optionToString(key: string, values: any): string {
     let optionsString: string[] = [];
-    // console.log(key, values, '======');
     if (typeof values === 'undefined') {
       return key;
     }
