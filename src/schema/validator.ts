@@ -14,27 +14,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import * as Ajv from 'ajv';
-import { Definitions } from './definitions.schema';
+import * as ajv from 'ajv';
+// import { Definitions } from './definitions.schema';
 
-let validator = Ajv;
+let validator;
 
 // workaround for problem with exporting lib in browser
 // @ts-ignore
-if (Ajv.default) {
+if (ajv.default) {
   // @ts-ignore
-  validator = Ajv.default;
+  validator = ajv.default;
+} else {
+  validator = ajv;
 }
 
-// use only one instance for validator
-const instance = (new validator());
 // add common definitions
-instance.addSchema(Definitions);
+// instance.addSchema(Definitions);
 /**
  * Returns validator instance
  */
 export const getValidator = (schema) => {
-  return instance.compile(schema);
+  return validator().compile(schema);
 };
 
 /**

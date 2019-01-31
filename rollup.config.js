@@ -47,6 +47,7 @@ const plugins = [
     include: 'node_modules/**',
     preferConst: true, // Default: false
     indent: '  ',
+    namedExports: true 
   }),
   nodeResolve({
     browser: true,

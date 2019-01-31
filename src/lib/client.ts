@@ -19,6 +19,7 @@ import { config, Hosts } from '../config';
 import { metadata, MetadataOptions, remove, retrieve, RetrieveOptions } from './api/file';
 import { transform, TransformOptions } from './api/transform';
 import { storeURL } from './api/store';
+import { resolveHost } from './utils/index';
 import { upload, UploadOptions } from './api/upload';
 import { preview, PreviewOptions } from './api/preview';
 import { CloudClient } from './api/cloud';
@@ -136,6 +137,7 @@ export class Client {
         this.session.signature = security.signature;
       }
       if (cname) {
+        this.session.urls = resolveHost(this.session.urls, cname);
         const hosts = /filestackapi.com|filestackcontent.com/i;
         this.session.cname = cname;
         Object.keys(urls).forEach((key) => {
@@ -339,7 +341,7 @@ export class Client {
    * @param b64     Use new more safe format for generating transforms url (default=false) Note: If there will be any issues with url please test it with enabled b64 support
    * @returns       A new URL that points to the transformed resource.
    */
-  transform(url: string | string[], options: TransformOptions, b64: Boolean = false) {
+  transform(url: string | string[], options: TransformOptions, b64: boolean = false) {
     /* istanbul ignore next */
     return transform(this.session, url, options, b64);
   }

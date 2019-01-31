@@ -25,8 +25,8 @@ const secureSession = ENV.secureSession;
 const cdnUrl = session.urls.cdnUrl;
 
 describe('transform', () => {
-  const transform = (url: string, options: any, b64: Boolean = false) => t.transform(session, url, options, b64);
-  const transformSecure = (url: string, options: any, b64: Boolean = false) => t.transform(secureSession, url, options, b64);
+  const transform = (url: string, options: any, b64: boolean = false) => t.transform(session, url, options, b64);
+  const transformSecure = (url: string, options: any, b64: boolean = false) => t.transform(secureSession, url, options, b64);
 
   const url = ENV.filelink;
 
@@ -186,14 +186,14 @@ describe('transform', () => {
     const options = { filename: 'test.jpg' , path: 'test/path' };
     const result = transform(url, { store: options });
 
-    assert.equal(result, `${cdnUrl}/store=filename:test.jpg,path:"test/path"/fakelink`);
+    assert.equal(result, `${cdnUrl}/store=filename:test.jpg,path:"test/path"/${url}`);
   });
 
   it('should handle upper cased path', () => {
     const options = { filename: 'test.jpg' , path: 'tEsT/path' };
     const result = transform(url, { store: options });
 
-    assert.equal(result, `${cdnUrl}/store=filename:test.jpg,path:"tEsT/path"/fakelink`);
+    assert.equal(result, `${cdnUrl}/store=filename:test.jpg,path:"tEsT/path"/${url}`);
   });
 
   describe('blackwhite', () => {
@@ -290,8 +290,8 @@ describe('transform', () => {
 });
 
 describe('transform b64', () => {
-  const transform = (url: string, options: any, b64: Boolean = true) => t.transform(session, url, options, b64);
-  const transformSecure = (url: string, options: any, b64: Boolean = true) => t.transform(secureSession, url, options, b64);
+  const transform = (url: string, options: any, b64: boolean = true) => t.transform(session, url, options, b64);
+  const transformSecure = (url: string, options: any, b64: boolean = true) => t.transform(secureSession, url, options, b64);
 
   const url = ENV.filelink;
 
@@ -646,9 +646,7 @@ describe('transform b64', () => {
       const expected = `${cdnUrl}/b64/${btoa(JSON.stringify([
         {
           name: 'cache',
-          params: {
-            expiry: 0,
-          },
+          params: false,
         },
       ]))}/b64://${btoa(url)}`;
 

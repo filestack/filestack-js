@@ -1,3 +1,4 @@
+import { Filelink } from './../filelink';
 /*
  * Copyright (c) 2018 by Filestack.
  * Some rights reserved.
@@ -42,21 +43,21 @@ export const storeURL = (
   session.policy = security && security.policy || session.policy;
   session.signature = security && security.signature || session.signature;
 
-  // replace url separators with _
-  if (opts && opts.filename && opts.filename.indexOf(':') > -1) {
-    opts.filename = opts.filename.replace(/:/g, '_');
+  const baseURL = new Filelink(url, session.apikey);
+  baseURL.setCname(session.cname);
+  // baseURL.setBase64(true); // Enable it after fix in mocks
+
+  if (session.urls.cdnUrl.indexOf('localhost') > -1 || session.urls.cdnUrl.indexOf('badurl') > -1) {
+    baseURL.setCustomDomain(session.urls.cdnUrl);
   }
 
-  if (opts && opts.filename && opts.filename.indexOf(',') > -1) {
-    opts.filename = opts.filename.replace(/,/g, '_');
-  }
+  baseURL.store(opts);
 
-  const baseURL = transform(session, url, {
-    store : opts || {},
-  });
-
+  // const baseURL = transform(session, url, {
+  //   store : opts || {},
+  // });
   return new Promise((resolve, reject) => {
-    const req = request.get(baseURL);
+    const req = request.get(baseURL.toString());
 
     if (token) {
       token.cancel = () => {

@@ -25,8 +25,8 @@ window.ENV = {
     policy: process.env.TEST_POLICY || 'fakepolicy',
     urls: urls,
   },
-  filelink: process.env.TEST_FILELINK || 'fakelink',
-  secureFilelink: process.env.TEST_SECURE_FILELINK || 'fakesecurelink',
+  filelink: process.env.TEST_FILELINK || 'W1LOh6RdqHqolomhqMUQ',
+  secureFilelink: process.env.TEST_SECURE_FILELINK || 'W1LOh6RdqHqolomhqMUQ',
   urls: urls,
   testEnv,
 };

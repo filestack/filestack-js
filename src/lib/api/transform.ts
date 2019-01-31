@@ -16,12 +16,7 @@
  */
 
 import { Session } from '../client';
-import { resolveCdnUrl } from './../utils/index';
-import { TransformSchema, getValidator, valuesToLowerCase } from './../../schema/';
-import { FilestackError } from './../../FilestackError';
-import { btoa } from 'abab';
-
-declare var ENV: any;
+import { Filelink } from './../filelink';
 
 /**
  * @private
@@ -419,118 +414,6 @@ export interface TransformOptions {
 }
 
 /**
- * Converts nested arrays to string
- *
- * @private
- * @example [1,2, [2,3]] => "[1,2, [2,3]]"
- * @param arr - any array
- */
-const arrayToString = (arr: any[]): string => {
-  const toReturn = arr.map((el) => {
-    if (Array.isArray(el)) {
-      return arrayToString(el);
-    }
-
-    return escapeValue(el);
-  });
-
-  return `[${toReturn}]`;
-};
-
-/**
- * Flatten transformation option to string
- *
- * @private
- * @example {resize:{width: 100,height: 200}} => resize=width:100,height:200
- * @param key - option key
- * @param values - option params
- */
-const optionToString = (key: string, values: any): string => {
-  let optionsString: string[] = [];
-
-  if (typeof values === 'undefined') {
-    return key;
-  }
-
-  if (typeof values === 'object' && !Object.keys(values).length) {
-    return key;
-  }
-
-  // if we just want to enable feature
-  if (typeof values === 'boolean') {
-    if (!values && key === 'cache') {
-      return `${key}=false`;
-    }
-
-    if (!values) {
-      return '';
-    }
-
-    return key;
-  }
-
-  Object.keys(values).forEach((i) => {
-    if (Array.isArray(values[i])) {
-      optionsString.push(`${i}:${arrayToString(values[i])}`);
-      return;
-    }
-
-    optionsString.push(`${i}:${escapeValue(values[i])}`);
-  });
-
-  return `${key}=${optionsString.join(',')}`;
-};
-
-// move to util§s ?
-const escapeValue = (value: any): any => {
-  if (typeof value !== 'string') {
-    return value;
-  }
-
-  if (value.indexOf('/') > -1) {
-    return `"${value}"`;
-  }
-
-  return value;
-};
-
-/**
- * Generates new b64 fromat for transforms
- *
- * @param transforms - transforms object
- * @param cndUrl - url for filestack cdn
- * @param handle - string or serialized array of multiple handles
- */
-const generateB64Url = (transforms: TransformOptions, cndUrl: string, handle: string): string => {
-  let toBase = [];
-
-  for (const opt in transforms) {
-    let params = transforms[opt];
-
-    if (opt === 'cache' && params === false) {
-      params = {
-        expiry: 0,
-      };
-    } else if (typeof params === 'boolean' && params || typeof params !== 'boolean' && Object.keys(params).length === 0) {
-      params =  undefined;
-    } else if (typeof params === 'boolean' && !params) {
-      continue;
-    }
-
-    toBase.push({
-      name: opt,
-      params,
-    });
-  }
-
-  if (toBase.length === 0) {
-    return `${cndUrl}/b64://${btoa(handle)}`;
-  }
-
-  return `${cndUrl}/b64/${btoa(JSON.stringify(toBase))}/b64://${btoa(handle)}`;
-};
-
-/**
  * Creates filestack transform url.
  * Transform params can be provided in camelCase or snakeCase style
  *
@@ -555,22 +438,15 @@ const generateB64Url = (transforms: TransformOptions, cndUrl: string, handle: st
  * ```
  * result => https://cdn.filestackcontent.com/partial_pixelate=objects:[[10,20,200,250],[275,91,500,557]]/testfile
  *
+ * Client.transform is deprecated. Use Filelink class instead
+ *
  * @private
  * @throws Error
  * @param options Transformation options
  * @param url url, handle or array of elements
  */
-export const transform = (session: Session, url: string | string[], options: TransformOptions = {}, b64: Boolean = false): string => {
+export const transform = (session: Session, url: string | string[], options: TransformOptions = {}, b64: boolean = false): string => {
   options = toSnakeCase(options);
-
-  const validate = getValidator(TransformSchema);
-
-  // use lower case only for validation
-  if (!validate(valuesToLowerCase(JSON.parse(JSON.stringify(options))))) {
-    throw new FilestackError('Validation error', validate.errors);
-  }
-
-  let transformsArray: string[] = [];
 
   if (session.policy && session.signature) {
     options.security = {
@@ -579,31 +455,21 @@ export const transform = (session: Session, url: string | string[], options: Tra
     };
   }
 
-  if (Array.isArray(url)) {
-    url = arrayToString(url);
-  }
+  const filelink = new Filelink(url, session.apikey);
+  filelink.setCname(session.cname);
+  filelink.setBase64(b64);
 
-  // See URL format: https://www.filestack.com/docs/image-transformations
-  const baseURL = resolveCdnUrl(session, url);
-
-  if (b64) {
-    return generateB64Url(options || {}, baseURL, url);
+  if (session.urls.cdnUrl.indexOf('localhost') > -1) {
+    filelink.setCustomDomain(session.urls.cdnUrl);
   }
 
   Object.keys(options).forEach((key: keyof TransformOptions) => {
-    transformsArray.push(optionToString(key, options[key]));
+    if (typeof options[key] === 'boolean' && !options[key] && key !== 'cache') {
+      return;
+    }
+
+    filelink.addTask(key, options[key]);
   });
 
-  // remove empty transform entries
-  transformsArray = transformsArray.filter((val) => {
-    return val.length;
-  });
-
-  if (!transformsArray.length) {
-    return `${baseURL}/${url}`;
-  }
-
-  const transformString = transformsArray.join('/');
-
-  return `${baseURL}/${transformString}/${escapeValue(url)}`;
+  return filelink.toString();
 };
