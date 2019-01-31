@@ -1,6 +1,6 @@
 {
   "name": "filestack-js",
-  "version": "1.12.1",
+  "version": "1.13.0",
   "description": "Official JavaScript library for Filestack",
   "main": "build/main/index.js",
   "module": "build/module/index.js",

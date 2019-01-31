@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="1.13.0"></a>
+# [1.13.0](https://github.com/filestack/filestack-js/compare/v1.12.1...v1.13.0) (2019-01-31)
+
+
+### Features
+
+* **Filelink:** Add Filelink class to replace client.transform ([#195](https://github.com/filestack/filestack-js/issues/195)) ([5738b37](https://github.com/filestack/filestack-js/commit/5738b37))
+
+
+### BREAKING CHANGES
+
+* **Filelink:** Add new Filelink class for better transforms support
+
+* docs(Filelink): Add documentation to filelink
+
+
+
 <a name="1.12.1"></a>
 ## [1.12.1](https://github.com/filestack/filestack-js/compare/v1.12.0...v1.12.1) (2019-01-29)
 
