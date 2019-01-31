@@ -40,7 +40,7 @@
     "node": ">=5.10"
   },
   "dependencies": {
-    "abab": "^2.0.0",
+    "abab": "^1.0.4",
     "ajv": "^6.5.5",
     "file-type": "^8.1.0",
     "filestack-loader": "^3.0.4",
