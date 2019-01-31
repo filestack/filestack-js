@@ -588,7 +588,7 @@ export class Filelink {
     const returnUrl = [];
     returnUrl.push(this.getCdnHost());
 
-    if (this.isSourceExternal() && this.apikey) {
+    if (this.apikey) {
       returnUrl.push(this.apikey);
     }
 
@@ -643,6 +643,17 @@ export class Filelink {
     }
 
     this.transforms.push({ name, params });
+    return this;
+  }
+
+  /**
+   * Cleanup transformations on filelink
+   *
+   * @returns
+   * @memberof Filelink
+   */
+  reset() {
+    this.transforms = [];
     return this;
   }
 
