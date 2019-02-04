@@ -1055,12 +1055,12 @@ export const TransformSchema = {
         width: {
           type: 'integer',
           minimum: 1,
-          maximum: 100,
+          maximum: 4096,
         },
         height: {
           type: 'integer',
           minimum: 1,
-          maximum: 100,
+          maximum: 4096,
         },
         preset: {
           type: 'string',
