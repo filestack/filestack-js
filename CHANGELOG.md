@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="1.13.1"></a>
+## [1.13.1](https://github.com/filestack/filestack-js/compare/v1.13.0...v1.13.1) (2019-02-04)
+
+
+### Bug Fixes
+
+* **transformations:** Fix videoconvert params ([978d763](https://github.com/filestack/filestack-js/commit/978d763))
+
+
+
 <a name="1.13.0"></a>
 # [1.13.0](https://github.com/filestack/filestack-js/compare/v1.12.1...v1.13.0) (2019-01-31)
 
