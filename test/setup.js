@@ -1,6 +1,6 @@
 const testEnv = process.env.TEST_ENV || 'unit';
 const urls = require('./urls.json')[testEnv];
-window.ENV = {
+var ENV = window.ENV = {
   session: {
     apikey: process.env.TEST_APIKEY || 'fakekey',
     urls: urls,
@@ -28,5 +28,5 @@ window.ENV = {
   filelink: process.env.TEST_FILELINK || 'W1LOh6RdqHqolomhqMUQ',
   secureFilelink: process.env.TEST_SECURE_FILELINK || 'W1LOh6RdqHqolomhqMUQ',
   urls: urls,
-  testEnv,
+  testEnv: testEnv,
 };

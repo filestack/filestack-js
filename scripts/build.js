@@ -14,18 +14,49 @@ const uglify = composer(uglifyEs);
 const rename = require('gulp-rename');
 
 // const debug = require('gulp-debug');
-
-gulp.task('build', ['build:rollup']);
-
-gulp.task('build:prod', ['build:uglify']);
-
 gulp.task('build:clean', function () {
   return del([
     'build/**/*'
   ]);
 });
 
-gulp.task('build:uglify', ['build:rollup'], () => {
+gulp.task('typescript:main', () => {
+  const tsProject = ts.createProject('tsconfig.json');
+  return tsProject.src()
+    .pipe(tsProject())
+    .pipe(replace('@{VERSION}', version))
+    .pipe(gulp.dest('build/main'));
+});
+
+gulp.task('typescript:modules', () => {
+  const tsProject = ts.createProject('tsconfig.module.json');
+  return tsProject.src()
+    .pipe(tsProject())
+    .pipe(replace('@{VERSION}', version))
+    .pipe(gulp.dest('build/module'));
+});
+
+gulp.task('build:typescript', gulp.series(['typescript:main', 'typescript:modules']));
+
+gulp.task('build:rollup', gulp.series('build:typescript', () => {
+  return gulp.src('build/module/index.js')
+    .pipe(sourcemaps.init())
+    .pipe(betterRollup(rollupConfig, [{
+      file: 'index.esm.js',
+      format: 'es',
+    }, {
+      file: 'index.umd.js',
+      name: 'filestack',
+      format: 'umd',
+    }]))
+    .on('error', function (err) {
+      console.log('Rollup error:', err)
+    })
+    .pipe(sourcemaps.write('.'))
+    .pipe(gulp.dest('build/browser'))
+}));
+
+gulp.task('build:uglify', gulp.series('build:rollup', () => {
   const uglifyOptions = {
     warnings: false,
     output: {
@@ -49,40 +80,8 @@ gulp.task('build:uglify', ['build:rollup'], () => {
     .pipe(rename({ suffix: '.min', basename: 'filestack' }))
     .pipe(sourcemaps.write('.'))
     .pipe(gulp.dest('build/browser'));
-});
+}));
 
-gulp.task('build:rollup', ['build:typescript'], () => {
-  return gulp.src('build/module/index.js')
-    .pipe(sourcemaps.init())
-    .pipe(betterRollup(rollupConfig, [{
-      file: 'index.esm.js',
-      format: 'es',
-    }, {
-      file: 'index.umd.js',
-      name: 'filestack',
-      format: 'umd',
-    }]))
-    .on('error', function (err) {
-      console.log('Rollup error:', err)
-    })
-    .pipe(sourcemaps.write('.'))
-    .pipe(gulp.dest('build/browser'))
-})
+gulp.task('build', gulp.series(['build:clean', 'build:rollup']));
 
-gulp.task('build:typescript', ['typescript:main', 'typescript:modules']);
-
-gulp.task('typescript:main', ['build:clean'], () => {
-  const tsProject = ts.createProject('tsconfig.json');
-  return tsProject.src()
-    .pipe(tsProject())
-    .pipe(replace('@{VERSION}', version))
-    .pipe(gulp.dest('build/main'));
-});
-
-gulp.task('typescript:modules',['build:clean'], () => {
-  const tsProject = ts.createProject('tsconfig.module.json');
-  return tsProject.src()
-    .pipe(tsProject())
-    .pipe(replace('@{VERSION}', version))
-    .pipe(gulp.dest('build/module'));
-});
+gulp.task('build:prod', gulp.series(['build:clean', 'build:uglify']));
