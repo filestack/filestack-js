@@ -80,10 +80,10 @@ module.exports = function karmaConfig(config) {
       'firefox_headless',
     ] : [
       // 'electron',
-      // 'firefox_headless',
-      // 'chrome_headless',
-      'bs_ie11',
-      'bs_edge_windows_latest',
+      'firefox_headless',
+      'chrome_headless',
+      // 'bs_ie11',
+      // 'bs_edge_windows_latest',
     ],
     browserNoActivityTimeout: 2 * 600000,
     browserConsoleLogOptions: {
