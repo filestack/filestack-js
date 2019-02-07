@@ -51,6 +51,13 @@ export const storeURL = (
     baseURL.setCustomDomain(session.urls.cdnUrl);
   }
 
+  if (session.policy && session.signature) {
+    baseURL.security({
+      policy: session.policy,
+      signature: session.signature,
+    });
+  }
+
   baseURL.store(opts);
 
   // const baseURL = transform(session, url, {
