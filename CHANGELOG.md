@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="1.13.4"></a>
+## [1.13.4](https://github.com/filestack/filestack-js/compare/v1.13.3...v1.13.4) (2019-02-07)
+
+
+### Bug Fixes
+
+* **storeUrl:** Add missing security ([a6b0404](https://github.com/filestack/filestack-js/commit/a6b0404)), closes [#198](https://github.com/filestack/filestack-js/issues/198)
+
+
+
 <a name="1.13.3"></a>
 ## [1.13.3](https://github.com/filestack/filestack-js/compare/v1.13.2...v1.13.3) (2019-02-07)
 
