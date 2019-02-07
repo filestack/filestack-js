@@ -5,6 +5,7 @@ const globals = require('rollup-plugin-node-globals');
 const nodeResolve = require('rollup-plugin-node-resolve');
 const replace = require('rollup-plugin-replace');
 const json = require('rollup-plugin-json');
+const babel = require('rollup-plugin-babel');
 
 const adapters = {
   './lib/api/security': 'build/module/adapters/security.browser.js',
@@ -28,7 +29,6 @@ const namedExports = {
     'maybe',
     'list'
   ],
-  // 'node_modules/ajv/lib/ajv.js': ['*'],
   'node_modules/superagent/lib/client.js': [
     'get',
     'post',
@@ -60,6 +60,17 @@ const plugins = [
   replace({
     'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
     'process.env.TEST_ENV': JSON.stringify(process.env.TEST_ENV),
+  }),
+  babel({ 
+    runtimeHelpers: true,
+    presets: [
+      [
+        "@babel/preset-env",
+        {
+          targets: "> 0.25%, not dead",
+        },
+      ],
+    ],
   }),
 ];
 

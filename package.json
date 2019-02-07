@@ -26,6 +26,8 @@
     "test": "npm run build && npm run lint && npm-run-all -p -r 'prism:mock' 'toxy' 'test:runner'",
     "test:runner": "TEST_ENV=unit karma start && TEST_ENV=unit nyc mocha",
     "test:runner:mocha": "TEST_ENV=unit nyc mocha",
+    "test:runner:karma": "TEST_ENV=unit karma start",
+    "test:karma": "npm run build && npm run lint && npm-run-all -p -r 'prism:mock' 'toxy' 'test:runner:karma'",
     "test:mocha": "npm run build && npm run lint && npm-run-all -p -r 'prism:mock' 'toxy' 'test:runner:mocha'",
     "test:integration": "npm run build && npm run lint && TEST_ENV=integration karma start && TEST_ENV=integration nyc mocha",
     "docs": "trash build/docs && typedoc src && opn build/docs/index.html",
@@ -40,7 +42,7 @@
     "node": ">=5.10"
   },
   "dependencies": {
-    "abab": "^1.0.4",
+    "abab": "^2.0.0",
     "ajv": "^6.5.5",
     "file-type": "^8.1.0",
     "filestack-loader": "^3.0.4",
@@ -52,6 +54,8 @@
     "tslib": "^1.9.3"
   },
   "devDependencies": {
+    "@babel/core": "^7.2.2",
+    "@babel/preset-env": "^7.3.1",
     "@types/mime": "^2.0.0",
     "@types/mocha": "^2.2.48",
     "@types/node": "^10.5.2",
@@ -70,7 +74,7 @@
     "express": "^4.16.4",
     "fs-jetpack": "^2.2.0",
     "gh-pages": "^1.2.0",
-    "gulp": "^3.9.1",
+    "gulp": "^4.0.0",
     "gulp-better-rollup": "3.1.0",
     "gulp-rename": "^1.4.0",
     "gulp-replace": "^1.0.0",
@@ -97,6 +101,7 @@
     "opn-cli": "^3.1.0",
     "rollup": "^0.57.0",
     "rollup-plugin-alias": "^1.4.0",
+    "rollup-plugin-babel": "^4.3.2",
     "rollup-plugin-commonjs": "^9.2.0",
     "rollup-plugin-json": "^3.1.0",
     "rollup-plugin-node-builtins": "^2.1.2",
