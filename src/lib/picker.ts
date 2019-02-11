@@ -461,7 +461,7 @@ export interface PickerOptions {
    */
   imageMin?: [number, number];
   /**
-   * Sets locale. Accepts: ca, da, de, en, es, fr, he, it, ja, ko, nl, no, pl, pt, sv, ru, vi, zh.
+   * Sets locale. Accepts: ca, da, de, en, es, fr, he, it, ja, ko, nl, no, pl, pt, sv, ru, vi, zh, tr
    */
   lang?: string;
   /**
@@ -586,6 +586,7 @@ export interface PickerOptions {
   uploadConfig?: UploadOptions;
   /**
    * Start uploading immediately on file selection. Defaults to `true`.
+   * @important The feature is can be enabled only if crop is disabled - disableTransformer: true
    */
   uploadInBackground?: boolean;
   /**
