@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="1.14.0"></a>
+# [1.14.0](https://github.com/filestack/filestack-js/compare/v1.13.4...v1.14.0) (2019-02-11)
+
+
+### Features
+
+* **picker:** Add tr language pack to picker ([#202](https://github.com/filestack/filestack-js/issues/202)) ([4448986](https://github.com/filestack/filestack-js/commit/4448986))
+
+
+
 <a name="1.13.4"></a>
 ## [1.13.4](https://github.com/filestack/filestack-js/compare/v1.13.3...v1.13.4) (2019-02-07)
 
