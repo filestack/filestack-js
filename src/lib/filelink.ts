@@ -1182,6 +1182,10 @@ export class Filelink {
 
     let toTest = Array.isArray(this.source) ? this.source : [this.source];
     for (let i in toTest) {
+      if (!toTest.hasOwnProperty(i)) {
+        continue;
+      }
+
       if (toTest[i].indexOf('src:') === 0 || toTest[i].indexOf('http') === 0) {
         return true;
       }
