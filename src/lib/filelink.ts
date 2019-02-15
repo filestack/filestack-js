@@ -420,7 +420,7 @@ export interface PdfConvertParams {
   pages?: (string | number)[];
 }
 
-const handleRegexp = new RegExp('^([_\\w\\-]+){20}$');
+const handleRegexp = /^[\w\-]{20}$/;
 
 /**
  * Class for handling filelinks. For now its supports all filestack transforms.
