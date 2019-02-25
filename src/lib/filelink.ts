@@ -445,7 +445,7 @@ export class Filelink {
    * @private
    * @memberof Filelink
    */
-  private validator = getValidator(TransformSchema);
+  private static validator = getValidator(TransformSchema);
 
   /**
    * Applied transforms array
@@ -1207,8 +1207,8 @@ export class Filelink {
     const toValidate = {};
     toValidate[name] = options;
 
-    if (!this.validator(toValidate)) {
-      throw new FilestackError(`Task "${name}" validation error, Params: ${JSON.stringify(options)}`, this.validator.errors);
+    if (!Filelink.validator(toValidate)) {
+      throw new FilestackError(`Task "${name}" validation error, Params: ${JSON.stringify(options)}`, Filelink.validator.errors);
     }
 
     return;
