@@ -2,12 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
-## [1.14.3](https://github.com/filestack/filestack-js/compare/v1.14.2...v1.14.3) (2019-02-21)
+## [1.14.4](https://github.com/filestack/filestack-js/compare/v1.14.3...v1.14.4) (2019-02-27)
 
 
 ### Bug Fixes
 
-* **picker:** Fix lazy loading modules in picker ([b777087](https://github.com/filestack/filestack-js/commit/b777087))
+* **picker:** fix grammarly problem ([7eb3c79](https://github.com/filestack/filestack-js/commit/7eb3c79))
 
 
 
