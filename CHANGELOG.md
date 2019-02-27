@@ -2,12 +2,8 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
-## [1.14.4](https://github.com/filestack/filestack-js/compare/v1.14.3...v1.14.4) (2019-02-27)
-
-
-### Bug Fixes
-
-* **picker:** fix grammarly problem ([7eb3c79](https://github.com/filestack/filestack-js/commit/7eb3c79))
+<a name="1.14.5"></a>
+## [1.14.5](https://github.com/filestack/filestack-js/compare/v1.14.4...v1.14.5) (2019-02-27)
 
 
 
