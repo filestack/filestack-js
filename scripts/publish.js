@@ -4,7 +4,7 @@
 
 const path = require('path');
 const AWS = require('aws-sdk');
-const jetpack = require('fs-jetpack'); // kuba never dies
+const jetpack = require('fs-jetpack');
 const mime = require('mime-types');
 const version = require('../package.json').version;
 const s3 = new AWS.S3();
