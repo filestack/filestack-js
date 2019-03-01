@@ -1117,11 +1117,11 @@ export const TransformSchema = {
         },
         clip_length: {
           type: 'string',
-          pattern: '^([0-1]?\d|2[0-3])(?::([0-5]?\d))?(?::([0-5]?\d))?$',
+          pattern: `^([0-1]?\\d|2[0-3])(?::([0-5]?\\d))?(?::([0-5]?\\d))?$`,
         },
         clip_offset: {
           type: 'string',
-          pattern: '^([0-1]?\d|2[0-3])(?::([0-5]?\d))?(?::([0-5]?\d))?$',
+          pattern: `^([0-1]?\\d|2[0-3])(?::([0-5]?\\d))?(?::([0-5]?\\d))?$`,
         },
         watermark_url: {
           type: 'string',
