@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="1.14.6"></a>
+## [1.14.6](https://github.com/filestack/filestack-js/compare/v1.14.5...v1.14.6) (2019-03-01)
+
+
+### Bug Fixes
+
+* **trasnformSchema:** Fix regexp for video convert task clip params ([e572698](https://github.com/filestack/filestack-js/commit/e572698))
+
+
+
 <a name="1.14.5"></a>
 ## [1.14.5](https://github.com/filestack/filestack-js/compare/v1.14.4...v1.14.5) (2019-02-27)
 
