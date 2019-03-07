@@ -15,12 +15,11 @@
  * limitations under the License.
  */
 
-import * as assert from 'assert';
 import { calcMD5 } from './md5';
 
 describe('md5', () => {
 
   it('should calculate correct MD5 sum', () => {
-    assert.ok(calcMD5(new Buffer('qwertyuiop[]1234567890')) === 'zx9GtzC/khrBelx6tW5v/g==');
+    expect(calcMD5(new Buffer('qwertyuiop[]1234567890')) === 'zx9GtzC/khrBelx6tW5v/g==').toBeTruthy();
   });
 });

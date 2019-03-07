@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import * as request from 'superagent';
+import axios, { AxiosInstance } from 'axios';
 
 /**
  *
@@ -23,8 +23,8 @@ import * as request from 'superagent';
  * @param method
  * @param url
  */
-const requestWithSource = (method: string, url: string): request.SuperAgentRequest => {
-  return request[method](url).set('Filestack-Source', 'JS-@{VERSION}');
+const requestWithSource = (method: string, url: string): AxiosInstance => {
+  return axios.create({ headers: { 'Filestack-Source': 'JS-@{VERSION}' } });
 };
 
-export { request, requestWithSource };
+export { axios as request, requestWithSource };

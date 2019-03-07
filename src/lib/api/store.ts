@@ -1,4 +1,3 @@
-import { Filelink } from './../filelink';
 /*
  * Copyright (c) 2018 by Filestack.
  * Some rights reserved.
@@ -17,8 +16,8 @@ import { Filelink } from './../filelink';
  */
 
 import { request } from './request';
-import { Security, StoreOptions } from '../client';
-import { transform } from './transform';
+import { Security, StoreOptions, Session } from '../client';
+import { Filelink } from './../filelink';
 
 /**
  *
@@ -30,12 +29,12 @@ import { transform } from './transform';
  * @param security
  */
 export const storeURL = (
-  session: any,
+  session: Session,
   url?: string,
   opts?: StoreOptions,
   token?: any,
   security?: Security
-): Promise<{}> => {
+): Promise<any> => {
   if (!url || typeof url !== 'string') {
     throw new Error('url is required for storeURL');
   }
@@ -47,10 +46,6 @@ export const storeURL = (
   baseURL.setCname(session.cname);
   // baseURL.setBase64(true); // Enable it after fix in mocks
 
-  if (session.urls.cdnUrl.indexOf('localhost') > -1 || session.urls.cdnUrl.indexOf('badurl') > -1) {
-    baseURL.setCustomDomain(session.urls.cdnUrl);
-  }
-
   if (session.policy && session.signature) {
     baseURL.security({
       policy: session.policy,
@@ -60,27 +55,27 @@ export const storeURL = (
 
   baseURL.store(opts);
 
-  // const baseURL = transform(session, url, {
-  //   store : opts || {},
-  // });
   return new Promise((resolve, reject) => {
-    const req = request.get(baseURL.toString());
+    let options: any = {};
 
     if (token) {
-      token.cancel = () => {
-        req.abort();
-        reject(new Error('Upload cancelled'));
-      };
+      const CancelToken = request.CancelToken;
+      const source = CancelToken.source();
+      token.cancel = source.cancel;
+
+      options.cancelToken = source.token;
     }
 
+    const req = request.get(baseURL.toString(), options);
+
     return req.then((res: any) => {
-      if (res.body && res.body.url) {
-        const handle = res.body.url.split('/').pop();
-        const response = { ...res.body, handle, mimetype: res.body.type };
+      if (res.data && res.data.url) {
+        const handle = res.data.url.split('/').pop();
+        const response = { ...res.data, handle, mimetype: res.data.type };
         return resolve(response);
       }
 
-      return resolve(res.body);
+      return reject(res.data);
     }).catch((err) => {
       reject(err);
     });

@@ -101,7 +101,7 @@ export const checkOptions = (name: string, allowed: any, options: any = {}): {} 
  */
 export const removeEmpty = (obj: any) => {
   const newObj = { ...obj };
-  Object.keys(newObj).forEach(k => (!newObj[k] && newObj[k] !== undefined) && delete newObj[k]);
+  Object.keys(newObj).forEach(k => (!newObj[k] && typeof newObj[k] !== 'boolean') && delete newObj[k]);
   return newObj;
 };
 

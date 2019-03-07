@@ -49,18 +49,7 @@ export const remove = (session: Session, handle?: string, skipStorage?: boolean,
     options.skip_storage = true;
   }
 
-  return new Promise((resolve, reject) => {
-    request
-      .delete(baseURL)
-      .query(options)
-      .end((err: any, res: any) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(res);
-        }
-      });
-  });
+  return request.delete(baseURL, options);
 };
 
 export interface MetadataOptions {
@@ -131,18 +120,14 @@ export const metadata = (session: Session, handle?: string, opts?: MetadataOptio
   const baseURL = `${session.urls.fileApiUrl}/${handle}/metadata`;
   return new Promise((resolve, reject) => {
     request
-      .get(baseURL)
-      .query(removeEmpty(options))
-      .end((err: Error, res: any) => {
-        if (err) {
-          return reject(err);
-        }
-
+      .get(baseURL, removeEmpty(options))
+      .then((res) => {
         resolve({
-          ...res.body,
+          ...res.data,
           handle,
         });
-      });
+      })
+      .catch(reject);
   });
 };
 
@@ -206,11 +191,9 @@ export const retrieve = (session: Session,
   requestOptions.signature = security && security.signature || session.signature;
 
   let method: ERequestMethod = ERequestMethod.get;
-  let responseType = EResponseType.blob;
 
   if (requestOptions.head) {
     method = ERequestMethod.head;
-    responseType = EResponseType.json;
     delete requestOptions.head;
   }
 
@@ -227,7 +210,6 @@ export const retrieve = (session: Session,
       throw new Error('Head and metadata options cannot be used together');
     }
 
-    responseType = EResponseType.json;
     metadata = requestOptions.metadata;
     delete requestOptions.metadata;
   }
@@ -235,19 +217,17 @@ export const retrieve = (session: Session,
   const baseURL = `${session.urls.fileApiUrl}/${handle}` + (extension ? `+${extension}` : '') + (metadata ? '/metadata' : '');
 
   return new Promise((resolve, reject) => {
-    request[method](baseURL)
-      .query(requestOptions)
-      .responseType(responseType)
-      .end((err: Error, res: any) => {
-        if (err) {
-          return reject(err);
-        }
+    request({
+      url: baseURL,
+      method,
+      params: removeEmpty(requestOptions),
+    }).then((res) => {
+      if (method === ERequestMethod.head) {
+        return resolve(res.headers);
+      }
 
-        if (method === ERequestMethod.head) {
-          return resolve(res.headers);
-        }
-
-        resolve(res.body);
-      });
+      resolve(res.data);
+    })
+    .catch(reject);
   });
 };

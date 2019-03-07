@@ -1,8 +1,0 @@
-{
-  "requestUrl": "/multipart/commit",
-  "contentType": "application/json",
-  "method": "POST",
-  "statusCode": 200,
-  "data": {},
-  "isBase64": false
-}

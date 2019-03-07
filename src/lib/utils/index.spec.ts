@@ -18,57 +18,6 @@
  * limitations under the License.
  */
 
-import * as assert from 'assert';
-import * as t from 'tcomb-validation';
-import { checkOptions, removeEmpty, resolveCdnUrl } from './index';
-declare var ENV: any;
-
-const session = ENV.session;
-
-describe('resolveCdnUrl', () => {
-
-  it('should throw exception when using http or src handle and there is no apiKey', () => {
-    const sessionClone = JSON.parse(JSON.stringify(session));
-    delete sessionClone.apikey;
-
-    assert.throws(() => resolveCdnUrl(sessionClone, 'http://test.com'));
-    assert.throws(() => resolveCdnUrl(sessionClone, 'src://test.com'));
-  });
-});
-
-describe('checkOptions', () => {
-  it('should throw exception when wrong option is provided', () => {
-    const allowed = [
-      { name: 'test', type: t.Boolean },
-    ];
-
-    const options = {
-      notAllowed: 123,
-    };
-
-    assert.throws(() => checkOptions('retrieveOptions', allowed, options));
-  });
-
-  it('should throw exception when wrong option value is provided', () => {
-    const allowed = [
-      { name: 'test', type: t.Boolean },
-    ];
-
-    const options = {
-      test: 123,
-    };
-
-    assert.throws(() => checkOptions('retrieveOptions', allowed, options));
-  });
-});
-
-describe('removeEmpty', () => {
-  it('should remove empty values from object', () => {
-    const testObj = {
-      test: 123,
-      empty: null,
-    };
-
-    assert.equal(JSON.stringify(removeEmpty(testObj)), JSON.stringify({ test: 123, }));
-  });
+test.skip('skip', () => {
+  console.log('tests');
 });

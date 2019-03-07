@@ -15,21 +15,14 @@
  * limitations under the License.
  */
 
-import * as assert from 'assert';
-import * as sinon from 'sinon';
 import { requestWithSource } from './request';
+import axios from 'axios';
 
-describe('requestWithSource', () => {
-  let server: any;
-  before(() => {
-    server = sinon.fakeServer.create();
-  });
-  after(() => {
-    server.restore();
-  });
-  it('should insert the Filestack-Source header', () => {
-    const req = requestWithSource('post', 'http://testing');
-    // @ts-ignore
-    assert.ok(req.header['Filestack-Source']);
+jest.mock('axios');
+
+describe('Request', () => {
+  it('should set correct source', () => {
+    requestWithSource('get', 'test');
+    expect(axios.create).toHaveBeenCalledWith({ headers: { 'Filestack-Source': 'JS-@{VERSION}' } });
   });
 });
