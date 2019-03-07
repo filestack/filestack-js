@@ -64,7 +64,7 @@ export const getFile = (inputFile: string | Buffer): Promise<FileObj> => {
       buffer: inputFile,
       name: undefined,
       size: inputFile.byteLength,
-      type: getMimetype(inputFile)
+      type: getMimetype(inputFile),
     } as FileObj);
   }
 

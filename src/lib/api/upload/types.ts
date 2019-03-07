@@ -18,7 +18,7 @@
 /**
  * @private
  */
-export interface FileObj extends File {
+export interface FileObj { //extends File {
   buffer: Buffer;
   name: string;
   size: number;
