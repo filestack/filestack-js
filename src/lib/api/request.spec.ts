@@ -22,7 +22,7 @@ jest.mock('axios');
 
 describe('Request', () => {
   it('should set correct source', () => {
-    requestWithSource('get', 'test');
+    requestWithSource();
     expect(axios.create).toHaveBeenCalledWith({ headers: { 'Filestack-Source': 'JS-@{VERSION}' } });
   });
 });

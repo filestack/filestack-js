@@ -23,7 +23,7 @@ import axios, { AxiosInstance } from 'axios';
  * @param method
  * @param url
  */
-const requestWithSource = (method: string, url: string): AxiosInstance => {
+const requestWithSource = (): AxiosInstance => {
   return axios.create({ headers: { 'Filestack-Source': 'JS-@{VERSION}' } });
 };
 

@@ -93,7 +93,5 @@ export const commitPart = (part: PartObj, ctx: Context): Promise<any> => {
     ...ctx.params,
   };
   const formData = getFormData(fields, cfg);
-  return requestWithSource('post', `${host}/multipart/commit`)
-    .timeout(cfg.timeout)
-    .field(formData);
+  return requestWithSource().post(`${host}/multipart/commit`, formData, { timeout: cfg.timeout, headers: formData.getHeaders() });
 };

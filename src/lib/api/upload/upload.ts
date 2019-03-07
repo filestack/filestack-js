@@ -58,7 +58,6 @@ const statuses = {
  * @param func  function that returns a Promise
  */
 const flowControl = (ctx: Context, func: any) => {
-  // console.log(ctx.state);
   return (...args: any[]) => {
     if (ctx.state.status === statuses.FAILED) {
       return Promise.resolve();
@@ -117,7 +116,8 @@ const uploadPart = async (part: PartObj, ctx: Context): Promise<any> => {
   }
 
   // Or we upload the whole part (default flow)
-  const { body: s3Data } = await getS3PartData(part, ctx);
+  const { data: s3Data } = await getS3PartData(part, ctx);
+
   let onProgress;
   if (cfg.onProgress) {
     /* istanbul ignore next */
@@ -128,6 +128,7 @@ const uploadPart = async (part: PartObj, ctx: Context): Promise<any> => {
       }
     }, cfg.progressInterval);
   }
+
   part.request = uploadToS3(part.buffer, s3Data, onProgress, cfg);
   return part.request;
 };
@@ -304,8 +305,6 @@ const uploadFile = async (ctx: Context, token: any): Promise<any> => {
   const retry = (location: string, func: any, err: any, part?: PartObj): Promise<any> => {
     let attempt = state.retries[location] || 0;
 
-    // console.error(`Cannot upload file ${err}, Method: ${err.method}, Status: ${err.status}, Timeout: ${err.timeout}`);
-
     const waitTime = Math.min(config.retryMaxTime, (config.retryFactor ** attempt) * 1000);
     const promise = new Promise((resolve, reject) => {
       if (attempt === config.retry
@@ -366,7 +365,7 @@ const uploadFile = async (ctx: Context, token: any): Promise<any> => {
   // Here we go
   state.status = statuses.RUNNING;
 
-  const { body: params } = await cancellable(start(ctx));
+  const { data: params } = await cancellable(start(ctx));
   ctx.params = params;
 
   const goPart = flowControl(ctx, async (partObj: PartObj) => {
@@ -379,6 +378,7 @@ const uploadFile = async (ctx: Context, token: any): Promise<any> => {
     state.parts[part.number] = part;
     try {
       const { headers: { etag }, status } = await uploadPart(part, ctx);
+
       if (status === 206) {
         const err = new Error('Intelligent part failed to commit');
         return retry(location, () => goPart(part), err, part);
@@ -416,11 +416,11 @@ const uploadFile = async (ctx: Context, token: any): Promise<any> => {
         file.buffer = null;
       }
 
-      if (res.body && res.body.error && res.body.error.text) {
-        return Promise.reject(new Error(`File upload error: ${res.body.error.text}`));
+      if (res.data && res.data.error && res.data.error.text) {
+        return Promise.reject(new Error(`File upload error: ${res.data.error.text}`));
       }
 
-      return res.body;
+      return res.data;
     } catch (err) {
       return retry('complete', goComplete, err);
     }

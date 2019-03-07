@@ -18,6 +18,7 @@
 import { requestWithSource, request } from '../request';
 import { getName } from './utils';
 import { Context, PartObj, UploadConfig } from './types';
+import * as FormData from 'form-data';
 
 /**
  * @private
@@ -41,15 +42,16 @@ export const getLocationURL = (url: string) => {
  * @param fields  Object containing form data keys
  * @param config  Upload config
  */
-export const getFormData = (fields: any, { store }: UploadConfig): {} => {
-  const fd: any = {};
+export const getFormData = (fields: any, { store }: UploadConfig): FormData => {
+  const fd: any = new FormData();
+
   Object.keys(fields).forEach((key: string) => {
     if (typeof fields[key] === 'object') {
       fields[key] = JSON.stringify(fields[key]);
     }
 
     if (fields[key]) {
-      fd[key] = fields[key];
+      fd.append(key, fields[key]);
     }
   });
 
@@ -59,9 +61,10 @@ export const getFormData = (fields: any, { store }: UploadConfig): {} => {
     }
 
     if (store[key]) {
-      fd[key] = store[key];
+      fd.append(key, store[key]);
     }
   });
+
   return fd;
 };
 
@@ -73,7 +76,6 @@ export const getFormData = (fields: any, { store }: UploadConfig): {} => {
  * @returns {Promise}
  */
 export const start = ({ config, file }: Context): Promise<any> => {
-
   const fields: any = {
     apikey: config.apikey,
     filename: getName(file, config),
@@ -89,10 +91,17 @@ export const start = ({ config, file }: Context): Promise<any> => {
   if (config.intelligent) {
     fields.multipart = true;
   }
+
+  let requestOptions: any = {};
+
+  if (config.timeout) {
+    requestOptions.timeout = config.timeout;
+  }
+
   const formData = getFormData(fields, config);
-  return requestWithSource('post', `${config.host}/multipart/start`)
-    .timeout(config.timeout)
-    .field(formData);
+  requestOptions.headers = formData.getHeaders();
+
+  return requestWithSource().post(`${config.host}/multipart/start`, formData, requestOptions);
 };
 
 /**
@@ -123,19 +132,17 @@ export const getS3PartData = (part: PartObj, { config, params }: Context): Promi
     fields.multipart = true;
     fields.offset = part.offset === 0 ? '0' : part.offset;
   }
+
   const formData = getFormData(fields, config);
-  const req = requestWithSource('post', `${host}/multipart/upload`);
-  /* istanbul ignore next */
+  let headers = formData.getHeaders();
+
   if (locationRegion) {
-    req.set('Filestack-Upload-Region', locationRegion);
+    headers['Filestack-Upload-Region'] = locationRegion;
   }
-  req.timeout(config.timeout);
-  req.field(formData);
-  return new Promise((resolve, reject) => {
-    req.end((err: Error, res: any) => {
-      if (err) return reject(err);
-      return resolve(res);
-    });
+
+  return requestWithSource().post(`${host}/multipart/upload`, formData, {
+    headers,
+    timeout: config.timeout,
   });
 };
 
@@ -147,22 +154,17 @@ export const getS3PartData = (part: PartObj, { config, params }: Context): Promi
  * @param onProgress  A function to be called on progress event for this part
  * @param config
  */
-export const uploadToS3 = (part: ArrayBuffer, params: any, onProgress: any, cfg: UploadConfig): Promise<any> => {
+export const uploadToS3 = (part: ArrayBuffer, params: any, onUploadProgress: any, cfg: UploadConfig): Promise<any> => {
   /* istanbul ignore next */
   const host = getHost(`${cfg.host}/fakeS3`) || params.url;
   const timeout = cfg.timeout || (part.byteLength / 100);
-  // console.log(part.byteLength );
-  const req = request
-    .put(host)
-    .set(params.headers)
-    .timeout(timeout)
-    .send(part);
 
-  // Don't call progress handler if user didn't specify a callback
-  if (onProgress) {
-    return req.on('progress', onProgress);
-  }
-  return req;
+  return request
+    .put(host, part, {
+      headers: params.headers,
+      timeout,
+      onUploadProgress,
+    });
 };
 
 /**
@@ -208,12 +210,14 @@ export const complete = (etags: string, { config, file, params }: Context): Prom
 
   const formData = getFormData(fields, config);
 
-  const req = requestWithSource('post', `${host}/multipart/complete`);
-  /* istanbul ignore next */
-  if (locationRegion) {
-    req.set('Filestack-Upload-Region', locationRegion);
-  }
-  req.timeout(config.timeout);
+  let headers = formData.getHeaders();
 
-  return req.field(formData);
+  if (locationRegion) {
+    headers['Filestack-Upload-Region'] = locationRegion;
+  }
+
+  return requestWithSource().post(`${host}/multipart/complete`, formData, {
+    headers,
+    timeout: config.timeout,
+  });
 };
