@@ -15,18 +15,9 @@
  * limitations under the License.
  */
 
-import { requestWithSource, request, multipart } from '../request';
+import { request, multipart } from '../request';
 import { getName } from './utils';
 import { Context, PartObj, UploadConfig } from './types';
-import * as FormData from 'form-data';
-
-/**
- * @private
- */
-/* istanbul ignore next */
-export const getHost = (host?: string) => {
-  return process.env.TEST_ENV === 'unit' && host;
-};
 
 /**
  * @private
@@ -79,8 +70,7 @@ export const start = ({ config, file }: Context): Promise<any> => {
  * @param offset        Current offset if chunking a part.
  */
 export const getS3PartData = (part: PartObj, { config, params }: Context): Promise<any> => {
-  /* istanbul ignore next */
-  const host = getHost(config.host) || getLocationURL(params.location_url);
+  const host = getLocationURL(params.location_url);
   const locationRegion = params.location_region;
 
   const fields = {
@@ -94,16 +84,17 @@ export const getS3PartData = (part: PartObj, { config, params }: Context): Promi
   // Intelligent Ingestion
   if (part.offset !== undefined) {
     fields.multipart = true;
-    fields.offset = part.offset === 0 ? '0' : part.offset;
+    fields.offset = part.offset;
   }
 
   let headers = {};
 
   if (locationRegion) {
+    // set headers for filestack upload region to be respected in cdn when using cnames
     headers['Filestack-Upload-Region'] = locationRegion;
   }
 
-  return multipart(`${config.host}/multipart/upload`, {
+  return multipart(`${host}/multipart/upload`, {
     ...fields,
     ...config.store,
   }, {
@@ -121,8 +112,7 @@ export const getS3PartData = (part: PartObj, { config, params }: Context): Promi
  * @param config
  */
 export const uploadToS3 = (part: ArrayBuffer, params: any, onUploadProgress: any, cfg: UploadConfig): Promise<any> => {
-  /* istanbul ignore next */
-  const host = getHost(`${cfg.host}/fakeS3`) || params.url;
+  const host = params.url;
   const timeout = cfg.timeout || (part.byteLength / 100);
 
   return request
@@ -149,8 +139,7 @@ const formatETags = (etags: any): string => etags.map((tag: string, idx: number)
  * @param config        Upload config
  */
 export const complete = (etags: string, { config, file, params }: Context): Promise<any> => {
-  /* istanbul ignore next */
-  const host = getHost(config.host) || getLocationURL(params.location_url);
+  const host = getLocationURL(params.location_url);
   const locationRegion = params.location_region;
 
   const fields = {
@@ -177,6 +166,7 @@ export const complete = (etags: string, { config, file, params }: Context): Prom
   let headers = {};
 
   if (locationRegion) {
+    // set headers for filestack upload region to be respected in cdn when using cnames
     headers['Filestack-Upload-Region'] = locationRegion;
   }
 

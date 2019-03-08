@@ -84,8 +84,8 @@ export const uploadChunk = async (chunk: any, ctx: Context): Promise<any> => {
  */
 export const commitPart = (part: PartObj, ctx: Context): Promise<any> => {
   const cfg = ctx.config;
-  /* istanbul ignore next */
-  const host = getHost(cfg.host) || getLocationURL(ctx.params.location_url);
+  const host = getLocationURL(ctx.params.location_url);
+
   const fields = {
     apikey: cfg.apikey,
     part: part.number + 1,

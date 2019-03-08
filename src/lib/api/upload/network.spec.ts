@@ -15,23 +15,11 @@
  * limitations under the License.
  */
 
-import { start } from './network';
+import { start, getS3PartData } from './network';
 import { Status, FileObj } from './types';
 import { multipart } from '../request';
 
 jest.mock('../request');
-
-const testUploadConfig = {
-  apikey: 'testkey',
-  store: {
-    testStore: 1,
-  },
-  concurrency: 1,
-  partSize: 100,
-  retryFactor: 0,
-  retryMaxTime: 100,
-  progressInterval: 100,
-};
 
 describe('Network', () => {
   afterEach(() => {
@@ -39,37 +27,48 @@ describe('Network', () => {
     multipart.mockClear();
   });
 
+  const partObj = {
+    buffer: Buffer.from('test'),
+    chunks: [],
+    chunkSize: 1,
+    intelligentOverride: false,
+    loaded: 1,
+    number: 1,
+    request: null,
+    size: 1,
+  };
+
+  const uploadConfig = {
+    host: 'fakeHost',
+    apikey: 'fakeApikey',
+    partSize: 6 * 1024 * 1024,
+    concurrency: 3,
+    progressInterval: 1000,
+    retry: 10,
+    retryFactor: 2,
+    retryMaxTime: 15000,
+    customName: null,
+    mimetype: null,
+    store: {},
+    timeout: 120000,
+  };
+
+  const initialState = {
+    parts: {},
+    progressTick: null,
+    previousPayload: null,
+    retries: {},
+    status: Status.INIT,
+  };
+
+  const testFileObj = {
+    buffer: Buffer.from('asd'),
+    name: 'test',
+    size: 1,
+    type: 'text/plain',
+  } as FileObj;
+
   describe('start', () => {
-    const uploadConfig = {
-      host: 'fakeHost',
-      apikey: 'fakeApikey',
-      partSize: 6 * 1024 * 1024,
-      concurrency: 3,
-      progressInterval: 1000,
-      retry: 10,
-      retryFactor: 2,
-      retryMaxTime: 15000,
-      customName: null,
-      mimetype: null,
-      store: {},
-      timeout: 120000,
-    };
-
-    const initialState = {
-      parts: {},
-      progressTick: null,
-      previousPayload: null,
-      retries: {},
-      status: Status.INIT,
-    };
-
-    const testFileObj = {
-      buffer: Buffer.from('asd'),
-      name: 'test',
-      size: 1,
-      type: 'text/plain',
-    } as FileObj;
-
     it('should make correct start request', async () => {
       await start({
         config: uploadConfig,
@@ -198,7 +197,66 @@ describe('Network', () => {
 
   describe('getS3PartData', () => {
     it('Should make correct request to get s3 data part', async () => {
-      console.log(123);
+      await getS3PartData(partObj, {
+        config: uploadConfig,
+        state: initialState,
+        file: testFileObj,
+        params: {
+          location_url: 'fakeHost',
+        },
+      });
+
+      expect(multipart).toHaveBeenCalledWith(
+        'https://fakeHost/multipart/upload',
+        { apikey: 'fakeApikey', md5: undefined, part: 2, size: 1, location_url: 'fakeHost' },
+        { headers: {}, timeout: 120000 }
+      );
+    });
+
+    it('Should make correct request to get s3 data part and location provided', async () => {
+      await getS3PartData(partObj, {
+        config: uploadConfig,
+        state: initialState,
+        file: testFileObj,
+        params: {
+          location_region: 'test',
+          location_url: 'fakeHost',
+        },
+      });
+
+      expect(multipart).toHaveBeenCalledWith(
+        'https://fakeHost/multipart/upload',
+        { apikey: 'fakeApikey', md5: undefined, part: 2, size: 1, location_region: 'test', location_url: 'fakeHost' },
+        {
+          headers: {
+            'Filestack-Upload-Region': 'test',
+          },
+          timeout: 120000,
+        }
+      );
+    });
+
+    it('Should make correct request with part offset (inteligent ingesion)', async () => {
+      await getS3PartData(Object.assign({}, partObj, { offset: 0 }), {
+        config: uploadConfig,
+        state: initialState,
+        file: testFileObj,
+        params: {
+          location_url: 'fakeHost',
+          location_region: 'test',
+        },
+      });
+
+      expect(multipart).toHaveBeenCalledWith(
+        'https://fakeHost/multipart/upload',
+        { apikey: 'fakeApikey', md5: undefined, part: 2, size: 1, multipart: true, offset: 0, location_region: 'test', location_url: 'fakeHost' },
+        {
+          headers: {
+            'Filestack-Upload-Region': 'test',
+          },
+          timeout: 120000,
+        }
+      );
     });
   });
 

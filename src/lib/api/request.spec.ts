@@ -82,5 +82,19 @@ describe('Request', () => {
         headers: { 'Filestack-Source': 'JS-@{VERSION}', test: 1 },
       });
     });
+
+    it('should set 0 and false values to fd', () => {
+      multipart('test', {
+        test: 0,
+        test1: false,
+      });
+
+      expect(FormData.prototype.append).toHaveBeenCalledWith('test', 0);
+      expect(FormData.prototype.append).toHaveBeenCalledWith('test1', false);
+
+      expect(axios.post).toHaveBeenCalledWith('test', expect.any(FormData), {
+        headers: { 'Filestack-Source': 'JS-@{VERSION}' },
+      });
+    });
   });
 });
