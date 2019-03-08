@@ -18,7 +18,7 @@
 import { getFormData, start } from './network';
 
 import * as FormData from 'form-data';
-import { Status } from './types';
+import { Status, FileObj } from './types';
 import { requestWithSource } from '../request';
 
 jest.mock('../request');
@@ -82,24 +82,15 @@ describe('Network', () => {
     const uploadConfig = {
       host: 'fakeHost',
       apikey: 'fakeApikey',
-      // policy,
-      // signature,
       partSize: 6 * 1024 * 1024,
       concurrency: 3,
       progressInterval: 1000,
       retry: 10,
       retryFactor: 2,
       retryMaxTime: 15000,
-      customName: 'customname',
-      mimetype: 'application/test',
-      store: {
-        // workflows: storeOpts.workflows,
-        // store_location: storeOpts.location,
-        // store_region: storeOpts.region,
-        // store_container: storeOpts.container,
-        // store_path: storeOpts.path,
-        // store_access: storeOpts.access,
-      },
+      customName: null,
+      mimetype: null,
+      store: {},
       timeout: 120000,
     };
 
@@ -116,7 +107,7 @@ describe('Network', () => {
       name: 'test',
       size: 1,
       type: 'text/plain',
-    };
+    } as FileObj;
 
     it('should make correct start request', async () => {
       const mockedMethod = jest.fn(() => Promise.resolve({ data: {} }));
@@ -127,8 +118,6 @@ describe('Network', () => {
         };
       });
 
-      FormData.prototype.append.mockClear();
-
       await start({
         config: uploadConfig,
         state: initialState,
@@ -137,13 +126,78 @@ describe('Network', () => {
 
       expect(FormData.prototype.append).toHaveBeenCalledWith('size', 1);
       expect(FormData.prototype.append).toHaveBeenCalledWith('apikey', 'fakeApikey');
-      expect(FormData.prototype.append).toHaveBeenCalledWith('mimetype', 'application/test');
-      expect(FormData.prototype.append).toHaveBeenCalledWith('filename', 'customname');
+      expect(FormData.prototype.append).toHaveBeenCalledWith('mimetype', 'text/plain');
+      expect(FormData.prototype.append).toHaveBeenCalledWith('filename', 'test');
 
       expect(FormData.prototype.append).toHaveBeenCalledTimes(4);
 
       expect(mockedMethod).toHaveBeenCalledWith('fakeHost/multipart/start', expect.any(FormData), { headers: undefined, timeout: 120000 });
     });
+
+    it('should add multipart param on config inteligent', async () => {
+      await start({
+        config: Object.assign({}, uploadConfig, {
+          intelligent: true,
+        }),
+        state: initialState,
+        file: testFileObj,
+      });
+
+      expect(FormData.prototype.append).toHaveBeenCalledWith('multipart', true);
+    });
+
+    it('should respect config policy and signature and add it to formData', async () => {
+      await start({
+        config: Object.assign({}, uploadConfig, {
+          policy: 'policy',
+          signature: 'signature',
+        }),
+        state: initialState,
+        file: testFileObj,
+      });
+
+      expect(FormData.prototype.append).toHaveBeenCalledWith('signature', 'signature');
+      expect(FormData.prototype.append).toHaveBeenCalledWith('policy', 'policy');
+    });
+
+    it('should respect customName provided in config', async () => {
+      await start({
+        config: Object.assign({}, uploadConfig, {
+          customName: 'customName',
+        }),
+        state: initialState,
+        file: testFileObj,
+      });
+
+      expect(FormData.prototype.append).toHaveBeenCalledWith('filename', 'customName');
+    });
+
+    it('should respect overwrite of mimetype', async () => {
+      await start({
+        config: Object.assign({}, uploadConfig, {
+          mimetype: 'mimetype',
+        }),
+        state: initialState,
+        file: testFileObj,
+      });
+
+      expect(FormData.prototype.append).toHaveBeenCalledWith('mimetype', 'mimetype');
+    });
+
+    it('should set mimetype to "application/octet-stream" when no mimetype is provided', async () => {
+      await start({
+        config: Object.assign({}, uploadConfig, {
+          mimetype: null,
+        }),
+        state: initialState,
+        file: Object.assign({}, testFileObj, {
+          type: null,
+        }),
+      });
+
+      expect(FormData.prototype.append).toHaveBeenCalledWith('mimetype', 'application/octet-stream');
+    });
+
   });
 
   describe('getS3PartData', () => {
