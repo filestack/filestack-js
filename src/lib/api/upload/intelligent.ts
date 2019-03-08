@@ -15,8 +15,8 @@
  * limitations under the License.
  */
 
-import { requestWithSource } from '../request';
-import { getLocationURL, getFormData, getHost, getS3PartData, uploadToS3 } from './network';
+import { requestWithSource, multipart } from '../request';
+import { getLocationURL, getHost, getS3PartData, uploadToS3 } from './network';
 import { calcMD5 } from './md5';
 import { PartObj, Context } from './types';
 import { throttle } from '../../utils';
@@ -92,6 +92,11 @@ export const commitPart = (part: PartObj, ctx: Context): Promise<any> => {
     size: ctx.file.size,
     ...ctx.params,
   };
-  const formData = getFormData(fields, cfg);
-  return requestWithSource().post(`${host}/multipart/commit`, formData, { timeout: cfg.timeout, headers: formData.getHeaders() });
+
+  return multipart(`${host}/multipart/commit`, {
+    ...fields,
+    ...cfg.store,
+  }, {
+    timeout: cfg.timeout,
+  });
 };

@@ -15,14 +15,11 @@
  * limitations under the License.
  */
 
-import { getFormData, start } from './network';
-
-import * as FormData from 'form-data';
+import { start } from './network';
 import { Status, FileObj } from './types';
-import { requestWithSource } from '../request';
+import { multipart } from '../request';
 
 jest.mock('../request');
-jest.mock('form-data');
 
 const testUploadConfig = {
   apikey: 'testkey',
@@ -38,44 +35,8 @@ const testUploadConfig = {
 
 describe('Network', () => {
   afterEach(() => {
-    FormData.mockClear();
-  });
-
-  describe('getFormData', () => {
-    it('should parse correct basic params', () => {
-      const fields = {
-        apikey: 'test',
-        part: 1,
-      };
-
-      getFormData(fields, testUploadConfig);
-      expect(FormData.prototype.append).toHaveBeenCalledWith('apikey', 'test');
-      expect(FormData.prototype.append).toHaveBeenCalledWith('part', 1);
-      expect(FormData.prototype.append).toHaveBeenCalledWith('testStore', 1);
-
-      expect(FormData.prototype.append).toHaveBeenCalledTimes(3);
-    });
-
-    it('should parse correct complex params', () => {
-      const fields = {
-        apikey: 'test',
-        part: 1,
-        workflowsUi: ['test', 'test2'],
-      };
-
-      getFormData(fields, Object.assign({}, testUploadConfig, {
-        store: {
-          test: { test1: 1 },
-        },
-      }));
-
-      expect(FormData.prototype.append).toHaveBeenCalledWith('apikey', 'test');
-      expect(FormData.prototype.append).toHaveBeenCalledWith('part', 1);
-      expect(FormData.prototype.append).toHaveBeenCalledWith('workflowsUi', JSON.stringify(['test', 'test2']));
-      expect(FormData.prototype.append).toHaveBeenCalledWith('test', JSON.stringify({ test1: 1 }));
-
-      expect(FormData.prototype.append).toHaveBeenCalledTimes(4);
-    });
+    // @ts-ignore
+    multipart.mockClear();
   });
 
   describe('start', () => {
@@ -110,28 +71,22 @@ describe('Network', () => {
     } as FileObj;
 
     it('should make correct start request', async () => {
-      const mockedMethod = jest.fn(() => Promise.resolve({ data: {} }));
-      // @ts-ignore
-      requestWithSource.mockImplementation(() => {
-        return {
-          post: mockedMethod,
-        };
-      });
-
       await start({
         config: uploadConfig,
         state: initialState,
         file: testFileObj,
       });
 
-      expect(FormData.prototype.append).toHaveBeenCalledWith('size', 1);
-      expect(FormData.prototype.append).toHaveBeenCalledWith('apikey', 'fakeApikey');
-      expect(FormData.prototype.append).toHaveBeenCalledWith('mimetype', 'text/plain');
-      expect(FormData.prototype.append).toHaveBeenCalledWith('filename', 'test');
-
-      expect(FormData.prototype.append).toHaveBeenCalledTimes(4);
-
-      expect(mockedMethod).toHaveBeenCalledWith('fakeHost/multipart/start', expect.any(FormData), { headers: undefined, timeout: 120000 });
+      expect(multipart).toHaveBeenCalledWith(
+        'fakeHost/multipart/start',
+        {
+          apikey: 'fakeApikey',
+          filename: 'test',
+          mimetype: 'text/plain',
+          size: 1,
+        },
+        { headers: undefined, timeout: 120000 }
+      );
     });
 
     it('should add multipart param on config inteligent', async () => {
@@ -143,7 +98,17 @@ describe('Network', () => {
         file: testFileObj,
       });
 
-      expect(FormData.prototype.append).toHaveBeenCalledWith('multipart', true);
+      expect(multipart).toHaveBeenCalledWith(
+        'fakeHost/multipart/start',
+        {
+          apikey: 'fakeApikey',
+          filename: 'test',
+          mimetype: 'text/plain',
+          multipart: true,
+          size: 1,
+        },
+        { headers: undefined, timeout: 120000 }
+      );
     });
 
     it('should respect config policy and signature and add it to formData', async () => {
@@ -156,8 +121,18 @@ describe('Network', () => {
         file: testFileObj,
       });
 
-      expect(FormData.prototype.append).toHaveBeenCalledWith('signature', 'signature');
-      expect(FormData.prototype.append).toHaveBeenCalledWith('policy', 'policy');
+      expect(multipart).toHaveBeenCalledWith(
+        'fakeHost/multipart/start',
+        {
+          apikey: 'fakeApikey',
+          filename: 'test',
+          mimetype: 'text/plain',
+          policy: 'policy',
+          signature: 'signature',
+          size: 1,
+        },
+        { headers: undefined, timeout: 120000 }
+      );
     });
 
     it('should respect customName provided in config', async () => {
@@ -169,7 +144,16 @@ describe('Network', () => {
         file: testFileObj,
       });
 
-      expect(FormData.prototype.append).toHaveBeenCalledWith('filename', 'customName');
+      expect(multipart).toHaveBeenCalledWith(
+        'fakeHost/multipart/start',
+        {
+          apikey: 'fakeApikey',
+          filename: 'customName',
+          mimetype: 'text/plain',
+          size: 1,
+        },
+        { headers: undefined, timeout: 120000 }
+      );
     });
 
     it('should respect overwrite of mimetype', async () => {
@@ -181,7 +165,16 @@ describe('Network', () => {
         file: testFileObj,
       });
 
-      expect(FormData.prototype.append).toHaveBeenCalledWith('mimetype', 'mimetype');
+      expect(multipart).toHaveBeenCalledWith(
+        'fakeHost/multipart/start',
+        {
+          apikey: 'fakeApikey',
+          filename: 'test',
+          mimetype: 'mimetype',
+          size: 1,
+        },
+        { headers: undefined, timeout: 120000 }
+      );
     });
 
     it('should set mimetype to "application/octet-stream" when no mimetype is provided', async () => {
@@ -195,20 +188,21 @@ describe('Network', () => {
         }),
       });
 
-      expect(FormData.prototype.append).toHaveBeenCalledWith('mimetype', 'application/octet-stream');
+      expect(multipart).toHaveBeenCalledWith(
+        'fakeHost/multipart/start',
+        { apikey: 'fakeApikey', filename: 'test', mimetype: 'application/octet-stream', size: 1 },
+        { headers: undefined, timeout: 120000 }
+      );
     });
-
   });
 
   describe('getS3PartData', () => {
-
+    it('Should make correct request to get s3 data part', async () => {
+      console.log(123);
+    });
   });
 
-  describe('uploadToS3', () => {
+  describe('uploadToS3', () => {});
 
-  });
-
-  describe('complete', () => {
-
-  });
+  describe('complete', () => {});
 });

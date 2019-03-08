@@ -15,7 +15,8 @@
  * limitations under the License.
  */
 
-import axios, { AxiosInstance } from 'axios';
+import axios, { AxiosInstance, AxiosResponse } from 'axios';
+import * as FormData from 'form-data';
 
 /**
  *
@@ -27,4 +28,43 @@ const requestWithSource = (): AxiosInstance => {
   return axios.create({ headers: { 'Filestack-Source': 'JS-@{VERSION}' } });
 };
 
-export { axios as request, requestWithSource };
+/**
+ * Make multipart POST request to given url with parsed form data
+ *
+ * @private
+ * @param url - request url
+ * @param fields - multipart fields (key->value)
+ * @config Axios Config
+ */
+const multipart = (url: string, fields: Object, config: any = {}): Promise<AxiosResponse> => {
+  const fd = new FormData();
+
+  Object.keys(fields).forEach((key: string) => {
+    let field = fields[key];
+
+    if (field === undefined) {
+      return;
+    }
+
+    if (typeof field === 'object') {
+      field = JSON.stringify(field);
+    }
+
+    fd.append(key, field);
+  });
+
+  if (!config.headers) {
+    config.headers = {};
+  }
+
+  config.headers = Object.assign(
+    {},
+    fd.getHeaders(),
+    config.headers,
+    { 'Filestack-Source': 'JS-@{VERSION}' }
+  );
+
+  return axios.post(url, fd, config);
+};
+
+export { axios as request, requestWithSource, multipart };

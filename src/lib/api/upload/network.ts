@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { requestWithSource, request } from '../request';
+import { requestWithSource, request, multipart } from '../request';
 import { getName } from './utils';
 import { Context, PartObj, UploadConfig } from './types';
 import * as FormData from 'form-data';
@@ -34,38 +34,6 @@ export const getHost = (host?: string) => {
 /* istanbul ignore next */
 export const getLocationURL = (url: string) => {
   return url && `https://${url}`;
-};
-
-/**
- * Generates multi-part fields for all requests
- * @private
- * @param fields  Object containing form data keys
- * @param config  Upload config
- */
-export const getFormData = (fields: any, { store }: UploadConfig): FormData => {
-  const fd: any = new FormData();
-
-  Object.keys(fields).forEach((key: string) => {
-    if (typeof fields[key] === 'object') {
-      fields[key] = JSON.stringify(fields[key]);
-    }
-
-    if (fields[key]) {
-      fd.append(key, fields[key]);
-    }
-  });
-
-  Object.keys(store).forEach((key: string) => {
-    if (typeof store[key] === 'object') {
-      store[key] = JSON.stringify(store[key]);
-    }
-
-    if (store[key]) {
-      fd.append(key, store[key]);
-    }
-  });
-
-  return fd;
 };
 
 /**
@@ -92,16 +60,12 @@ export const start = ({ config, file }: Context): Promise<any> => {
     fields.multipart = true;
   }
 
-  let requestOptions: any = {};
-
-  if (config.timeout) {
-    requestOptions.timeout = config.timeout;
-  }
-
-  const formData = getFormData(fields, config);
-  requestOptions.headers = formData.getHeaders();
-
-  return requestWithSource().post(`${config.host}/multipart/start`, formData, requestOptions);
+  return multipart(`${config.host}/multipart/start`, {
+    ...fields,
+    ...config.store,
+  }, {
+    timeout: config.timeout,
+  });
 };
 
 /**
@@ -133,14 +97,16 @@ export const getS3PartData = (part: PartObj, { config, params }: Context): Promi
     fields.offset = part.offset === 0 ? '0' : part.offset;
   }
 
-  const formData = getFormData(fields, config);
-  let headers = formData.getHeaders();
+  let headers = {};
 
   if (locationRegion) {
     headers['Filestack-Upload-Region'] = locationRegion;
   }
 
-  return requestWithSource().post(`${host}/multipart/upload`, formData, {
+  return multipart(`${config.host}/multipart/upload`, {
+    ...fields,
+    ...config.store,
+  }, {
     headers,
     timeout: config.timeout,
   });
@@ -208,15 +174,16 @@ export const complete = (etags: string, { config, file, params }: Context): Prom
     fields.signature = config.signature;
   }
 
-  const formData = getFormData(fields, config);
-
-  let headers = formData.getHeaders();
+  let headers = {};
 
   if (locationRegion) {
     headers['Filestack-Upload-Region'] = locationRegion;
   }
 
-  return requestWithSource().post(`${host}/multipart/complete`, formData, {
+  return multipart(`${host}/multipart/complete`, {
+    ...fields,
+    ...config.store,
+  }, {
     headers,
     timeout: config.timeout,
   });
