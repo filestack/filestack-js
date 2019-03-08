@@ -113,7 +113,7 @@ export const getS3PartData = (part: PartObj, { config, params }: Context): Promi
  */
 export const uploadToS3 = (part: ArrayBuffer, params: any, onUploadProgress: any, cfg: UploadConfig): Promise<any> => {
   const host = params.url;
-  const timeout = cfg.timeout || (part.byteLength / 100);
+  const timeout = cfg.timeout || Math.max(part.byteLength / 100, 1000);
 
   return request
     .put(host, part, {

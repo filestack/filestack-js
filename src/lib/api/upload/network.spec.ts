@@ -15,9 +15,9 @@
  * limitations under the License.
  */
 
-import { start, getS3PartData } from './network';
+import { start, getS3PartData, uploadToS3 } from './network';
 import { Status, FileObj } from './types';
-import { multipart } from '../request';
+import { multipart, request } from '../request';
 
 jest.mock('../request');
 
@@ -260,7 +260,41 @@ describe('Network', () => {
     });
   });
 
-  describe('uploadToS3', () => {});
+  describe('uploadToS3', () => {
+    it('should make correct put request to given host', async () => {
+      const prog = jest.fn();
+      const file = new ArrayBuffer(1);
+
+      await uploadToS3(file, { url: 'fakeHost', headers: { test: 1 } }, prog, uploadConfig);
+
+      expect(request.put).toHaveBeenCalledWith(
+        'fakeHost',
+        file,
+        {
+          headers: { test: 1 },
+          timeout: uploadConfig.timeout,
+          onUploadProgress: prog,
+        }
+      );
+    });
+
+    it('should set timeout based on file size if', async () => {
+      const prog = jest.fn();
+      const file = new ArrayBuffer(1);
+
+      await uploadToS3(file, { url: 'fakeHost', headers: { test: 1 } }, prog, Object.assign({}, uploadConfig, { timeout: null }));
+
+      expect(request.put).toHaveBeenCalledWith(
+        'fakeHost',
+        file,
+        {
+          headers: { test: 1 },
+          timeout: 1000,
+          onUploadProgress: prog,
+        }
+      );
+    });
+  });
 
   describe('complete', () => {});
 });
