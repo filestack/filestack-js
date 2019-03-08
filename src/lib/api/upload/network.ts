@@ -128,7 +128,7 @@ export const uploadToS3 = (part: ArrayBuffer, params: any, onUploadProgress: any
  * @private
  * @param etags     Array of Etag strings
  */
-const formatETags = (etags: any): string => etags.map((tag: string, idx: number) => `${idx + 1}:${tag}`).join(';');
+const formatETags = (etags: string[]): string => etags.map((tag: string, idx: number) => `${idx + 1}:${tag}`).join(';');
 
 /**
  * Completes upload flow (/multipart/complete)
@@ -138,7 +138,7 @@ const formatETags = (etags: any): string => etags.map((tag: string, idx: number)
  * @param startParams   Parameters returned from start call
  * @param config        Upload config
  */
-export const complete = (etags: string, { config, file, params }: Context): Promise<any> => {
+export const complete = (etags: string[], { config, file, params }: Context): Promise<any> => {
   const host = getLocationURL(params.location_url);
   const locationRegion = params.location_region;
 

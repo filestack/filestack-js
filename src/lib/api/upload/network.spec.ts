@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { start, getS3PartData, uploadToS3 } from './network';
+import { start, getS3PartData, uploadToS3, complete } from './network';
 import { Status, FileObj } from './types';
 import { multipart, request } from '../request';
 
@@ -236,7 +236,13 @@ describe('Network', () => {
 
       expect(multipart).toHaveBeenCalledWith(
         `https://${uploadConfig.host}/multipart/upload`,
-        { apikey: uploadConfig.apikey, part: partObj.number + 1, size: partObj.size, location_region: fakeRegion, location_url: fakeHost },
+        {
+          apikey: uploadConfig.apikey,
+          part: partObj.number + 1,
+          size: partObj.size,
+          location_region: fakeRegion,
+          location_url: fakeHost,
+        },
         {
           headers: {
             'Filestack-Upload-Region': fakeRegion,
@@ -263,7 +269,15 @@ describe('Network', () => {
 
       expect(multipart).toHaveBeenCalledWith(
         `https://${fakeHost}/multipart/upload`,
-        { apikey: uploadConfig.apikey, part: partObj.number + 1, size: partObj.size, multipart: true, offset: offset, location_region: fakeRegion, location_url: fakeHost },
+        {
+          apikey: uploadConfig.apikey,
+          part: partObj.number + 1,
+          size: partObj.size,
+          multipart: true,
+          offset: offset,
+          location_region: fakeRegion,
+          location_url: fakeHost,
+        },
         {
           headers: {
             'Filestack-Upload-Region': fakeRegion,
@@ -298,7 +312,15 @@ describe('Network', () => {
       const fakeHost = 'fakeHost';
       const fakeHeaders = { test: 1 };
 
-      await uploadToS3(file, { url: fakeHost, headers: fakeHeaders }, prog, Object.assign({}, uploadConfig, { timeout: null }));
+      await uploadToS3(
+        file,
+        {
+          url: fakeHost,
+          headers: fakeHeaders,
+        },
+        prog,
+        Object.assign({}, uploadConfig, { timeout: null })
+      );
 
       expect(request.put).toHaveBeenCalledWith(fakeHost, file, {
         headers: fakeHeaders,
@@ -308,5 +330,155 @@ describe('Network', () => {
     });
   });
 
-  describe('complete', () => {});
+  describe('complete', () => {
+    it('should make correct complete request', async () => {
+      const etags = ['a', 'b'];
+      const fakeHost = 'fakeHost';
+      const fakeRegion = 'fakeRegion';
+
+      await complete(etags, {
+        config: uploadConfig,
+        state: initialState,
+        file: testFileObj,
+        params: {
+          location_url: fakeHost,
+          location_region: fakeRegion,
+        },
+      });
+
+      expect(multipart).toHaveBeenCalledWith(
+        `https://${fakeHost}/multipart/complete`,
+        {
+          apikey: uploadConfig.apikey,
+          location_region: fakeRegion,
+          location_url: fakeHost,
+          filename: testFileObj.name,
+          mimetype: testFileObj.type,
+          size: testFileObj.size,
+          parts: '1:a;2:b',
+        },
+        {
+          headers: {
+            'Filestack-Upload-Region': fakeRegion,
+          },
+          timeout: uploadConfig.timeout,
+        }
+      );
+    });
+
+    it('should request with "application/octet-stream" when no mimetype is provided', async () => {
+      const etags = ['a', 'b'];
+      const fakeHost = 'fakeHost';
+      const fakeRegion = 'fakeRegion';
+
+      await complete(etags, {
+        config: Object.assign({}, uploadConfig, {
+          mimetype: null,
+        }),
+        file: Object.assign({}, testFileObj, {
+          type: null,
+        }),
+        state: initialState,
+        params: {
+          location_url: fakeHost,
+          location_region: fakeRegion,
+        },
+      });
+
+      expect(multipart).toHaveBeenCalledWith(
+        `https://${fakeHost}/multipart/complete`,
+        {
+          apikey: uploadConfig.apikey,
+          location_region: fakeRegion,
+          location_url: fakeHost,
+          filename: testFileObj.name,
+          mimetype: 'application/octet-stream',
+          size: testFileObj.size,
+          parts: '1:a;2:b',
+        },
+        {
+          headers: {
+            'Filestack-Upload-Region': fakeRegion,
+          },
+          timeout: uploadConfig.timeout,
+        }
+      );
+    });
+
+    it('should make correct complete request with security passed', async () => {
+      const etags = ['a', 'b'];
+      const fakeHost = 'fakeHost';
+      const fakeRegion = 'fakeRegion';
+
+      const security = {
+        policy: 'policy',
+        signature: 'signature',
+      };
+
+      await complete(etags, {
+        config: Object.assign({}, uploadConfig, { ...security }),
+        state: initialState,
+        file: testFileObj,
+        params: {
+          location_url: fakeHost,
+          location_region: fakeRegion,
+        },
+      });
+
+      expect(multipart).toHaveBeenCalledWith(
+        `https://${fakeHost}/multipart/complete`,
+        {
+          apikey: uploadConfig.apikey,
+          location_region: fakeRegion,
+          location_url: fakeHost,
+          filename: testFileObj.name,
+          mimetype: testFileObj.type,
+          size: testFileObj.size,
+          parts: '1:a;2:b',
+          ...security,
+        },
+        {
+          headers: {
+            'Filestack-Upload-Region': fakeRegion,
+          },
+          timeout: uploadConfig.timeout,
+        }
+      );
+    });
+
+    it('should make correct complete request intelligent ingession', async () => {
+      const etags = ['a', 'b'];
+      const fakeHost = 'fakeHost';
+      const fakeRegion = 'fakeRegion';
+
+      await complete(etags, {
+        config: Object.assign({}, uploadConfig, { intelligent: true  }),
+        state: initialState,
+        file: testFileObj,
+        params: {
+          location_url: fakeHost,
+          location_region: fakeRegion,
+        },
+      });
+
+      expect(multipart).toHaveBeenCalledWith(
+        `https://${fakeHost}/multipart/complete`,
+        {
+          apikey: uploadConfig.apikey,
+          location_region: fakeRegion,
+          location_url: fakeHost,
+          filename: testFileObj.name,
+          mimetype: testFileObj.type,
+          size: testFileObj.size,
+          multipart: true,
+        },
+        {
+          headers: {
+            'Filestack-Upload-Region': fakeRegion,
+          },
+          timeout: uploadConfig.timeout,
+        }
+      );
+    });
+  });
 });
