@@ -77,14 +77,14 @@ describe('Network', () => {
       });
 
       expect(multipart).toHaveBeenCalledWith(
-        'fakeHost/multipart/start',
+        `${uploadConfig.host}/multipart/start`,
         {
-          apikey: 'fakeApikey',
-          filename: 'test',
-          mimetype: 'text/plain',
-          size: 1,
+          apikey: uploadConfig.apikey,
+          filename: testFileObj.name,
+          mimetype: testFileObj.type,
+          size: testFileObj.size,
         },
-        { timeout: 120000 }
+        { timeout: uploadConfig.timeout }
       );
     });
 
@@ -98,81 +98,86 @@ describe('Network', () => {
       });
 
       expect(multipart).toHaveBeenCalledWith(
-        'fakeHost/multipart/start',
+        `${uploadConfig.host}/multipart/start`,
         {
-          apikey: 'fakeApikey',
-          filename: 'test',
-          mimetype: 'text/plain',
+          apikey: uploadConfig.apikey,
+          filename: testFileObj.name,
+          mimetype: testFileObj.type,
           multipart: true,
-          size: 1,
+          size: testFileObj.size,
         },
-        { timeout: 120000 }
+        { timeout: uploadConfig.timeout }
       );
     });
 
     it('should respect config policy and signature and add it to formData', async () => {
+      const security = {
+        policy: 'policy',
+        signature: 'signature',
+      };
+
       await start({
-        config: Object.assign({}, uploadConfig, {
-          policy: 'policy',
-          signature: 'signature',
-        }),
+        config: Object.assign({}, uploadConfig, security),
         state: initialState,
         file: testFileObj,
       });
 
       expect(multipart).toHaveBeenCalledWith(
-        'fakeHost/multipart/start',
+        `${uploadConfig.host}/multipart/start`,
         {
-          apikey: 'fakeApikey',
-          filename: 'test',
-          mimetype: 'text/plain',
-          policy: 'policy',
-          signature: 'signature',
-          size: 1,
+          apikey: uploadConfig.apikey,
+          filename: testFileObj.name,
+          mimetype: testFileObj.type,
+          size: testFileObj.size,
+          ...security,
         },
-        { timeout: 120000 }
+        { timeout: uploadConfig.timeout }
       );
     });
 
     it('should respect customName provided in config', async () => {
+      const customName = 'customName';
+
       await start({
         config: Object.assign({}, uploadConfig, {
-          customName: 'customName',
+          customName,
         }),
         state: initialState,
         file: testFileObj,
       });
 
       expect(multipart).toHaveBeenCalledWith(
-        'fakeHost/multipart/start',
+        `${uploadConfig.host}/multipart/start`,
         {
-          apikey: 'fakeApikey',
-          filename: 'customName',
-          mimetype: 'text/plain',
-          size: 1,
+          apikey: uploadConfig.apikey,
+          filename: customName,
+          mimetype: testFileObj.type,
+          size: testFileObj.size,
         },
-        { timeout: 120000 }
+        { timeout: uploadConfig.timeout }
       );
     });
 
     it('should respect overwrite of mimetype', async () => {
+      const mimetype = 'test/mimetype';
+
       await start({
         config: Object.assign({}, uploadConfig, {
-          mimetype: 'mimetype',
+          mimetype,
         }),
         state: initialState,
         file: testFileObj,
       });
 
       expect(multipart).toHaveBeenCalledWith(
-        'fakeHost/multipart/start',
+        `${uploadConfig.host}/multipart/start`,
         {
-          apikey: 'fakeApikey',
-          filename: 'test',
-          mimetype: 'mimetype',
-          size: 1,
+          apikey: uploadConfig.apikey,
+          filename: testFileObj.name,
+          mimetype: mimetype,
+          size: testFileObj.size,
         },
-        { timeout: 120000 }
+        { timeout: uploadConfig.timeout }
       );
     });
 
@@ -188,73 +193,82 @@ describe('Network', () => {
       });
 
       expect(multipart).toHaveBeenCalledWith(
-        'fakeHost/multipart/start',
-        { apikey: 'fakeApikey', filename: 'test', mimetype: 'application/octet-stream', size: 1 },
-        { timeout: 120000 }
+        `${uploadConfig.host}/multipart/start`,
+        { apikey: uploadConfig.apikey, filename: testFileObj.name, mimetype: 'application/octet-stream', size: testFileObj.size },
+        { timeout: uploadConfig.timeout }
       );
     });
   });
 
   describe('getS3PartData', () => {
     it('Should make correct request to get s3 data part', async () => {
+      const fakeHost = 'fakeHost';
+
       await getS3PartData(partObj, {
         config: uploadConfig,
         state: initialState,
         file: testFileObj,
         params: {
-          location_url: 'fakeHost',
+          location_url: fakeHost,
         },
       });
 
       expect(multipart).toHaveBeenCalledWith(
-        'https://fakeHost/multipart/upload',
-        { apikey: 'fakeApikey', md5: undefined, part: 2, size: 1, location_url: 'fakeHost' },
-        { headers: {}, timeout: 120000 }
+        `https://${fakeHost}/multipart/upload`,
+        { apikey: uploadConfig.apikey, part: 2, size: 1, location_url: fakeHost },
+        { headers: {}, timeout: uploadConfig.timeout }
       );
     });
 
     it('Should make correct request to get s3 data part and location provided', async () => {
+      const fakeHost = 'fakeHost';
+      const fakeRegion = 'fakeRegion';
+
       await getS3PartData(partObj, {
         config: uploadConfig,
         state: initialState,
         file: testFileObj,
         params: {
-          location_region: 'test',
-          location_url: 'fakeHost',
+          location_region: fakeRegion,
+          location_url: fakeHost,
         },
       });
 
       expect(multipart).toHaveBeenCalledWith(
-        'https://fakeHost/multipart/upload',
-        { apikey: 'fakeApikey', md5: undefined, part: 2, size: 1, location_region: 'test', location_url: 'fakeHost' },
+        `https://${uploadConfig.host}/multipart/upload`,
+        { apikey: uploadConfig.apikey, part: partObj.number + 1, size: partObj.size, location_region: fakeRegion, location_url: fakeHost },
         {
           headers: {
-            'Filestack-Upload-Region': 'test',
+            'Filestack-Upload-Region': fakeRegion,
           },
-          timeout: 120000,
+          timeout: uploadConfig.timeout,
         }
       );
     });
 
-    it('Should make correct request with part offset (inteligent ingesion)', async () => {
-      await getS3PartData(Object.assign({}, partObj, { offset: 0 }), {
+    it('Should make correct request with part offset (inteligent ingession)', async () => {
+      const fakeHost = 'fakeHost';
+      const fakeRegion = 'fakeRegion';
+      const offset = 0;
+
+      await getS3PartData(Object.assign({}, partObj, { offset }), {
         config: uploadConfig,
         state: initialState,
         file: testFileObj,
         params: {
-          location_url: 'fakeHost',
-          location_region: 'test',
+          location_url: fakeHost,
+          location_region: fakeRegion,
         },
       });
 
       expect(multipart).toHaveBeenCalledWith(
-        'https://fakeHost/multipart/upload',
-        { apikey: 'fakeApikey', md5: undefined, part: 2, size: 1, multipart: true, offset: 0, location_region: 'test', location_url: 'fakeHost' },
+        `https://${fakeHost}/multipart/upload`,
+        { apikey: uploadConfig.apikey, part: partObj.number + 1, size: partObj.size, multipart: true, offset: offset, location_region: fakeRegion, location_url: fakeHost },
         {
           headers: {
-            'Filestack-Upload-Region': 'test',
+            'Filestack-Upload-Region': fakeRegion,
           },
-          timeout: 120000,
+          timeout: uploadConfig.timeout,
         }
       );
     });
@@ -265,34 +279,32 @@ describe('Network', () => {
       const prog = jest.fn();
       const file = new ArrayBuffer(1);
 
-      await uploadToS3(file, { url: 'fakeHost', headers: { test: 1 } }, prog, uploadConfig);
+      const fakeHost = 'fakeHost';
+      const fakeHeaders = { test: 1 };
 
-      expect(request.put).toHaveBeenCalledWith(
-        'fakeHost',
-        file,
-        {
-          headers: { test: 1 },
-          timeout: uploadConfig.timeout,
-          onUploadProgress: prog,
-        }
-      );
+      await uploadToS3(file, { url: fakeHost, headers: fakeHeaders }, prog, uploadConfig);
+
+      expect(request.put).toHaveBeenCalledWith(fakeHost, file, {
+        headers: fakeHeaders,
+        timeout: uploadConfig.timeout,
+        onUploadProgress: prog,
+      });
     });
 
     it('should set timeout based on file size if', async () => {
       const prog = jest.fn();
       const file = new ArrayBuffer(1);
 
-      await uploadToS3(file, { url: 'fakeHost', headers: { test: 1 } }, prog, Object.assign({}, uploadConfig, { timeout: null }));
+      const fakeHost = 'fakeHost';
+      const fakeHeaders = { test: 1 };
 
-      expect(request.put).toHaveBeenCalledWith(
-        'fakeHost',
-        file,
-        {
-          headers: { test: 1 },
-          timeout: 1000,
-          onUploadProgress: prog,
-        }
-      );
+      await uploadToS3(file, { url: fakeHost, headers: fakeHeaders }, prog, Object.assign({}, uploadConfig, { timeout: null }));
+
+      expect(request.put).toHaveBeenCalledWith(fakeHost, file, {
+        headers: fakeHeaders,
+        timeout: 1000,
+        onUploadProgress: prog,
+      });
     });
   });
 
