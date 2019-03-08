@@ -85,7 +85,7 @@ describe('Network', () => {
           mimetype: 'text/plain',
           size: 1,
         },
-        { headers: undefined, timeout: 120000 }
+        { timeout: 120000 }
       );
     });
 
@@ -107,7 +107,7 @@ describe('Network', () => {
           multipart: true,
           size: 1,
         },
-        { headers: undefined, timeout: 120000 }
+        { timeout: 120000 }
       );
     });
 
@@ -131,7 +131,7 @@ describe('Network', () => {
           signature: 'signature',
           size: 1,
         },
-        { headers: undefined, timeout: 120000 }
+        { timeout: 120000 }
       );
     });
 
@@ -152,7 +152,7 @@ describe('Network', () => {
           mimetype: 'text/plain',
           size: 1,
         },
-        { headers: undefined, timeout: 120000 }
+        { timeout: 120000 }
       );
     });
 
@@ -173,7 +173,7 @@ describe('Network', () => {
           mimetype: 'mimetype',
           size: 1,
         },
-        { headers: undefined, timeout: 120000 }
+        { timeout: 120000 }
       );
     });
 
@@ -191,7 +191,7 @@ describe('Network', () => {
       expect(multipart).toHaveBeenCalledWith(
         'fakeHost/multipart/start',
         { apikey: 'fakeApikey', filename: 'test', mimetype: 'application/octet-stream', size: 1 },
-        { headers: undefined, timeout: 120000 }
+        { timeout: 120000 }
       );
     });
   });
