@@ -26,7 +26,6 @@ import { TransformSchema } from './schema/transforms.schema';
  * @param options
  */
 export const init = (apikey: string, options?: ClientOptions): Client => {
-  console.log('###000')
   return new Client(apikey, options);
 };
 

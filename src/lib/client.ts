@@ -122,7 +122,7 @@ export class Client {
   private cloud: CloudClient;
 
   constructor(apikey: string, options?: ClientOptions) {
-    console.log('###000');
+    console.log('###00');
     if (!apikey || typeof apikey !== 'string' || apikey.length === 0) {
       throw new Error('An apikey is required to initialize the Filestack client');
     }
@@ -148,6 +148,7 @@ export class Client {
     }
 
     console.log('###77', this.session);
+    console.log('###88', options);
     this.cloud = new CloudClient(this.session, options);
   }
   /**

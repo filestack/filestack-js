@@ -18,6 +18,28 @@
  * limitations under the License.
  */
 
-test.skip('skip', () => {
-  console.log('tests');
+import throat from './throat';
+
+describe('utils:throat', () => {
+  describe('throat', () => {
+    it('should run function concurrently with proper throat factor', () => {
+      const mockAsyncFunc = jest.fn((fileName) => {
+        return new Promise((resolve) => {
+          resolve(fileName);
+        });
+      });
+      const input = ['fileA.txt', 'fileB.txt', 'fileC.txt', 'fileD.txt'];
+      let result = [];
+      Promise.all(input.map(throat(2, fileName => mockAsyncFunc(fileName)))).then((fileNames) => {
+        result = fileNames;
+      }).catch(e => {
+        console.log(e);
+      });
+      expect(mockAsyncFunc).toHaveBeenCalledTimes(2);
+    });
+    it('should throw error second argument is not a function', () => {
+      const notFunction = 'string';
+      expect(() => { throat(2, notFunction); }).toThrow('Expected throat fn to be a function but got string');
+    });
+  });
 });
