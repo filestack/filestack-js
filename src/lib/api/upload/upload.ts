@@ -151,6 +151,7 @@ const gc = (part: PartObj) => {
  * @private
  */
 const sumBytes = (bytes: number[]) => bytes.reduce((a, b) => a + b, 0);
+
 /**
  *
  * @private
@@ -383,13 +384,18 @@ const uploadFile = async (ctx: Context, token: any): Promise<any> => {
         const err = new Error('Intelligent part failed to commit');
         return retry(location, () => goPart(part), err, part);
       }
+
       part.loaded = part.size;
+
       gc(part);
+
       if (!config.intelligent && !etag) {
         return Promise.reject(new Error('Response from S3 is missing ETag header.'));
       }
+
       return etag;
     } catch (err) {
+
       return retry(location, () => goPart(part), err, part);
     }
   });
