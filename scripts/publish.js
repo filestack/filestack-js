@@ -35,12 +35,20 @@ const getFilesToBeUploaded = (from) => {
 const pushOneFileToS3 = (file, to) => {
   return new Promise((resolve, reject) => {
     const path = `${to.folder}/${file.path}`;
-    s3.putObject({
+    const isGzip = file.path.indexOf('gz') > -1;
+
+    const options = {
       Bucket: to.bucket,
       Key: path,
       Body: file.content,
       ContentType: figureOutFileMimetype(file),
-    }, (err) => {
+    };
+
+    if (isGzip) {
+      options['ContentEncoding'] = 'gzip';
+    }
+
+    s3.putObject(options, (err) => {
       if (err) {
         console.error('Upload ERROR:', err);
         reject(err);
