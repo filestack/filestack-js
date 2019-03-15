@@ -37,7 +37,7 @@ const client = filestack.init('apikey');
 
 **UMD module**:
 ```HTML
-<script src="//static.filestackapi.com/filestack-js/1.x.x/filestack.min.js"></script>
+<script src="//static.filestackapi.com/filestack-js/{MAJOR_VERSION}.x.x/filestack.min.js"></script>
 <script>
   const client = filestack.init('apikey');
 </script>
@@ -55,7 +55,7 @@ where VERSION is one of the MAJOR versions of the filestack-js ie:
 ```HTML
 To speed up library loading you can use gzipped file available after adding gz before the file extension
 
-<script src="//static.filestackapi.com/filestack-js/VERSION.x.x/filestack.min.gz.js"></script>
+<script src="//static.filestackapi.com/filestack-js/{MAJOR_VERSION}.x.x/filestack.min.gz.js"></script>
 <script>
   const client = filestack.init('apikey');
 </script>
