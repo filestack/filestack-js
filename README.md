@@ -42,6 +42,15 @@ const client = filestack.init('apikey');
   const client = filestack.init('apikey');
 </script>
 ```
+**GZIP support**
+```HTML
+To speed up library loading you can use gzipped file available after adding gz before the file extension
+
+<script src="//static.filestackapi.com/filestack-js/1.x.x/filestack.min.gz.js"></script>
+<script>
+  const client = filestack.init('apikey');
+</script>
+```
 
 ### Node
 
