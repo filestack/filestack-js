@@ -20,9 +20,14 @@ import { getValidator, TransformSchema } from './';
 
 describe('Transforms Schema', () => {
 
-  const validate = getValidator(TransformSchema);
+  const validator = getValidator(TransformSchema);
 
-  const assertFail = (val) => assert.ok(!val);
+  const validate = (params) => {
+    const res = validator(params);
+    return res.errors.length === 0 ? true : false;
+  };
+
+  const assertFail = (res) => assert.ok(!res);
 
   it('should load json schema', () => {
     // console.log(schema);
