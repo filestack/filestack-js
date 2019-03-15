@@ -15,123 +15,77 @@
  * limitations under the License.
  */
 
-import { getFormData, start } from './network';
-
-import * as FormData from 'form-data';
+import { start, getS3PartData, uploadToS3, complete } from './network';
 import { Status, FileObj } from './types';
-import { requestWithSource } from '../request';
+import { multipart, request } from '../request';
 
 jest.mock('../request');
-jest.mock('form-data');
-
-const testUploadConfig = {
-  apikey: 'testkey',
-  store: {
-    testStore: 1,
-  },
-  concurrency: 1,
-  partSize: 100,
-  retryFactor: 0,
-  retryMaxTime: 100,
-  progressInterval: 100,
-};
 
 describe('Network', () => {
   afterEach(() => {
-    FormData.mockClear();
+    // @ts-ignore
+    multipart.mockClear();
   });
 
-  describe('getFormData', () => {
-    it('should parse correct basic params', () => {
-      const fields = {
-        apikey: 'test',
-        part: 1,
-      };
+  const partObj = {
+    buffer: Buffer.from('test'),
+    chunks: [],
+    chunkSize: 1,
+    intelligentOverride: false,
+    loaded: 1,
+    number: 1,
+    request: null,
+    size: 1,
+  };
 
-      getFormData(fields, testUploadConfig);
-      expect(FormData.prototype.append).toHaveBeenCalledWith('apikey', 'test');
-      expect(FormData.prototype.append).toHaveBeenCalledWith('part', 1);
-      expect(FormData.prototype.append).toHaveBeenCalledWith('testStore', 1);
+  const uploadConfig = {
+    host: 'fakeHost',
+    apikey: 'fakeApikey',
+    partSize: 6 * 1024 * 1024,
+    concurrency: 3,
+    progressInterval: 1000,
+    retry: 10,
+    retryFactor: 2,
+    retryMaxTime: 15000,
+    customName: null,
+    mimetype: null,
+    store: {},
+    timeout: 120000,
+  };
 
-      expect(FormData.prototype.append).toHaveBeenCalledTimes(3);
-    });
+  const initialState = {
+    parts: {},
+    progressTick: null,
+    previousPayload: null,
+    retries: {},
+    status: Status.INIT,
+  };
 
-    it('should parse correct complex params', () => {
-      const fields = {
-        apikey: 'test',
-        part: 1,
-        workflowsUi: ['test', 'test2'],
-      };
-
-      getFormData(fields, Object.assign({}, testUploadConfig, {
-        store: {
-          test: { test1: 1 },
-        },
-      }));
-
-      expect(FormData.prototype.append).toHaveBeenCalledWith('apikey', 'test');
-      expect(FormData.prototype.append).toHaveBeenCalledWith('part', 1);
-      expect(FormData.prototype.append).toHaveBeenCalledWith('workflowsUi', JSON.stringify(['test', 'test2']));
-      expect(FormData.prototype.append).toHaveBeenCalledWith('test', JSON.stringify({ test1: 1 }));
-
-      expect(FormData.prototype.append).toHaveBeenCalledTimes(4);
-    });
-  });
+  const testFileObj = {
+    buffer: Buffer.from('asd'),
+    name: 'test',
+    size: 1,
+    type: 'text/plain',
+  } as FileObj;
 
   describe('start', () => {
-    const uploadConfig = {
-      host: 'fakeHost',
-      apikey: 'fakeApikey',
-      partSize: 6 * 1024 * 1024,
-      concurrency: 3,
-      progressInterval: 1000,
-      retry: 10,
-      retryFactor: 2,
-      retryMaxTime: 15000,
-      customName: null,
-      mimetype: null,
-      store: {},
-      timeout: 120000,
-    };
-
-    const initialState = {
-      parts: {},
-      progressTick: null,
-      previousPayload: null,
-      retries: {},
-      status: Status.INIT,
-    };
-
-    const testFileObj = {
-      buffer: Buffer.from('asd'),
-      name: 'test',
-      size: 1,
-      type: 'text/plain',
-    } as FileObj;
-
     it('should make correct start request', async () => {
-      const mockedMethod = jest.fn(() => Promise.resolve({ data: {} }));
-      // @ts-ignore
-      requestWithSource.mockImplementation(() => {
-        return {
-          post: mockedMethod,
-        };
-      });
-
       await start({
         config: uploadConfig,
         state: initialState,
         file: testFileObj,
       });
 
-      expect(FormData.prototype.append).toHaveBeenCalledWith('size', 1);
-      expect(FormData.prototype.append).toHaveBeenCalledWith('apikey', 'fakeApikey');
-      expect(FormData.prototype.append).toHaveBeenCalledWith('mimetype', 'text/plain');
-      expect(FormData.prototype.append).toHaveBeenCalledWith('filename', 'test');
-
-      expect(FormData.prototype.append).toHaveBeenCalledTimes(4);
-
-      expect(mockedMethod).toHaveBeenCalledWith('fakeHost/multipart/start', expect.any(FormData), { headers: undefined, timeout: 120000 });
+      expect(multipart).toHaveBeenCalledWith(
+        `${uploadConfig.host}/multipart/start`,
+        {
+          apikey: uploadConfig.apikey,
+          filename: testFileObj.name,
+          mimetype: testFileObj.type,
+          size: testFileObj.size,
+        },
+        { timeout: uploadConfig.timeout }
+      );
     });
 
     it('should add multipart param on config inteligent', async () => {
@@ -143,45 +97,88 @@ describe('Network', () => {
         file: testFileObj,
       });
 
-      expect(FormData.prototype.append).toHaveBeenCalledWith('multipart', true);
+      expect(multipart).toHaveBeenCalledWith(
+        `${uploadConfig.host}/multipart/start`,
+        {
+          apikey: uploadConfig.apikey,
+          filename: testFileObj.name,
+          mimetype: testFileObj.type,
+          multipart: true,
+          size: testFileObj.size,
+        },
+        { timeout: uploadConfig.timeout }
+      );
     });
 
     it('should respect config policy and signature and add it to formData', async () => {
+      const security = {
+        policy: 'policy',
+        signature: 'signature',
+      };
+
       await start({
-        config: Object.assign({}, uploadConfig, {
-          policy: 'policy',
-          signature: 'signature',
-        }),
+        config: Object.assign({}, uploadConfig, security),
         state: initialState,
         file: testFileObj,
       });
 
-      expect(FormData.prototype.append).toHaveBeenCalledWith('signature', 'signature');
-      expect(FormData.prototype.append).toHaveBeenCalledWith('policy', 'policy');
+      expect(multipart).toHaveBeenCalledWith(
+        `${uploadConfig.host}/multipart/start`,
+        {
+          apikey: uploadConfig.apikey,
+          filename: testFileObj.name,
+          mimetype: testFileObj.type,
+          size: testFileObj.size,
+          ...security,
+        },
+        { timeout: uploadConfig.timeout }
+      );
     });
 
     it('should respect customName provided in config', async () => {
+      const customName = 'customName';
+
       await start({
         config: Object.assign({}, uploadConfig, {
-          customName: 'customName',
+          customName,
         }),
         state: initialState,
         file: testFileObj,
       });
 
-      expect(FormData.prototype.append).toHaveBeenCalledWith('filename', 'customName');
+      expect(multipart).toHaveBeenCalledWith(
+        `${uploadConfig.host}/multipart/start`,
+        {
+          apikey: uploadConfig.apikey,
+          filename: customName,
+          mimetype: testFileObj.type,
+          size: testFileObj.size,
+        },
+        { timeout: uploadConfig.timeout }
+      );
     });
 
     it('should respect overwrite of mimetype', async () => {
+      const mimetype = 'test/mimetype';
+
       await start({
         config: Object.assign({}, uploadConfig, {
-          mimetype: 'mimetype',
+          mimetype,
         }),
         state: initialState,
         file: testFileObj,
       });
 
-      expect(FormData.prototype.append).toHaveBeenCalledWith('mimetype', 'mimetype');
+      expect(multipart).toHaveBeenCalledWith(
+        `${uploadConfig.host}/multipart/start`,
+        {
+          apikey: uploadConfig.apikey,
+          filename: testFileObj.name,
+          mimetype: mimetype,
+          size: testFileObj.size,
+        },
+        { timeout: uploadConfig.timeout }
+      );
     });
 
     it('should set mimetype to "application/octet-stream" when no mimetype is provided', async () => {
@@ -195,20 +192,293 @@ describe('Network', () => {
         }),
       });
 
-      expect(FormData.prototype.append).toHaveBeenCalledWith('mimetype', 'application/octet-stream');
+      expect(multipart).toHaveBeenCalledWith(
+        `${uploadConfig.host}/multipart/start`,
+        { apikey: uploadConfig.apikey, filename: testFileObj.name, mimetype: 'application/octet-stream', size: testFileObj.size },
+        { timeout: uploadConfig.timeout }
+      );
     });
-
   });
 
   describe('getS3PartData', () => {
+    it('Should make correct request to get s3 data part', async () => {
+      const fakeHost = 'fakeHost';
 
+      await getS3PartData(partObj, {
+        config: uploadConfig,
+        state: initialState,
+        file: testFileObj,
+        params: {
+          location_url: fakeHost,
+        },
+      });
+
+      expect(multipart).toHaveBeenCalledWith(
+        `https://${fakeHost}/multipart/upload`,
+        { apikey: uploadConfig.apikey, part: 2, size: 1, location_url: fakeHost },
+        { headers: {}, timeout: uploadConfig.timeout }
+      );
+    });
+
+    it('Should make correct request to get s3 data part and location provided', async () => {
+      const fakeHost = 'fakeHost';
+      const fakeRegion = 'fakeRegion';
+
+      await getS3PartData(partObj, {
+        config: uploadConfig,
+        state: initialState,
+        file: testFileObj,
+        params: {
+          location_region: fakeRegion,
+          location_url: fakeHost,
+        },
+      });
+
+      expect(multipart).toHaveBeenCalledWith(
+        `https://${uploadConfig.host}/multipart/upload`,
+        {
+          apikey: uploadConfig.apikey,
+          part: partObj.number + 1,
+          size: partObj.size,
+          location_region: fakeRegion,
+          location_url: fakeHost,
+        },
+        {
+          headers: {
+            'Filestack-Upload-Region': fakeRegion,
+          },
+          timeout: uploadConfig.timeout,
+        }
+      );
+    });
+
+    it('Should make correct request with part offset (inteligent ingession)', async () => {
+      const fakeHost = 'fakeHost';
+      const fakeRegion = 'fakeRegion';
+      const offset = 0;
+
+      await getS3PartData(Object.assign({}, partObj, { offset }), {
+        config: uploadConfig,
+        state: initialState,
+        file: testFileObj,
+        params: {
+          location_url: fakeHost,
+          location_region: fakeRegion,
+        },
+      });
+
+      expect(multipart).toHaveBeenCalledWith(
+        `https://${fakeHost}/multipart/upload`,
+        {
+          apikey: uploadConfig.apikey,
+          part: partObj.number + 1,
+          size: partObj.size,
+          multipart: true,
+          offset: offset,
+          location_region: fakeRegion,
+          location_url: fakeHost,
+        },
+        {
+          headers: {
+            'Filestack-Upload-Region': fakeRegion,
+          },
+          timeout: uploadConfig.timeout,
+        }
+      );
+    });
   });
 
   describe('uploadToS3', () => {
+    it('should make correct put request to given host', async () => {
+      const prog = jest.fn();
+      const file = new ArrayBuffer(1);
 
+      const fakeHost = 'fakeHost';
+      const fakeHeaders = { test: 1 };
+
+      await uploadToS3(file, { url: fakeHost, headers: fakeHeaders }, prog, uploadConfig);
+
+      expect(request.put).toHaveBeenCalledWith(fakeHost, file, {
+        headers: fakeHeaders,
+        timeout: uploadConfig.timeout,
+        onUploadProgress: prog,
+      });
+    });
+
+    it('should set timeout based on file size if', async () => {
+      const prog = jest.fn();
+      const file = new ArrayBuffer(1);
+
+      const fakeHost = 'fakeHost';
+      const fakeHeaders = { test: 1 };
+
+      await uploadToS3(
+        file,
+        {
+          url: fakeHost,
+          headers: fakeHeaders,
+        },
+        prog,
+        Object.assign({}, uploadConfig, { timeout: null })
+      );
+
+      expect(request.put).toHaveBeenCalledWith(fakeHost, file, {
+        headers: fakeHeaders,
+        timeout: 1000,
+        onUploadProgress: prog,
+      });
+    });
   });
 
   describe('complete', () => {
+    it('should make correct complete request', async () => {
+      const etags = ['a', 'b'];
+      const fakeHost = 'fakeHost';
+      const fakeRegion = 'fakeRegion';
 
+      await complete(etags, {
+        config: uploadConfig,
+        state: initialState,
+        file: testFileObj,
+        params: {
+          location_url: fakeHost,
+          location_region: fakeRegion,
+        },
+      });
+
+      expect(multipart).toHaveBeenCalledWith(
+        `https://${fakeHost}/multipart/complete`,
+        {
+          apikey: uploadConfig.apikey,
+          location_region: fakeRegion,
+          location_url: fakeHost,
+          filename: testFileObj.name,
+          mimetype: testFileObj.type,
+          size: testFileObj.size,
+          parts: '1:a;2:b',
+        },
+        {
+          headers: {
+            'Filestack-Upload-Region': fakeRegion,
+          },
+          timeout: uploadConfig.timeout,
+        }
+      );
+    });
+
+    it('should request with "application/octet-stream" when no mimetype is provided', async () => {
+      const etags = ['a', 'b'];
+      const fakeHost = 'fakeHost';
+      const fakeRegion = 'fakeRegion';
+
+      await complete(etags, {
+        config: Object.assign({}, uploadConfig, {
+          mimetype: null,
+        }),
+        file: Object.assign({}, testFileObj, {
+          type: null,
+        }),
+        state: initialState,
+        params: {
+          location_url: fakeHost,
+          location_region: fakeRegion,
+        },
+      });
+
+      expect(multipart).toHaveBeenCalledWith(
+        `https://${fakeHost}/multipart/complete`,
+        {
+          apikey: uploadConfig.apikey,
+          location_region: fakeRegion,
+          location_url: fakeHost,
+          filename: testFileObj.name,
+          mimetype: 'application/octet-stream',
+          size: testFileObj.size,
+          parts: '1:a;2:b',
+        },
+        {
+          headers: {
+            'Filestack-Upload-Region': fakeRegion,
+          },
+          timeout: uploadConfig.timeout,
+        }
+      );
+    });
+
+    it('should make correct complete request with security passed', async () => {
+      const etags = ['a', 'b'];
+      const fakeHost = 'fakeHost';
+      const fakeRegion = 'fakeRegion';
+
+      const security = {
+        policy: 'policy',
+        signature: 'signature',
+      };
+
+      await complete(etags, {
+        config: Object.assign({}, uploadConfig, { ...security }),
+        state: initialState,
+        file: testFileObj,
+        params: {
+          location_url: fakeHost,
+          location_region: fakeRegion,
+        },
+      });
+
+      expect(multipart).toHaveBeenCalledWith(
+        `https://${fakeHost}/multipart/complete`,
+        {
+          apikey: uploadConfig.apikey,
+          location_region: fakeRegion,
+          location_url: fakeHost,
+          filename: testFileObj.name,
+          mimetype: testFileObj.type,
+          size: testFileObj.size,
+          parts: '1:a;2:b',
+          ...security,
+        },
+        {
+          headers: {
+            'Filestack-Upload-Region': fakeRegion,
+          },
+          timeout: uploadConfig.timeout,
+        }
+      );
+    });
+
+    it('should make correct complete request intelligent ingession', async () => {
+      const etags = ['a', 'b'];
+      const fakeHost = 'fakeHost';
+      const fakeRegion = 'fakeRegion';
+
+      await complete(etags, {
+        config: Object.assign({}, uploadConfig, { intelligent: true  }),
+        state: initialState,
+        file: testFileObj,
+        params: {
+          location_url: fakeHost,
+          location_region: fakeRegion,
+        },
+      });
+
+      expect(multipart).toHaveBeenCalledWith(
+        `https://${fakeHost}/multipart/complete`,
+        {
+          apikey: uploadConfig.apikey,
+          location_region: fakeRegion,
+          location_url: fakeHost,
+          filename: testFileObj.name,
+          mimetype: testFileObj.type,
+          size: testFileObj.size,
+          multipart: true,
+        },
+        {
+          headers: {
+            'Filestack-Upload-Region': fakeRegion,
+          },
+          timeout: uploadConfig.timeout,
+        }
+      );
+    });
   });
 });

@@ -15,8 +15,8 @@
  * limitations under the License.
  */
 
-import { requestWithSource } from '../request';
-import { getLocationURL, getFormData, getHost, getS3PartData, uploadToS3 } from './network';
+import { requestWithSource, multipart } from '../request';
+import { getLocationURL, getHost, getS3PartData, uploadToS3 } from './network';
 import { calcMD5 } from './md5';
 import { PartObj, Context } from './types';
 import { throttle } from '../../utils';
@@ -84,14 +84,19 @@ export const uploadChunk = async (chunk: any, ctx: Context): Promise<any> => {
  */
 export const commitPart = (part: PartObj, ctx: Context): Promise<any> => {
   const cfg = ctx.config;
-  /* istanbul ignore next */
-  const host = getHost(cfg.host) || getLocationURL(ctx.params.location_url);
+  const host = getLocationURL(ctx.params.location_url);
+
   const fields = {
     apikey: cfg.apikey,
     part: part.number + 1,
     size: ctx.file.size,
     ...ctx.params,
   };
-  const formData = getFormData(fields, cfg);
-  return requestWithSource().post(`${host}/multipart/commit`, formData, { timeout: cfg.timeout, headers: formData.getHeaders() });
+
+  return multipart(`${host}/multipart/commit`, {
+    ...fields,
+    ...cfg.store,
+  }, {
+    timeout: cfg.timeout,
+  });
 };

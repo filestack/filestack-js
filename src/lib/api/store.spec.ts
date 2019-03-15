@@ -56,14 +56,14 @@ const mockedSession: Session = {
   },
 };
 
+const responseObj = {
+  url: 'testUrl/testHandle',
+  type: 'testMimetype',
+};
+
 describe('StoreURL', () => {
 
   it('should call correct store method', async () => {
-    let responseObj = {
-      url: 'testUrl/testHandle',
-      type: 'testMimetype',
-    };
-
     // @ts-ignore
     axios.get.mockImplementation(() => Promise.resolve({ data: responseObj }));
     const res = await storeURL(mockedSession, 'http://test.com');
@@ -82,11 +82,6 @@ describe('StoreURL', () => {
       policy: 'fakeP',
     };
 
-    let responseObj = {
-      url: 'testUrl/testHandle',
-      type: 'testMimetype',
-    };
-
     // @ts-ignore
     axios.get.mockImplementation(() => Promise.resolve({ data: responseObj }));
     const res = await storeURL(mockedSession, 'fakeUrl', {}, null, fakeSecurity);
@@ -103,7 +98,12 @@ describe('StoreURL', () => {
     };
 
     // @ts-ignore
-    axios.get.mockImplementation(() => Promise.resolve({ data: responseObj }));
+    axios.get.mockImplementation(() => new Promise((res) => {
+      setTimeout(() => {
+        return { data: responseObj };
+      }, 100);
+    }));
+
     expect(storeURL(mockedSession, 'fakeUrl', {}, token)).rejects.toThrowError();
     token.cancel();
   });

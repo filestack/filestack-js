@@ -15,18 +15,9 @@
  * limitations under the License.
  */
 
-import { requestWithSource, request } from '../request';
+import { request, multipart } from '../request';
 import { getName } from './utils';
 import { Context, PartObj, UploadConfig } from './types';
-import * as FormData from 'form-data';
-
-/**
- * @private
- */
-/* istanbul ignore next */
-export const getHost = (host?: string) => {
-  return process.env.TEST_ENV === 'unit' && host;
-};
 
 /**
  * @private
@@ -34,38 +25,6 @@ export const getHost = (host?: string) => {
 /* istanbul ignore next */
 export const getLocationURL = (url: string) => {
   return url && `https://${url}`;
-};
-
-/**
- * Generates multi-part fields for all requests
- * @private
- * @param fields  Object containing form data keys
- * @param config  Upload config
- */
-export const getFormData = (fields: any, { store }: UploadConfig): FormData => {
-  const fd: any = new FormData();
-
-  Object.keys(fields).forEach((key: string) => {
-    if (typeof fields[key] === 'object') {
-      fields[key] = JSON.stringify(fields[key]);
-    }
-
-    if (fields[key]) {
-      fd.append(key, fields[key]);
-    }
-  });
-
-  Object.keys(store).forEach((key: string) => {
-    if (typeof store[key] === 'object') {
-      store[key] = JSON.stringify(store[key]);
-    }
-
-    if (store[key]) {
-      fd.append(key, store[key]);
-    }
-  });
-
-  return fd;
 };
 
 /**
@@ -92,16 +51,12 @@ export const start = ({ config, file }: Context): Promise<any> => {
     fields.multipart = true;
   }
 
-  let requestOptions: any = {};
-
-  if (config.timeout) {
-    requestOptions.timeout = config.timeout;
-  }
-
-  const formData = getFormData(fields, config);
-  requestOptions.headers = formData.getHeaders();
-
-  return requestWithSource().post(`${config.host}/multipart/start`, formData, requestOptions);
+  return multipart(`${config.host}/multipart/start`, {
+    ...fields,
+    ...config.store,
+  }, {
+    timeout: config.timeout,
+  });
 };
 
 /**
@@ -115,8 +70,7 @@ export const start = ({ config, file }: Context): Promise<any> => {
  * @param offset        Current offset if chunking a part.
  */
 export const getS3PartData = (part: PartObj, { config, params }: Context): Promise<any> => {
-  /* istanbul ignore next */
-  const host = getHost(config.host) || getLocationURL(params.location_url);
+  const host = getLocationURL(params.location_url);
   const locationRegion = params.location_region;
 
   const fields = {
@@ -130,17 +84,20 @@ export const getS3PartData = (part: PartObj, { config, params }: Context): Promi
   // Intelligent Ingestion
   if (part.offset !== undefined) {
     fields.multipart = true;
-    fields.offset = part.offset === 0 ? '0' : part.offset;
+    fields.offset = part.offset;
   }
 
-  const formData = getFormData(fields, config);
-  let headers = formData.getHeaders();
+  let headers = {};
 
   if (locationRegion) {
+    // set headers for filestack upload region to be respected in cdn when using cnames
     headers['Filestack-Upload-Region'] = locationRegion;
   }
 
-  return requestWithSource().post(`${host}/multipart/upload`, formData, {
+  return multipart(`${host}/multipart/upload`, {
+    ...fields,
+    ...config.store,
+  }, {
     headers,
     timeout: config.timeout,
   });
@@ -155,9 +112,8 @@ export const getS3PartData = (part: PartObj, { config, params }: Context): Promi
  * @param config
  */
 export const uploadToS3 = (part: ArrayBuffer, params: any, onUploadProgress: any, cfg: UploadConfig): Promise<any> => {
-  /* istanbul ignore next */
-  const host = getHost(`${cfg.host}/fakeS3`) || params.url;
-  const timeout = cfg.timeout || (part.byteLength / 100);
+  const host = params.url;
+  const timeout = cfg.timeout || Math.max(part.byteLength / 100, 1000);
 
   return request
     .put(host, part, {
@@ -172,7 +128,7 @@ export const uploadToS3 = (part: ArrayBuffer, params: any, onUploadProgress: any
  * @private
  * @param etags     Array of Etag strings
  */
-const formatETags = (etags: any): string => etags.map((tag: string, idx: number) => `${idx + 1}:${tag}`).join(';');
+const formatETags = (etags: string[]): string => etags.map((tag: string, idx: number) => `${idx + 1}:${tag}`).join(';');
 
 /**
  * Completes upload flow (/multipart/complete)
@@ -182,9 +138,8 @@ const formatETags = (etags: any): string => etags.map((tag: string, idx: number)
  * @param startParams   Parameters returned from start call
  * @param config        Upload config
  */
-export const complete = (etags: string, { config, file, params }: Context): Promise<any> => {
-  /* istanbul ignore next */
-  const host = getHost(config.host) || getLocationURL(params.location_url);
+export const complete = (etags: string[], { config, file, params }: Context): Promise<any> => {
+  const host = getLocationURL(params.location_url);
   const locationRegion = params.location_region;
 
   const fields = {
@@ -208,15 +163,17 @@ export const complete = (etags: string, { config, file, params }: Context): Prom
     fields.signature = config.signature;
   }
 
-  const formData = getFormData(fields, config);
-
-  let headers = formData.getHeaders();
+  let headers = {};
 
   if (locationRegion) {
+    // set headers for filestack upload region to be respected in cdn when using cnames
     headers['Filestack-Upload-Region'] = locationRegion;
   }
 
-  return requestWithSource().post(`${host}/multipart/complete`, formData, {
+  return multipart(`${host}/multipart/complete`, {
+    ...fields,
+    ...config.store,
+  }, {
     headers,
     timeout: config.timeout,
   });
