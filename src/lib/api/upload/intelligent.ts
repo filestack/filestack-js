@@ -15,8 +15,8 @@
  * limitations under the License.
  */
 
-import { requestWithSource, multipart } from '../request';
-import { getLocationURL, getHost, getS3PartData, uploadToS3 } from './network';
+import { multipart } from '../request';
+import { getLocationURL, getS3PartData, uploadToS3 } from './network';
 import { calcMD5 } from './md5';
 import { PartObj, Context } from './types';
 import { throttle } from '../../utils';
