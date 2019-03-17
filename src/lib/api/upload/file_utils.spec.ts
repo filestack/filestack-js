@@ -15,12 +15,25 @@
  * limitations under the License.
  */
 
-import { getPart } from './file_utils';
+import { getPart, getFile, getMimetype } from './file_utils';
 import { Status } from './types';
+
+jest.mock('fs', () => {
+  return {
+    readFile: jest.fn().mockImplementation((path, cb) => {
+      cb(null, Buffer.from('This is a buffer example.'))
+    }),
+    statSync: jest.fn().mockImplementation(inputFile => {
+      return {
+        size: 987
+      }
+    })
+  }
+});
 
 describe('api:upload:file_utils', () => {
   describe('getPart', () => {
-    it('should properly get part of file', (done) => {
+    it('should properly get a part of file', (done) => {
       const newFile = {
         buffer: Buffer.from('This is a buffer example.'),
         lastModified: 1551712133314,
@@ -101,11 +114,66 @@ describe('api:upload:file_utils', () => {
           'upload_type': 'intelligent_ingestion',
         },
       };
+      const expected = {
+        buffer: Buffer.from('This is a buffer example.'),
+        chunks:
+          [{
+            buffer: {},
+            offset: 0,
+            size: 9225,
+            number: 0,
+            md5: 'lnkAXF0iK/msEWB5CCG5Dg=='
+          }],
+        chunkSize: 8388608,
+        intelligentOverride: false,
+        loaded: 0,
+        number: 0,
+        request: null,
+        size: 25,
+        md5: 'XbWxBKtt/pwXwyTrpVVHwQ=='
+      }
       expect.assertions(1);
       return getPart(part, ctx).then(data => {
-        expect(data).toEqual({});
+        expect(data).toEqual(expected);
         done();
       });
+    });
+  });
+  describe('getFile', () => {
+    it('should properly get a file as buffer', (done) => {
+      const buffer = Buffer.from('This is a buffer example.');
+      expect.assertions(1);
+      const expected = {
+        buffer,
+        "name": undefined,
+        "size": 25,
+        "type": "text/plain"
+      };
+      return getFile(buffer).then(data => {
+        expect(data).toEqual(expected);
+        done();
+      });
+    });
+    it('should properly get a file from a local by provided path', (done) => {
+      const fakeFilePath = './../images.test.jpg';
+      expect.assertions(1);
+      const expected = {
+        'buffer': Buffer.from('This is a buffer example.'),
+        "name": 'images.test.jpg',
+        "size": 987,
+        "type": "text/plain"
+      };
+      return getFile(fakeFilePath).then(data => {
+        expect(data).toEqual(expected);
+        done();
+      });
+    });
+  });
+  describe('getMimetype', () => {
+    it('should properly read a mimetype', () => {
+      const fileBuffer = Buffer.from('This is a buffer example.')
+      const result = getMimetype(fileBuffer);
+      expect(result).toBe('');
     });
   });
 });

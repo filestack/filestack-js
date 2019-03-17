@@ -18,11 +18,11 @@
 import * as fs from 'fs';
 import * as path from 'path';
 // import * as mime from 'mime';
-import * as mimetype from 'file-type';
+import mimetype from 'file-type';
 import { calcMD5 } from './md5';
 import { Context, PartObj, FileObj } from './types';
 import * as isutf8 from 'isutf8';
-import * as isSvg from 'is-svg';
+import isSvg from 'is-svg';
 
 /**
  * Given a file with a valid descriptor this will return a part object
