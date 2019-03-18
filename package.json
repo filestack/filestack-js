@@ -74,7 +74,6 @@
     "jest": "^24.1.0",
     "jest-mock-axios": "^2.1.11",
     "js-yaml": "^3.12.0",
-    "mime-types": "^2.1.19",
     "opn-cli": "^3.1.0",
     "prettier": "^1.16.4",
     "rollup": "^0.57.0",
