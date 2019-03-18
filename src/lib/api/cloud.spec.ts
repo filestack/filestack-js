@@ -17,7 +17,6 @@
 /* globals global */
 
 import { CloudClient } from './cloud';
-import { requestWithSource as request } from './../api/request';
 
 const globalAny: any = global;
 
