@@ -15,7 +15,8 @@
  * limitations under the License.
  */
 
-import { Filelink } from './filelink';
+import { Filelink, ShapeType } from './filelink';
+// import { EShapeType } from './api/transform';
 
 const globalAny: any = global;
 
@@ -51,16 +52,9 @@ describe('filelink', () => {
     const result = filelink.toString();
     expect(result).toBe('https://cdn.filestackcontent.com/CmrB9kEilS1SQeHIDf3wtz/5aYkEQJSQCmYShsoCnZN');
   });
-  describe('simple transform flow', () => {
+  describe('Check different tasks || simple transform flow', () => {
     let filelink = new Filelink(defaultSource, defaultApikey);
-    // beforeAll(() => {
-    //   let filelink = new Filelink(defaultSource, defaultApikey);
-    // });
-    // beforeEach(() => {
-    //   let filelink = new Filelink(defaultSource, defaultApikey);
-    // });
     afterEach(() => {
-      filelink = null;
       filelink = new Filelink(defaultSource, defaultApikey);
     });
     it('should be able to create filelink when handle is base64', () => {
@@ -84,6 +78,289 @@ describe('filelink', () => {
     it('should be able to add flop', () => {
       filelink.flop();
       expect(filelink.toString()).toBe('https://customDomain.com/CmrB9kEilS1SQeHIDf3wtz/flop/5aYkEQJSQCmYShsoCnZN');
+    });
+    it('should be able to enhance', () => {
+      filelink.enhance();
+      expect(filelink.toString()).toBe('https://customDomain.com/CmrB9kEilS1SQeHIDf3wtz/enhance/5aYkEQJSQCmYShsoCnZN');
+    });
+    it('should be able to redeye', () => {
+      filelink.redeye();
+      expect(filelink.toString()).toBe('https://customDomain.com/CmrB9kEilS1SQeHIDf3wtz/redeye/5aYkEQJSQCmYShsoCnZN');
+    });
+    it('should be able to monochrome', () => {
+      filelink.monochrome();
+      expect(filelink.toString()).toBe('https://customDomain.com/CmrB9kEilS1SQeHIDf3wtz/monochrome/5aYkEQJSQCmYShsoCnZN');
+    });
+    it('should be able to negative', () => {
+      filelink.negative();
+      expect(filelink.toString()).toBe('https://customDomain.com/CmrB9kEilS1SQeHIDf3wtz/negative/5aYkEQJSQCmYShsoCnZN');
+    });
+    it('should be able to tags', () => {
+      filelink.tags();
+      expect(filelink.toString()).toBe('https://customDomain.com/CmrB9kEilS1SQeHIDf3wtz/tags/5aYkEQJSQCmYShsoCnZN');
+    });
+    it('should be able to sfw', () => {
+      filelink.sfw();
+      expect(filelink.toString()).toBe('https://customDomain.com/CmrB9kEilS1SQeHIDf3wtz/sfw/5aYkEQJSQCmYShsoCnZN');
+    });
+    it('should be able to store', () => {
+      const storeParams = {};
+      filelink.store(storeParams);
+      expect(filelink.toString()).toBe('https://customDomain.com/CmrB9kEilS1SQeHIDf3wtz/store/5aYkEQJSQCmYShsoCnZN');
+    });
+    it('should be able to disable cache', () => {
+      filelink.cache(false);
+      expect(filelink.toString()).toBe('https://customDomain.com/CmrB9kEilS1SQeHIDf3wtz/cache=false/5aYkEQJSQCmYShsoCnZN');
+    });
+    it('should be able to resize', () => {
+      const resizeParams = {
+        width: 200,
+      };
+      filelink.resize(resizeParams);
+      expect(filelink.toString()).toBe('https://customDomain.com/CmrB9kEilS1SQeHIDf3wtz/resize=width:200/5aYkEQJSQCmYShsoCnZN');
+    });
+    it('should be able to crop', () => {
+      filelink.crop({
+        dim: [20, 20, 250, 250],
+      });
+      expect(filelink.toString()).toBe('https://customDomain.com/CmrB9kEilS1SQeHIDf3wtz/crop=dim:[20,20,250,250]/5aYkEQJSQCmYShsoCnZN');
+    });
+    it('should be able to rotate', () => {
+      const rotateParams = {
+        deg: 90,
+      };
+      filelink.rotate(rotateParams);
+      expect(filelink.toString()).toBe('https://customDomain.com/CmrB9kEilS1SQeHIDf3wtz/rotate=deg:90/5aYkEQJSQCmYShsoCnZN');
+    });
+    it('should be able to detect faces', () => {
+      filelink.detectFaces({});
+      expect(filelink.toString()).toBe('https://customDomain.com/CmrB9kEilS1SQeHIDf3wtz/detect_faces/5aYkEQJSQCmYShsoCnZN');
+    });
+    it('should be able to crop faces', () => {
+      filelink.cropFaces({});
+      expect(filelink.toString()).toBe('https://customDomain.com/CmrB9kEilS1SQeHIDf3wtz/crop_faces/5aYkEQJSQCmYShsoCnZN');
+    });
+    it('should be able to pixelate faces', () => {
+      filelink.pixelateFaces({});
+      expect(filelink.toString()).toBe('https://customDomain.com/CmrB9kEilS1SQeHIDf3wtz/pixelate_faces/5aYkEQJSQCmYShsoCnZN');
+    });
+    it('should be able to blur faces', () => {
+      const blurFacesParams = {
+        amount: 3,
+        blur: 5,
+        type: ShapeType.oval,
+      };
+      filelink.blurFaces(blurFacesParams);
+      expect(filelink.toString()).toBe('https://customDomain.com/CmrB9kEilS1SQeHIDf3wtz/blur_faces=amount:3,blur:5,type:oval/5aYkEQJSQCmYShsoCnZN');
+    });
+    it('should be able to round cornerns', () => {
+      const roundedCornersParams = {
+        radius: 50,
+        blur: 5,
+      };
+      filelink.roundedCorners(roundedCornersParams);
+      expect(filelink.toString()).toBe('https://customDomain.com/CmrB9kEilS1SQeHIDf3wtz/rounded_corners=radius:50,blur:5/5aYkEQJSQCmYShsoCnZN');
+    });
+    it('should be able to polaroid', () => {
+      const polaroidParams = {
+        color: 'ff0000',
+        rotate: 50,
+      };
+      filelink.polaroid(polaroidParams);
+      expect(filelink.toString()).toBe('https://customDomain.com/CmrB9kEilS1SQeHIDf3wtz/polaroid=color:ff0000,rotate:50/5aYkEQJSQCmYShsoCnZN');
+    });
+    it('should be able to vignette', () => {
+      const vignetteParams = {
+        background: 'ff0000',
+        amount: 5,
+      };
+      filelink.vignette(vignetteParams);
+      expect(filelink.toString()).toBe('https://customDomain.com/CmrB9kEilS1SQeHIDf3wtz/vignette=background:ff0000,amount:5/5aYkEQJSQCmYShsoCnZN');
+    });
+    xit('should be able to tornEdges', () => {
+      const vignetteParams = {
+        background: 'ff0000',
+        amount: 5,
+      };
+      filelink.vignette(vignetteParams);
+      expect(filelink.toString()).toBe('https://customDomain.com/CmrB9kEilS1SQeHIDf3wtz/vignette=background:ff0000,amount:5/5aYkEQJSQCmYShsoCnZN');
+    });
+    xit('should be able to shadow', () => {
+      const vignetteParams = {
+        background: 'ff0000',
+        amount: 5,
+      };
+      filelink.vignette(vignetteParams);
+      expect(filelink.toString()).toBe('https://customDomain.com/CmrB9kEilS1SQeHIDf3wtz/vignette=background:ff0000,amount:5/5aYkEQJSQCmYShsoCnZN');
+    });
+    xit('should be able to circle', () => {
+      const vignetteParams = {
+        background: 'ff0000',
+        amount: 5,
+      };
+      filelink.vignette(vignetteParams);
+      expect(filelink.toString()).toBe('https://customDomain.com/CmrB9kEilS1SQeHIDf3wtz/vignette=background:ff0000,amount:5/5aYkEQJSQCmYShsoCnZN');
+    });
+    xit('should be able to border', () => {
+      const vignetteParams = {
+        background: 'ff0000',
+        amount: 5,
+      };
+      filelink.vignette(vignetteParams);
+      expect(filelink.toString()).toBe('https://customDomain.com/CmrB9kEilS1SQeHIDf3wtz/vignette=background:ff0000,amount:5/5aYkEQJSQCmYShsoCnZN');
+    });
+    it('should be able to vignette', () => {
+      filelink.vignette({});
+      expect(filelink.toString()).toBe('https://customDomain.com/CmrB9kEilS1SQeHIDf3wtz/vignette/5aYkEQJSQCmYShsoCnZN');
+    });
+    it('should be able to sharpen', () => {
+      const sharpenParams = {
+        amount: 5,
+      };
+      filelink.sharpen(sharpenParams);
+      expect(filelink.toString()).toBe('https://customDomain.com/CmrB9kEilS1SQeHIDf3wtz/sharpen=amount:5/5aYkEQJSQCmYShsoCnZN');
+    });
+    it('should be able to blur', () => {
+      const blurParams = {
+        amount: 5,
+      };
+      filelink.blur(blurParams);
+      expect(filelink.toString()).toBe('https://customDomain.com/CmrB9kEilS1SQeHIDf3wtz/blur=amount:5/5aYkEQJSQCmYShsoCnZN');
+    });
+    it('should be able to blackwhite', () => {
+      const blackwhiteParams = {
+        threshold: 50,
+      };
+      filelink.blackwhite(blackwhiteParams);
+      expect(filelink.toString()).toBe('https://customDomain.com/CmrB9kEilS1SQeHIDf3wtz/blackwhite=threshold:50/5aYkEQJSQCmYShsoCnZN');
+    });
+    it('should be able to sepia', () => {
+      filelink.sepia();
+      expect(filelink.toString()).toBe('https://customDomain.com/CmrB9kEilS1SQeHIDf3wtz/sepia/5aYkEQJSQCmYShsoCnZN');
+    });
+    it('should be able to pixelate', () => {
+      filelink.pixelate();
+      expect(filelink.toString()).toBe('https://customDomain.com/CmrB9kEilS1SQeHIDf3wtz/pixelate/5aYkEQJSQCmYShsoCnZN');
+    });
+    it('should be able to oilPaint', () => {
+      filelink.oilPaint();
+      expect(filelink.toString()).toBe('https://customDomain.com/CmrB9kEilS1SQeHIDf3wtz/oil_paint/5aYkEQJSQCmYShsoCnZN');
+    });
+    it('should be able to modulate', () => {
+      filelink.modulate();
+      expect(filelink.toString()).toBe('https://customDomain.com/CmrB9kEilS1SQeHIDf3wtz/modulate/5aYkEQJSQCmYShsoCnZN');
+    });
+    xit('should be able to partialPixelate', () => {
+      const vignetteParams = {
+        background: 'ff0000',
+        amount: 5,
+      };
+      filelink.vignette(vignetteParams);
+      expect(filelink.toString()).toBe('https://customDomain.com/CmrB9kEilS1SQeHIDf3wtz/vignette=background:ff0000,amount:5/5aYkEQJSQCmYShsoCnZN');
+    });
+    xit('should be able to partialBlur', () => {
+      const vignetteParams = {
+        background: 'ff0000',
+        amount: 5,
+      };
+      filelink.vignette(vignetteParams);
+      expect(filelink.toString()).toBe('https://customDomain.com/CmrB9kEilS1SQeHIDf3wtz/vignette=background:ff0000,amount:5/5aYkEQJSQCmYShsoCnZN');
+    });
+    xit('should be able to collage', () => {
+      const vignetteParams = {
+        background: 'ff0000',
+        amount: 5,
+      };
+      filelink.vignette(vignetteParams);
+      expect(filelink.toString()).toBe('https://customDomain.com/CmrB9kEilS1SQeHIDf3wtz/vignette=background:ff0000,amount:5/5aYkEQJSQCmYShsoCnZN');
+    });
+    xit('should be able to upscale', () => {
+      const vignetteParams = {
+        background: 'ff0000',
+        amount: 5,
+      };
+      filelink.vignette(vignetteParams);
+      expect(filelink.toString()).toBe('https://customDomain.com/CmrB9kEilS1SQeHIDf3wtz/vignette=background:ff0000,amount:5/5aYkEQJSQCmYShsoCnZN');
+    });
+    xit('should be able to ascii', () => {
+      const vignetteParams = {
+        background: 'ff0000',
+        amount: 5,
+      };
+      filelink.vignette(vignetteParams);
+      expect(filelink.toString()).toBe('https://customDomain.com/CmrB9kEilS1SQeHIDf3wtz/vignette=background:ff0000,amount:5/5aYkEQJSQCmYShsoCnZN');
+    });
+    xit('should be able to quality', () => {
+      const vignetteParams = {
+        background: 'ff0000',
+        amount: 5,
+      };
+      filelink.vignette(vignetteParams);
+      expect(filelink.toString()).toBe('https://customDomain.com/CmrB9kEilS1SQeHIDf3wtz/vignette=background:ff0000,amount:5/5aYkEQJSQCmYShsoCnZN');
+    });
+    xit('should be able to security', () => {
+      const vignetteParams = {
+        background: 'ff0000',
+        amount: 5,
+      };
+      filelink.vignette(vignetteParams);
+      expect(filelink.toString()).toBe('https://customDomain.com/CmrB9kEilS1SQeHIDf3wtz/vignette=background:ff0000,amount:5/5aYkEQJSQCmYShsoCnZN');
+    });
+    xit('should be able to output', () => {
+      const vignetteParams = {
+        background: 'ff0000',
+        amount: 5,
+      };
+      filelink.vignette(vignetteParams);
+      expect(filelink.toString()).toBe('https://customDomain.com/CmrB9kEilS1SQeHIDf3wtz/vignette=background:ff0000,amount:5/5aYkEQJSQCmYShsoCnZN');
+    });
+    xit('should be able to videoConvert', () => {
+      const vignetteParams = {
+        background: 'ff0000',
+        amount: 5,
+      };
+      filelink.vignette(vignetteParams);
+      expect(filelink.toString()).toBe('https://customDomain.com/CmrB9kEilS1SQeHIDf3wtz/vignette=background:ff0000,amount:5/5aYkEQJSQCmYShsoCnZN');
+    });
+    xit('should be able to URLScreenshot', () => {
+      const vignetteParams = {
+        background: 'ff0000',
+        amount: 5,
+      };
+      filelink.vignette(vignetteParams);
+      expect(filelink.toString()).toBe('https://customDomain.com/CmrB9kEilS1SQeHIDf3wtz/vignette=background:ff0000,amount:5/5aYkEQJSQCmYShsoCnZN');
+    });
+    xit('should be able to PDFInfo', () => {
+      const vignetteParams = {
+        background: 'ff0000',
+        amount: 5,
+      };
+      filelink.vignette(vignetteParams);
+      expect(filelink.toString()).toBe('https://customDomain.com/CmrB9kEilS1SQeHIDf3wtz/vignette=background:ff0000,amount:5/5aYkEQJSQCmYShsoCnZN');
+    });
+    xit('should be able to PDFConvert', () => {
+      const vignetteParams = {
+        background: 'ff0000',
+        amount: 5,
+      };
+      filelink.vignette(vignetteParams);
+      expect(filelink.toString()).toBe('https://customDomain.com/CmrB9kEilS1SQeHIDf3wtz/vignette=background:ff0000,amount:5/5aYkEQJSQCmYShsoCnZN');
+    });
+    xit('should be able to tornEdges', () => {
+      const vignetteParams = {
+        background: 'ff0000',
+        amount: 5,
+      };
+      filelink.vignette(vignetteParams);
+      expect(filelink.toString()).toBe('https://customDomain.com/CmrB9kEilS1SQeHIDf3wtz/vignette=background:ff0000,amount:5/5aYkEQJSQCmYShsoCnZN');
+    });
+    xit('should be able to tornEdges', () => {
+      const vignetteParams = {
+        background: 'ff0000',
+        amount: 5,
+      };
+      filelink.vignette(vignetteParams);
+      expect(filelink.toString()).toBe('https://customDomain.com/CmrB9kEilS1SQeHIDf3wtz/vignette=background:ff0000,amount:5/5aYkEQJSQCmYShsoCnZN');
     });
   });
 });
