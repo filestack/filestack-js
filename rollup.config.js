@@ -6,6 +6,7 @@ const nodeResolve = require('rollup-plugin-node-resolve');
 const replace = require('rollup-plugin-replace');
 const json = require('rollup-plugin-json');
 const babel = require('rollup-plugin-babel');
+const inject = require('rollup-plugin-inject');
 
 const adapters = {
   './lib/api/security': 'build/module/adapters/security.browser.js',
@@ -74,11 +75,8 @@ const plugins = [
   }),
 ];
 
-// We use Node style testing so the Karma bundle needs some Node globals
-if (process.env.TEST_ENV) {
-  plugins.push(builtins());
-  plugins.push(globals());
-}
+plugins.push(builtins());
+plugins.push(globals());
 
 module.exports = {
   input: 'build/module/index.js',
