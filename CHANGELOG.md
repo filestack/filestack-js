@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="2.0.2"></a>
+## [2.0.2](https://github.com/filestack/filestack-js/compare/v2.0.1...v2.0.2) (2019-03-19)
+
+
+### Bug Fixes
+
+* **urllib:** Add url dep to build ([6c17c47](https://github.com/filestack/filestack-js/commit/6c17c47))
+
+
+
 <a name="2.0.1"></a>
 ## [2.0.1](https://github.com/filestack/filestack-js/compare/v2.0.0...v2.0.1) (2019-03-15)
 
