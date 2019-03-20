@@ -798,7 +798,7 @@ export const TransformSchema = {
         additionalProperties: false,
       }],
     },
-    asci: {
+    ascii: {
       oneOf: [{
         type: 'boolean',
       }, {

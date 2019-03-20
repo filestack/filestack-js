@@ -15,8 +15,8 @@
  * limitations under the License.
  */
 
-import { Filelink, ShapeType } from './filelink';
-// import { EShapeType } from './api/transform';
+import { Filelink, ShapeType, VideoAccessMode } from './filelink';
+import { TransformSchema } from './../schema/transforms.schema';
 
 const globalAny: any = global;
 
@@ -52,14 +52,78 @@ describe('filelink', () => {
     const result = filelink.toString();
     expect(result).toBe('https://cdn.filestackcontent.com/CmrB9kEilS1SQeHIDf3wtz/5aYkEQJSQCmYShsoCnZN');
   });
-  describe('Check different tasks || simple transform flow', () => {
+  it('should be able to use many tasks at once and reset them', () => {
+    const filelink = new Filelink(defaultSource);
+    const resizeParams = {
+      width: 200,
+    };
+    const rotateParams = {
+      deg: 90,
+    };
+    filelink.resize(resizeParams).rotate(rotateParams).crop({
+      dim: [20, 20, 250, 250],
+    });
+    expect(filelink.toString()).toBe('https://cdn.filestackcontent.com/resize=width:200/rotate=deg:90/crop=dim:[20,20,250,250]/5aYkEQJSQCmYShsoCnZN');
+    filelink.reset();
+    expect(filelink.toString()).toBe('https://cdn.filestackcontent.com/5aYkEQJSQCmYShsoCnZN');
+  });
+  it('should be able to get transformations', () => {
+    const filelink = new Filelink(defaultSource);
+    const resizeParams = {
+      width: 200,
+    };
+    const rotateParams = {
+      deg: 90,
+    };
+    filelink.resize(resizeParams).rotate(rotateParams).crop({
+      dim: [20, 20, 250, 250],
+    });
+    const expected = [{ 'name': 'resize', 'params': { 'width': 200 } }, { 'name': 'rotate', 'params': { 'deg': 90 } }, { 'name': 'crop', 'params': { 'dim': [20, 20, 250, 250] } }];
+    expect(filelink.getTransformations()).toEqual(expected);
+  });
+  it('should be able to getValidationSchema', () => {
+    const filelink = new Filelink(defaultSource);
+    const result = filelink.getValidationSchema();
+    expect(result).toEqual(TransformSchema);
+  });
+  it('should be able to disable selected task', () => {
+    const filelink = new Filelink(defaultSource);
+    filelink.shadow(false).upscale();
+    expect(filelink.toString()).toBe('https://cdn.filestackcontent.com/upscale/5aYkEQJSQCmYShsoCnZN');
+  });
+  // it('should be able to disable selected task', () => {
+  //   const filelink = new Filelink(defaultSource);
+  //   filelink.ascii(false).upscale();
+  //   expect(filelink.toString()).toBe('https://cdn.filestackcontent.com/upscale/5aYkEQJSQCmYShsoCnZN');
+  // });
+  it('should be able to create filelink for many handles', () => {
+    const sourceArr = ['5aYkEQJSQCmYShsoCnZN', '4aYkEQJSQCmYShsoCnZN'];
+    const filelink = new Filelink(sourceArr);
+    expect(filelink.toString()).toEqual('https://cdn.filestackcontent.com/[5aYkEQJSQCmYShsoCnZN,4aYkEQJSQCmYShsoCnZN]');
+    filelink.setBase64(true);
+    expect(filelink.toString()).toBe('https://cdn.filestackcontent.com/b64://WzVhWWtFUUpTUUNtWVNoc29DblpOLDRhWWtFUUpTUUNtWVNoc29DblpOXQ==');
+  });
+  it('should be able to create filelink for many src handles', () => {
+    const sourceArr = ['src://test123/flug_8-trans_atlantik-300dpi.jpg', 'src://test123/flug_9-trans_atlantik-400dpi.jpg'];
+    const filelink = new Filelink(sourceArr, defaultApikey);
+    expect(filelink.toString()).toEqual('https://cdn.filestackcontent.com/CmrB9kEilS1SQeHIDf3wtz/["src://test123/flug_8-trans_atlantik-300dpi.jpg","src://test123/flug_9-trans_atlantik-400dpi.jpg"]');
+  });
+  it('should throw error if task params are not valid', () => {
+    const filelink = new Filelink(defaultSource);
+    expect(() => { filelink.resize({}); }).toThrow('Task \"resize\" validation error, Params: {}');
+  });
+  it('should throw error if source does not exists', () => {
+    expect(() => { return new Filelink(''); }).toThrow('Source not Set');
+  });
+  describe('Different tasks', () => {
     let filelink = new Filelink(defaultSource, defaultApikey);
     afterEach(() => {
       filelink = new Filelink(defaultSource, defaultApikey);
     });
     it('should be able to create filelink when handle is base64', () => {
+      filelink.upscale();
       filelink.setBase64(true);
-      expect(filelink.toString()).toBe('https://cdn.filestackcontent.com/CmrB9kEilS1SQeHIDf3wtz/b64://NWFZa0VRSlNRQ21ZU2hzb0NuWk4=');
+      expect(filelink.toString()).toBe('https://cdn.filestackcontent.com/CmrB9kEilS1SQeHIDf3wtz/b64/W3sibmFtZSI6InVwc2NhbGUifV0=/b64://NWFZa0VRSlNRQ21ZU2hzb0NuWk4=');
     });
     it('should be able to use custom cname', () => {
       const cname = 'http://newcname.com';
@@ -111,6 +175,13 @@ describe('filelink', () => {
     it('should be able to disable cache', () => {
       filelink.cache(false);
       expect(filelink.toString()).toBe('https://customDomain.com/CmrB9kEilS1SQeHIDf3wtz/cache=false/5aYkEQJSQCmYShsoCnZN');
+    });
+    it('should be able to set cache params', () => {
+      const cacheParams = {
+        expiry: 666,
+      };
+      filelink.cache(cacheParams);
+      expect(filelink.toString()).toBe('https://customDomain.com/CmrB9kEilS1SQeHIDf3wtz/cache=expiry:666/5aYkEQJSQCmYShsoCnZN');
     });
     it('should be able to resize', () => {
       const resizeParams = {
@@ -177,37 +248,21 @@ describe('filelink', () => {
       filelink.vignette(vignetteParams);
       expect(filelink.toString()).toBe('https://customDomain.com/CmrB9kEilS1SQeHIDf3wtz/vignette=background:ff0000,amount:5/5aYkEQJSQCmYShsoCnZN');
     });
-    xit('should be able to tornEdges', () => {
-      const vignetteParams = {
-        background: 'ff0000',
-        amount: 5,
-      };
-      filelink.vignette(vignetteParams);
-      expect(filelink.toString()).toBe('https://customDomain.com/CmrB9kEilS1SQeHIDf3wtz/vignette=background:ff0000,amount:5/5aYkEQJSQCmYShsoCnZN');
+    it('should be able to tornEdges', () => {
+      filelink.tornEdges({});
+      expect(filelink.toString()).toBe('https://customDomain.com/CmrB9kEilS1SQeHIDf3wtz/torn_edges/5aYkEQJSQCmYShsoCnZN');
     });
-    xit('should be able to shadow', () => {
-      const vignetteParams = {
-        background: 'ff0000',
-        amount: 5,
-      };
-      filelink.vignette(vignetteParams);
-      expect(filelink.toString()).toBe('https://customDomain.com/CmrB9kEilS1SQeHIDf3wtz/vignette=background:ff0000,amount:5/5aYkEQJSQCmYShsoCnZN');
+    it('should be able to shadow', () => {
+      filelink.shadow();
+      expect(filelink.toString()).toBe('https://customDomain.com/CmrB9kEilS1SQeHIDf3wtz/shadow/5aYkEQJSQCmYShsoCnZN');
     });
-    xit('should be able to circle', () => {
-      const vignetteParams = {
-        background: 'ff0000',
-        amount: 5,
-      };
-      filelink.vignette(vignetteParams);
-      expect(filelink.toString()).toBe('https://customDomain.com/CmrB9kEilS1SQeHIDf3wtz/vignette=background:ff0000,amount:5/5aYkEQJSQCmYShsoCnZN');
+    it('should be able to circle', () => {
+      filelink.circle({});
+      expect(filelink.toString()).toBe('https://customDomain.com/CmrB9kEilS1SQeHIDf3wtz/circle/5aYkEQJSQCmYShsoCnZN');
     });
-    xit('should be able to border', () => {
-      const vignetteParams = {
-        background: 'ff0000',
-        amount: 5,
-      };
-      filelink.vignette(vignetteParams);
-      expect(filelink.toString()).toBe('https://customDomain.com/CmrB9kEilS1SQeHIDf3wtz/vignette=background:ff0000,amount:5/5aYkEQJSQCmYShsoCnZN');
+    it('should be able to border', () => {
+      filelink.border();
+      expect(filelink.toString()).toBe('https://customDomain.com/CmrB9kEilS1SQeHIDf3wtz/border/5aYkEQJSQCmYShsoCnZN');
     });
     it('should be able to vignette', () => {
       filelink.vignette({});
@@ -250,117 +305,86 @@ describe('filelink', () => {
       filelink.modulate();
       expect(filelink.toString()).toBe('https://customDomain.com/CmrB9kEilS1SQeHIDf3wtz/modulate/5aYkEQJSQCmYShsoCnZN');
     });
-    xit('should be able to partialPixelate', () => {
-      const vignetteParams = {
-        background: 'ff0000',
-        amount: 5,
-      };
-      filelink.vignette(vignetteParams);
-      expect(filelink.toString()).toBe('https://customDomain.com/CmrB9kEilS1SQeHIDf3wtz/vignette=background:ff0000,amount:5/5aYkEQJSQCmYShsoCnZN');
+    it('should be able to partialPixelate', () => {
+      filelink.partialPixelate({
+        objects: [
+          [20, 20, 50, 50],
+        ],
+      });
+      expect(filelink.toString()).toBe('https://customDomain.com/CmrB9kEilS1SQeHIDf3wtz/partial_pixelate=objects:[[20,20,50,50]]/5aYkEQJSQCmYShsoCnZN');
     });
-    xit('should be able to partialBlur', () => {
-      const vignetteParams = {
-        background: 'ff0000',
+    it('should be able to partialBlur', () => {
+      filelink.partialBlur({
         amount: 5,
-      };
-      filelink.vignette(vignetteParams);
-      expect(filelink.toString()).toBe('https://customDomain.com/CmrB9kEilS1SQeHIDf3wtz/vignette=background:ff0000,amount:5/5aYkEQJSQCmYShsoCnZN');
+        objects: [
+          [20, 20, 50, 50],
+        ],
+      });
+      expect(filelink.toString()).toBe('https://customDomain.com/CmrB9kEilS1SQeHIDf3wtz/partial_blur=amount:5,objects:[[20,20,50,50]]/5aYkEQJSQCmYShsoCnZN');
     });
-    xit('should be able to collage', () => {
-      const vignetteParams = {
-        background: 'ff0000',
-        amount: 5,
-      };
-      filelink.vignette(vignetteParams);
-      expect(filelink.toString()).toBe('https://customDomain.com/CmrB9kEilS1SQeHIDf3wtz/vignette=background:ff0000,amount:5/5aYkEQJSQCmYShsoCnZN');
+    it('should be able to collage', () => {
+      filelink.collage({
+        files: [
+          'http://welcome-swiss.com/wp-content/uploads/2015/12/Swiss-landscape.jpg'
+        ],
+        width: 200,
+        height: 200,
+      });
+      expect(filelink.toString()).toBe('https://customDomain.com/CmrB9kEilS1SQeHIDf3wtz/collage=files:[\"http://welcome-swiss.com/wp-content/uploads/2015/12/Swiss-landscape.jpg\"],width:200,height:200/5aYkEQJSQCmYShsoCnZN');
     });
-    xit('should be able to upscale', () => {
-      const vignetteParams = {
-        background: 'ff0000',
-        amount: 5,
-      };
-      filelink.vignette(vignetteParams);
-      expect(filelink.toString()).toBe('https://customDomain.com/CmrB9kEilS1SQeHIDf3wtz/vignette=background:ff0000,amount:5/5aYkEQJSQCmYShsoCnZN');
+    it('should be able to upscale', () => {
+      filelink.upscale();
+      expect(filelink.toString()).toBe('https://customDomain.com/CmrB9kEilS1SQeHIDf3wtz/upscale/5aYkEQJSQCmYShsoCnZN');
     });
-    xit('should be able to ascii', () => {
-      const vignetteParams = {
-        background: 'ff0000',
-        amount: 5,
-      };
-      filelink.vignette(vignetteParams);
-      expect(filelink.toString()).toBe('https://customDomain.com/CmrB9kEilS1SQeHIDf3wtz/vignette=background:ff0000,amount:5/5aYkEQJSQCmYShsoCnZN');
+    it('should be able to ascii', () => {
+      filelink.ascii();
+      expect(filelink.toString()).toBe('https://customDomain.com/CmrB9kEilS1SQeHIDf3wtz/ascii/5aYkEQJSQCmYShsoCnZN');
     });
-    xit('should be able to quality', () => {
-      const vignetteParams = {
-        background: 'ff0000',
-        amount: 5,
+    it('should be able to quality', () => {
+      const qualityParams = {
+        value: 5,
       };
-      filelink.vignette(vignetteParams);
-      expect(filelink.toString()).toBe('https://customDomain.com/CmrB9kEilS1SQeHIDf3wtz/vignette=background:ff0000,amount:5/5aYkEQJSQCmYShsoCnZN');
+      filelink.quality(qualityParams);
+      expect(filelink.toString()).toBe('https://customDomain.com/CmrB9kEilS1SQeHIDf3wtz/quality=value:5/5aYkEQJSQCmYShsoCnZN');
     });
-    xit('should be able to security', () => {
-      const vignetteParams = {
-        background: 'ff0000',
-        amount: 5,
+    it('should be able to use security', () => {
+      const securityParams = {
+        policy: 'blablabla',
+        signature: 'blablabla',
       };
-      filelink.vignette(vignetteParams);
-      expect(filelink.toString()).toBe('https://customDomain.com/CmrB9kEilS1SQeHIDf3wtz/vignette=background:ff0000,amount:5/5aYkEQJSQCmYShsoCnZN');
+      filelink.security(securityParams);
+      expect(filelink.toString()).toBe('https://customDomain.com/CmrB9kEilS1SQeHIDf3wtz/security=policy:blablabla,signature:blablabla/5aYkEQJSQCmYShsoCnZN');
     });
-    xit('should be able to output', () => {
-      const vignetteParams = {
-        background: 'ff0000',
-        amount: 5,
+    it('should be able output', () => {
+      const outputParams = {
+        format: 'png',
       };
-      filelink.vignette(vignetteParams);
-      expect(filelink.toString()).toBe('https://customDomain.com/CmrB9kEilS1SQeHIDf3wtz/vignette=background:ff0000,amount:5/5aYkEQJSQCmYShsoCnZN');
+      filelink.output(outputParams);
+      expect(filelink.toString()).toBe('https://customDomain.com/CmrB9kEilS1SQeHIDf3wtz/output=format:png/5aYkEQJSQCmYShsoCnZN');
     });
-    xit('should be able to videoConvert', () => {
-      const vignetteParams = {
-        background: 'ff0000',
-        amount: 5,
+    it('should be able to videoConvert', () => {
+      const videoConvertParams = {
+        aspect_mode: VideoAccessMode.letterbox,
+        upscale: true,
       };
-      filelink.vignette(vignetteParams);
-      expect(filelink.toString()).toBe('https://customDomain.com/CmrB9kEilS1SQeHIDf3wtz/vignette=background:ff0000,amount:5/5aYkEQJSQCmYShsoCnZN');
+      filelink.videoConvert(videoConvertParams);
+      expect(filelink.toString()).toBe('https://customDomain.com/CmrB9kEilS1SQeHIDf3wtz/video_convert=aspect_mode:letterbox,upscale:true/5aYkEQJSQCmYShsoCnZN');
     });
-    xit('should be able to URLScreenshot', () => {
-      const vignetteParams = {
-        background: 'ff0000',
-        amount: 5,
-      };
-      filelink.vignette(vignetteParams);
-      expect(filelink.toString()).toBe('https://customDomain.com/CmrB9kEilS1SQeHIDf3wtz/vignette=background:ff0000,amount:5/5aYkEQJSQCmYShsoCnZN');
+    it('should be able to URLScreenshot', () => {
+      filelink.URLScreenshot();
+      expect(filelink.toString()).toBe('https://customDomain.com/CmrB9kEilS1SQeHIDf3wtz/urlscreenshot/5aYkEQJSQCmYShsoCnZN');
     });
-    xit('should be able to PDFInfo', () => {
-      const vignetteParams = {
-        background: 'ff0000',
-        amount: 5,
-      };
-      filelink.vignette(vignetteParams);
-      expect(filelink.toString()).toBe('https://customDomain.com/CmrB9kEilS1SQeHIDf3wtz/vignette=background:ff0000,amount:5/5aYkEQJSQCmYShsoCnZN');
+    it('should be able to PDFInfo', () => {
+      filelink.PDFInfo();
+      expect(filelink.toString()).toBe('https://customDomain.com/CmrB9kEilS1SQeHIDf3wtz/pdfinfo/5aYkEQJSQCmYShsoCnZN');
     });
-    xit('should be able to PDFConvert', () => {
-      const vignetteParams = {
-        background: 'ff0000',
-        amount: 5,
-      };
-      filelink.vignette(vignetteParams);
-      expect(filelink.toString()).toBe('https://customDomain.com/CmrB9kEilS1SQeHIDf3wtz/vignette=background:ff0000,amount:5/5aYkEQJSQCmYShsoCnZN');
+    it('should be able to PDFConvert', () => {
+      filelink.PDFConvert();
+      expect(filelink.toString()).toBe('https://customDomain.com/CmrB9kEilS1SQeHIDf3wtz/pdfconvert/5aYkEQJSQCmYShsoCnZN');
     });
-    xit('should be able to tornEdges', () => {
-      const vignetteParams = {
-        background: 'ff0000',
-        amount: 5,
-      };
-      filelink.vignette(vignetteParams);
-      expect(filelink.toString()).toBe('https://customDomain.com/CmrB9kEilS1SQeHIDf3wtz/vignette=background:ff0000,amount:5/5aYkEQJSQCmYShsoCnZN');
-    });
-    xit('should be able to tornEdges', () => {
-      const vignetteParams = {
-        background: 'ff0000',
-        amount: 5,
-      };
-      filelink.vignette(vignetteParams);
-      expect(filelink.toString()).toBe('https://customDomain.com/CmrB9kEilS1SQeHIDf3wtz/vignette=background:ff0000,amount:5/5aYkEQJSQCmYShsoCnZN');
+    it('should be able to force cache', () => {
+      filelink.cache(true);
+      expect(filelink.toString()).toBe('https://customDomain.com/CmrB9kEilS1SQeHIDf3wtz/cache/5aYkEQJSQCmYShsoCnZN');
     });
   });
 });
