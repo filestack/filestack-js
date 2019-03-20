@@ -325,7 +325,7 @@ describe('filelink', () => {
     it('should be able to collage', () => {
       filelink.collage({
         files: [
-          'http://welcome-swiss.com/wp-content/uploads/2015/12/Swiss-landscape.jpg'
+          'http://welcome-swiss.com/wp-content/uploads/2015/12/Swiss-landscape.jpg',
         ],
         width: 200,
         height: 200,

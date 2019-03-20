@@ -145,9 +145,6 @@ export class Client {
         });
       }
     }
-
-    console.log('###77', this.session);
-    console.log('###88', options);
     this.cloud = new CloudClient(this.session, options);
   }
   /**
