@@ -48,7 +48,7 @@ export const resolveHost = (hosts: Hosts, cname: string): Hosts => {
   let result = hosts;
 
   if (cname) {
-    //FIXME: override func param
+    // FIXME: override func param
     const hosts = /filestackapi.com|filestackcontent.com/i;
 
     Object.keys(hosts).forEach((key) => {
