@@ -2,6 +2,40 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="2.0.2"></a>
+## [2.0.2](https://github.com/filestack/filestack-js/compare/v2.0.1...v2.0.2) (2019-03-19)
+
+
+### Bug Fixes
+
+* **urllib:** Add url dep to build ([6c17c47](https://github.com/filestack/filestack-js/commit/6c17c47))
+
+
+
+<a name="2.0.1"></a>
+## [2.0.1](https://github.com/filestack/filestack-js/compare/v2.0.0...v2.0.1) (2019-03-15)
+
+
+
+<a name="2.0.0"></a>
+# [2.0.0](https://github.com/filestack/filestack-js/compare/v1.14.6...v2.0.0) (2019-03-15)
+
+
+### Bug Fixes
+
+* **es5:** replace ajv with jsonschema in transform validator ([e59a5ba](https://github.com/filestack/filestack-js/commit/e59a5ba))
+
+
+### BREAKING CHANGES
+
+* **es5:** Validation errors from transform are updated to ValidationError from jsonschema
+
+* feat(Gzip): Add info about gzip support in README
+
+* ci(publish script): Udpate publish script for supporting gzip ContentEncoding
+
+
+
 <a name="1.14.6"></a>
 ## [1.14.6](https://github.com/filestack/filestack-js/compare/v1.14.5...v1.14.6) (2019-03-01)
 
