@@ -16,7 +16,6 @@
  */
 
 import { Client } from './client';
-// import { RetrieveOptions, MetadataOptions } from './api/file';
 
 const mockCloudLogout = jest.fn(() => {
   return new Promise((resolve, reject) => {
@@ -250,7 +249,7 @@ describe('client', () => {
       done();
     });
   });
-  it('should be able to transform url', () => {
+  it('should be able to transform url with b64', () => {
     const client = new Client(defaultApikey);
     const transformOptions = {
       blur: {
@@ -261,6 +260,17 @@ describe('client', () => {
     client.transform(defaultHandle, transformOptions, b64);
     expect(mockTransform).toBeCalled();
     expect(mockTransform).toBeCalledWith(client.session, defaultHandle, transformOptions, b64);
+  });
+  it('should be able to transform url without b64', () => {
+    const client = new Client(defaultApikey);
+    const transformOptions = {
+      blur: {
+        amount: 5,
+      },
+    };
+    client.transform(defaultHandle, transformOptions);
+    expect(mockTransform).toBeCalled();
+    expect(mockTransform).toBeCalledWith(client.session, defaultHandle, transformOptions, false);
   });
   it('should be able to upload file', (done) => {
     const client = new Client(defaultApikey);

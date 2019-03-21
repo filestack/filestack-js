@@ -91,11 +91,6 @@ describe('filelink', () => {
     filelink.shadow(false).upscale();
     expect(filelink.toString()).toBe('https://cdn.filestackcontent.com/upscale/5aYkEQJSQCmYShsoCnZN');
   });
-  // it('should be able to disable selected task', () => {
-  //   const filelink = new Filelink(defaultSource);
-  //   filelink.ascii(false).upscale();
-  //   expect(filelink.toString()).toBe('https://cdn.filestackcontent.com/upscale/5aYkEQJSQCmYShsoCnZN');
-  // });
   it('should be able to create filelink for many handles', () => {
     const sourceArr = ['5aYkEQJSQCmYShsoCnZN', '4aYkEQJSQCmYShsoCnZN'];
     const filelink = new Filelink(sourceArr);
