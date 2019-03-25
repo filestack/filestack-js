@@ -64,8 +64,7 @@ export const getSecurity = (policyOptions: SecurityOptions, appSecret: string): 
 
   checkOptions('Policy options', allowed, policyOptions);
 
-  // FIXME: https://nodejs.org/en/docs/guides/buffer-constructor-deprecation/
-  const policy = new Buffer(JSON.stringify(policyOptions)).toString('base64');
+  const policy = Buffer.from(JSON.stringify(policyOptions)).toString('base64');
   const signature = crypto.createHmac('sha256', appSecret)
                    .update(policy)
                    .digest('hex');

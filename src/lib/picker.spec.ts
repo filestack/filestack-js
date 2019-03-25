@@ -59,7 +59,7 @@ jest.mock('filestack-loader', () => {
 });
 
 describe('picker', () => {
-  const defaultApikey = 'qweqeqweqwe';
+  const defaultApikey = 'DEFAULT_API_KEY';
   const client = filestack.init(defaultApikey);
   const pickerOptions = {};
   let pickerInstance = picker(client, pickerOptions);

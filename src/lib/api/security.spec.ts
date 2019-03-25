@@ -23,13 +23,13 @@ describe('api:security', () => {
       const policy = {
         expiry: 1523595600,
         call: ['read', 'convert'],
-        handle: 'bfTNCigRLq0QMOrsFKzb',
+        handle: 'TEST_HANDLE',
       };
       const appSecret = 'testAppSecret';
       const result = getSecurity(policy, appSecret);
       const expected = {
-        policy: 'eyJleHBpcnkiOjE1MjM1OTU2MDAsImNhbGwiOlsicmVhZCIsImNvbnZlcnQiXSwiaGFuZGxlIjoiYmZUTkNpZ1JMcTBRTU9yc0ZLemIifQ==',
-        signature: 'ab1624c9f219ca0118f1af43d21ee87a09a07645c15c9fdbb7447818739c2b8b',
+        policy: 'eyJleHBpcnkiOjE1MjM1OTU2MDAsImNhbGwiOlsicmVhZCIsImNvbnZlcnQiXSwiaGFuZGxlIjoiVEVTVF9IQU5ETEUifQ==',
+        signature: '24940e75ff80bb43cbe29d7155cf6a7150a4533b1e8c4d9ff916c9aec5a3f3d0',
       };
       expect(result).toEqual(expected);
     });

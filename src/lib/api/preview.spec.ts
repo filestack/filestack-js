@@ -42,77 +42,47 @@ const mockAppendChild = jest.fn();
 };
 
 describe('api:upload:preview', () => {
+  const defaultSession = {
+    'apikey': 'TEST_API_KEY',
+    'urls': {
+      'fileApiUrl': 'https://www.filestackapi.com/api/file',
+      'uploadApiUrl': 'https://upload.filestackapi.com',
+      'cloudApiUrl': 'https://cloud.filestackapi.com',
+      'cdnUrl': 'https://cdn.filestackcontent.com',
+      'pickerUrl': 'https://static.filestackapi.com/picker/1.4.4/picker.js'
+    },
+  };
   describe('preview', () => {
     it('should open a proper url with preview of a file', () => {
-      const defaultSession = {
-        'apikey': 'CmrB9kEilS1SQeHIDf3wtz',
-        'urls': {
-          'fileApiUrl': 'https://www.filestackapi.com/api/file',
-          'uploadApiUrl': 'https://upload.filestackapi.com',
-          'cloudApiUrl': 'https://cloud.filestackapi.com',
-          'cdnUrl': 'https://cdn.filestackcontent.com',
-          'pickerUrl': 'https://static.filestackapi.com/picker/1.4.4/picker.js'
-        },
-      };
       const handle = 'testHandle';
       preview(defaultSession, handle);
       expect(window.open).toBeCalledTimes(1);
       expect(window.open).toBeCalledWith('https://cdn.filestackcontent.com/preview/testHandle', 'testHandle');
     });
     it('should open a proper url with preview of a file with src handle', () => {
-      const defaultSession = {
-        'apikey': 'CmrB9kEilS1SQeHIDf3wtz',
-        'urls': {
-          'fileApiUrl': 'https://www.filestackapi.com/api/file',
-          'uploadApiUrl': 'https://upload.filestackapi.com',
-          'cloudApiUrl': 'https://cloud.filestackapi.com',
-          'cdnUrl': 'https://cdn.filestackcontent.com',
-          'pickerUrl': 'https://static.filestackapi.com/picker/1.4.4/picker.js'
-        },
-      };
-      const handle = 'src://test123/flug_8-trans_atlantik-300dpi.jpg';
+      const handle = 'src://test123/test.jpg';
       preview(defaultSession, handle);
 
       expect(window.open).toBeCalledTimes(1);
-      expect(window.open).toBeCalledWith('https://cdn.filestackcontent.com/CmrB9kEilS1SQeHIDf3wtz/preview/src://test123/flug_8-trans_atlantik-300dpi.jpg', 'src://test123/flug_8-trans_atlantik-300dpi.jpg');
+      expect(window.open).toBeCalledWith('https://cdn.filestackcontent.com/TEST_API_KEY/preview/src://test123/test.jpg', 'src://test123/test.jpg');
     });
     it('should open iframe inside provided options.id', () => {
-      const defaultSession = {
-        'apikey': 'CmrB9kEilS1SQeHIDf3wtz',
-        'urls': {
-          'fileApiUrl': 'https://www.filestackapi.com/api/file',
-          'uploadApiUrl': 'https://upload.filestackapi.com',
-          'cloudApiUrl': 'https://cloud.filestackapi.com',
-          'cdnUrl': 'https://cdn.filestackcontent.com',
-          'pickerUrl': 'https://static.filestackapi.com/picker/1.4.4/picker.js'
-        },
-      };
-      const handle = 'src://test123/flug_8-trans_atlantik-300dpi.jpg';
+      const handle = 'src://test123/test.jpg';
       const options = {
         id: 'testId',
         css: 'customCss',
       };
       preview(defaultSession, handle, options);
-      const expected = { 'height': '100%', 'width': '100%', 'src': 'https://cdn.filestackcontent.com/CmrB9kEilS1SQeHIDf3wtz/preview=css:%22customCss%22/src://test123/flug_8-trans_atlantik-300dpi.jpg' };
+      const expected = { 'height': '100%', 'width': '100%', 'src': 'https://cdn.filestackcontent.com/TEST_API_KEY/preview=css:%22customCss%22/src://test123/test.jpg' };
       expect(mockAppendChild).toBeCalledTimes(1);
       expect(mockAppendChild).toBeCalledWith(expected);
     });
     it('should throw error when handle is not provided', () => {
-      const defaultSession = {
-        'apikey': 'CmrB9kEilS1SQeHIDf3wtz',
-        'urls': {
-          'fileApiUrl': 'https://www.filestackapi.com/api/file',
-          'uploadApiUrl': 'https://upload.filestackapi.com',
-          'cloudApiUrl': 'https://cloud.filestackapi.com',
-          'cdnUrl': 'https://cdn.filestackcontent.com',
-          'pickerUrl': 'https://static.filestackapi.com/picker/1.4.4/picker.js'
-        },
-      };
       expect(() => { preview(defaultSession); }).toThrow('A valid Filestack handle or storage alias is required for preview');
     });
     it('should throw error when id provided and dom element not found', () => {
       const defaultSession = {
-        'apikey': 'CmrB9kEilS1SQeHIDf3wtz',
+        'apikey': 'TEST_API_KEY',
         'urls': {
           'fileApiUrl': 'https://www.filestackapi.com/api/file',
           'uploadApiUrl': 'https://upload.filestackapi.com',
@@ -121,7 +91,7 @@ describe('api:upload:preview', () => {
           'pickerUrl': 'https://static.filestackapi.com/picker/1.4.4/picker.js'
         },
       };
-      const handle = 'src://test123/flug_8-trans_atlantik-300dpi.jpg';
+      const handle = 'src://test123/test.jpg';
       const options = {
         id: 'testId2',
       };
@@ -130,17 +100,7 @@ describe('api:upload:preview', () => {
   });
   describe('getUrl', () => {
     it('should be able to get url with security', () => {
-      const defaultSession = {
-        'apikey': 'CmrB9kEilS1SQeHIDf3wtz',
-        'urls': {
-          'fileApiUrl': 'https://www.filestackapi.com/api/file',
-          'uploadApiUrl': 'https://upload.filestackapi.com',
-          'cloudApiUrl': 'https://cloud.filestackapi.com',
-          'cdnUrl': 'https://cdn.filestackcontent.com',
-          'pickerUrl': 'https://static.filestackapi.com/picker/1.4.4/picker.js'
-        },
-      };
-      const handle = 'asddqweqed12';
+      const handle = 'TEST_HANDLE';
       const options = {
         id: 'testId2',
       };
@@ -149,7 +109,7 @@ describe('api:upload:preview', () => {
         signature: 'ab1624c9f219ca0118f1af43d21ee87a09a07645c15c9fdbb7447818739c2b8b',
       };
       const result = getUrl(defaultSession, handle, options, security);
-      const expected = 'https://cdn.filestackcontent.com/preview/security=policy:eyJleHBpcnkiOjE1MjM1OTU2MDAsImNhbGwiOlsicmVhZCIsImNvbnZlcnQiXSwiaGFuZGxlIjoiYmZUTkNpZ1JMcTBRTU9yc0ZLemIifQ==,signature:ab1624c9f219ca0118f1af43d21ee87a09a07645c15c9fdbb7447818739c2b8b/asddqweqed12';
+      const expected = 'https://cdn.filestackcontent.com/preview/security=policy:eyJleHBpcnkiOjE1MjM1OTU2MDAsImNhbGwiOlsicmVhZCIsImNvbnZlcnQiXSwiaGFuZGxlIjoiYmZUTkNpZ1JMcTBRTU9yc0ZLemIifQ==,signature:ab1624c9f219ca0118f1af43d21ee87a09a07645c15c9fdbb7447818739c2b8b/TEST_HANDLE';
       expect(result).toBe(expected);
     });
   });

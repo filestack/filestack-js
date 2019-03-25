@@ -100,8 +100,6 @@ jest.mock('./api/preview', () => {
   };
 });
 
-import { transform, TransformOptions } from './api/transform';
-
 const mockTransform = jest.fn();
 jest.mock('./api/transform', () => {
   return {
@@ -112,11 +110,11 @@ jest.mock('./api/transform', () => {
 });
 
 describe('client', () => {
-  const defaultApikey = 'CmrB9kEilS1SQeHIDf3wtz';
-  const defaultHandle = '5aYkEQJSQCmYShsoCnZN';
+  const defaultApikey = 'EXAMPLE_API_KEY';
+  const defaultHandle = 'EXAMPLE_HANDLE';
   const defaultSecurity = {
-    policy: 'examplePoolicy',
-    signature: 'blablabla',
+    policy: 'examplePolicy',
+    signature: 'exampleSignature',
   };
   it('should properly instantiate Client', () => {
     const client = new Client(defaultApikey);
@@ -129,7 +127,7 @@ describe('client', () => {
   it('should throw error if provided security without signature', () => {
     const options = {
       security: {
-        policy: 'examplePoolicy',
+        policy: 'examplePolicy',
         signature: '',
       },
     };
@@ -137,10 +135,7 @@ describe('client', () => {
   });
   it('should pass policy & signature to the session', () => {
     const options = {
-      security: {
-        policy: 'examplePoolicy',
-        signature: 'blablabla',
-      },
+      security: defaultSecurity,
     };
     const client = new Client(defaultApikey, options);
     expect(client.session.policy).toBe(options.security.policy);
@@ -168,14 +163,10 @@ describe('client', () => {
     const options = {
       sha224: true,
     };
-    const security = {
-      policy: 'examplePoolicy',
-      signature: 'blablabla',
-    };
-    return client.metadata(defaultHandle, options, security).then(() => {
+    return client.metadata(defaultHandle, options, defaultSecurity).then(() => {
       expect.assertions(2);
       expect(mockMetadata).toHaveBeenCalledTimes(1);
-      expect(mockMetadata).toHaveBeenCalledWith(client.session, defaultHandle, options, security);
+      expect(mockMetadata).toHaveBeenCalledWith(client.session, defaultHandle, options, defaultSecurity);
       done();
     });
   });
@@ -199,27 +190,19 @@ describe('client', () => {
   });
   it('should be able to remove handle', (done) => {
     const client = new Client(defaultApikey);
-    const security = {
-      policy: 'examplePoolicy',
-      signature: 'blablabla',
-    };
-    return client.remove(defaultHandle, security).then(() => {
+    return client.remove(defaultHandle, defaultSecurity).then(() => {
       expect.assertions(2);
       expect(mockRemove).toHaveBeenCalledTimes(1);
-      expect(mockRemove).toHaveBeenCalledWith(client.session, defaultHandle, false, security);
+      expect(mockRemove).toHaveBeenCalledWith(client.session, defaultHandle, false, defaultSecurity);
       done();
     });
   });
   it('should be able to remove metadata', (done) => {
     const client = new Client(defaultApikey);
-    const security = {
-      policy: 'examplePoolicy',
-      signature: 'blablabla',
-    };
-    return client.removeMetadata(defaultHandle, security).then(() => {
+    return client.removeMetadata(defaultHandle, defaultSecurity).then(() => {
       expect.assertions(2);
       expect(mockRemove).toHaveBeenCalledTimes(1);
-      expect(mockRemove).toHaveBeenCalledWith(client.session, defaultHandle, true, security);
+      expect(mockRemove).toHaveBeenCalledWith(client.session, defaultHandle, true, defaultSecurity);
       done();
     });
   });
@@ -239,8 +222,8 @@ describe('client', () => {
     const client = new Client(defaultApikey);
     const retrieveOptions = {};
     const security = {
-      policy: 'examplePoolicy',
-      signature: 'blablabla',
+      policy: 'examplePolicy',
+      signature: 'exampleSignature',
     };
     return client.retrieve(defaultHandle, retrieveOptions, security).then(() => {
       expect.assertions(2);
@@ -277,7 +260,7 @@ describe('client', () => {
     const file = 'anyFile';
     const uploadOptions = {};
     const storeOptions = {};
-    const token = 'blablabla';
+    const token = 'exampleSignature';
     return client.upload(file, uploadOptions, storeOptions, token, defaultSecurity).then(() => {
       expect.assertions(2);
       expect(mockUpload).toHaveBeenCalledTimes(1);

@@ -25,7 +25,7 @@ describe('api:upload:utils', () => {
         size: 4567,
       };
       const config = {
-        customName: 'newName'
+        customName: 'newName',
       };
       const result = getName(file, config);
       expect(result).toBe('newName');

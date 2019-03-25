@@ -20,33 +20,33 @@ import * as t from 'tcomb-validation';
 describe('utils:index', () => {
   describe('resolveCdnUrl', () => {
     const session = {
-      apikey: 'DevZpGbhtSzZL5bOtYw7Lz',
-      cname: 'fs.enplug.com',
+      apikey: 'TEST_API_KEY',
+      cname: 'example.com',
       urls: {
-        cdnUrl: 'https://cdn.fs.enplug.com',
-        cloudApiUrl: 'https://cloud.fs.enplug.com',
-        fileApiUrl: 'https://www.fs.enplug.com/api/file',
-        pickerUrl: 'https://static.fs.enplug.com/picker/1.4.4/picker.js',
-        uploadApiUrl: 'https://upload.fs.enplug.com',
+        cdnUrl: 'https://cdn.example.com',
+        cloudApiUrl: 'https://cloud.example.com',
+        fileApiUrl: 'https://www.example.com/api/file',
+        pickerUrl: 'https://static.example.com/picker/1.4.4/picker.js',
+        uploadApiUrl: 'https://upload.example.com',
       },
     };
     it('should properly resolve cdn url with hashed handle', () => {
       const handle = '5aYkEQJSQCmYShsoCnZN';
       const result = resolveCdnUrl(session, handle);
-      expect(result).toEqual('https://cdn.fs.enplug.com');
+      expect(result).toEqual('https://cdn.example.com');
     });
     it('should properly resolve cdn url with src handle', () => {
-      const handle = 'src://test123/flug_8-trans_atlantik-300dpi.jpg';
+      const handle = 'src://test123/test.jpg';
       const result = resolveCdnUrl(session, handle);
-      expect(result).toEqual('https://cdn.fs.enplug.com/DevZpGbhtSzZL5bOtYw7Lz');
+      expect(result).toEqual('https://cdn.example.com/TEST_API_KEY');
     });
     it('should properly resolve cdn url with hashed handle', () => {
       const handle = 'https://static1.squarespace.com/static/544eb3cce4b0ef091773611f/t/59ba7ce1bd10f00dcdc80a5f/1505394087367/DSC_0527.jpg';
       const result = resolveCdnUrl(session, handle);
-      expect(result).toEqual('https://cdn.fs.enplug.com/DevZpGbhtSzZL5bOtYw7Lz');
+      expect(result).toEqual('https://cdn.example.com/TEST_API_KEY');
     });
     it('shoudl throw error when using src handle or url without apikey', () => {
-      const handle = 'src://test123/flug_8-trans_atlantik-300dpi.jpg';
+      const handle = 'src://test123/test.jpg';
       session.apikey = '';
       expect(() => { resolveCdnUrl(session, handle); }).toThrow('Api key is required when storage alias is provided');
     });
@@ -54,13 +54,13 @@ describe('utils:index', () => {
   describe('resolveHost', () => {
     const hosts = {
       cdnUrl: 'filestackcontent.com',
-      cloudApiUrl: 'https://cloud.fs.enplug.com',
-      fileApiUrl: 'https://www.fs.enplug.com/api/file',
-      pickerUrl: 'https://static.fs.enplug.com/picker/1.4.4/picker.js',
-      uploadApiUrl: 'https://upload.fs.enplug.com',
+      cloudApiUrl: 'https://cloud.example.com',
+      fileApiUrl: 'https://www.example.com/api/file',
+      pickerUrl: 'https://static.example.com/picker/1.4.4/picker.js',
+      uploadApiUrl: 'https://upload.example.com',
     };
     it('should return proper host', () => {
-      const cname = 'fs.enplug.com';
+      const cname = 'example.com';
       const result = resolveHost(hosts, cname);
       expect(result).toEqual(hosts);
     });

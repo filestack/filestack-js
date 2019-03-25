@@ -46,17 +46,34 @@ const mockPost = jest.fn().mockImplementation((url, payload) => {
 
 jest.mock('./../api/request', () => {
   return {
+    // request: jest.fn(() => {
+    //   return {
+    //     get: mockGet,
+    //     post: mockPost,
+    //     CancelToken: {
+    //       source: jest.fn(),
+    //     },
+    //   };
+    // }),
+    request: {
+      CancelToken: {
+        source: jest.fn(),
+      },
+    },
     requestWithSource: jest.fn(() => {
       return {
         get: mockGet,
         post: mockPost,
+        CancelToken: {
+          source: jest.fn(),
+        },
       };
     }),
   };
 });
 
 describe('api:cloud', () => {
-  const testApiKey = 'CmrB9kEilS1SQeHIDf3wtz';
+  const testApiKey = 'TEST_API_KEY';
   const defaultSession = {
     'apikey': testApiKey,
     'urls': {
@@ -80,7 +97,7 @@ describe('api:cloud', () => {
     it('should be able to prefetch', (done) => {
       const cloudClient = createCloudClient();
       const expectedReqParams = {
-        'params': { 'apikey': 'CmrB9kEilS1SQeHIDf3wtz' },
+        'params': { 'apikey': 'TEST_API_KEY' },
       };
       expect.assertions(2);
       return cloudClient.prefetch().then(data => {
@@ -107,11 +124,11 @@ describe('api:cloud', () => {
     };
     it('should make a proper req when list', (done) => {
       const cloudClient = createCloudClient();
-      const expectedReqParams = { 'apikey': 'CmrB9kEilS1SQeHIDf3wtz', 'clouds': { 'dropbox': { 'path': '/' }, 'facebook': { 'path': '/' }, 'googledrive': { 'path': '/' }, 'instagram': { 'path': '/' } }, 'flow': 'web', 'token': undefined };
+      const expectedReqParams = { 'apikey': 'TEST_API_KEY', 'clouds': { 'dropbox': { 'path': '/' }, 'facebook': { 'path': '/' }, 'googledrive': { 'path': '/' }, 'instagram': { 'path': '/' } }, 'flow': 'web', 'token': undefined };
       expect.assertions(2);
       return cloudClient.list(clouds).then(data => {
         expect(mockPost).toBeCalledTimes(1);
-        expect(mockPost).toBeCalledWith('https://cloud.filestackapi.com/folder/list', expectedReqParams);
+        expect(mockPost).toBeCalledWith('https://cloud.filestackapi.com/folder/list', expectedReqParams, {});
         done();
       });
     });
@@ -129,11 +146,11 @@ describe('api:cloud', () => {
         'signature': 'newSignature',
       };
       const cloudClient = createCloudClient(session);
-      const expectedReqParams = { 'apikey': 'CmrB9kEilS1SQeHIDf3wtz', 'clouds': { 'dropbox': { 'path': '/' }, 'facebook': { 'path': '/' }, 'googledrive': { 'path': '/' }, 'instagram': { 'path': '/' } }, 'flow': 'web', 'policy': 'newPolicy', 'signature': 'newSignature', 'token': undefined };
+      const expectedReqParams = { 'apikey': 'TEST_API_KEY', 'clouds': { 'dropbox': { 'path': '/' }, 'facebook': { 'path': '/' }, 'googledrive': { 'path': '/' }, 'instagram': { 'path': '/' } }, 'flow': 'web', 'policy': 'newPolicy', 'signature': 'newSignature', 'token': undefined };
       expect.assertions(2);
       return cloudClient.list(clouds).then(data => {
         expect(mockPost).toBeCalledTimes(1);
-        expect(mockPost).toBeCalledWith('https://cloud.filestackapi.com/folder/list', expectedReqParams);
+        expect(mockPost).toBeCalledWith('https://cloud.filestackapi.com/folder/list', expectedReqParams, {});
         done();
       });
     });
@@ -154,7 +171,7 @@ describe('api:cloud', () => {
       expect.assertions(3);
       return cloudClient.list(clouds).then(data => {
         expect(mockPost).toBeCalledTimes(1);
-        expect(mockPost).toBeCalledWith('https://cloud.filestackapi.com/folder/list', expectedReqParams);
+        expect(mockPost).toBeCalledWith('https://cloud.filestackapi.com/folder/list', expectedReqParams, {});
         expect(setToken).toBeCalledWith('newToken');
         done();
       });
@@ -165,11 +182,11 @@ describe('api:cloud', () => {
       const name = 'image.jpg';
       const path = 'http://test.pl/images/';
       const cloudClient = createCloudClient();
-      const expectedReqParams = { 'apikey': 'CmrB9kEilS1SQeHIDf3wtz', 'clouds': { 'image.jpg': { 'path': 'http://test.pl/images/', 'store': { 'location': 's3' } } }, 'flow': 'web', 'token': undefined };
+      const expectedReqParams = { 'apikey': 'TEST_API_KEY', 'clouds': { 'image.jpg': { 'path': 'http://test.pl/images/', 'store': { 'location': 's3' } } }, 'flow': 'web', 'token': undefined };
       expect.assertions(2);
       return cloudClient.store(name, path).then(data => {
         expect(mockPost).toBeCalledTimes(1);
-        expect(mockPost).toBeCalledWith('https://cloud.filestackapi.com/store/', expectedReqParams);
+        expect(mockPost).toBeCalledWith('https://cloud.filestackapi.com/store/', expectedReqParams, {});
         done();
       });
     });
@@ -181,11 +198,11 @@ describe('api:cloud', () => {
         customSourceContainer: 'myTestBucket',
       };
       const cloudClient = createCloudClient();
-      const expectedReqParams = { 'apikey': 'CmrB9kEilS1SQeHIDf3wtz', 'clouds': { 'customsource': { 'customSourceContainer': 'myTestBucket', 'customSourcePath': '/images/image2.jpg', 'path': '', 'store': { 'location': 's3' } } }, 'flow': 'web', 'token': undefined };
+      const expectedReqParams = { 'apikey': 'TEST_API_KEY', 'clouds': { 'customsource': { 'customSourceContainer': 'myTestBucket', 'customSourcePath': '/images/image2.jpg', 'path': '', 'store': { 'location': 's3' } } }, 'flow': 'web', 'token': undefined };
       expect.assertions(3);
       return cloudClient.store(name, path, {}, customSource).then(data => {
         expect(mockPost).toBeCalledTimes(1);
-        expect(mockPost).toBeCalledWith('https://cloud.filestackapi.com/store/', expectedReqParams);
+        expect(mockPost).toBeCalledWith('https://cloud.filestackapi.com/store/', expectedReqParams, {});
         expect(data).toBe('test customSource');
         done();
       });
@@ -209,11 +226,11 @@ describe('api:cloud', () => {
       const name = 'image.jpg';
       const path = 'http://test.pl/images/';
       const cloudClient = createCloudClient(session, options);
-      const expectedReqParams = { 'apikey': 'CmrB9kEilS1SQeHIDf3wtz', 'clouds': { 'image.jpg': { 'path': 'http://test.pl/images/', 'store': { 'location': 'instagram' } } }, 'flow': 'web', 'policy': 'newPolicy', 'signature': 'newSignature', 'token': undefined };
+      const expectedReqParams = { 'apikey': 'TEST_API_KEY', 'clouds': { 'image.jpg': { 'path': 'http://test.pl/images/', 'store': { 'location': 'instagram' } } }, 'flow': 'web', 'policy': 'newPolicy', 'signature': 'newSignature', 'token': undefined };
       expect.assertions(2);
       return cloudClient.store(name, path, options).then(data => {
         expect(mockPost).toBeCalledTimes(1);
-        expect(mockPost).toBeCalledWith('https://cloud.filestackapi.com/store/', expectedReqParams);
+        expect(mockPost).toBeCalledWith('https://cloud.filestackapi.com/store/', expectedReqParams, {});
         done();
       });
     });
@@ -236,7 +253,7 @@ describe('api:cloud', () => {
       expect.assertions(3);
       return cloudClient.store(name, path).then(data => {
         expect(mockPost).toBeCalledTimes(1);
-        expect(mockPost).toBeCalledWith('https://cloud.filestackapi.com/store/', expectedReqParams);
+        expect(mockPost).toBeCalledWith('https://cloud.filestackapi.com/store/', expectedReqParams, {});
         expect(setToken).toBeCalledWith('newToken');
         done();
       });
@@ -247,11 +264,11 @@ describe('api:cloud', () => {
       const name = 'image.jpg';
       const path = 'http://test.pl/images/';
       const cloudClient = createCloudClient();
-      const expectedReqParams = { 'apikey': 'CmrB9kEilS1SQeHIDf3wtz', 'clouds': { 'image.jpg': { 'path': 'http://test.pl/images/' } }, 'flow': 'web', 'token': undefined };
+      const expectedReqParams = { 'apikey': 'TEST_API_KEY', 'clouds': { 'image.jpg': { 'path': 'http://test.pl/images/' } }, 'flow': 'web', 'token': undefined };
       expect.assertions(2);
       return cloudClient.link(name, path).then(data => {
         expect(mockPost).toBeCalledTimes(1);
-        expect(mockPost).toBeCalledWith('https://cloud.filestackapi.com/link/', expectedReqParams);
+        expect(mockPost).toBeCalledWith('https://cloud.filestackapi.com/link/', expectedReqParams, {});
         done();
       });
     });
@@ -263,11 +280,11 @@ describe('api:cloud', () => {
         customSourceContainer: 'myTestBucket',
       };
       const cloudClient = createCloudClient();
-      const expectedReqParams = { 'apikey': 'CmrB9kEilS1SQeHIDf3wtz', 'clouds': { 'customsource': { 'customSourceContainer': 'myTestBucket', 'customSourcePath': '/images/image2.jpg', 'path': '' } }, 'flow': 'web', 'token': undefined };
+      const expectedReqParams = { 'apikey': 'TEST_API_KEY', 'clouds': { 'customsource': { 'customSourceContainer': 'myTestBucket', 'customSourcePath': '/images/image2.jpg', 'path': '' } }, 'flow': 'web', 'token': undefined };
       expect.assertions(3);
       return cloudClient.link(name, path, customSource).then(data => {
         expect(mockPost).toBeCalledTimes(1);
-        expect(mockPost).toBeCalledWith('https://cloud.filestackapi.com/link/', expectedReqParams);
+        expect(mockPost).toBeCalledWith('https://cloud.filestackapi.com/link/', expectedReqParams, {});
         expect(data).toBe('test customSource');
         done();
       });
@@ -288,11 +305,11 @@ describe('api:cloud', () => {
       const name = 'image.jpg';
       const path = 'http://test.pl/images/';
       const cloudClient = createCloudClient(session);
-      const expectedReqParams = { 'apikey': 'CmrB9kEilS1SQeHIDf3wtz', 'clouds': { 'image.jpg': { 'path': 'http://test.pl/images/' } }, 'flow': 'web', 'policy': 'newPolicy', 'signature': 'newSignature', 'token': undefined };
+      const expectedReqParams = { 'apikey': 'TEST_API_KEY', 'clouds': { 'image.jpg': { 'path': 'http://test.pl/images/' } }, 'flow': 'web', 'policy': 'newPolicy', 'signature': 'newSignature', 'token': undefined };
       expect.assertions(2);
       return cloudClient.link(name, path).then(data => {
         expect(mockPost).toBeCalledTimes(1);
-        expect(mockPost).toBeCalledWith('https://cloud.filestackapi.com/link/', expectedReqParams);
+        expect(mockPost).toBeCalledWith('https://cloud.filestackapi.com/link/', expectedReqParams, {});
         done();
       });
     });
@@ -315,7 +332,7 @@ describe('api:cloud', () => {
       expect.assertions(3);
       return cloudClient.link(name, path).then(data => {
         expect(mockPost).toBeCalledTimes(1);
-        expect(mockPost).toBeCalledWith('https://cloud.filestackapi.com/link/', expectedReqParams);
+        expect(mockPost).toBeCalledWith('https://cloud.filestackapi.com/link/', expectedReqParams, {});
         expect(setToken).toBeCalledWith('newToken');
         done();
       });
@@ -348,7 +365,7 @@ describe('api:cloud', () => {
       expect.assertions(3);
       return cloudClient.link(name, path).then(data => {
         expect(mockPost).toBeCalledTimes(1);
-        expect(mockPost).toBeCalledWith('https://cloud.filestackapi.com/link/', expectedReqParams);
+        expect(mockPost).toBeCalledWith('https://cloud.filestackapi.com/link/', expectedReqParams, {});
         expect(setToken).toBeCalledWith('newToken');
         done();
       });
@@ -381,7 +398,7 @@ describe('api:cloud', () => {
       expect.assertions(3);
       return cloudClient.link(name, path).then(data => {
         expect(mockPost).toBeCalledTimes(1);
-        expect(mockPost).toBeCalledWith('https://cloud.filestackapi.com/link/', expectedReqParams);
+        expect(mockPost).toBeCalledWith('https://cloud.filestackapi.com/link/', expectedReqParams, {});
         expect(setToken).toBeCalledWith('newToken');
         done();
       });
@@ -390,7 +407,7 @@ describe('api:cloud', () => {
   describe('logout', () => {
     it('should make a proper request', (done) => {
       const cloudClient = createCloudClient();
-      const expectedReqParams = { 'apikey': 'CmrB9kEilS1SQeHIDf3wtz', 'clouds': { 'dropbox': {} }, 'flow': 'web', 'token': undefined };
+      const expectedReqParams = { 'apikey': 'TEST_API_KEY', 'clouds': { 'dropbox': {} }, 'flow': 'web', 'token': undefined };
       expect.assertions(3);
       return cloudClient.logout('dropbox').then(data => {
         expect(mockPost).toBeCalledTimes(1);
@@ -411,7 +428,7 @@ describe('api:cloud', () => {
         },
       };
       const cloudClient = createCloudClient(defaultSession, options);
-      const expectedReqParams = { 'apikey': 'CmrB9kEilS1SQeHIDf3wtz', 'flow': 'web', 'token': 'eXaMpLeToken' };
+      const expectedReqParams = { 'apikey': 'TEST_API_KEY', 'flow': 'web', 'token': 'eXaMpLeToken' };
       expect.assertions(2);
       return cloudClient.logout().then(data => {
         expect(mockPost).toBeCalledTimes(1);
@@ -435,7 +452,7 @@ describe('api:cloud', () => {
         'signature': 'newSignature',
       };
       const cloudClient = createCloudClient(session);
-      const expectedReqParams = { 'apikey': 'CmrB9kEilS1SQeHIDf3wtz', 'policy': 'newPolicy', 'signature': 'newSignature', 'url': 'https://upload.wikimedia.org/wikipedia/commons/0/0e/Tree_example_VIS.jpg' };
+      const expectedReqParams = { 'apikey': 'TEST_API_KEY', 'policy': 'newPolicy', 'signature': 'newSignature', 'url': 'https://upload.wikimedia.org/wikipedia/commons/0/0e/Tree_example_VIS.jpg' };
       expect.assertions(2);
       return cloudClient.metadata('https://upload.wikimedia.org/wikipedia/commons/0/0e/Tree_example_VIS.jpg').then(data => {
         expect(mockPost).toBeCalledTimes(1);
@@ -478,9 +495,9 @@ describe('api:cloud', () => {
     });
   });
   describe('tokStop', () => {
-    const tokApiKey = '4g1h7yy32';
-    const sessionId = '1_MX40NTExNzczMn5-MTU1MjQ4OTE4Nzk3M35QcnMrSTIxRG55VWVscEtwTFlNUzBUMXZ-fg';
-    const archiveId = 'c023fce3-6ea5-4d45-aa68-2251d8602118';
+    const tokApiKey = 'TOK_API_KEY';
+    const sessionId = 'TOK_SESSION_ID';
+    const archiveId = 'TOK_ARCHIVE_ID';
     it('should correctly start recording process', () => {
       const cloudClient = createCloudClient();
       const payload = { 'apikey': tokApiKey, 'session_id': sessionId, 'archive_id': archiveId };
