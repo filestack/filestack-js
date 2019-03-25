@@ -17,7 +17,7 @@
 
 import { removeEmpty } from '../utils';
 import { ClientOptions, Session, StoreOptions } from '../client';
-import { requestWithSource as request } from '../api/request';
+import { requestWithSource, request } from '../api/request';
 
 /**
  * @private
@@ -60,11 +60,7 @@ export class CloudClient {
     const params = {
       apikey: this.session.apikey,
     };
-    return request()
-      .get(`${this.cloudApiUrl}/prefetch`, {
-        params,
-      })
-      .then((res) => res.data);
+    return requestWithSource().get(`${this.cloudApiUrl}/prefetch`, { params }).then((res) => res.data);
   }
 
   // FIXME: token param is never read
@@ -80,7 +76,17 @@ export class CloudClient {
       payload.signature = this.session.signature;
     }
 
-    return request().post(`${this.cloudApiUrl}/folder/list`, payload).then((res) => {
+    let options: any = {};
+
+    if (token) {
+      const CancelToken = request.CancelToken;
+      const source = CancelToken.source();
+      token.cancel = source.cancel;
+
+      options.cancelToken = source.token;
+    }
+
+    return requestWithSource().post(`${this.cloudApiUrl}/folder/list`, payload, options).then((res) => {
       if (res.data && res.data.token) {
         this.token = res.data.token;
       }
@@ -119,7 +125,17 @@ export class CloudClient {
       payload.signature = this.session.signature;
     }
 
-    return request().post(`${this.cloudApiUrl}/store/`, payload).then((res) => {
+    let requestOptions: any = {};
+
+    if (token) {
+      const CancelToken = request.CancelToken;
+      const source = CancelToken.source();
+      token.cancel = source.cancel;
+
+      requestOptions.cancelToken = source.token;
+    }
+
+    return requestWithSource().post(`${this.cloudApiUrl}/store/`, payload, requestOptions).then((res) => {
       if (res.data && res.data.token) {
         this.token = res.data.token;
       }
@@ -157,7 +173,17 @@ export class CloudClient {
       payload.signature = this.session.signature;
     }
 
-    return request().post(`${this.cloudApiUrl}/link/`, payload).then((res) => {
+    let requestOptions: any = {};
+
+    if (token) {
+      const CancelToken = request.CancelToken;
+      const source = CancelToken.source();
+      token.cancel = source.cancel;
+
+      requestOptions.cancelToken = source.token;
+    }
+
+    return requestWithSource().post(`${this.cloudApiUrl}/link/`, payload, requestOptions).then((res) => {
       if (res.data && res.data.token) {
         this.token = res.data.token;
       }
@@ -186,7 +212,7 @@ export class CloudClient {
       }
     }
 
-    return request().post(`${this.cloudApiUrl}/auth/logout/`, payload).then((res) => {
+    return requestWithSource().post(`${this.cloudApiUrl}/auth/logout/`, payload).then((res) => {
       if (res.data && res.data[name]) {
         return res.data[name];
       }
@@ -204,7 +230,7 @@ export class CloudClient {
       payload.signature = this.session.signature;
     }
 
-    return request().post(`${this.cloudApiUrl}/metadata/`, payload).then((res) => res.data);
+    return requestWithSource().post(`${this.cloudApiUrl}/metadata/`, payload).then((res) => res.data);
   }
 
   // OpenTok API Endpoints
@@ -212,7 +238,7 @@ export class CloudClient {
     if (type !== 'video' && type !== 'audio') {
       throw new Error('Type must be one of video or audio.');
     }
-    return request().post(`${this.cloudApiUrl}/recording/${type}/init`).then((res) => {
+    return requestWithSource().post(`${this.cloudApiUrl}/recording/${type}/init`).then((res) => {
       return {
         body: res.data,
       };
@@ -227,12 +253,11 @@ export class CloudClient {
       apikey: key,
       session_id: sessionId,
     };
-    return new Promise((resolve, reject) => {
-      return request().post(`${this.cloudApiUrl}/recording/${type}/start`, payload).then((res) => {
-        return {
-          body: res.data,
-        };
-      });
+
+    return requestWithSource().post(`${this.cloudApiUrl}/recording/${type}/start`, payload).then((res) => {
+      return {
+        body: res.data,
+      };
     });
   }
 
@@ -246,12 +271,10 @@ export class CloudClient {
       archive_id: archiveId,
     };
 
-    return new Promise((resolve, reject) => {
-      return request().post(`${this.cloudApiUrl}/recording/${type}/stop`, payload).then((res) => {
-        return {
-          body: res.data,
-        };
-      });
+    return requestWithSource().post(`${this.cloudApiUrl}/recording/${type}/stop`, payload).then((res) => {
+      return {
+        body: res.data,
+      };
     });
   }
 }
