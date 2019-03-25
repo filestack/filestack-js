@@ -44,14 +44,14 @@ export const resolveCdnUrl = (session: Session, handle: string): string => {
   return cdnURL;
 };
 
-export const resolveHost = (hosts: Hosts, cname: string): Hosts => {
-  let result = hosts;
+export const resolveHost = (urls: Hosts, cname: string): Hosts => {
+  let result = urls;
 
   if (cname) {
     const hosts = /filestackapi.com|filestackcontent.com/i;
 
-    Object.keys(hosts).forEach((key) => {
-      result[key] = hosts[key].replace(hosts, cname);
+    Object.keys(urls).forEach((key) => {
+      result[key] = urls[key].replace(hosts, cname);
     });
   }
 
