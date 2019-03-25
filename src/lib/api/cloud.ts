@@ -94,7 +94,6 @@ export class CloudClient {
     });
   }
 
-  // FIXME: token param is never read
   store(name: string, path: string, options: StoreOptions = {}, customSource: any = {}, token?: any) {
     // Default to S3
     if (options.location === undefined) options.location = 's3';
@@ -146,7 +145,6 @@ export class CloudClient {
       return res.data;
     });
   }
-  // FIXME: token param is never read
   link(name: string, path: string, customSource: any = {}, token?: any) {
     const payload: any = {
       apikey: this.session.apikey,

@@ -46,15 +46,6 @@ const mockPost = jest.fn().mockImplementation((url, payload) => {
 
 jest.mock('./../api/request', () => {
   return {
-    // request: jest.fn(() => {
-    //   return {
-    //     get: mockGet,
-    //     post: mockPost,
-    //     CancelToken: {
-    //       source: jest.fn(),
-    //     },
-    //   };
-    // }),
     request: {
       CancelToken: {
         source: jest.fn(),
