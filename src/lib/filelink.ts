@@ -421,10 +421,7 @@ export interface PdfConvertParams {
 }
 
 export interface FallbackParams {
-  handleObject: {
-    handle: string,
-    security?: SecurityParams,
-  };
+  handle: string;
   cache: number;
 }
 
