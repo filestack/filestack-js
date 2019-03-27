@@ -1335,5 +1335,20 @@ export const TransformSchema = {
         required: ['pages'],
       }],
     },
+    fallback: {
+      type: 'object',
+      additionalProperties: false,
+      properties: {
+        handle: {
+          type: 'string',
+        },
+        cache: {
+          type: 'integer',
+          minimum: 1,
+          maximum: 31536000,
+        },
+      },
+      required: ['handle'],
+    },
   },
 };
