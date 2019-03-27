@@ -1177,7 +1177,7 @@ export class Filelink {
    * Adds fallback transformation
    *
    * @see https://www.filestack.com/docs/api/processing/#fallback
-   * @param {(FallbackParams | boolean)} params
+   * @param {(FallbackParams)} params
    * @returns this
    * @memberof Filelink
    */
