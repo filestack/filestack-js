@@ -6,6 +6,11 @@ All notable changes to this project will be documented in this file. See [standa
 ## [2.0.3](https://github.com/filestack/filestack-js/compare/v2.0.2...v2.0.3) (2019-03-28)
 
 
+### Features
+
+* **filelink:** Add support for fallback task ([dbb0b4b](https://github.com/filestack/filestack-js/commit/dbb0b4b))
+
+
 
 <a name="2.0.2"></a>
 ## [2.0.2](https://github.com/filestack/filestack-js/compare/v2.0.1...v2.0.2) (2019-03-19)
