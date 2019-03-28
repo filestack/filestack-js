@@ -6,7 +6,6 @@ const nodeResolve = require('rollup-plugin-node-resolve');
 const replace = require('rollup-plugin-replace');
 const json = require('rollup-plugin-json');
 const babel = require('rollup-plugin-babel');
-const inject = require('rollup-plugin-inject');
 
 const adapters = {
   './lib/api/security': 'build/module/adapters/security.browser.js',

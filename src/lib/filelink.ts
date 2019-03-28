@@ -420,6 +420,11 @@ export interface PdfConvertParams {
   pages?: (string | number)[];
 }
 
+export interface FallbackParams {
+  handle: string;
+  cache: number;
+}
+
 const handleRegexp = /^[\w\-]{20}$/;
 
 /**
@@ -1166,6 +1171,18 @@ export class Filelink {
    */
   PDFConvert(params?: PdfConvertParams | boolean) {
     return this.addTask('pdfconvert', params);
+  }
+
+  /**
+   * Adds fallback transformation
+   *
+   * @see https://www.filestack.com/docs/api/processing/#fallback
+   * @param {(FallbackParams)} params
+   * @returns this
+   * @memberof Filelink
+   */
+  fallback(params: FallbackParams) {
+    return this.addTask('fallback', params);
   }
 
   /**
