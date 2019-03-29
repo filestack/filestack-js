@@ -1207,8 +1207,9 @@ export class Filelink {
     const toValidate = {};
     toValidate[name] = options;
 
-    if (!this.validator(toValidate)) {
-      throw new FilestackError(`Task "${name}" validation error, Params: ${JSON.stringify(options)}`, this.validator.errors);
+    const res = this.validator(toValidate);
+    if (res.errors.length) {
+      throw new FilestackError(`Task "${name}" validation error, Params: ${JSON.stringify(options)}`, res.errors);
     }
 
     return;
