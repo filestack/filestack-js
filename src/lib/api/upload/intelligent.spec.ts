@@ -112,7 +112,7 @@ describe('api:upload:intelligent', () => {
         'file': newFile,
         'config': {
           'host': 'https://upload.filestackapi.com',
-          'apikey': 'A0NTRSxHcR66kmTku9Gcsz',
+          'apikey': 'TEST_API_KEY',
           'partSize': 8388608,
           'concurrency': 3,
           'progressInterval': 10,
@@ -200,7 +200,7 @@ describe('api:upload:intelligent', () => {
         'file': newFile,
         'config': {
           'host': 'https://upload.filestackapi.com',
-          'apikey': 'A0NTRSxHcR66kmTku9Gcsz',
+          'apikey': 'TEST_API_KEY',
           'partSize': 8388608,
           'concurrency': 3,
           'progressInterval': 10,

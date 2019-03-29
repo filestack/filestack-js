@@ -32,12 +32,12 @@ describe('filelink', () => {
     expect(filelink).toBeDefined();
     expect(filelink).toBeInstanceOf(Filelink);
   });
-  it('should throw error when handle is invalid', () => {
+  it('should throw an error when handle is invalid', () => {
     const source = '*/5aYkEQJSQCmYShsoCnZN';
     let filelink;
     expect(() => { filelink = new Filelink(source); }).toThrow('Invalid filestack source provided');
   });
-  it('should throw error when external handle and without apikey', () => {
+  it('should throw an error when external handle and without apikey', () => {
     const source = 'src://test123/example.jpg';
     let filelink;
     expect(() => { filelink = new Filelink(source); }).toThrow('External sources requires apikey to handle transforms');
@@ -103,11 +103,11 @@ describe('filelink', () => {
     const filelink = new Filelink(sourceArr, defaultApikey);
     expect(filelink.toString()).toEqual('https://cdn.filestackcontent.com/DEFAULT_API_KEY/["src://test123/example.jpg","src://test123/flug_9-trans_atlantik-400dpi.jpg"]');
   });
-  it('should throw error if task params are not valid', () => {
+  it('should throw an error if task params are not valid', () => {
     const filelink = new Filelink(defaultSource);
     expect(() => { filelink.resize({}); }).toThrow('Task \"resize\" validation error, Params: {}');
   });
-  it('should throw error if source does not exists', () => {
+  it('should throw an error if source does not exists', () => {
     expect(() => { return new Filelink(''); }).toThrow('Source not Set');
   });
   describe('Different tasks', () => {

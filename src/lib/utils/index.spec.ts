@@ -45,7 +45,7 @@ describe('utils:index', () => {
       const result = resolveCdnUrl(session, handle);
       expect(result).toEqual('https://cdn.example.com/TEST_API_KEY');
     });
-    it('shoudl throw error when using src handle or url without apikey', () => {
+    it('should throw an error when using src handle or url without apikey', () => {
       const handle = 'src://test123/test.jpg';
       session.apikey = '';
       expect(() => { resolveCdnUrl(session, handle); }).toThrow('Api key is required when storage alias is provided');
@@ -78,11 +78,11 @@ describe('utils:index', () => {
       const result = checkOptions(name, allowed, options);
       expect(result).toEqual(Object.keys(options));
     });
-    it('should throw error when option is not allowed', () => {
+    it('should throw an error when option is not allowed', () => {
       const options = { wrongOption: true };
       expect(() => { checkOptions(name, allowed, options); }).toThrow('wrongOption is not a valid option for metadata. Valid options are: size, location, filename');
     });
-    it('should throw error when option is allowed, but it has a wrong type', () => {
+    it('should throw an error when option is allowed, but it has a wrong type', () => {
       const options = { size: 'It is a string!' };
       expect(() => { checkOptions(name, allowed, options); }).toThrow('Invalid value \"It is a string!\" supplied to Boolean');
     });

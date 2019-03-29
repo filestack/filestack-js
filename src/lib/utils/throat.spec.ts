@@ -37,7 +37,7 @@ describe('utils:throat', () => {
       });
       expect(mockAsyncFunc).toHaveBeenCalledTimes(2);
     });
-    it('should throw error second argument is not a function', () => {
+    it('should throw an error second argument is not a function', () => {
       const notFunction = 'string';
       expect(() => { throat(2, notFunction); }).toThrow('Expected throat fn to be a function but got string');
     });

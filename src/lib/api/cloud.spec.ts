@@ -462,7 +462,7 @@ describe('api:cloud', () => {
         done();
       });
     });
-    it('should throw error when type is incorrect', () => {
+    it('should throw an error when type is incorrect', () => {
       const cloudClient = createCloudClient();
       // tslint:disable-next-line
       expect(() => { cloudClient.tokInit('wrongType') }).toThrow('Type must be one of video or audio.');
@@ -479,7 +479,7 @@ describe('api:cloud', () => {
       expect(mockPost).toBeCalledTimes(1);
       expect(mockPost).toBeCalledWith('https://cloud.filestackapi.com/recording/video/start', payload);
     });
-    it('should throw error when type is incorrect', () => {
+    it('should throw an error when type is incorrect', () => {
       const cloudClient = createCloudClient();
       // tslint:disable-next-line
       expect(() => { cloudClient.tokStart('wrongType', tokApiKey, sessionId) }).toThrow('Type must be one of video or audio.');
@@ -497,7 +497,7 @@ describe('api:cloud', () => {
       expect(mockPost).toBeCalledTimes(1);
       expect(mockPost).toBeCalledWith('https://cloud.filestackapi.com/recording/video/stop', payload);
     });
-    it('should throw error when type is incorrect', () => {
+    it('should throw an error when type is incorrect', () => {
       const cloudClient = createCloudClient();
       // tslint:disable-next-line
       expect(() => { cloudClient.tokStop('wrongType', tokApiKey, sessionId, archiveId) }).toThrow('Type must be one of video or audio.');

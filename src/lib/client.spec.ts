@@ -121,10 +121,10 @@ describe('client', () => {
     expect(client).toBeDefined();
     expect(client).toBeInstanceOf(Client);
   });
-  it('should throw error if api key not provided', () => {
+  it('should throw an error if api key not provided', () => {
     expect(() => { return new Client(''); }).toThrow('An apikey is required to initialize the Filestack client');
   });
-  it('should throw error if provided security without signature', () => {
+  it('should throw an error if provided security without signature', () => {
     const options = {
       security: {
         policy: 'examplePolicy',

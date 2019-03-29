@@ -77,10 +77,10 @@ describe('api:upload:preview', () => {
       expect(mockAppendChild).toBeCalledTimes(1);
       expect(mockAppendChild).toBeCalledWith(expected);
     });
-    it('should throw error when handle is not provided', () => {
+    it('should throw an error when handle is not provided', () => {
       expect(() => { preview(defaultSession); }).toThrow('A valid Filestack handle or storage alias is required for preview');
     });
-    it('should throw error when id provided and dom element not found', () => {
+    it('should throw an error when id provided and dom element not found', () => {
       const defaultSession = {
         'apikey': 'TEST_API_KEY',
         'urls': {
