@@ -39,30 +39,12 @@ export interface Config {
   urls: Hosts;
 }
 
-/**
- * @private
- */
-export let config: Config;
-
-/* istanbul ignore next */
-if (process.env.NODE_ENV === 'production') {
-  config = {
-    urls: {
-      fileApiUrl: 'https://www.filestackapi.com/api/file',
-      uploadApiUrl: 'https://upload.filestackapi.com',
-      cloudApiUrl: 'https://cloud.filestackapi.com',
-      cdnUrl: 'https://cdn.filestackcontent.com',
-      pickerUrl: `https://static.filestackapi.com/picker/${PICKER_VERSION}/picker.js`,
-    },
-  };
-} else {
-  config = {
-    urls: {
-      fileApiUrl: 'https://www.filestackapi.com/api/file',
-      uploadApiUrl: 'https://upload.filestackapi.com',
-      cloudApiUrl: 'https://cloud.filestackapi.com',
-      cdnUrl: 'https://cdn.filestackcontent.com',
-      pickerUrl: `https://static.filestackapi.com/picker/${PICKER_VERSION}/picker.js`,
-    },
-  };
-}
+export const config = {
+  urls: {
+    fileApiUrl: 'https://www.filestackapi.com/api/file',
+    uploadApiUrl: 'https://upload.filestackapi.com',
+    cloudApiUrl: 'https://cloud.filestackapi.com',
+    cdnUrl: 'https://cdn.filestackcontent.com',
+    pickerUrl: `https://static.filestackapi.com/picker/${PICKER_VERSION}/picker.js`,
+  },
+};

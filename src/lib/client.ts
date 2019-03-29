@@ -19,7 +19,8 @@ import { config, Hosts } from '../config';
 import { metadata, MetadataOptions, remove, retrieve, RetrieveOptions } from './api/file';
 import { transform, TransformOptions } from './api/transform';
 import { storeURL } from './api/store';
-import { resolveHost } from './utils/index';
+import { resolveHost } from './utils';
+import { Upload } from './api/upload_beta/upload';
 import { upload, UploadOptions } from './api/upload';
 import { preview, PreviewOptions } from './api/preview';
 import { CloudClient } from './api/cloud';
@@ -378,5 +379,10 @@ export class Client {
   upload(file: any, options?: UploadOptions, storeOptions?: StoreOptions, token?: any, security?: Security) {
     /* istanbul ignore next */
     return upload(this.session, file, options, storeOptions, token, security);
+  }
+
+  uploadBeta(file: any, options?: UploadOptions, storeOptions?: StoreOptions, token?: any, security?: Security) {
+    const up = new Upload(options, storeOptions);
+    return up.upload(file);
   }
 }

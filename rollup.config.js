@@ -37,7 +37,7 @@ const namedExports = {
     'delete',
     'head'
   ],
-  'node_modules/ajv/lib/ajv.js': ['Ajv'],
+  'node_modules/uuid/index.js': [ 'v4' ],
   'node_modules/bowser/src/bowser.js': [ 'mobile' ],
   'node_modules/spark-md5/spark-md5.js': [ 'ArrayBuffer' ]
 };
