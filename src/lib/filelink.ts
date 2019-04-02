@@ -1237,33 +1237,19 @@ export class Filelink {
   }
 
   /**
-   * Validate single task against schema
+   * Validate every task against schema
    *
    * @private
-   * @param {*} name
-   * @param {*} options
+   * @param {object[]} transformations - object which contain all transformations
    * @returns {void}
    * @memberof Filelink
    */
-  private validateTask(name, options): void {
-    const toValidate = {};
-    toValidate[name] = options;
-
-    const res = Filelink.validator(toValidate);
-    if (res.errors.length) {
-      throw new FilestackError(`Task "${name}" validation error, Params: ${JSON.stringify(options)}`, res.errors);
-    }
-
-    return;
-  }
-
-  private validateTasks(transformations): void {
+  private validateTasks(transformations: object[]): void {
     const transformationsObj = this.arrayToObject(transformations, 'name', 'params');
     const res = Filelink.validator(transformationsObj);
     if (res.errors.length) {
       throw new FilestackError(`Params validation error: ${JSON.stringify(transformations)}`, res.errors);
     }
-
     return;
   }
 
@@ -1391,7 +1377,7 @@ export class Filelink {
    * @example [{name: 'resize', params: {height: 125}}] => {resize: {height: 125}}
    * @param arr - any array
    */
-  private arrayToObject = (array: any[], nameKey: string, dataKey: string) => {
+  private arrayToObject = (array: object[], nameKey: string, dataKey: string) => {
     return array.reduce((obj, item) => {
       obj[item[nameKey]] = item[dataKey];
       return obj;
