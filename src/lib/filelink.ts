@@ -450,7 +450,7 @@ export class Filelink {
    * @private
    * @memberof Filelink
    */
-  private validator = getValidator(TransformSchema);
+  private static validator = getValidator(TransformSchema);
 
   /**
    * Applied transforms array
@@ -485,6 +485,14 @@ export class Filelink {
    * @memberof Filelink
    */
   private b64: boolean = false;
+
+  /**
+   * should use a validator to check params of every task
+   * @private
+   * @type {boolean}
+   * @memberof Filelink
+   */
+  private useValidator: boolean = true;
 
   /**
    * Custom CNAME
@@ -535,6 +543,18 @@ export class Filelink {
    */
   setBase64(flag: boolean) {
     this.b64 = flag;
+    return this;
+  }
+
+  /**
+   * Switch the useValidator flag
+   *
+   * @param {boolean} flag
+   * @returns
+   * @memberof Filelink
+   */
+  setUseValidator(flag: boolean) {
+    this.useValidator = flag;
     return this;
   }
 
@@ -634,7 +654,9 @@ export class Filelink {
    * @memberof Filelink
    */
   addTask(name: string, params?) {
-    this.validateTask(name, params);
+    if (this.useValidator) {
+      Filelink.validateTask(name, params);
+    }
 
     if (name !== 'cache' && typeof params === 'boolean') {
       if (!params) {
@@ -1220,11 +1242,11 @@ export class Filelink {
    * @returns {void}
    * @memberof Filelink
    */
-  private validateTask(name, options): void {
+  private static validateTask(name, options): void {
     const toValidate = {};
     toValidate[name] = options;
 
-    const res = this.validator(toValidate);
+    const res = Filelink.validator(toValidate);
     if (res.errors.length) {
       throw new FilestackError(`Task "${name}" validation error, Params: ${JSON.stringify(options)}`, res.errors);
     }
