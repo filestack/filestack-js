@@ -110,18 +110,18 @@ export enum CropfacesType {
  * Convert to format
  */
 export enum VideoTypes {
-    h264 = 'h264',
-    h264_hi = 'h264.hi',
-    webm = 'webm',
-    'webm-hi' = 'webm.hi',
-    ogg = 'ogg',
-    'ogg-hi' = 'ogg.hi',
-    'hls-variant' = 'hls.variant',
-    mp3 = 'mp3',
-    oga = 'oga',
-    m4a = 'm4a',
-    aac = 'aac',
-    hls = 'hls.variant.audio',
+  h264 = 'h264',
+  h264_hi = 'h264.hi',
+  webm = 'webm',
+  'webm-hi' = 'webm.hi',
+  ogg = 'ogg',
+  'ogg-hi' = 'ogg.hi',
+  'hls-variant' = 'hls.variant',
+  mp3 = 'mp3',
+  oga = 'oga',
+  m4a = 'm4a',
+  aac = 'aac',
+  hls = 'hls.variant.audio',
 }
 
 export enum URLScreenshotAgent {
@@ -599,6 +599,9 @@ export class Filelink {
    * @memberof Filelink
    */
   getTransformations() {
+    if (this.useValidator) {
+      this.validateTasks(this.transforms);
+    }
     return this.transforms;
   }
 
@@ -611,6 +614,10 @@ export class Filelink {
   toString() {
     const returnUrl = [];
     returnUrl.push(this.getCdnHost());
+
+    if (this.useValidator) {
+      this.validateTasks(this.transforms);
+    }
 
     if (this.apikey) {
       returnUrl.push(this.apikey);
@@ -654,10 +661,6 @@ export class Filelink {
    * @memberof Filelink
    */
   addTask(name: string, params?) {
-    if (this.useValidator) {
-      this.validateTask(name, params);
-    }
-
     if (name !== 'cache' && typeof params === 'boolean') {
       if (!params) {
         return this;
@@ -1254,6 +1257,16 @@ export class Filelink {
     return;
   }
 
+  private validateTasks(transformations): void {
+    const transformationsObj = this.arrayToObject(transformations, 'name', 'params');
+    const res = Filelink.validator(transformationsObj);
+    if (res.errors.length) {
+      throw new FilestackError(`Params validation error: ${JSON.stringify(transformations)}`, res.errors);
+    }
+
+    return;
+  }
+
   /**
    * Returns correct cdn url with cname support
    *
@@ -1340,7 +1353,7 @@ export class Filelink {
    * @returns {string}
    * @memberof Filelink
    */
-  private escapeValue (value: string): string {
+  private escapeValue(value: string): string {
     if (typeof value !== 'string') {
       return value;
     }
@@ -1371,4 +1384,17 @@ export class Filelink {
     return `[${toReturn}]`;
   }
 
+  /**
+   * Converts array of objects to object
+   *
+   * @private
+   * @example [{name: 'resize', params: {height: 125}}] => {resize: {height: 125}}
+   * @param arr - any array
+   */
+  private arrayToObject = (array: any[], nameKey: string, dataKey: string) => {
+    return array.reduce((obj, item) => {
+      obj[item[nameKey]] = item[dataKey];
+      return obj;
+    }, {});
+  }
 }
