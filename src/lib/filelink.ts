@@ -655,7 +655,7 @@ export class Filelink {
    */
   addTask(name: string, params?) {
     if (this.useValidator) {
-      Filelink.validateTask(name, params);
+      this.validateTask(name, params);
     }
 
     if (name !== 'cache' && typeof params === 'boolean') {
@@ -1242,7 +1242,7 @@ export class Filelink {
    * @returns {void}
    * @memberof Filelink
    */
-  private static validateTask(name, options): void {
+  private validateTask(name, options): void {
     const toValidate = {};
     toValidate[name] = options;
 
