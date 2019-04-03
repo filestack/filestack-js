@@ -22,14 +22,14 @@ describe('api:security', () => {
     it('should create a proper object with policy & signature', () => {
       const policy = {
         expiry: 1523595600,
-        call: ['read', 'convert'],
+        call: ['pick', 'read', 'stat', 'write', 'writeUrl', 'store', 'convert', 'remove', 'exif', 'runWorkflow'],
         handle: 'TEST_HANDLE',
       };
       const appSecret = 'testAppSecret';
       const result = getSecurity(policy, appSecret);
       const expected = {
-        policy: 'eyJleHBpcnkiOjE1MjM1OTU2MDAsImNhbGwiOlsicmVhZCIsImNvbnZlcnQiXSwiaGFuZGxlIjoiVEVTVF9IQU5ETEUifQ==',
-        signature: '24940e75ff80bb43cbe29d7155cf6a7150a4533b1e8c4d9ff916c9aec5a3f3d0',
+        policy: 'eyJleHBpcnkiOjE1MjM1OTU2MDAsImNhbGwiOlsicGljayIsInJlYWQiLCJzdGF0Iiwid3JpdGUiLCJ3cml0ZVVybCIsInN0b3JlIiwiY29udmVydCIsInJlbW92ZSIsImV4aWYiLCJydW5Xb3JrZmxvdyJdLCJoYW5kbGUiOiJURVNUX0hBTkRMRSJ9',
+        signature: '7df0536104cdcc16370ad6494cdbda30c9773a62eec6e5153fa539544db6206e',
       };
       expect(result).toEqual(expected);
     });

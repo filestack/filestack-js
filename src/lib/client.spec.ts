@@ -150,7 +150,7 @@ describe('client', () => {
   });
   it('should be able to logout for provied cloud', (done) => {
     const client = new Client(defaultApikey);
-    const cloudName = 'dropboxx';
+    const cloudName = 'dropbox';
     return client.logout(cloudName).then(() => {
       expect.assertions(2);
       expect(mockCloudLogout).toHaveBeenCalledTimes(1);

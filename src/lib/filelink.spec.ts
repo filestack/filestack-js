@@ -344,11 +344,11 @@ describe('filelink', () => {
     });
     it('should be able to use security', () => {
       const securityParams = {
-        policy: 'blablabla',
-        signature: 'blablabla',
+        policy: 'examplePolicy',
+        signature: 'exampleSignature',
       };
       filelink.security(securityParams);
-      expect(filelink.toString()).toBe('https://customDomain.com/DEFAULT_API_KEY/security=policy:blablabla,signature:blablabla/5aYkEQJSQCmYShsoCnZN');
+      expect(filelink.toString()).toBe('https://customDomain.com/DEFAULT_API_KEY/security=policy:examplePolicy,signature:exampleSignature/5aYkEQJSQCmYShsoCnZN');
     });
     it('should be able output', () => {
       const outputParams = {
