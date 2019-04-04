@@ -5,6 +5,7 @@ tsconfig.json
 tslint.json
 .travis.yml
 .github
+.stats.json
 build/temp
 build/docs
 

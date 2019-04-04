@@ -15,10 +15,15 @@
  * limitations under the License.
  */
 
-// import { retry } from './upload';
+import { Client } from './../src/lib/client';
+import * as Path from 'path';
 
-describe('Upload', () => {
-  describe('Retry', () => {
-    console.log(123);
-  });
+const fs = new Client('APEkwxKMZTsWNIP0XQsv2z');
+
+fs.upload(Path.resolve(__dirname, './manual_10mb.mp4')).then((res) => {
+  console.dir(res, { depth: null });
 });
+
+// up.multiupload([Path.resolve(__dirname, './upload.js'), Path.resolve(__dirname, './manual_10mb.mp4')]).then((res) => {
+//   console.info('Upload done!', res);
+// });

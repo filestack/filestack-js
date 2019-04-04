@@ -20,8 +20,8 @@ import { metadata, MetadataOptions, remove, retrieve, RetrieveOptions } from './
 import { transform, TransformOptions } from './api/transform';
 import { storeURL } from './api/store';
 import { resolveHost } from './utils';
-import { Upload } from './api/upload_beta/upload';
-import { upload, UploadOptions } from './api/upload';
+import { Upload } from './api/upload/upload';
+import { UploadOptions } from './api/upload/types';
 import { preview, PreviewOptions } from './api/preview';
 import { CloudClient } from './api/cloud';
 import {
@@ -376,13 +376,46 @@ export class Client {
    *
    * @returns {Promise}
    */
-  upload(file: any, options?: UploadOptions, storeOptions?: StoreOptions, token?: any, security?: Security) {
-    /* istanbul ignore next */
-    return upload(this.session, file, options, storeOptions, token, security);
+  upload(file: string | Buffer | Blob, options?: UploadOptions, storeOptions?: StoreOptions, token?: any, security?: Security) {
+    const upload = new Upload(options, storeOptions);
+    upload.setSession(this.session);
+
+    return upload.upload(file);
   }
 
-  uploadBeta(file: any, options?: UploadOptions, storeOptions?: StoreOptions, token?: any, security?: Security) {
-    const up = new Upload(options, storeOptions);
-    return up.upload(file);
+  /**
+   * Initiates a multi-part upload flow. Use this for Filestack CIN and FII uploads.
+   *
+   * In Node runtimes the file argument is treated as a file path.
+   * Uploading from a Node buffer is not yet implemented.
+   *
+   * ### Example
+   *
+   * ```js
+   * const token = {};
+   * const onRetry = (obj) => {
+   *   console.log(`Retrying ${obj.location} for ${obj.filename}. Attempt ${obj.attempt} of 10.`);
+   * };
+   *
+   * client.multiupload([file], { onRetry }, token)
+   *   .then(res => console.log(res));
+   *
+   * token.pause();  // Pause flow
+   * token.resume(); // Resume flow
+   * token.cancel(); // Cancel flow (rejects)
+   * ```
+   * @param file           Must be a valid [File](https://developer.mozilla.org/en-US/docs/Web/API/File), Blob, base64 encoded string, or file path in Node.
+   * @param uploadOptions  Uploader options.
+   * @param storeOptions   Storage options.
+   * @param token          A control token that can be used to call cancel(), pause(), and resume().
+   * @param security       Optional security policy and signature override.
+   *
+   * @returns {Promise}
+   */
+  multiupload(file: string[] | Buffer[] | Blob[], options?: UploadOptions, storeOptions?: StoreOptions, token?: any, security?: Security) {
+    const upload = new Upload(options, storeOptions);
+    upload.setSession(this.session);
+
+    return upload.multiupload(file);
   }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 by Filestack.
+ * Copyright (c) 2019 by Filestack.
  * Some rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,8 +15,9 @@
  * limitations under the License.
  */
 
+import { isNode } from './is_node';
+
 import * as SparkMD5 from 'spark-md5';
-import * as abab from 'abab';
 
 /**
  * Calculates a MD5 checksum for passed buffer
@@ -24,6 +25,12 @@ import * as abab from 'abab';
  * @param data  Data to be hashed
  * @returns     base64 encoded MD5 hash
  */
-export const calcMD5 = (data: any): string => {
-  return abab.btoa(SparkMD5.ArrayBuffer.hash(data, true));
-};
+let md5Func;
+
+if (isNode) {
+  md5Func = (data: any): string => (require('crypto')).createHash('md5').update(data).digest('base64');
+} else {
+  md5Func = (data: any): string => btoa(SparkMD5.ArrayBuffer.hash(data, true));
+}
+
+export const calcMD5 = md5Func;

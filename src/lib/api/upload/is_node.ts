@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 by Filestack.
+ * Copyright (c) 2019 by Filestack.
  * Some rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,10 +15,4 @@
  * limitations under the License.
  */
 
-/**
- *
- * @private
- * @param file
- * @param cfg
- */
-export const getName = (file: any, cfg: any) => cfg.customName || file.name;
+export const isNode = typeof process !== 'undefined' && process.versions && process.versions.node;

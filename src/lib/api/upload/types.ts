@@ -15,32 +15,6 @@
  * limitations under the License.
  */
 
-/**
- * @private
- */
-export interface FileObj extends File {
-  buffer: Buffer;
-  name: string;
-  size: number;
-  type: string;
-}
-
-/**
- * @private
- */
-export interface PartObj {
-  buffer: any;
-  chunks: any[];
-  chunkSize: number;
-  intelligentOverride: boolean;
-  loaded: number;
-  number: number;
-  request: any;
-  size: number;
-  md5?: string;
-  offset?: number;
-}
-
 export interface UploadOptions {
   host?: string;
   /**
@@ -107,7 +81,7 @@ export interface FSProgressEvent {
 
 export interface FSRetryEvent {
   location: string;
-  parts: PartsMap;
+  // parts: PartsMap;
   filename: string;
   attempt: number | undefined;
   chunkSize?: number;
@@ -128,43 +102,4 @@ export interface UploadConfig extends UploadOptions {
   signature?: string;
   customName?: string;
   mimetype?: string;
-}
-
-/**
- * @private
- */
-export const enum Status {
-  INIT = 'init',
-  RUNNING = 'running',
-  DONE = 'done',
-  FAILED = 'failed',
-  PAUSED = 'paused',
-}
-
-/**
- * @private
- */
-export interface PartsMap {
-  [part: string]: PartObj;
-}
-
-/**
- * @private
- */
-export interface State {
-  progressTick: any;
-  previousPayload: any;
-  status: Status;
-  retries: any;
-  parts: PartsMap;
-}
-
-/**
- * @private
- */
-export interface Context {
-  config: UploadConfig;
-  state: State;
-  file: FileObj;
-  params?: any;
 }

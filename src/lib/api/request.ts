@@ -1,3 +1,4 @@
+import { AxiosError } from 'axios';
 /*
  * Copyright (c) 2018 by Filestack.
  * Some rights reserved.
@@ -14,9 +15,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-import axios, { AxiosInstance, AxiosResponse } from 'axios';
+import Debug from 'debug';
+import axios, { AxiosInstance, AxiosResponse, AxiosRequestConfig } from 'axios';
 import * as FormData from 'form-data';
+import { SSL_OP_SSLEAY_080_CLIENT_DH_BUG } from 'constants';
+
+const debug = Debug('fs:request');
+
+export interface RetryConfig {
+  retry: number;
+  retryMaxTime: number;
+  retryFactor: number;
+}
 
 /**
  *
@@ -24,8 +34,14 @@ import * as FormData from 'form-data';
  * @param method
  * @param url
  */
-const requestWithSource = (): AxiosInstance => {
-  return axios.create({ headers: { 'Filestack-Source': 'JS-@{VERSION}' } });
+export const requestWithSource = (retryConfig?): AxiosInstance => {
+  const axiosInstance = axios.create({ headers: { 'Filestack-Source': 'JS-@{VERSION}' } });
+
+  if (retryConfig) {
+    useRetryPolicy(axiosInstance, retryConfig);
+  }
+
+  return axiosInstance;
 };
 
 /**
@@ -36,7 +52,7 @@ const requestWithSource = (): AxiosInstance => {
  * @param fields - multipart fields (key->value)
  * @config Axios Config
  */
-const multipart = (url: string, fields: Object, config: any = {}): Promise<AxiosResponse> => {
+const multipart = (url: string, fields: Object, config: AxiosRequestConfig = {}, retryConfig?: RetryConfig): Promise<AxiosResponse> => {
   const fd = new FormData();
 
   Object.keys(fields).forEach((key: string) => {
@@ -50,6 +66,8 @@ const multipart = (url: string, fields: Object, config: any = {}): Promise<Axios
       field = JSON.stringify(field);
     }
 
+    debug(`[Multipart] adding field ${key} with value ${field}`);
+
     fd.append(key, field);
   });
 
@@ -59,12 +77,73 @@ const multipart = (url: string, fields: Object, config: any = {}): Promise<Axios
 
   config.headers = Object.assign(
     {},
-    fd.getHeaders(),
+    // support for node boundary
+    fd.getHeaders ? fd.getHeaders() : undefined,
     config.headers,
     { 'Filestack-Source': 'JS-@{VERSION}' }
   );
 
-  return axios.post(url, fd, config);
+  const axiosInstance = axios.create();
+
+  if (retryConfig) {
+    useRetryPolicy(axiosInstance, retryConfig);
+  }
+
+  return axiosInstance.post(url, fd, config);
 };
 
-export { axios as request, requestWithSource, multipart };
+export const shouldRetry = (err: AxiosError) => {
+  // we always should retry on network failure
+  switch (err.code) {
+    case 'ECONNRESET':
+    case 'ETIMEDOUT':
+    case 'EADDRINUSE':
+    case 'ESOCKETTIMEDOUT':
+    case 'EPIPE':
+      return true;
+  }
+
+  // we should retry on all server errors (5xx)
+  if (500 <= err.response.status && err.response.status <= 599) {
+    return true;
+  }
+
+  // we should not retry on other errors (4xx) ie: BadRequest etc
+  return false;
+};
+
+export const useRetryPolicy = (instance: AxiosInstance, retryConfig: RetryConfig) => {
+  axios.interceptors.request.use(config => {
+    const currentState = config['retry'] || {};
+    currentState.retryCount = currentState.retryCount || 0;
+    config['retry'] = currentState;
+    return config;
+  });
+
+  instance.interceptors.response.use(null, err => {
+    const requestConfig = err.config;
+    if (!requestConfig) {
+      return Promise.reject(err);
+    }
+
+    const state = requestConfig.retry;
+
+    if (!shouldRetry(err)) {
+      debug(`Response code not allowing to retry request Code: ${err.code}: Status ${err.request.status}`);
+      return Promise.reject(err);
+    }
+
+    state.retryCount += 1;
+
+    if (requestConfig.retryCount > retryConfig.retry) {
+      return Promise.reject(err);
+    }
+
+    const retryDelay = Math.max(Math.min(retryConfig.retryMaxTime, retryConfig.retryFactor ** requestConfig.retryCount * 1000), 1);
+    console.log(requestConfig);
+    debug(`Retrying request to ${requestConfig.url}, count ${state.retryCount} of ${retryConfig.retry}`);
+    return new Promise(resolve => setTimeout(() => resolve(instance(requestConfig)), retryDelay));
+  });
+};
+
+export { axios as request, multipart };

@@ -16,14 +16,13 @@
  */
 import { Validator } from 'jsonschema';
 
+const v = new Validator();
+
 /**
  * Returns validator instance
  */
 export const getValidator = (schema) => {
-  const v = new Validator();
-  // v.addSchema(schema);
   return (params) => {
     return v.validate(params, schema);
   };
-  // return validator().compile(schema);
 };

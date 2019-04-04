@@ -15,12 +15,10 @@
  * limitations under the License.
  */
 
-import throatImpl from './throat';
 import * as t from 'tcomb-validation';
 import { Session } from '../client';
 import { Hosts } from './../../config';
 
-export const throat = throatImpl;
 
 /**
  * Resolve cdn url based on handle type
@@ -148,4 +146,11 @@ export const range = (start: number, stop: number, step: number = 1) => {
     toReturn.push(start);
   }
   return toReturn;
+};
+
+let last;
+export const uniqueTime = () => {
+  const time = Date.now();
+  last = time === last ? time + 1 : time;
+  return last;
 };
