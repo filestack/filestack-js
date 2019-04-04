@@ -203,8 +203,8 @@ export class S3Uploader {
    *
    * @memberof MultipartUploader
    */
-  public abort(): void {
-    this.cancelToken.cancel();
+  public abort(msg?: string): void {
+    this.cancelToken.cancel(msg || 'Aborted by user');
     this.partsQueue.clear();
   }
 
@@ -216,6 +216,7 @@ export class S3Uploader {
    */
   public async execute(): Promise<any> {
     const tasks = Object.keys(this.payloads).map(id =>
+      // @todo handle catch for all steps
       Promise.resolve()
         .then(() => this.prepareParts(id))
         .then(() => this.start(id))
@@ -384,7 +385,8 @@ export class S3Uploader {
    * @memberof MultipartUploader
    * @todo pare response check if can intelligent can be used response->upload_type (regular-> go back to normal upload)
    */
-  private start(id: string): Promise<any> { // @todo add interface to return value
+  private start(id: string): Promise<any> {
+    // @todo add interface to return value
     const payload = this.getPayloadById(id);
 
     debug(`[${id}] Make start request`);
@@ -463,7 +465,6 @@ export class S3Uploader {
    */
   private startPart(id: string, partNumber: number): Promise<any> {
     debug(`[${id}] Start processing part ${partNumber} with mode ${this.uploadMode}`);
-    console.log(this.uploadMode, '==============');
     return (this.uploadMode !== UploadMode.INTELLIGENT ? this.uploadRegular : this.uploadIntelligent).apply(this, [id, partNumber]);
   }
 
@@ -481,13 +482,7 @@ export class S3Uploader {
 
     this.setPartState(id, part.partNumber, PartState.RUNNING);
 
-    const { data, headers } = await this.getPartData(id, part).catch(err => {
-      this.setPartState(id, part.partNumber, PartState.FAILED);
-      this.setPartData(id, part.partNumber, 'err', err);
-
-      this.abort();
-      throw err;
-    });
+    const { data, headers } = await this.getPartData(id, part);
 
     debug(`[${id}] Received part ${partNumber} info body: \n%O\n headers: \n%O\n`, data, headers);
 
@@ -518,15 +513,15 @@ export class S3Uploader {
       })
       .catch(err => {
         // if fallback, set upload mode to intelligent and restart current part
-        // all remaning parts will use now intelligent
-        if (this.uploadMode === UploadMode.FALLBACK && !this.isModeLocked) {
+
+        if ((this.uploadMode === UploadMode.FALLBACK && !this.isModeLocked) || this.uploadMode === UploadMode.INTELLIGENT) {
           this.setUploadMode(UploadMode.INTELLIGENT);
           // restart part
           return this.startPart(id, partNumber);
         }
 
         this.setPartState(id, part.partNumber, PartState.FAILED);
-        this.abort();
+        this.abort('Cannot upload file part. Aborting');
         throw err;
       });
   }
@@ -566,7 +561,9 @@ export class S3Uploader {
     const chunk = payload.file.getPartOffset(partNumber, part.startByte, part.offset, size);
 
     debug(
-      `[${id}] PartNum: ${partNumber}, PartSize: ${part.size}, StartByte: ${part.startByte}, Offset: ${part.offset}, ChunkSize: ${chunk.size}, Left: ${part.size - part.offset - chunk.size}`
+      `[${id}] PartNum: ${partNumber}, PartSize: ${part.size}, StartByte: ${part.startByte}, Offset: ${part.offset}, ChunkSize: ${
+        chunk.size
+      }, Left: ${part.size - part.offset - chunk.size}`
     );
 
     const { data } = await this.getPartData(id, chunk, part.offset).catch(err => {
@@ -728,7 +725,8 @@ export class S3Uploader {
       },
       this.retryConfig
     ).catch(err => {
-      this.abort();
+      this.abort('Cannot get part data. Aborting!');
+      this.setPartState(id, part.partNumber, PartState.FAILED);
       throw err;
     });
   }

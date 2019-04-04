@@ -1,4 +1,3 @@
-import { AxiosError } from 'axios';
 /*
  * Copyright (c) 2018 by Filestack.
  * Some rights reserved.
@@ -16,9 +15,8 @@ import { AxiosError } from 'axios';
  * limitations under the License.
  */
 import Debug from 'debug';
-import axios, { AxiosInstance, AxiosResponse, AxiosRequestConfig } from 'axios';
+import axios, { AxiosError, AxiosInstance, AxiosResponse, AxiosRequestConfig } from 'axios';
 import * as FormData from 'form-data';
-import { SSL_OP_SSLEAY_080_CLIENT_DH_BUG } from 'constants';
 
 const debug = Debug('fs:request');
 
@@ -103,6 +101,11 @@ export const shouldRetry = (err: AxiosError) => {
       return true;
   }
 
+  // if request was not made and there is no response - retry
+  if (!err.response) {
+    return true;
+  }
+
   // we should retry on all server errors (5xx)
   if (500 <= err.response.status && err.response.status <= 599) {
     return true;
@@ -122,6 +125,14 @@ export const useRetryPolicy = (instance: AxiosInstance, retryConfig: RetryConfig
 
   instance.interceptors.response.use(null, err => {
     const requestConfig = err.config;
+
+    if (axios.isCancel(err)) {
+      debug('[Retry] Upload canceled by user');
+      return Promise.reject(err);
+    }
+
+    debug(`[Retry] Start retry process code: ${err.code}, %O`, err);
+
     if (!requestConfig) {
       return Promise.reject(err);
     }
@@ -129,7 +140,7 @@ export const useRetryPolicy = (instance: AxiosInstance, retryConfig: RetryConfig
     const state = requestConfig.retry;
 
     if (!shouldRetry(err)) {
-      debug(`Response code not allowing to retry request Code: ${err.code}: Status ${err.request.status}`);
+      debug(`[Retry] Response code not allowing to retry`);
       return Promise.reject(err);
     }
 
@@ -140,8 +151,8 @@ export const useRetryPolicy = (instance: AxiosInstance, retryConfig: RetryConfig
     }
 
     const retryDelay = Math.max(Math.min(retryConfig.retryMaxTime, retryConfig.retryFactor ** requestConfig.retryCount * 1000), 1);
-    console.log(requestConfig);
-    debug(`Retrying request to ${requestConfig.url}, count ${state.retryCount} of ${retryConfig.retry}`);
+
+    debug(`[Retry] Retrying request to ${requestConfig.url}, count ${state.retryCount} of ${retryConfig.retry} - Delay: ${retryDelay}`);
     return new Promise(resolve => setTimeout(() => resolve(instance(requestConfig)), retryDelay));
   });
 };
