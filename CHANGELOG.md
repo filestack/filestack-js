@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file. See [standa
 <a name="2.0.4"></a>
 ## [2.0.4](https://github.com/filestack/filestack-js/compare/v2.0.3...v2.0.4) (2019-04-08)
 
+* **filelink:** Add possibility to disable validation on tasks params ([2d3eb7f](https://github.com/filestack/filestack-js/commit/2d3eb7f))
 
 
 <a name="2.0.3"></a>
