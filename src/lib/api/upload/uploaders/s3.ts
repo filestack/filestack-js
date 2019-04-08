@@ -300,7 +300,7 @@ export class S3Uploader {
    * @returns
    * @memberof MultipartUploader
    */
-  private getDefaultFields(id: string) {
+  private getDefaultFields(id: string, isStart: boolean = false) {
     const payload = this.getPayloadById(id);
 
     let fields = {
@@ -313,7 +313,9 @@ export class S3Uploader {
       region: payload.region,
     };
 
-    if (this.uploadMode === UploadMode.INTELLIGENT) {
+    if (this.uploadMode === UploadMode.INTELLIGENT || (
+      this.uploadMode === UploadMode.FALLBACK && isStart
+    )) {
       fields['multipart'] = 'true';
     }
 
@@ -397,7 +399,7 @@ export class S3Uploader {
         filename: payload.file.name,
         mimetype: payload.file.type,
         size: payload.file.size,
-        ...this.getDefaultFields(id),
+        ...this.getDefaultFields(id, true),
       },
       {
         timeout: this.timeout,
