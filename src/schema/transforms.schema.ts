@@ -182,7 +182,7 @@ export const TransformSchema = {
       type: 'boolean',
       additionalProperties: false,
     },
-    enchance: {
+    enhance: {
       type: 'boolean',
       additionalProperties: false,
     },

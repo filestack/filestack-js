@@ -757,7 +757,7 @@ export class Filelink {
   }
 
   /**
-   * Adds enchance transformation
+   * Adds tags transformation
    *
    * @see https://www.filestack.com/docs/api/processing/#tags
    * @returns this
@@ -766,6 +766,8 @@ export class Filelink {
   tags() {
     return this.addTask('tags', true);
   }
+
+  
 
   /**
    * Adds sfw transformation
