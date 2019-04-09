@@ -53,7 +53,7 @@ export interface SecurityOptions {
 export const getSecurity = (policyOptions: SecurityOptions, appSecret: string): Security => {
   const allowed = [
     { name: 'expiry', type: t.Integer },
-    { name: 'call', type: t.list(t.enums.of('pick read stat write writeUrl store convert remove exif')) },
+    { name: 'call', type: t.list(t.enums.of('pick read stat write writeUrl store convert remove exif runWorkflow')) },
     { name: 'handle', type: t.String },
     { name: 'url', type: t.String },
     { name: 'maxSize', type: t.Integer },
@@ -64,7 +64,7 @@ export const getSecurity = (policyOptions: SecurityOptions, appSecret: string): 
 
   checkOptions('Policy options', allowed, policyOptions);
 
-  const policy = new Buffer(JSON.stringify(policyOptions)).toString('base64');
+  const policy = Buffer.from(JSON.stringify(policyOptions)).toString('base64');
   const signature = crypto.createHmac('sha256', appSecret)
                    .update(policy)
                    .digest('hex');

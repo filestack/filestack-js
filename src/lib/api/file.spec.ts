@@ -79,7 +79,7 @@ describe('FileAPI', () => {
       }).toThrowError();
     });
 
-    it('should throw error on empty handle', () => {
+    it('should throw an error on empty handle', () => {
       expect(() => {
         metadata(mockedSession);
       }).toThrowError();
@@ -243,13 +243,13 @@ describe('FileAPI', () => {
       expect(methodMocked).toHaveBeenCalledWith({ method: 'get', params: { key: 'fakeApikey' }, url: 'fakeApiUrl/fakeHandle/metadata' });
     });
 
-    it('should throw error on empty handle', async () => {
+    it('should throw an error on empty handle', async () => {
       expect(() => {
         retrieve(mockedSession, '');
       }).toThrowError();
     });
 
-    it('should throw error when metadata and head is provided', async () => {
+    it('should throw an error when metadata and head is provided', async () => {
       expect(() => {
         retrieve(mockedSession, 'fakeHandle', {
           metadata: true,

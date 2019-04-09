@@ -18,11 +18,28 @@
 import * as fs from 'fs';
 import * as path from 'path';
 // import * as mime from 'mime';
-import * as mimetype from 'file-type';
+import mimetype from 'file-type';
 import { calcMD5 } from './md5';
 import { Context, PartObj, FileObj } from './types';
 import * as isutf8 from 'isutf8';
-import * as isSvg from 'is-svg';
+import isSvg from 'is-svg';
+
+const getMimetype = (buffer) => {
+  const meta = mimetype(buffer);
+  if (meta) {
+    return meta.mime;
+  }
+
+  if (isSvg(buffer)) {
+    return 'image/svg+xml';
+  }
+
+  if (isutf8(buffer)) {
+    return 'text/plain';
+  }
+
+  return 'application/octet-stream';
+};
 
 /**
  * Given a file with a valid descriptor this will return a part object
@@ -81,21 +98,4 @@ export const getFile = (inputFile: string | Buffer): Promise<FileObj> => {
       return resolve(file);
     });
   });
-};
-
-const getMimetype = (buffer) => {
-  const meta = mimetype(buffer);
-  if (meta) {
-    return meta.mime;
-  }
-
-  if (isSvg(buffer)) {
-    return 'image/svg+xml';
-  }
-
-  if (isutf8(buffer)) {
-    return 'text/plain';
-  }
-
-  return 'application/octet-stream';
 };

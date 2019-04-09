@@ -1207,8 +1207,9 @@ export class Filelink {
     const toValidate = {};
     toValidate[name] = options;
 
-    if (!this.validator(toValidate)) {
-      throw new FilestackError(`Task "${name}" validation error, Params: ${JSON.stringify(options)}`, this.validator.errors);
+    const res = this.validator(toValidate);
+    if (res.errors.length) {
+      throw new FilestackError(`Task "${name}" validation error, Params: ${JSON.stringify(options)}`, res.errors);
     }
 
     return;
@@ -1228,6 +1229,7 @@ export class Filelink {
       urls.cdnUrl = this.customDomain;
     }
 
+    // FIXME: resolveHost is broken, it always return the same
     urls = resolveHost(urls, this.cname);
 
     return urls.cdnUrl;

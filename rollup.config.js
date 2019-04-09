@@ -74,11 +74,8 @@ const plugins = [
   }),
 ];
 
-// We use Node style testing so the Karma bundle needs some Node globals
-if (process.env.TEST_ENV) {
-  plugins.push(builtins());
-  plugins.push(globals());
-}
+plugins.push(builtins());
+plugins.push(globals());
 
 module.exports = {
   input: 'build/module/index.js',

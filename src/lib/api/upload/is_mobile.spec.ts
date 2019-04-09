@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 by Filestack.
+ * Copyright (c) 2019 by Filestack.
  * Some rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,11 +15,11 @@
  * limitations under the License.
  */
 
-/**
- * Check is browser is mobile (only browser)
- * returns false in nodejs env
- *
- * @private
- */
-// FIXME: It is useless, it always return false!
-export const isMobile = () => false;
+import { isMobile } from './is_mobile';
+
+describe('api:upload:is_mobile', () => {
+  it('should return false', () => {
+    const result = isMobile();
+    expect(result).toBeFalsy();
+  });
+});

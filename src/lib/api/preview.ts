@@ -86,10 +86,10 @@ export const preview = (session: Session, handle?: string, opts?: PreviewOptions
 
   checkOptions('preview', allowed, opts);
 
-  const options = removeEmpty(opts);
+  const options = removeEmpty(opts || {});
   const url = getUrl(session, handle, options);
 
-  if (options.id) {
+  if (options && options.id) {
     const id = options.id;
     const iframe = document.createElement('iframe');
     const domElement = document.getElementById(id);

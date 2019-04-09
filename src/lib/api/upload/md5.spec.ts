@@ -20,6 +20,6 @@ import { calcMD5 } from './md5';
 describe('md5', () => {
 
   it('should calculate correct MD5 sum', () => {
-    expect(calcMD5(new Buffer('qwertyuiop[]1234567890')) === 'zx9GtzC/khrBelx6tW5v/g==').toBeTruthy();
+    expect(calcMD5(Buffer.from('qwertyuiop[]1234567890')) === 'zx9GtzC/khrBelx6tW5v/g==').toBeTruthy();
   });
 });

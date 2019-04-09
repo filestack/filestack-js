@@ -22,22 +22,22 @@ export const TransformSchema = {
   additionalProperties: false,
   definitions: {
     securityCallDef: {
-      '$id': '#securityCallDef',
+      id: '/securityCallDef',
       type: 'string',
       enum: ['pick', 'read', 'stat', 'write', 'writeUrl', 'store', 'convert', 'remove', 'exif', 'runWorkflow'],
     },
     regionsDef: {
-      '$id': '#regionsDef',
+      id: '/regionsDef',
       type: 'string',
       enum: ['us-east-1', 'us-west-1', 'us-west-2', 'eu-west-1', 'eu-central-1', 'ap-northeast-1', 'ap-northeast-2', 'ap-southeast-1', 'ap-southeast-2', 'sa-east-1'],
     },
     locationsDef: {
-      '$id': '#locationsDef',
+      id: '/locationsDef',
       type: 'string',
-      enum: ['s3', 'S3', 'rackspace', 'gcs', 'azure', ' dropbox'],
+      enum: ['s3', 'S3', 'rackspace', 'gcs', 'azure', 'dropbox'],
     },
     colorDef: {
-      '$id': '#colorDef',
+      id: 'colorDef',
       oneOf: [{
         type: 'string',
         pattern: '^([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$', // without # at the begining
@@ -47,12 +47,12 @@ export const TransformSchema = {
       }],
     },
     pageFormatDef: {
-      '$id': '#pageFormatDef',
+      id: '/pageFormatDef',
       type: 'string',
       enum: ['a2', 'a3', 'a4', 'a5', 'b4', 'b5', 'letter', 'legal', 'tabloid'],
     },
     pageRangeDef: {
-      '$id': '#pageRangeDef',
+      id: '/pageRangeDef',
       type: 'array',
       uniqueItems: true,
       items: [{
@@ -67,7 +67,7 @@ export const TransformSchema = {
       }],
     },
     facesDef: {
-      '$id': '#facesDef',
+      id: '/facesDef',
       oneOf: [{
         type: 'string',
         enum: ['all'],
@@ -86,7 +86,7 @@ export const TransformSchema = {
       }],
     },
     objectsDef: {
-      '$id': '#objectsDef',
+      id: '/objectsDef',
       type: 'array',
       minItems: 1,
       maxItems: 50,
@@ -114,7 +114,7 @@ export const TransformSchema = {
       }],
     },
     positionDef: {
-      '$id': '#positionDef',
+      id: '/positionDef',
       default: ['middle', 'center'],
       oneOf: [
         {
@@ -182,7 +182,7 @@ export const TransformSchema = {
       type: 'boolean',
       additionalProperties: false,
     },
-    enchance: {
+    enhance: {
       type: 'boolean',
       additionalProperties: false,
     },
@@ -259,7 +259,7 @@ export const TransformSchema = {
           default: 'clip',
         },
         align: {
-          '$ref': '#positionDef',
+          '$ref': 'positionDef',
           default: 'center',
         },
       },
@@ -315,7 +315,7 @@ export const TransformSchema = {
           type: 'boolean',
         },
         background: {
-          '$ref': '#colorDef',
+          '$ref': 'colorDef',
           default: 'FFFFFFFF',
         },
       },
@@ -343,7 +343,7 @@ export const TransformSchema = {
             type: 'boolean',
           },
           color: {
-            '$ref': '#colorDef',
+            '$ref': 'colorDef',
             default: '000000FF',
           },
         },
@@ -358,7 +358,7 @@ export const TransformSchema = {
         properties: {
           faces: {
             default: 1,
-            '$ref': '#facesDef',
+            '$ref': 'facesDef',
           },
           width: {
             type: 'number',
@@ -403,7 +403,7 @@ export const TransformSchema = {
         type: 'object',
         properties: {
           faces: {
-            '$ref': '#facesDef',
+            '$ref': 'facesDef',
             default: 'all',
           },
           maxsize: {
@@ -451,7 +451,7 @@ export const TransformSchema = {
         type: 'object',
         properties: {
           faces: {
-            '$ref': '#facesDef',
+            '$ref': 'facesDef',
             default: 'all',
           },
           maxsize: {
@@ -515,7 +515,7 @@ export const TransformSchema = {
             default: 0.3,
           },
           background: {
-            '$ref': '#colorDef',
+            '$ref': 'colorDef',
           },
         },
         additionalProperties: false,
@@ -539,7 +539,7 @@ export const TransformSchema = {
             default: 'gaussian',
           },
           background: {
-            '$ref': '#colorDef',
+            '$ref': 'colorDef',
           },
         },
         additionalProperties: false,
@@ -557,11 +557,11 @@ export const TransformSchema = {
             maximum: 359,
           },
           color: {
-            '$ref': '#colorDef',
+            '$ref': 'colorDef',
             default: 'snow',
           },
           background: {
-            '$ref': '#colorDef',
+            '$ref': 'colorDef',
           },
         },
         additionalProperties: false,
@@ -590,7 +590,7 @@ export const TransformSchema = {
             }],
           },
           background: {
-            '$ref': '#colorDef',
+            '$ref': 'colorDef',
           },
         },
         additionalProperties: false,
@@ -631,10 +631,10 @@ export const TransformSchema = {
             }],
           },
           color: {
-            '$ref': '#colorDef',
+            '$ref': 'colorDef',
           },
           background: {
-            '$ref': '#colorDef',
+            '$ref': 'colorDef',
           },
         },
         additionalProperties: false,
@@ -647,7 +647,7 @@ export const TransformSchema = {
         type: 'object',
         properties: {
           background: {
-            '$ref': '#colorDef',
+            '$ref': 'colorDef',
           },
         },
         additionalProperties: false,
@@ -660,10 +660,10 @@ export const TransformSchema = {
         type: 'object',
         properties: {
           color: {
-            '$ref': '#colorDef',
+            '$ref': 'colorDef',
           },
           background: {
-            '$ref': '#colorDef',
+            '$ref': 'colorDef',
           },
           width: {
             type: 'integer',
@@ -798,18 +798,18 @@ export const TransformSchema = {
         additionalProperties: false,
       }],
     },
-    asci: {
+    ascii: {
       oneOf: [{
         type: 'boolean',
       }, {
         type: 'object',
         properties: {
           foreground: {
-            '$ref': '#colorDef',
+            '$ref': 'colorDef',
             default: '000000FF',
           },
           background: {
-            '$ref': '#colorDef',
+            '$ref': 'colorDef',
             default: 'FFFFFFFF',
           },
           colored: {
@@ -858,7 +858,7 @@ export const TransformSchema = {
           maximum: 10000,
         },
         color: {
-          '$ref': '#colorDef',
+          '$ref': 'colorDef',
           default: 'FFFFFFFF',
         },
         fit: {
@@ -994,7 +994,7 @@ export const TransformSchema = {
           default: 'rgb',
         },
         background: {
-          '$ref': '#colorDef',
+          '$ref': 'colorDef',
         },
         pageformat: {
           type: 'string',
@@ -1156,7 +1156,7 @@ export const TransformSchema = {
           type: 'string',
         },
         location: {
-          '$ref': '#locationsDef',
+          '$ref': 'locationsDef',
         },
         path: {
           type: 'string',
@@ -1182,7 +1182,7 @@ export const TransformSchema = {
             type: 'string',
           },
           location: {
-            '$ref': '#locationsDef',
+            '$ref': 'locationsDef',
           },
           path: {
             type: 'string',
@@ -1191,7 +1191,7 @@ export const TransformSchema = {
             type: 'string',
           },
           region: {
-            '$ref': '#regionsDef',
+            '$ref': 'regionsDef',
           },
           access: {
             type: 'string',
@@ -1233,7 +1233,7 @@ export const TransformSchema = {
           maximum: 500,
         },
         position: {
-          '$ref': '#positionDef',
+          '$ref': 'positionDef',
         },
       },
       required: [
@@ -1245,7 +1245,7 @@ export const TransformSchema = {
       type: 'object',
       properties: {
         objects: {
-          '$ref': '#objectsDef',
+          '$ref': 'objectsDef',
         },
         amount: {
           type: 'number',
@@ -1268,7 +1268,7 @@ export const TransformSchema = {
       type: 'object',
       properties: {
         objects: {
-          '$ref': '#objectsDef',
+          '$ref': 'objectsDef',
         },
         amount: {
           type: 'number',
@@ -1321,10 +1321,10 @@ export const TransformSchema = {
           enum: ['portrait', 'landscape'],
         },
         pageformat: {
-          '$ref': '#pageFormatDef',
+          '$ref': 'pageFormatDef',
         },
         pages: {
-          '$ref': '#pageRangeDef',
+          '$ref': 'pageRangeDef',
         },
       },
       anyOf: [{

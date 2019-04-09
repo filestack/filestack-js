@@ -48,6 +48,7 @@ export const resolveHost = (urls: Hosts, cname: string): Hosts => {
   let result = urls;
 
   if (cname) {
+    // FIXME: override func param
     const hosts = /filestackapi.com|filestackcontent.com/i;
 
     Object.keys(urls).forEach((key) => {
@@ -77,6 +78,7 @@ export const checkOptions = (name: string, allowed: any, options: any = {}): {} 
   });
   allowed.forEach((obj: any) => {
     let value = options[obj.name];
+    // Should we transform a location value if we return only keys?
     if (obj.name === 'location' && typeof value === 'string') {
       value = value.toLowerCase();
     }

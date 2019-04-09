@@ -12,6 +12,7 @@ const rollupConfig = require('../rollup.config')
 const version = require('../package.json').version;
 const uglify = composer(uglifyEs);
 const rename = require('gulp-rename');
+const gzip = require('gulp-gzip');
 
 // const debug = require('gulp-debug');
 gulp.task('build:clean', function () {
@@ -84,4 +85,10 @@ gulp.task('build:uglify', gulp.series('build:rollup', () => {
 
 gulp.task('build', gulp.series(['build:clean', 'build:rollup']));
 
-gulp.task('build:prod', gulp.series(['build:clean', 'build:uglify']));
+gulp.task('build:prod', gulp.series(['build:clean', 'build:uglify', () => {
+  return gulp.src(['build/browser/filestack.min.js'])
+  .pipe(gzip({
+    preExtension: 'gz'
+  }))
+  .pipe(gulp.dest('build/browser'));
+}]));

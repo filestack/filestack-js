@@ -145,7 +145,6 @@ export class Client {
         });
       }
     }
-
     this.cloud = new CloudClient(this.session, options);
   }
   /**
