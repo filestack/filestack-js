@@ -80,6 +80,7 @@ export class Upload {
       });
     }
 
+    // this.uploader.setHost('https://upload.rc.filepickerapp.com');
     this.uploader.setHost(session.urls.uploadApiUrl);
   }
 

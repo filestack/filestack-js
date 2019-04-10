@@ -110,6 +110,7 @@ export class S3Uploader extends EventEmitter {
   constructor(private readonly storeOptions: StoreOptions, private readonly concurrency: number = 3) {
     super();
 
+    console.log(this.concurrency);
     this.partsQueue = new PQueue({
       autoStart: false,
       concurrency: this.concurrency,
@@ -323,7 +324,7 @@ export class S3Uploader extends EventEmitter {
    * @returns
    * @memberof MultipartUploader
    */
-  private getDefaultFields(id: string, isStart: boolean = false) {
+  private getDefaultFields(id: string, multipartFallback: boolean = false) {
     const payload = this.getPayloadById(id);
 
     let fields = {
@@ -337,7 +338,7 @@ export class S3Uploader extends EventEmitter {
     };
 
     if (this.uploadMode === UploadMode.INTELLIGENT || (
-      this.uploadMode === UploadMode.FALLBACK && isStart
+      this.uploadMode === UploadMode.FALLBACK && multipartFallback
     )) {
       fields['multipart'] = 'true';
     }
@@ -699,7 +700,7 @@ export class S3Uploader extends EventEmitter {
     return multipart(
       `${this.getHost()}/multipart/complete`,
       {
-        ...this.getDefaultFields(id),
+        ...this.getDefaultFields(id, true),
         // method specific keys
         filename: payload.file.name,
         mimetype: payload.file.type,
