@@ -20,7 +20,9 @@ import * as Path from 'path';
 
 const fs = new Client('APEkwxKMZTsWNIP0XQsv2z');
 
-fs.upload(Path.resolve(__dirname, './manual_10mb.mp4')).then((res) => {
+fs.multiupload([
+  Path.resolve(__dirname, './manual_10mb.mp4'),
+]).then((res) => {
   console.dir(res, { depth: null });
 });
 

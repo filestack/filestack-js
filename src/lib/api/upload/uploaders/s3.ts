@@ -110,7 +110,6 @@ export class S3Uploader extends EventEmitter {
   constructor(private readonly storeOptions: StoreOptions, private readonly concurrency: number = 3) {
     super();
 
-    console.log(this.concurrency);
     this.partsQueue = new PQueue({
       autoStart: false,
       concurrency: this.concurrency,
@@ -727,6 +726,7 @@ export class S3Uploader extends EventEmitter {
       }
 
       // cleanup payloads
+      this.payloads[id].file.cleanup();
       delete this.payloads[id];
 
       return res.data;

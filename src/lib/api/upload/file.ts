@@ -17,7 +17,7 @@
 import { md5 } from './../../utils';
 
 export interface FileInstance {
-  buffer: Buffer | ArrayBuffer;
+  buffer?: Buffer | ArrayBuffer;
   name: string;
   type: string;
   size: number;
@@ -168,5 +168,9 @@ export class File {
       size: part.byteLength,
       md5: md5(part),
     };
+  }
+
+  cleanup() {
+    this.file.buffer = null;
   }
 }

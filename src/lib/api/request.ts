@@ -147,6 +147,10 @@ export const useRetryPolicy = (instance: AxiosInstance, retryConfig: RetryConfig
 
     const state = requestConfig.retry;
 
+    if (!state) {
+      return Promise.reject(err);
+    }
+
     if (!shouldRetry(err)) {
       debug(`[Retry] Response code not allowing to retry`);
       return Promise.reject(err);

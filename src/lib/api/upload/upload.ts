@@ -27,6 +27,13 @@ export interface ProgressEvent {
 
 const DEFAULT_PROGRESS_INTERVAL = 1000;
 
+const normalizeProgress = (current, last) => {
+  current.totalBytes = Math.max(current.totalBytes, last.totalBytes);
+  current.totalPercent = Math.max(current.totalPercent, last.totalPercent);
+
+  return current;
+};
+
 /**
  * Overlay to connect new uploader with old one without changing options
  *
@@ -36,6 +43,7 @@ const DEFAULT_PROGRESS_INTERVAL = 1000;
  */
 export class Upload {
   private uploader: S3Uploader;
+
   private lastProgress: ProgressEvent = {
     totalBytes: 0,
     totalPercent: 0,
@@ -43,7 +51,7 @@ export class Upload {
 
   private progressIntervalHandler;
 
-  constructor(private readonly options: UploadOptions = {}, private readonly storeOptions: StoreOptions = {}) {
+  constructor(private readonly options: UploadOptions = {}, storeOptions: StoreOptions = {}) {
     this.uploader = new S3Uploader(storeOptions, options.concurrency);
 
     this.uploader.setRetryConfig({
@@ -80,8 +88,26 @@ export class Upload {
       });
     }
 
-    // this.uploader.setHost('https://upload.rc.filepickerapp.com');
     this.uploader.setHost(session.urls.uploadApiUrl);
+  }
+
+  /**
+   * Set cancel token to controll upload flow
+   *
+   * @param {*} token
+   * @returns
+   * @memberof Upload
+   */
+  public setToken(token: any) {
+    if (!token || token !== Object(token)) {
+      token = {};
+    }
+
+    token.pause = () => this.uploader.pause();
+    token.resume = () => this.uploader.resume();
+    token.cancel = () => this.uploader.abort();
+
+    return token;
   }
 
   /**
@@ -128,6 +154,13 @@ export class Upload {
     });
   }
 
+  /**
+   * RUn progress with userdefined interval
+   *
+   * @private
+   * @returns
+   * @memberof Upload
+   */
   private startProgressInterval() {
     if (typeof this.options.onProgress !== 'function') {
       return;
@@ -138,25 +171,31 @@ export class Upload {
     }, this.options.progressInterval || DEFAULT_PROGRESS_INTERVAL);
   }
 
+  /**
+   * Stop progress interval after upload
+   *
+   * @private
+   * @memberof Upload
+   */
   private stopProgressInterval() {
     clearInterval(this.progressIntervalHandler);
   }
 
+  /**
+   * Handle upload interval and normalize values
+   *
+   * @private
+   * @param {ProgressEvent} progress
+   * @memberof Upload
+   */
   private handleProgress(progress: ProgressEvent) {
-    const normalize = (current, last) => {
-      current.totalBytes = Math.max(current.totalBytes, last.totalBytes);
-      current.totalPercent = Math.max(current.totalPercent, last.totalPercent);
-
-      return current;
-    };
-
     // get max progress data to avoid progress jumps on any part error
-    progress = normalize(progress, this.lastProgress);
+    progress = normalizeProgress(progress, this.lastProgress);
 
     if (this.lastProgress.files) {
       for (let i in progress.files) {
         if (this.lastProgress.files[i]) {
-          progress.files[i] = normalize(progress.files[i], this.lastProgress.files[i]);
+          progress.files[i] = normalizeProgress(progress.files[i], this.lastProgress.files[i]);
         }
       }
     }

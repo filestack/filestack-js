@@ -105,8 +105,14 @@ export const removeEmpty = (obj: any) => {
   return newObj;
 };
 
+/**
+ * Returns information about current env (browser|nodejs)
+ */
 export const isNode = typeof process !== 'undefined' && process.versions && process.versions.node;
 
+/**
+ * Returns if browser is a mobile device (if node env always return false)
+ */
 export const isMobile = !isNode && navigator && navigator.userAgent && mobileRegexp.test(navigator.userAgent);
 
 /**
@@ -125,12 +131,20 @@ export const range = (start: number, stop: number, step: number = 1) => {
 };
 
 let last;
+/**
+ * Returns unique time
+ */
 export const uniqueTime = () => {
   const time = Date.now();
   last = time === last ? time + 1 : time;
   return last;
 };
 
+/**
+ * Generates random string with provided length
+ *
+ * @param len
+ */
 export const uniqueId = (len: number = 10): string => {
   return new Array(len).join().replace(/(.|$)/g, () => ((Math.random() * 36) | 0).toString(36)[Math.random() < 0.5 ? 'toString' : 'toUpperCase']());
 };
