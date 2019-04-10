@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { calcMD5 } from './md5';
+import { md5 } from './../../utils';
 
 export interface FileInstance {
   buffer: Buffer | ArrayBuffer;
@@ -98,10 +98,10 @@ export class File {
     }
 
     // cache md5 file value
-    const md5 = calcMD5(this.file.buffer);
-    this._md5 = md5;
+    const md5Res = md5(this.file.buffer);
+    this._md5 = md5Res;
 
-    return md5;
+    return md5Res;
   }
 
   /**
@@ -166,7 +166,7 @@ export class File {
       endByte: start + length,
       buffer: part,
       size: part.byteLength,
-      md5: calcMD5(part),
+      md5: md5(part),
     };
   }
 }

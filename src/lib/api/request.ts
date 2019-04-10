@@ -17,6 +17,7 @@
 import Debug from 'debug';
 import axios, { AxiosError, AxiosInstance, AxiosResponse, AxiosRequestConfig } from 'axios';
 import * as FormData from 'form-data';
+import { uniqueId } from '../utils';
 
 const debug = Debug('fs:request');
 
@@ -33,7 +34,11 @@ export interface RetryConfig {
  * @param url
  */
 export const requestWithSource = (retryConfig?): AxiosInstance => {
-  const axiosInstance = axios.create({ headers: { 'Filestack-Source': 'JS-@{VERSION}' } });
+  const axiosInstance = axios.create({ headers: {
+    'Filestack-Source': 'JS-@{VERSION}',
+    // 'Filestack-Trace-Id': uniqueId(),
+    // 'Filestack-Trace-Span': `jssdk-${uniqueId()}`,
+  }});
 
   if (retryConfig) {
     useRetryPolicy(axiosInstance, retryConfig);
@@ -53,6 +58,7 @@ export const requestWithSource = (retryConfig?): AxiosInstance => {
 const multipart = (url: string, fields: Object, config: AxiosRequestConfig = {}, retryConfig?: RetryConfig): Promise<AxiosResponse> => {
   const fd = new FormData();
 
+  debug(`[Multipart] set mulitpart fields %O for url ${url}`, fields);
   Object.keys(fields).forEach((key: string) => {
     let field = fields[key];
 
@@ -63,8 +69,6 @@ const multipart = (url: string, fields: Object, config: AxiosRequestConfig = {},
     if (typeof field === 'object') {
       field = JSON.stringify(field);
     }
-
-    debug(`[Multipart] adding field ${key} with value ${field}`);
 
     fd.append(key, field);
   });
@@ -78,7 +82,11 @@ const multipart = (url: string, fields: Object, config: AxiosRequestConfig = {},
     // support for node boundary
     fd.getHeaders ? fd.getHeaders() : undefined,
     config.headers,
-    { 'Filestack-Source': 'JS-@{VERSION}' }
+    {
+      'Filestack-Source': 'JS-@{VERSION}',
+      // 'Filestack-Trace-Id': uniqueId(),
+      // 'Filestack-Trace-Span': `jssdk-${uniqueId()}`,
+    }
   );
 
   const axiosInstance = axios.create();

@@ -17,12 +17,13 @@
 
 import Debug from 'debug';
 import PQueue from 'p-queue';
-import { CancelTokenSource } from 'axios';
+import { CancelTokenSource, AxiosResponse } from 'axios';
+import * as EventEmitter from 'eventemitter3';
 
 import { File, FilePart } from './../file';
 import { StoreOptions, Security } from './../../../client';
 import { multipart, request, RetryConfig, useRetryPolicy, shouldRetry } from './../../request';
-import { uniqueTime } from './../../../utils';
+import { uniqueTime, isMobile } from './../../../utils';
 
 const debug = Debug('fs:upload:multipart');
 
@@ -51,12 +52,12 @@ export interface UploadPart extends FilePart {
   state: PartState;
   etag?: string;
   offset?: number;
+  progress?: number;
 }
 
 export interface UploadPayload {
   file: File;
   parts: UploadPart[];
-  progress: number;
   state: State;
   uri?: string;
   region?: string;
@@ -69,7 +70,7 @@ export interface UploadPayload {
 const MIN_CHUNK_SIZE = 32 * 1024;
 
 // timeout for complete request on 202 response (II)
-const COMPLETE_TIMEOUT = 60 * 1000;
+const COMPLETE_TIMEOUT = 2 * 1000;
 
 // Minimum part size for upload by multipart
 const MIN_PART_SIZE = 5 * 1024 * 1024;
@@ -77,15 +78,22 @@ const MIN_PART_SIZE = 5 * 1024 * 1024;
 // when mode is set to fallback or intelligent, this part size is required
 const INTELLIGENT_PART_SIZE = 8 * 1024 * 1024;
 
-export class S3Uploader {
+// Mobile Chunk size for ii
+const MOBILE_CHUNK_SIZE = 1024 * 1024;
+
+// regular part size
+const DEFAULT_PART_SIZE = 6 * 1024 * 1024;
+
+export class S3Uploader extends EventEmitter {
   // Parts size options
-  private partSize: number = 6 * 1024 * 1024;
-  // @todo check if is mobile then reduce part size to 1mb
-  private intelligentChunkSize: number = 1024 * 1024;
+  private partSize: number = DEFAULT_PART_SIZE;
+
+  // chunk size for ii uploads
+  private intelligentChunkSize: number = isMobile ? MOBILE_CHUNK_SIZE : INTELLIGENT_PART_SIZE;
 
   // upload options
   private defaultStoreLocation = 's3';
-  private host: string; // @todo remove and set from config
+  private host: string;
   private timeout: number = 30 * 1000;
   private uploadMode: UploadMode = UploadMode.DEFAULT;
 
@@ -94,12 +102,14 @@ export class S3Uploader {
   private security: Security;
   private partsQueue: PQueue;
   private cancelToken: CancelTokenSource; // global cancel token for all requests
-  private isModeLocked: boolean = false; // if account doesnt support ii in fallback mode we should abort
+  private isModeLocked: boolean = false; // if account does not support ii in fallback mode we should abort
   private retryConfig: RetryConfig;
 
   private payloads: { [key: string]: UploadPayload } = {};
 
   constructor(private readonly storeOptions: StoreOptions, private readonly concurrency: number = 3) {
+    super();
+
     this.partsQueue = new PQueue({
       autoStart: false,
       concurrency: this.concurrency,
@@ -158,6 +168,14 @@ export class S3Uploader {
     this.uploadMode = mode;
   }
 
+  /**
+   * Set upload part size
+   * if part size is smaller than minimum 5mb it will throw error
+   *
+   * @param {number} size
+   * @returns {void}
+   * @memberof S3Uploader
+   */
   public setPartSize(size: number): void {
     if (this.uploadMode !== UploadMode.DEFAULT) {
       debug('Cannot set part size because upload mode is other than default. ');
@@ -173,6 +191,12 @@ export class S3Uploader {
     this.partSize = size;
   }
 
+  /**
+   * Set start part size for ii
+   *
+   * @param {number} size
+   * @memberof S3Uploader
+   */
   public setIntelligentChunkSize(size: number): void {
     debug(`Set inteligent chunk size to ${size}`);
     this.intelligentChunkSize = size;
@@ -243,7 +267,6 @@ export class S3Uploader {
     this.payloads[id] = {
       file,
       parts: [],
-      progress: 0,
       state: State.INIT,
     };
 
@@ -425,7 +448,7 @@ export class S3Uploader {
       };
 
       // ii is not enabled in backend switch back to default upload mode
-      if (this.uploadMode === UploadMode.INTELLIGENT && (!data.upload_type || data.upload_type !== 'intelligent_ingestion')) {
+      if ([UploadMode.INTELLIGENT, UploadMode.FALLBACK].indexOf(this.uploadMode) > -1 && (!data.upload_type || data.upload_type !== 'intelligent_ingestion')) {
         debug(`[${id}] Intelligent Ingestion is not enabled on account, switch back to regular upload and lock mode change`);
         this.setUploadMode(UploadMode.DEFAULT, true);
       }
@@ -500,8 +523,7 @@ export class S3Uploader {
         cancelToken: this.cancelToken.token,
         timeout: this.timeout,
         headers: data.headers,
-        // @ts-ignore
-        raxConfig: this.retryConfig,
+        onUploadProgress: (pr: ProgressEvent) => this.onProgressUpdate(id, partNumber, pr.loaded),
       })
       .then(res => {
         if (res.headers.etag) {
@@ -511,11 +533,15 @@ export class S3Uploader {
         debug(`[${id}] S3 Upload response headers for ${partNumber}: \n%O\n`, res.headers);
 
         this.setPartState(id, part.partNumber, PartState.DONE);
+        this.onProgressUpdate(id, partNumber, part.size);
+
         return res;
       })
       .catch(err => {
-        // if fallback, set upload mode to intelligent and restart current part
+        // reset upload progress on failed part
+        this.onProgressUpdate(id, partNumber, 0);
 
+        // if fallback, set upload mode to intelligent and restart current part
         if ((this.uploadMode === UploadMode.FALLBACK && !this.isModeLocked) || this.uploadMode === UploadMode.INTELLIGENT) {
           this.setUploadMode(UploadMode.INTELLIGENT);
           // restart part
@@ -578,8 +604,10 @@ export class S3Uploader {
         cancelToken: this.cancelToken.token,
         timeout: this.timeout,
         headers: data.headers,
+        onUploadProgress: (pr: ProgressEvent) => this.onProgressUpdate(id, partNumber, part.offset + pr.loaded),
       })
       .then(res => {
+        this.onProgressUpdate(id, partNumber, part.offset + chunk.size);
         const newOffset = Math.min(part.offset + chunkSize, part.size);
 
         debug(`[${id}] S3 Chunk uploaded! offset: ${part.offset}, part ${partNumber}! response headers for ${partNumber}: \n%O\n`, res.headers);
@@ -594,6 +622,8 @@ export class S3Uploader {
         return this.uploadNextChunk(id, partNumber, chunkSize);
       })
       .catch(err => {
+        // reset progress on failed upload
+        this.onProgressUpdate(id, partNumber, part.offset);
         const nextChunkSize = chunkSize / 2;
 
         if (nextChunkSize < MIN_CHUNK_SIZE) {
@@ -635,7 +665,11 @@ export class S3Uploader {
         headers: this.getDefaultHeaders(id),
       },
       this.retryConfig
-    );
+    ).then((res: AxiosResponse) => {
+      debug(`[${id}] Commit Part number ${part.partNumber}. Response: %O`, res.data);
+
+      return res;
+    });
   }
 
   /**
@@ -691,6 +725,9 @@ export class S3Uploader {
         });
       }
 
+      // cleanup payloads
+      delete this.payloads[id];
+
       return res.data;
     });
   }
@@ -734,6 +771,56 @@ export class S3Uploader {
   }
 
   /**
+   * UUpgrade upload progress and run progress emmiter
+   *
+   * @private
+   * @param {string} id
+   * @param {number} partNumber
+   * @param {number} loaded
+   * @memberof S3Uploader
+   */
+  private onProgressUpdate(id: string, partNumber: number, loaded: number) {
+    this.setPartData(id, partNumber, 'progress', loaded);
+    this.emitProgress();
+  }
+
+  /**
+   * Emits normalized progress event
+   *
+   * @private
+   * @memberof S3Uploader
+   */
+  private emitProgress() {
+    let totalSize = 0;
+    let totalBytes = 0;
+
+    let files = {};
+
+    for (let i in this.payloads) {
+      const payload = this.payloads[i];
+      const partsProgress = payload.parts.map((p) => p.progress || 0);
+      const totalParts = partsProgress.reduce((a,b) => a + b);
+      totalBytes = totalBytes + totalParts;
+
+      files[i] = {
+        totalBytes: totalParts || 0,
+        totalPercent: Math.round(totalParts * 100 / payload.file.size)  || 0,
+      };
+
+      totalSize = totalSize + payload.file.size;
+    }
+
+    const all = {
+      totalBytes: totalBytes || 0,
+      totalPercent: Math.round(totalBytes * 100 / totalSize) || 0,
+      files,
+    };
+
+    debug(`Upload progress %O`, all);
+    this.emit('progress', all);
+  }
+
+  /**
    * Sets part state
    *
    * @private
@@ -768,10 +855,18 @@ export class S3Uploader {
    * @memberof MultipartUploader
    */
   private setPartData(id: string, partNumber: number, key: string, value: any) {
-    debug(`[${id}] Set ${key}:${value} for part ${partNumber}`);
+    debug(`[${id}] Set ${key} = ${value} for part ${partNumber}`);
     this.getPayloadById(id).parts[partNumber][key] = value;
   }
 
+  /**
+   * Returns unique file id combined from md5 + unique time
+   *
+   * @private
+   * @param {File} file
+   * @returns
+   * @memberof S3Uploader
+   */
   private getFileUniqueId(file: File) {
     return `${file.md5}_${uniqueTime()}`;
   }

@@ -18,7 +18,7 @@ import { File } from './file';
 import fileType from 'file-type';
 import issvg from 'is-svg';
 import * as isutf8 from 'isutf8';
-import { isNode } from './is_node';
+import { isNode } from './../../utils/index';
 
 const getMimetype = (file: any): string => {
   let type = fileType(file);

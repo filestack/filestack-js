@@ -18,7 +18,9 @@
 import * as t from 'tcomb-validation';
 import { Session } from '../client';
 import { Hosts } from './../../config';
+import * as SparkMD5 from 'spark-md5';
 
+const mobileRegexp = /(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series[46]0|symbian|treo|up\.(browser|link)|vodafone|wap|windows (ce|phone)|xda|xiino|android|ipad|playbook|silk/i;
 
 /**
  * Resolve cdn url based on handle type
@@ -48,7 +50,7 @@ export const resolveHost = (urls: Hosts, cname: string): Hosts => {
   if (cname) {
     const hosts = /filestackapi.com|filestackcontent.com/i;
 
-    Object.keys(urls).forEach((key) => {
+    Object.keys(urls).forEach(key => {
       result[key] = urls[key].replace(hosts, cname);
     });
   }
@@ -68,7 +70,7 @@ export const checkOptions = (name: string, allowed: any, options: any = {}): {} 
   const keys = Object.keys(options);
   const allowedNames = allowed.map((a: any) => a.name);
   const namesFormatted = allowedNames.join(', ');
-  keys.forEach((key) => {
+  keys.forEach(key => {
     if (allowedNames.indexOf(key) < 0) {
       throw new Error(`${key} is not a valid option for ${name}. Valid options are: ${namesFormatted}`);
     }
@@ -99,39 +101,13 @@ export const checkOptions = (name: string, allowed: any, options: any = {}): {} 
  */
 export const removeEmpty = (obj: any) => {
   const newObj = { ...obj };
-  Object.keys(newObj).forEach(k => (!newObj[k] && typeof newObj[k] !== 'boolean') && delete newObj[k]);
+  Object.keys(newObj).forEach(k => !newObj[k] && typeof newObj[k] !== 'boolean' && delete newObj[k]);
   return newObj;
 };
 
-/**
- *
- * @private
- * @param fn
- * @param interval
- * @param callFirst
- */
-export const throttle = function throttle(fn: any, interval: number, callFirst?: boolean) {
-  let wait = false;
-  let callNow = false;
-  /* istanbul ignore next */
-  return function (this: any, ...args: any[]) {
-    callNow = !!callFirst && !wait;
-    const context = this;
-    if (!wait) {
-      wait = true;
-      setTimeout(function () {
-        wait = false;
-        if (!callFirst) {
-          return fn.apply(context, args);
-        }
-      }, interval);
-    }
-    if (callNow) {
-      callNow = false;
-      return fn.apply(this, arguments);
-    }
-  };
-};
+export const isNode = typeof process !== 'undefined' && process.versions && process.versions.node;
+
+export const isMobile = !isNode && navigator && navigator.userAgent && mobileRegexp.test(navigator.userAgent);
 
 /**
  *
@@ -153,4 +129,22 @@ export const uniqueTime = () => {
   const time = Date.now();
   last = time === last ? time + 1 : time;
   return last;
+};
+
+export const uniqueId = (len: number = 10): string => {
+  return new Array(len).join().replace(/(.|$)/g, () => ((Math.random() * 36) | 0).toString(36)[Math.random() < 0.5 ? 'toString' : 'toUpperCase']());
+};
+
+/**
+ * Calculates a MD5 checksum for passed buffer
+ * @private
+ * @param data  Data to be hashed
+ * @returns     base64 encoded MD5 hash
+ */
+export const md5 = (data: any) => {
+  if (isNode) {
+    return (require('crypto')).createHash('md5').update(data).digest('base64');
+  }
+
+  return btoa(SparkMD5.ArrayBuffer.hash(data, true));
 };

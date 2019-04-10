@@ -86,20 +86,3 @@ export interface FSRetryEvent {
   attempt: number | undefined;
   chunkSize?: number;
 }
-
-/**
- * @private
- */
-export interface UploadConfig extends UploadOptions {
-  apikey: string;
-  store: any;
-  concurrency: number;
-  partSize: number;
-  retryFactor: number;
-  retryMaxTime: number;
-  progressInterval: number;
-  policy?: string;
-  signature?: string;
-  customName?: string;
-  mimetype?: string;
-}

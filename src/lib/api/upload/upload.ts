@@ -1,4 +1,3 @@
-
 /*
  * Copyright (c) 2019 by Filestack.
  * Some rights reserved.
@@ -16,10 +15,17 @@
  * limitations under the License.
  */
 
-import { Security, Session, StoreOptions } from '../../client';
+import { Session, StoreOptions } from '../../client';
 import { S3Uploader, UploadMode } from './uploaders/s3';
 import { UploadOptions } from '../upload/types';
 import { getFile } from './file_tools';
+export interface ProgressEvent {
+  totalPercent: number;
+  totalBytes: number;
+  files?: { (key: string): ProgressEvent };
+}
+
+const DEFAULT_PROGRESS_INTERVAL = 1000;
 
 /**
  * Overlay to connect new uploader with old one without changing options
@@ -30,12 +36,14 @@ import { getFile } from './file_tools';
  */
 export class Upload {
   private uploader: S3Uploader;
+  private lastProgress: ProgressEvent = {
+    totalBytes: 0,
+    totalPercent: 0,
+  };
 
-  constructor(
-    private readonly options: UploadOptions = {},
-    private readonly storeOptions: StoreOptions = {}
-  ) {
+  private progressIntervalHandler;
 
+  constructor(private readonly options: UploadOptions = {}, private readonly storeOptions: StoreOptions = {}) {
     this.uploader = new S3Uploader(storeOptions, options.concurrency);
 
     this.uploader.setRetryConfig({
@@ -57,11 +65,12 @@ export class Upload {
     if (options.intelligent) {
       this.uploader.setUploadMode(options.intelligent === 'fallback' ? UploadMode.FALLBACK : UploadMode.INTELLIGENT);
     }
+
+    this.uploader.on('progress', this.handleProgress.bind(this));
   }
 
   // @deprecated
   setSession(session: Session) {
-    console.log('set session', session);
     this.uploader.setApikey(session.apikey);
 
     if (session.policy && session.signature) {
@@ -85,7 +94,13 @@ export class Upload {
   async upload(input: string | Buffer | Blob): Promise<any> {
     const file = await getFile(input);
     this.uploader.addFile(file);
-    return Promise.resolve((await this.uploader.execute()).pop());
+
+    this.startProgressInterval();
+    const res = (await this.uploader.execute()).pop();
+
+    this.stopProgressInterval();
+
+    return Promise.resolve(res);
   }
 
   /**
@@ -104,6 +119,47 @@ export class Upload {
       this.uploader.addFile(await getFile(input[i]));
     }
 
-    return this.uploader.execute();
+    this.startProgressInterval();
+    return this.uploader.execute().then(res => {
+      this.stopProgressInterval();
+
+      return res;
+    });
+  }
+
+  private startProgressInterval() {
+    if (typeof this.options.onProgress !== 'function') {
+      return;
+    }
+
+    this.progressIntervalHandler = setInterval(() => {
+      this.options.onProgress(this.lastProgress);
+    }, this.options.progressInterval || DEFAULT_PROGRESS_INTERVAL);
+  }
+
+  private stopProgressInterval() {
+    clearInterval(this.progressIntervalHandler);
+  }
+
+  private handleProgress(progress: ProgressEvent) {
+    const normalize = (current, last) => {
+      progress.totalBytes = Math.max(current.totalBytes, last.totalBytes);
+      progress.totalPercent = Math.max(current.totalPercent, last.totalPercent);
+
+      return progress;
+    };
+
+    // get max progress data to avoid progress jumps on any part error
+    progress = normalize(progress, this.lastProgress);
+
+    if (this.lastProgress.files) {
+      for (let i in progress.files) {
+        if (this.lastProgress.files[i]) {
+          progress.files[i] = normalize(progress.files[i], this.lastProgress.files[i]);
+        }
+      }
+    }
+
+    this.lastProgress = progress;
   }
 }
