@@ -9,6 +9,9 @@ const banner = fs.readFileSync('./LICENSE', 'utf8').replace('{year}', new Date()
 const config =  {
   mode: 'production',
   node: { Buffer: false },
+  watchOptions: {
+    ignored: /node_modules/
+  },
   entry: './build/module/index.js',
   output: {
     libraryTarget: 'umd',
@@ -48,7 +51,7 @@ const config =  {
     new webpack.BannerPlugin({ banner }),
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': '"production"',
-    }),
+    })
   ],
   devtool: 'source-map',
 };

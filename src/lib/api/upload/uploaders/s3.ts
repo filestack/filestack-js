@@ -794,15 +794,16 @@ export class S3Uploader extends EventEmitter {
     let totalSize = 0;
     let totalBytes = 0;
 
-    let files = {};
-
+    let filesProgress = {};
     for (let i in this.payloads) {
+
       const payload = this.payloads[i];
       const partsProgress = payload.parts.map((p) => p.progress || 0);
       const totalParts = partsProgress.reduce((a,b) => a + b);
+
       totalBytes = totalBytes + totalParts;
 
-      files[i] = {
+      filesProgress[i] = {
         totalBytes: totalParts || 0,
         totalPercent: Math.round(totalParts * 100 / payload.file.size)  || 0,
       };
@@ -810,14 +811,14 @@ export class S3Uploader extends EventEmitter {
       totalSize = totalSize + payload.file.size;
     }
 
-    const all = {
+    const res = {
       totalBytes: totalBytes || 0,
       totalPercent: Math.round(totalBytes * 100 / totalSize) || 0,
-      files,
+      files: filesProgress,
     };
 
-    debug(`Upload progress %O`, all);
-    this.emit('progress', all);
+    debug(`Upload progress %O`, res);
+    this.emit('progress', res);
   }
 
   /**

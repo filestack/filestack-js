@@ -143,10 +143,10 @@ export class Upload {
 
   private handleProgress(progress: ProgressEvent) {
     const normalize = (current, last) => {
-      progress.totalBytes = Math.max(current.totalBytes, last.totalBytes);
-      progress.totalPercent = Math.max(current.totalPercent, last.totalPercent);
+      current.totalBytes = Math.max(current.totalBytes, last.totalBytes);
+      current.totalPercent = Math.max(current.totalPercent, last.totalPercent);
 
-      return progress;
+      return current;
     };
 
     // get max progress data to avoid progress jumps on any part error
