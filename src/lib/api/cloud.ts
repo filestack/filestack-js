@@ -16,7 +16,8 @@
  */
 
 import { removeEmpty } from '../utils';
-import { ClientOptions, Session, StoreOptions } from '../client';
+import { StoreParams } from '../filelink';
+import { ClientOptions, Session } from '../client';
 import { requestWithSource, request } from '../api/request';
 
 /**
@@ -94,7 +95,7 @@ export class CloudClient {
     });
   }
 
-  store(name: string, path: string, options: StoreOptions = {}, customSource: any = {}, token: any = {}) {
+  store(name: string, path: string, options: StoreParams = {}, customSource: any = {}, token: any = {}) {
 
     // Default to S3
     if (options.location === undefined) options.location = 's3';

@@ -20,27 +20,13 @@ import PQueue from 'p-queue';
 import { CancelTokenSource, AxiosResponse } from 'axios';
 import * as EventEmitter from 'eventemitter3';
 
-import { File, FilePart } from './../file';
-import { StoreOptions, Security } from './../../../client';
+import { File, FilePart, FileState } from './../file';
+import { StoreUploadOptions } from './../types';
+import { Security } from './../../../client';
 import { multipart, request, RetryConfig, useRetryPolicy, shouldRetry } from './../../request';
 import { uniqueTime, isMobile } from './../../../utils';
 
 const debug = Debug('fs:upload:multipart');
-
-export const enum State {
-  INIT = 'init',
-  RUNNING = 'running',
-  DONE = 'done',
-  FAILED = 'failed',
-  PAUSED = 'paused',
-}
-
-export const enum PartState {
-  WAITING = 'waiting',
-  RUNNING = 'running',
-  DONE = 'done',
-  FAILED = 'failed',
-}
 
 export const enum UploadMode {
   DEFAULT = 'default',
@@ -49,7 +35,6 @@ export const enum UploadMode {
 }
 
 export interface UploadPart extends FilePart {
-  state: PartState;
   etag?: string;
   offset?: number;
   progress?: number;
@@ -58,7 +43,7 @@ export interface UploadPart extends FilePart {
 export interface UploadPayload {
   file: File;
   parts: UploadPart[];
-  state: State;
+  handle?: string;
   uri?: string;
   region?: string;
   upload_id?: number;
@@ -66,30 +51,30 @@ export interface UploadPayload {
   location_region?: string;
 }
 
+// regular part size
+const DEFAULT_PART_SIZE = 6 * 1024 * 1024;
+
+// Minimum part size for upload by multipart
+const MIN_PART_SIZE = 5 * 1024 * 1024;
+
+// when mode is set to fallback or intelligent, this part size is required
+const INTELLIGENT_CHUNK_SIZE = 8 * 1024 * 1024;
+
+// Mobile Chunk size for ii
+const INTELLIGENT_MOBILE_CHUNK_SIZE = 1024 * 1024;
+
 // minimum intelligent chunk size
 const MIN_CHUNK_SIZE = 32 * 1024;
 
 // timeout for complete request on 202 response (II)
 const COMPLETE_TIMEOUT = 2 * 1000;
 
-// Minimum part size for upload by multipart
-const MIN_PART_SIZE = 5 * 1024 * 1024;
-
-// when mode is set to fallback or intelligent, this part size is required
-const INTELLIGENT_PART_SIZE = 8 * 1024 * 1024;
-
-// Mobile Chunk size for ii
-const MOBILE_CHUNK_SIZE = 1024 * 1024;
-
-// regular part size
-const DEFAULT_PART_SIZE = 6 * 1024 * 1024;
-
 export class S3Uploader extends EventEmitter {
   // Parts size options
   private partSize: number = DEFAULT_PART_SIZE;
 
   // chunk size for ii uploads
-  private intelligentChunkSize: number = isMobile ? MOBILE_CHUNK_SIZE : INTELLIGENT_PART_SIZE;
+  private intelligentChunkSize: number = isMobile ? INTELLIGENT_MOBILE_CHUNK_SIZE : INTELLIGENT_CHUNK_SIZE;
 
   // upload options
   private defaultStoreLocation = 's3';
@@ -107,7 +92,7 @@ export class S3Uploader extends EventEmitter {
 
   private payloads: { [key: string]: UploadPayload } = {};
 
-  constructor(private readonly storeOptions: StoreOptions, private readonly concurrency: number = 3) {
+  constructor(private readonly storeOptions: StoreUploadOptions, private readonly concurrency: number = 3) {
     super();
 
     this.partsQueue = new PQueue({
@@ -235,17 +220,34 @@ export class S3Uploader extends EventEmitter {
   /**
    * Execute all queued files
    *
+   * @todo break on error
    * @returns {Promise<any>}
    * @memberof MultipartUploader
    */
   public async execute(): Promise<any> {
-    const tasks = Object.keys(this.payloads).map(id =>
-      // @todo handle catch for all steps
-      Promise.resolve()
-        .then(() => this.prepareParts(id))
-        .then(() => this.start(id))
-        .then(() => this.enqueueParts(id))
-        .then(() => this.complete(id))
+    const tasks = Object.keys(this.payloads).map(
+      id =>
+        // @todo handle catch for all steps
+        new Promise(async (resolve, reject) => {
+          try {
+            await this.prepareParts(id);
+            await this.startRequest(id);
+            await this.startPartsQueue(id);
+            await this.completeRequest(id);
+          } catch (e) {
+            debug(`[${id}] File upload failed. %0`, e.message);
+          }
+
+          const file = this.getPayloadById(id).file;
+
+          // release file buffer
+          file.release();
+
+          // cleanup payloads
+          delete this.payloads[id];
+
+          resolve(file);
+        })
     );
 
     return Promise.all(tasks);
@@ -263,11 +265,12 @@ export class S3Uploader extends EventEmitter {
 
     const id = this.getFileUniqueId(file);
 
+    file.status = FileState.INIT;
+
     // split file into parts and set it as waiting
     this.payloads[id] = {
       file,
       parts: [],
-      state: State.INIT,
     };
 
     return id;
@@ -336,9 +339,7 @@ export class S3Uploader extends EventEmitter {
       region: payload.region,
     };
 
-    if (this.uploadMode === UploadMode.INTELLIGENT || (
-      this.uploadMode === UploadMode.FALLBACK && multipartFallback
-    )) {
+    if (this.uploadMode === UploadMode.INTELLIGENT || (this.uploadMode === UploadMode.FALLBACK && multipartFallback)) {
       fields['multipart'] = 'true';
     }
 
@@ -382,7 +383,7 @@ export class S3Uploader extends EventEmitter {
 
     // for intelligent or fallback mode we cant overwrite part size - requires 8MB
     if ([UploadMode.INTELLIGENT, UploadMode.FALLBACK].indexOf(this.uploadMode) > -1) {
-      this.partSize = INTELLIGENT_PART_SIZE;
+      this.partSize = INTELLIGENT_CHUNK_SIZE;
     }
 
     const partsCount = file.getPartsCount(this.partSize);
@@ -392,7 +393,6 @@ export class S3Uploader extends EventEmitter {
       parts[i] = {
         ...file.getPart(i, this.partSize),
         offset: 0,
-        state: PartState.WAITING,
       };
     }
 
@@ -410,7 +410,7 @@ export class S3Uploader extends EventEmitter {
    * @memberof MultipartUploader
    * @todo pare response check if can intelligent can be used response->upload_type (regular-> go back to normal upload)
    */
-  private start(id: string): Promise<any> {
+  private startRequest(id: string): Promise<any> {
     // @todo add interface to return value
     const payload = this.getPayloadById(id);
 
@@ -430,31 +430,31 @@ export class S3Uploader extends EventEmitter {
         headers: this.getDefaultHeaders(id),
       },
       this.retryConfig
-    ).then(({ data }) => {
-      if (!data || !data.upload_id) {
-        throw new Error('Incorrect start response');
-      }
+    )
+      .then(({ data }) => {
+        if (!data || !data.upload_id) {
+          throw new Error('Incorrect start response');
+        }
 
-      debug(`[${id}] Assign payload data: \n%O\n`, data);
+        debug(`[${id}] Assign payload data: \n%O\n`, data);
 
-      // @todo do not copy file filed
-      this.payloads[id] = {
-        ...this.payloads[id],
-        uri: data.uri,
-        region: data.region,
-        upload_id: data.upload_id,
-        location_url: data.location_url,
-        location_region: data.location_region, // cname
-      };
+        this.updatePayload(id, data);
 
-      // ii is not enabled in backend switch back to default upload mode
-      if ([UploadMode.INTELLIGENT, UploadMode.FALLBACK].indexOf(this.uploadMode) > -1 && (!data.upload_type || data.upload_type !== 'intelligent_ingestion')) {
-        debug(`[${id}] Intelligent Ingestion is not enabled on account, switch back to regular upload and lock mode change`);
-        this.setUploadMode(UploadMode.DEFAULT, true);
-      }
+        // ii is not enabled in backend switch back to default upload mode
+        if (
+          [UploadMode.INTELLIGENT, UploadMode.FALLBACK].indexOf(this.uploadMode) > -1 &&
+          (!data.upload_type || data.upload_type !== 'intelligent_ingestion')
+        ) {
+          debug(`[${id}] Intelligent Ingestion is not enabled on account, switch back to regular upload and lock mode change`);
+          this.setUploadMode(UploadMode.DEFAULT, true);
+        }
 
-      return data;
-    });
+        return data;
+      })
+      .catch(err => {
+        payload.file.status = FileState.FAILED;
+        throw err;
+      });
   }
 
   /**
@@ -465,9 +465,9 @@ export class S3Uploader extends EventEmitter {
    * @memberof MultipartUploader
    * @todo filter waiting parts only
    */
-  private async enqueueParts(id: string): Promise<any> {
+  private async startPartsQueue(id: string): Promise<any> {
     const payload = this.getPayloadById(id);
-    const parts = payload.parts.filter(p => p.state === PartState.WAITING);
+    const parts = payload.parts;
     const waitingLength = parts.length;
 
     debug(`[${id}] Create uploading queue from file. parts count - %d`, waitingLength);
@@ -490,7 +490,52 @@ export class S3Uploader extends EventEmitter {
    */
   private startPart(id: string, partNumber: number): Promise<any> {
     debug(`[${id}] Start processing part ${partNumber} with mode ${this.uploadMode}`);
+
+    let payload = this.getPayloadById(id);
+    // omit all done and all failed parts of files
+    if ([FileState.INIT, FileState.PROGRESS].indexOf(payload.file.status) === -1) {
+      return Promise.resolve();
+    }
+
+    payload.file.status = FileState.PROGRESS;
     return (this.uploadMode !== UploadMode.INTELLIGENT ? this.uploadRegular : this.uploadIntelligent).apply(this, [id, partNumber]);
+  }
+
+  /**
+   * Returns part data needed for upload
+   *
+   * @private
+   * @param {string} id - id of a currently uploading file
+   * @param {FilePart} part
+   * @returns
+   * @memberof MultipartUploader
+   * @todo handle response and check repsonse payload {data, headers, url}
+   */
+  private getPartData(id: string, part: FilePart, offset?: number): Promise<any> {
+    const url = this.getUploadHost(id);
+
+    debug(`[${id}] Get data for part ${part.partNumber}, url ${url}`);
+
+    return multipart(
+      `${url}/multipart/upload`,
+      {
+        ...this.getDefaultFields(id),
+        // method specific keys
+        part: part.partNumber + 1,
+        md5: part.md5,
+        size: part.size,
+        offset,
+      },
+      {
+        headers: this.getDefaultHeaders(id),
+        cancelToken: this.cancelToken.token,
+        timeout: this.timeout,
+      },
+      this.retryConfig
+    ).catch(err => {
+      this.getPayloadById(id).file.status = FileState.FAILED;
+      throw err;
+    });
   }
 
   /**
@@ -503,10 +548,8 @@ export class S3Uploader extends EventEmitter {
    *  @todo handle progress, s3 errors, fallback mode
    */
   private async uploadRegular(id: string, partNumber: number): Promise<any> {
-    const part = this.getPayloadById(id).parts[partNumber];
-
-    this.setPartState(id, part.partNumber, PartState.RUNNING);
-
+    let payload = this.getPayloadById(id);
+    const part = payload.parts[partNumber];
     const { data, headers } = await this.getPartData(id, part);
 
     debug(`[${id}] Received part ${partNumber} info body: \n%O\n headers: \n%O\n`, data, headers);
@@ -532,7 +575,6 @@ export class S3Uploader extends EventEmitter {
 
         debug(`[${id}] S3 Upload response headers for ${partNumber}: \n%O\n`, res.headers);
 
-        this.setPartState(id, part.partNumber, PartState.DONE);
         this.onProgressUpdate(id, partNumber, part.size);
 
         return res;
@@ -548,8 +590,7 @@ export class S3Uploader extends EventEmitter {
           return this.startPart(id, partNumber);
         }
 
-        this.setPartState(id, part.partNumber, PartState.FAILED);
-        this.abort('Cannot upload file part. Aborting');
+        payload.file.status = FileState.FAILED;
         throw err;
       });
   }
@@ -565,7 +606,6 @@ export class S3Uploader extends EventEmitter {
    */
   private async uploadIntelligent(id: string, partNumber: number): Promise<any> {
     const part = this.payloads[id].parts[partNumber];
-    this.setPartState(id, part.partNumber, PartState.RUNNING);
 
     return this.uploadNextChunk(id, partNumber, this.intelligentChunkSize).then(() => this.commitPart(id, part));
   }
@@ -582,7 +622,7 @@ export class S3Uploader extends EventEmitter {
    * @memberof MultipartUploader
    */
   private async uploadNextChunk(id: string, partNumber: number, chunkSize: number) {
-    const payload = this.payloads[id];
+    const payload = this.getPayloadById(id);
     const part = payload.parts[partNumber];
 
     const size = Math.min(chunkSize, part.size - part.offset);
@@ -594,6 +634,7 @@ export class S3Uploader extends EventEmitter {
       }, Left: ${part.size - part.offset - chunk.size}`
     );
 
+    // catch error for debug purposes
     const { data } = await this.getPartData(id, chunk, part.offset).catch(err => {
       debug(`[${id}] Getting chunk data for ii failed %O, Chunk size: ${chunkSize}, offset ${part.offset}, part ${partNumber}`, err);
       throw err;
@@ -636,6 +677,7 @@ export class S3Uploader extends EventEmitter {
           return this.uploadNextChunk(id, partNumber, nextChunkSize);
         }
 
+        payload.file.status = FileState.FAILED;
         throw err;
       });
   }
@@ -679,9 +721,13 @@ export class S3Uploader extends EventEmitter {
    * @returns
    * @memberof MultipartUploader
    */
-  private complete(id: string) {
+  private completeRequest(id: string): Promise<any> {
     const payload = this.getPayloadById(id);
     let parts = [];
+
+    if (payload.file.status === FileState.FAILED) {
+      return Promise.resolve();
+    }
 
     debug(`[${id}] Run complete request`);
 
@@ -712,67 +758,37 @@ export class S3Uploader extends EventEmitter {
         headers: this.getDefaultHeaders(id),
       },
       this.retryConfig
-    ).then(res => {
-      if (res.status === 202) {
-        return new Promise((resolve, reject) => {
-          setTimeout(
-            () =>
-              this.complete(id)
-                .then(resolve)
-                .catch(reject),
-            COMPLETE_TIMEOUT
-          );
-        });
-      }
+    )
+      .then(res => {
+        // if parts hasnt been merged, retry complete request again
+        if (res.status === 202) {
+          return new Promise((resolve, reject) => {
+            setTimeout(
+              () =>
+                this.completeRequest(id)
+                  .then(resolve)
+                  .catch(reject),
+              COMPLETE_TIMEOUT
+            );
+          });
+        }
 
-      // cleanup payloads
-      this.payloads[id].file.cleanup();
-      delete this.payloads[id];
+        // update file object
+        let file = this.payloads[id].file;
+        file.handle = res.data.handle;
+        file.url = res.data.url;
+        file.status = res.data.status || FileState.STORED;
 
-      return res.data;
-    });
+        return file;
+      })
+      .catch(err => {
+        payload.file.status = FileState.FAILED;
+        throw err;
+      });
   }
 
   /**
-   * Returns part data needed for upload
-   *
-   * @private
-   * @param {string} id - id of a currently uploading file
-   * @param {FilePart} part
-   * @returns
-   * @memberof MultipartUploader
-   * @todo handle response and check repsonse payload {data, headers, url}
-   */
-  private getPartData(id: string, part: FilePart, offset?: number) {
-    const url = this.getUploadHost(id);
-
-    debug(`[${id}] Get data for part ${part.partNumber}, url ${url}`);
-
-    return multipart(
-      `${url}/multipart/upload`,
-      {
-        ...this.getDefaultFields(id),
-        // method specific keys
-        part: part.partNumber + 1,
-        md5: part.md5,
-        size: part.size,
-        offset,
-      },
-      {
-        headers: this.getDefaultHeaders(id),
-        cancelToken: this.cancelToken.token,
-        timeout: this.timeout,
-      },
-      this.retryConfig
-    ).catch(err => {
-      this.abort('Cannot get part data. Aborting!');
-      this.setPartState(id, part.partNumber, PartState.FAILED);
-      throw err;
-    });
-  }
-
-  /**
-   * UUpgrade upload progress and run progress emmiter
+   * UUpgrade upload progress and run progress event
    *
    * @private
    * @param {string} id
@@ -797,16 +813,21 @@ export class S3Uploader extends EventEmitter {
 
     let filesProgress = {};
     for (let i in this.payloads) {
-
       const payload = this.payloads[i];
-      const partsProgress = payload.parts.map((p) => p.progress || 0);
-      const totalParts = partsProgress.reduce((a,b) => a + b);
+
+      // omit all failed files in progress event
+      if (payload.file.status === FileState.FAILED) {
+        continue;
+      }
+
+      const partsProgress = payload.parts.map(p => p.progress || 0);
+      const totalParts = partsProgress.reduce((a, b) => a + b);
 
       totalBytes = totalBytes + totalParts;
 
       filesProgress[i] = {
         totalBytes: totalParts || 0,
-        totalPercent: Math.round(totalParts * 100 / payload.file.size)  || 0,
+        totalPercent: Math.round((totalParts * 100) / payload.file.size) || 0,
       };
 
       totalSize = totalSize + payload.file.size;
@@ -814,7 +835,7 @@ export class S3Uploader extends EventEmitter {
 
     const res = {
       totalBytes: totalBytes || 0,
-      totalPercent: Math.round(totalBytes * 100 / totalSize) || 0,
+      totalPercent: Math.round((totalBytes * 100) / totalSize) || 0,
       files: filesProgress,
     };
 
@@ -823,16 +844,22 @@ export class S3Uploader extends EventEmitter {
   }
 
   /**
-   * Sets part state
+   * Apply provided data to given payload
    *
    * @private
-   * @param {number} partNumber
-   * @param {PartState} state
-   * @memberof MultipartUploader
+   * @param {string} id
+   * @param {*} data
+   * @memberof S3Uploader
    */
-  private setPartState(id: string, partNumber: number, state: PartState) {
-    debug(`[${id}] Set ${state} for part ${partNumber}`);
-    this.getPayloadById(id).parts[partNumber].state = state;
+  private updatePayload(id: string, data: any) {
+    this.payloads[id] = {
+      ...this.payloads[id],
+      uri: data.uri,
+      region: data.region,
+      upload_id: data.upload_id,
+      location_url: data.location_url,
+      location_region: data.location_region, // cname
+    };
   }
 
   /**

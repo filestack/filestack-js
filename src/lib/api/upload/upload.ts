@@ -15,10 +15,12 @@
  * limitations under the License.
  */
 
-import { Session, StoreOptions } from '../../client';
+import { Session, Security } from '../../client';
 import { S3Uploader, UploadMode } from './uploaders/s3';
-import { UploadOptions } from '../upload/types';
-import { getFile } from './file_tools';
+import { UploadOptions, StoreUploadOptions } from '../upload/types';
+import { getFile, InputFile } from './file_tools';
+import { File, FileState } from './file';
+
 export interface ProgressEvent {
   totalPercent: number;
   totalBytes: number;
@@ -44,6 +46,8 @@ const normalizeProgress = (current, last) => {
 export class Upload {
   private uploader: S3Uploader;
 
+  private overwriteFileName;
+
   private lastProgress: ProgressEvent = {
     totalBytes: 0,
     totalPercent: 0,
@@ -51,11 +55,17 @@ export class Upload {
 
   private progressIntervalHandler;
 
-  constructor(private readonly options: UploadOptions = {}, storeOptions: StoreOptions = {}) {
+  constructor(private readonly options: UploadOptions = {}, private readonly storeOptions: StoreUploadOptions = {}) {
     this.uploader = new S3Uploader(storeOptions, options.concurrency);
+
+    if (storeOptions.filename) {
+      this.overwriteFileName = storeOptions.filename;
+      delete storeOptions.filename;
+    }
 
     this.uploader.setRetryConfig({
       retry: options.retry || 10,
+      onRetry: options.onRetry,
       retryFactor: options.retryFactor || 2,
       retryMaxTime: options.retryMaxTime || 15000,
     });
@@ -100,7 +110,7 @@ export class Upload {
    */
   public setToken(token: any) {
     if (!token || token !== Object(token)) {
-      token = {};
+      throw new Error('Incorrect upload token. Must be instance of object');
     }
 
     token.pause = () => this.uploader.pause();
@@ -111,6 +121,16 @@ export class Upload {
   }
 
   /**
+   * Sets security to uploader instance
+   *
+   * @param {Security} security
+   * @memberof Upload
+   */
+  public setSecurity(security: Security) {
+    this.uploader.setSecurity(security);
+  }
+
+  /**
    * Upload single file
    *
    * @param {(string | Buffer | Blob)} file
@@ -118,14 +138,17 @@ export class Upload {
    * @returns {Promise<any>}
    * @memberof Upload
    */
-  async upload(input: string | Buffer | Blob): Promise<any> {
-    const file = await getFile(input);
+  async upload(input: InputFile): Promise<any> {
+    const file = this.applyStoreFilename(await getFile(input));
     this.uploader.addFile(file);
 
     this.startProgressInterval();
     const res = (await this.uploader.execute()).pop();
-
     this.stopProgressInterval();
+
+    if (res.status === FileState.FAILED) {
+      return Promise.reject(res);
+    }
 
     return Promise.resolve(res);
   }
@@ -137,21 +160,42 @@ export class Upload {
    * @returns {Promise<any>}
    * @memberof Upload
    */
-  async multiupload(input: string[] | Buffer[] | Blob[]): Promise<any> {
+  async multiupload(input: InputFile[]): Promise<any> {
     for (let i in input) {
       if (!input.hasOwnProperty(i)) {
         continue;
       }
 
-      this.uploader.addFile(await getFile(input[i]));
+      this.uploader.addFile(this.applyStoreFilename(await getFile(input[i])));
     }
 
     this.startProgressInterval();
-    return this.uploader.execute().then(res => {
-      this.stopProgressInterval();
+    const res = await this.uploader.execute();
+    this.stopProgressInterval();
 
-      return res;
-    });
+    return Promise.resolve(res);
+  }
+
+  /**
+   * Apply store defined filename to file
+   *
+   * @private
+   * @param {File} file
+   * @returns {File}
+   * @memberof Upload
+   */
+  private applyStoreFilename(file: File): File {
+    let fn = this.overwriteFileName;
+
+    if (fn === 'string') {
+      file.name = fn;
+    }
+
+    if (typeof fn === 'function') {
+      file.name = fn(file);
+    }
+
+    return file;
   }
 
   /**

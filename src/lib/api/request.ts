@@ -17,12 +17,13 @@
 import Debug from 'debug';
 import axios, { AxiosError, AxiosInstance, AxiosResponse, AxiosRequestConfig } from 'axios';
 import * as FormData from 'form-data';
-import { uniqueId } from '../utils';
+// import { uniqueId } from '../utils';
 
 const debug = Debug('fs:request');
 
 export interface RetryConfig {
   retry: number;
+  onRetry?: () => void;
   retryMaxTime: number;
   retryFactor: number;
 }

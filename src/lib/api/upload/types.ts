@@ -15,6 +15,8 @@
  * limitations under the License.
  */
 
+import { StoreBaseParams } from 'src/lib/filelink';
+
 export interface UploadOptions {
   host?: string;
   /**
@@ -44,7 +46,7 @@ export interface UploadOptions {
   /**
    * Callback for retry events.
    */
-  onRetry?: (evt: FSRetryEvent) => void;
+  onRetry?: () => void;
   /**
    * Retry limit. Default is 10.
    */
@@ -74,15 +76,30 @@ export interface UploadOptions {
   intelligentChunkSize?: number;
 }
 
+export interface StoreUploadOptions extends StoreBaseParams {
+  /**
+   * Filename or function that returns custom filename for stored file
+   */
+  filename?: ((file: File) => string) | string;
+
+  /**
+   * Workflows ids to run after upload
+   */
+  workflows?: (string | WorkflowConfig)[];
+}
+
+export interface WorkflowConfig {
+  id: string;
+}
+
 export interface FSProgressEvent {
   totalPercent: number;
   totalBytes: number;
 }
 
 export interface FSRetryEvent {
-  location: string;
-  // parts: PartsMap;
-  filename: string;
-  attempt: number | undefined;
-  chunkSize?: number;
+  // location: string;
+  // filename: string;
+  // attempt: number | undefined;
+  // chunkSize?: number;
 }

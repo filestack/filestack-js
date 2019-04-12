@@ -14,13 +14,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { md5 } from './../../utils';
+import { md5, sanitizeName } from './../../utils';
 
 export interface FileInstance {
   buffer?: Buffer | ArrayBuffer;
   name: string;
   type: string;
   size: number;
+}
+
+export const enum FileState {
+  INIT = 'init',
+  PROGRESS = 'progress',
+  STORED = 'stored',
+  INTRANSIT = 'inTransit',
+  FAILED = 'failed',
 }
 
 export interface FilePart {
@@ -42,7 +50,13 @@ export class File {
 
   private _md5: string;
 
-  constructor(private readonly file: FileInstance) {
+  public status: FileState;
+
+  public handle: string;
+
+  public url: string;
+
+  constructor(private readonly _file: FileInstance) {
   }
 
   /**
@@ -51,8 +65,17 @@ export class File {
    * @returns {string}
    * @memberof File
    */
-  get name(): string {
-    return this.file.name || 'untitled';
+  public get name(): string {
+    return this._file.name || 'untitled';
+  }
+
+  /**
+   * Sets new file name  and cleanup extra chars
+   *
+   * @memberof File
+   */
+  public set name(val: string) {
+    this._file.name = sanitizeName(val);
   }
 
   /**
@@ -62,8 +85,19 @@ export class File {
    * @returns {string}
    * @memberof File
    */
-  get type(): string {
-    return this.file.type || 'application/octet-stream';
+  public get type(): string {
+    return this._file.type || 'application/octet-stream';
+  }
+
+  /**
+   * Alias for file type
+   *
+   * @readonly
+   * @type {string}
+   * @memberof File
+   */
+  public get mimetype(): string {
+    return this.type;
   }
 
   /**
@@ -72,8 +106,8 @@ export class File {
    * @returns {(Buffer | ArrayBuffer)}
    * @memberof File
    */
-  get buffer(): Buffer | ArrayBuffer {
-    return this.file.buffer;
+  public get buffer(): Buffer | ArrayBuffer {
+    return this._file.buffer;
   }
 
   /**
@@ -82,8 +116,8 @@ export class File {
    * @returns {number}
    * @memberof File
    */
-  get size(): number {
-    return this.file.size || this.file.buffer.byteLength;
+  public get size(): number {
+    return this._file.size || this._file.buffer.byteLength;
   }
 
   /**
@@ -92,16 +126,13 @@ export class File {
    * @returns {string}
    * @memberof File
    */
-  get md5(): string {
-    if (this._md5) {
-      return this._md5;
+  public get md5(): string {
+    if (!this._md5) {
+      // cache md5 file value
+      this._md5 = md5(this._file.buffer);
     }
 
-    // cache md5 file value
-    const md5Res = md5(this.file.buffer);
-    this._md5 = md5Res;
-
-    return md5Res;
+    return this._md5;
   }
 
   /**
@@ -111,8 +142,8 @@ export class File {
    * @returns {number}
    * @memberof File
    */
-  getPartsCount (size: number): number {
-    return Math.ceil(this.file.buffer.byteLength / size);
+  public getPartsCount (size: number): number {
+    return Math.ceil(this._file.buffer.byteLength / size);
   }
 
   /**
@@ -125,7 +156,7 @@ export class File {
    * @throw Error - when part is out of boundary
    * @memberof File
    */
-  getPart(partNum = 0, size): FilePart {
+  public getPart(partNum = 0, size): FilePart {
     const part = this.getSlice(size * partNum, size);
 
     return {
@@ -143,7 +174,7 @@ export class File {
    * @returns {FilePart}
    * @memberof File
    */
-  getPartOffset(partNum: number, partStart: number, offset: number, chunkSize: number): FilePart {
+  public getPartOffset(partNum: number, partStart: number, offset: number, chunkSize: number): FilePart {
     const part = this.getSlice(partStart + offset, chunkSize);
 
     return {
@@ -152,14 +183,44 @@ export class File {
     };
   }
 
+  /**
+   * Cleanup file buffer to release memory
+   *
+   * @memberof File
+   */
+  public release() {
+    this._file.buffer = null;
+  }
+
+  public toJSON() {
+    return {
+      name: this.name,
+      status: this.status,
+      type: this.type,
+      md5: this.md5,
+      size: this.size,
+      url: this.url,
+      handle: this.handle,
+    };
+  }
+
+  /**
+   * Returns file slice from start to end
+   *
+   * @private
+   * @param {number} start
+   * @param {number} end
+   * @returns
+   * @memberof File
+   */
   private getSlice(start: number, end: number) {
     let length = end;
 
-    if (this.file.buffer.byteLength < start + end) {
-      length = this.file.buffer.byteLength - start + end;
+    if (this._file.buffer.byteLength < start + end) {
+      length = this._file.buffer.byteLength - start + end;
     }
 
-    const part = this.file.buffer.slice(start, start + length);
+    const part = this._file.buffer.slice(start, start + length);
 
     return {
       startByte: start,
@@ -168,9 +229,5 @@ export class File {
       size: part.byteLength,
       md5: md5(part),
     };
-  }
-
-  cleanup() {
-    this.file.buffer = null;
   }
 }

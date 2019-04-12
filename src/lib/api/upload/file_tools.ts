@@ -14,12 +14,104 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { File } from './file';
+import { File as FsFile } from './file';
 import fileType from 'file-type';
 import issvg from 'is-svg';
 import * as isutf8 from 'isutf8';
-import { isNode } from './../../utils/index';
+import { isNode, sanitizeName } from './../../utils';
+import * as fs from 'fs';
 
+export type RawFile = Blob | Buffer | File | string;
+export type NamedInputFile = {
+  filename?: string;
+  file: RawFile;
+};
+
+export type InputFile = RawFile | NamedInputFile;
+
+/**
+ * Check if file is buffer
+ *
+ * @node
+ * @param input
+ */
+const isFileBuffer = (input: InputFile): input is Buffer => {
+  return Buffer.isBuffer(input);
+};
+
+/**
+ * Check if file is blob
+ * @param input
+ */
+const isFileBlob = (input: InputFile): input is Blob => {
+  return input.toString() === '[object File]' || input.toString() === '[object Blob]';
+};
+
+/**
+ * Check if input is instance of browser file
+ *
+ * @browser
+ * @param input
+ */
+const isFileBrowser = (input: InputFile): input is File => {
+  return input instanceof File;
+};
+
+/**
+ * Check if file is base64 string
+ *
+ * @param input
+ */
+const isFileBase = (input: InputFile): input is string => {
+  if (typeof input !== 'string') {
+    return false;
+  }
+
+  if (isNode) {
+    if (Buffer.from(input, 'base64').toString('base64') === input) {
+      return true;
+    }
+
+    return false;
+  }
+};
+
+/**
+ * Check if file is instance of named interface
+ *
+ * @param input
+ */
+const isFileNamed = (input: InputFile): input is NamedInputFile => {
+  if (input['file'] && input['filename']) {
+    return true;
+  }
+
+  return false;
+};
+
+/**
+ * Check if input is a valid file path
+ *
+ * @node
+ * @param input
+ */
+const isFilePath = (input: InputFile): input is string => {
+  if (typeof input !== 'string') {
+    return false;
+  }
+
+  if (fs.existsSync(input)) {
+    return true;
+  }
+
+  return false;
+};
+
+/**
+ * Returns mimetype of input file
+ *
+ * @param file 
+ */
 const getMimetype = (file: any): string => {
   let type = fileType(file);
 
@@ -52,7 +144,7 @@ const getMimetype = (file: any): string => {
  * @private
  * @returns {Blob}
  */
-const b64toBlob = (b64Data: string, sliceSize = 512) => {
+const b64toBlob = (b64Data: string, sliceSize = 512): Blob => {
   let byteString;
   let contentType = '';
   if (b64Data.split(',')[0].indexOf('base64') >= 0) {
@@ -79,18 +171,6 @@ const b64toBlob = (b64Data: string, sliceSize = 512) => {
 };
 
 /**
- * Is blob?
- *
- * @browser
- * @private
- * @param blob
- * @returns {Boolean}
- */
-const isBlob = (blob: any): boolean => {
-  return blob.toString() === '[object File]' || blob.toString() === '[object Blob]';
-};
-
-/**
  * Read file as array buffer
  *
  * @browser
@@ -113,7 +193,6 @@ const readFile = (file): Promise<any> => {
 };
 
 // =================== BROWSER UTILS ===================
-const browser = {
   /**
    * Accepts b64string or blob file
    *
@@ -121,72 +200,95 @@ const browser = {
    * @param {*} fileOrString
    * @returns {Promise<File>}
    */
-  getFile(fileOrString: Blob | string): Promise<File> {
-    let file: any = fileOrString;
+const getFileBrowser = (input: InputFile): Promise<FsFile> => {
+  let filename;
+  let file: Blob;
 
-    if (typeof fileOrString === 'string') {
-      file = b64toBlob(file);
-    }
+  if (isFileNamed(input)) {
+    filename = input.filename;
+    input = input.file;
+  }
 
-    if (!file || !isBlob(file)) {
-      return Promise.reject(new TypeError('File argument is not a valid Blob'));
-    }
+  if (!input) {
+    return Promise.reject(new TypeError('File is empty'));
+  }
 
-    return readFile(file).then((buffer) => {
-      return new File({
-        buffer,
-        name: file.name || undefined,
-        size: file.size || buffer.byteLength,
-        type: file.type || getMimetype(new Uint8Array(buffer)),
-      });
+  if (isFileBrowser(input)) {
+    file = input;
+    filename = input.name;
+  }
+
+  if (isFileBase(input)) {
+    file = b64toBlob(input);
+  }
+
+  if (isFileBlob(input)) {
+    file = input;
+  } else {
+    return Promise.reject(new Error('File argument is not a valid Blob'));
+  }
+
+  return readFile(file).then((buffer) => {
+    return new FsFile({
+      buffer,
+      name: sanitizeName(filename) || undefined,
+      size: file.size || buffer.byteLength,
+      type: file.type || getMimetype(new Uint8Array(buffer)),
     });
-  },
+  });
 };
 
 // =================== NODE UTILS ===================
-const node = {
-  /**
-   * Accepts Buffer or filepath or base64 string
-   *
-   * @node
-   * @param {*} inputFile
-   * @returns {Promise<File>}
-   */
-  getFile(inputFile: Buffer | string): Promise<File> {
-    if (typeof inputFile === 'string' && Buffer.from(inputFile, 'base64').toString('base64') === inputFile) {
-      inputFile = Buffer.from(inputFile, 'base64');
-    }
+/**
+ * Accepts Buffer or filepath or base64 string
+ *
+ * @node
+ * @param {*} inputFile
+ * @returns {Promise<File>}
+ */
+const getFileNode = (input: InputFile): Promise<FsFile> => {
+  let filename;
 
-    if (inputFile instanceof Buffer) {
-      return Promise.resolve(new File({
-        buffer: inputFile,
-        name: undefined,
-        size: inputFile.byteLength,
-        type: getMimetype(inputFile),
-      }));
-    }
+  if (isFileBlob(input)) {
+    return Promise.reject(new Error('Blobs are not supported in nodejs'));
+  }
+
+  if (isFileNamed(input)) {
+    filename = input.filename;
+    input = input.file;
+  }
+
+  if (isFileBase(input)) {
+    input = Buffer.from(input, 'base64');
+  }
+
+  if (isFileBuffer(input)) {
+    return Promise.resolve(new FsFile({
+      buffer: input,
+      name: filename,
+      size: input.byteLength,
+      type: getMimetype(input),
+    }));
+  }
+
+  if (isFilePath(input)) {
+    let path = input;
 
     return new Promise((resolve, reject) => {
-      (require('fs')).readFile(inputFile, (err, buffer) => {
-        if (err) return reject(err);
+      fs.readFile(path, (err, buffer) => {
+        if (err) {
+          return reject(err);
+        }
 
-        return resolve(new File({
+        return resolve(new FsFile({
           buffer,
-          name: (require('path')).basename(inputFile),
+          name: sanitizeName(filename || (require('path')).basename(path)),
           size: buffer.byteLength,
           type: getMimetype(buffer),
         }));
       });
     });
-  },
+  }
 };
 
-let fileClass;
-
-if (isNode) {
-  fileClass = node.getFile;
-} else {
-  fileClass = browser.getFile;
-}
-
-export const getFile = fileClass;
+export const getFile = isNode ? getFileNode : getFileBrowser;

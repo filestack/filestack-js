@@ -16,8 +16,8 @@
  */
 
 import { request } from './request';
-import { Security, StoreOptions, Session } from '../client';
-import { Filelink } from './../filelink';
+import { Security, Session } from '../client';
+import { Filelink, StoreParams } from './../filelink';
 
 /**
  *
@@ -31,7 +31,7 @@ import { Filelink } from './../filelink';
 export const storeURL = (
   session: Session,
   url?: string,
-  opts?: StoreOptions,
+  opts?: StoreParams,
   token?: any,
   security?: Security
 ): Promise<any> => {

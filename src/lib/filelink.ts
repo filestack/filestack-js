@@ -163,19 +163,22 @@ export enum VideoAccessMode {
   crop = 'crop',
 }
 
+export interface StoreBaseParams {
+  location?: string;
+  path?: string;
+  container?: string;
+  region?: string;
+  access?: string;
+}
+
 /**
  * Available options for store transformations
  *
  * @export
  * @interface StoreParams
  */
-export interface StoreParams {
+export interface StoreParams extends StoreBaseParams {
   filename?: string;
-  localion?: string;
-  path?: string;
-  container?: string;
-  region?: string;
-  access?: string;
   base64decode?: boolean;
 }
 

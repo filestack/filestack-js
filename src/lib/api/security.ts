@@ -26,7 +26,7 @@ import * as t from 'tcomb-validation';
  * @see https://www.filestack.com/docs/concepts/security
  */
 export interface SecurityOptions {
-  expiry?: number;
+  expiry: number;
   call?: any[];
   handle?: string;
   url?: string;

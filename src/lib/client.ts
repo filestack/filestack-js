@@ -20,10 +20,10 @@ import { metadata, MetadataOptions, remove, retrieve, RetrieveOptions } from './
 import { transform, TransformOptions } from './api/transform';
 import { storeURL } from './api/store';
 import { resolveHost } from './utils';
-import { Upload } from './api/upload/upload';
-import { UploadOptions } from './api/upload/types';
+import { Upload, InputFile, UploadOptions, StoreUploadOptions } from './api/upload';
 import { preview, PreviewOptions } from './api/preview';
 import { CloudClient } from './api/cloud';
+import { StoreParams } from './filelink';
 import {
   picker,
   PickerInstance,
@@ -41,42 +41,6 @@ export interface Session {
 export interface Security {
   policy: string;
   signature: string;
-}
-
-export interface WorkflowConfig {
-  id: string;
-}
-
-export interface StoreOptions {
-  /**
-   * Filename for stored file
-   */
-  filename?: string;
-  /**
-   * Location for stored file. One of 's3', 'gcs', 'azure', 'rackspace', or 'dropbox'.
-   */
-  location?: string;
-  /**
-   * Set container path.
-   */
-  path?: string;
-  /**
-   * Specify S3 region.
-   */
-  region?: string;
-  /**
-   * Specify storage container.
-   */
-  container?: string;
-  /**
-   * S3 container access. 'public' or 'private'.
-   */
-  access?: string;
-
-  /**
-   * Workflows ids to run after upload
-   */
-  workflows?: (string | WorkflowConfig)[];
 }
 
 export interface ClientOptions {
@@ -128,27 +92,48 @@ export class Client {
     }
     const { urls } = config;
     this.session = { apikey, urls };
+
     if (options) {
       const { cname, security } = options;
-      if (security && !(security.policy && security.signature)) {
-        throw new Error('Both policy and signature are required for client security');
-      }
-      if (security && security.policy && security.signature) {
-        this.session.policy = security.policy;
-        this.session.signature = security.signature;
-      }
-      if (cname) {
-        this.session.urls = resolveHost(this.session.urls, cname);
-        const hosts = /filestackapi.com|filestackcontent.com/i;
-        this.session.cname = cname;
-        Object.keys(urls).forEach((key) => {
-          this.session.urls[key] = urls[key].replace(hosts, cname);
-        });
-      }
+
+      this.setSecurity(security);
+      this.setCname(cname);
     }
 
     this.cloud = new CloudClient(this.session, options);
   }
+
+  /**
+   * Set security object
+   *
+   * @param {Security} security
+   * @memberof Client
+   */
+  setSecurity(security: Security) {
+    if (security && !(security.policy && security.signature)) {
+      throw new Error('Both policy and signature are required for client security');
+    }
+    if (security && security.policy && security.signature) {
+      this.session.policy = security.policy;
+      this.session.signature = security.signature;
+    }
+  }
+
+  /**
+   * Set custom cname
+   *
+   * @param {string} cname
+   * @returns
+   * @memberof Client
+   */
+  setCname(cname: string) {
+    if (!cname || cname.length === 0) {
+      return;
+    }
+
+    this.session.urls = resolveHost(this.session.urls, cname);
+  }
+
   /**
    * Clear all current cloud sessions in the picker.
    * Optionally pass a cloud source name to only log out of that cloud source.
@@ -273,7 +258,7 @@ export class Client {
    * @param token     Optional control token to call .cancel()
    * @param security  Optional security override.
    */
-  storeURL(url: string, options?: StoreOptions, token?: any, security?: Security): Promise<Object> {
+  storeURL(url: string, options?: StoreParams, token?: any, security?: Security): Promise<Object> {
     /* istanbul ignore next */
     return storeURL(this.session, url, options, token, security);
   }
@@ -364,6 +349,9 @@ export class Client {
    * client.upload(file, { onRetry }, { filename: 'foobar.jpg' }, token)
    *   .then(res => console.log(res));
    *
+   * client.upload({file, filename}, { onRetry }, { filename: 'foobar.jpg' }, token)
+   *   .then(res => console.log(res));
+   *
    * token.pause();  // Pause flow
    * token.resume(); // Resume flow
    * token.cancel(); // Cancel flow (rejects)
@@ -376,9 +364,17 @@ export class Client {
    *
    * @returns {Promise}
    */
-  upload(file: string | Buffer | Blob, options?: UploadOptions, storeOptions?: StoreOptions, token?: any, security?: Security) {
+  upload(file: InputFile, options?: UploadOptions, storeOptions?: StoreUploadOptions, token?: any, security?: Security) {
     const upload = new Upload(options, storeOptions);
     upload.setSession(this.session);
+
+    if (token) {
+      upload.setToken(token);
+    }
+
+    if (security) {
+      upload.setSecurity(security);
+    }
 
     return upload.upload(file);
   }
@@ -399,22 +395,34 @@ export class Client {
    *
    * client.multiupload([file], { onRetry }, token)
    *   .then(res => console.log(res));
+   * 
+   * client.multiupload([{file, filename}], { onRetry }, token)
+   *   .then(res => console.log(res));
    *
    * token.pause();  // Pause flow
    * token.resume(); // Resume flow
    * token.cancel(); // Cancel flow (rejects)
    * ```
    * @param file           Must be a valid [File](https://developer.mozilla.org/en-US/docs/Web/API/File), Blob, base64 encoded string, or file path in Node.
-   * @param uploadOptions  Uploader options.
+   * @param uploadOptions  Upload options.
    * @param storeOptions   Storage options.
    * @param token          A control token that can be used to call cancel(), pause(), and resume().
    * @param security       Optional security policy and signature override.
    *
    * @returns {Promise}
    */
-  multiupload(file: string[] | Buffer[] | Blob[], options?: UploadOptions, storeOptions?: StoreOptions, token?: any, security?: Security) {
+  multiupload(file: InputFile[], options?: UploadOptions, storeOptions?: StoreUploadOptions, token?: any, security?: Security) {
     const upload = new Upload(options, storeOptions);
+
     upload.setSession(this.session);
+
+    if (token) {
+      upload.setToken(token);
+    }
+
+    if (security) {
+      upload.setSecurity(security);
+    }
 
     return upload.multiupload(file);
   }

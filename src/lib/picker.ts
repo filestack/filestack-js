@@ -16,8 +16,8 @@
  */
 
 import { loadModule, knownModuleIds } from 'filestack-loader';
-import { Client, WorkflowConfig } from './client';
-import { FSProgressEvent, UploadOptions } from './api/upload/types';
+import { Client } from './client';
+import { FSProgressEvent, UploadOptions, WorkflowConfig } from './api/upload/types';
 
 export interface PickerInstance {
   /**
