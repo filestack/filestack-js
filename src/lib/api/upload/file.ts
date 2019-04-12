@@ -31,12 +31,15 @@ export const enum FileState {
   FAILED = 'failed',
 }
 
-export interface FilePart {
+export interface FilePartMetadata {
   startByte: number;
   endByte: number;
   partNumber: number;
-  buffer: Buffer | ArrayBuffer;
   size: number;
+}
+
+export interface FilePart extends FilePartMetadata {
+  buffer: Buffer | ArrayBuffer;
   md5: string;
 }
 
@@ -76,6 +79,22 @@ export class File {
    */
   public set name(val: string) {
     this._file.name = sanitizeName(val);
+  }
+
+  public set customName(val: ((file: this) => string) | string) {
+    switch (typeof val) {
+      case 'string':
+        this.name = val;
+        break;
+      case 'function':
+        const newName = val(this);
+        if (typeof newName !== 'string') {
+          throw new Error(`Name function must return a string. Current return type is ${typeof val}`);
+        }
+
+        this.name = val(this);
+        break;
+    }
   }
 
   /**
@@ -147,42 +166,67 @@ export class File {
   }
 
   /**
-   * Returns FilePart object for uploads with calculated md5
+   * Returns part metadata
    *
-   * @private
-   * @param {*} num - part number
-   * @param {*} size - part size in bytes (default: 0)
-   * @returns {FilePart}
-   * @throw Error - when part is out of boundary
+   * @param {number} [partNum=0]
+   * @param {*} size
+   * @returns {FilePartMetadata}
    * @memberof File
    */
-  public getPart(partNum = 0, size): FilePart {
-    const part = this.getSlice(size * partNum, size);
+  public getPartMetadata (partNum: number = 0, size): FilePartMetadata {
+    const start = size * partNum;
+    let end = size;
+
+    if (this._file.buffer.byteLength < start + end) {
+      end = this._file.buffer.byteLength - start + end;
+    }
 
     return {
-      ...part,
       partNumber: partNum,
+      startByte: start,
+      endByte: end,
+      size: end - start,
     };
   }
 
   /**
-   * Teturn part chunk for given start and offset
+   * Returns part metadata + buffer
    *
-   * @param {number} partNum
-   * @param {number} partStart
-   * @param {number} offset
+   * @param {FilePartMetadata} meta
    * @returns {FilePart}
    * @memberof File
    */
-  public getPartOffset(partNum: number, partStart: number, offset: number, chunkSize: number): FilePart {
-    const part = this.getSlice(partStart + offset, chunkSize);
+  public getPartByMetadata(meta: FilePartMetadata): FilePart {
+    let slice = this._file.buffer.slice(meta.startByte, meta.endByte);
 
     return {
-      ...part,
-      partNumber: partNum,
+      buffer: slice,
+      md5: md5(slice),
+      ...meta,
     };
   }
 
+  /**
+   * Returns part chunk
+   *
+   * @param {FilePartMetadata} meta
+   * @param {number} offset
+   * @param {number} chunkSize
+   * @returns {FilePart}
+   * @memberof File
+   */
+  public getChunkByMetadata(meta: FilePartMetadata, offset: number, chunkSize: number): FilePart {
+    const start = meta.startByte + offset;
+    const end = Math.min(start + chunkSize, meta.endByte);
+
+    let slice = this._file.buffer.slice(start, end);
+
+    return {
+      buffer: slice,
+      md5: md5(slice),
+      ...meta,
+    };
+  }
   /**
    * Cleanup file buffer to release memory
    *
@@ -201,33 +245,6 @@ export class File {
       size: this.size,
       url: this.url,
       handle: this.handle,
-    };
-  }
-
-  /**
-   * Returns file slice from start to end
-   *
-   * @private
-   * @param {number} start
-   * @param {number} end
-   * @returns
-   * @memberof File
-   */
-  private getSlice(start: number, end: number) {
-    let length = end;
-
-    if (this._file.buffer.byteLength < start + end) {
-      length = this._file.buffer.byteLength - start + end;
-    }
-
-    const part = this._file.buffer.slice(start, start + length);
-
-    return {
-      startByte: start,
-      endByte: start + length,
-      buffer: part,
-      size: part.byteLength,
-      md5: md5(part),
     };
   }
 }

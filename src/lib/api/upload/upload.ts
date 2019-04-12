@@ -19,7 +19,7 @@ import { Session, Security } from '../../client';
 import { S3Uploader, UploadMode } from './uploaders/s3';
 import { UploadOptions, StoreUploadOptions } from '../upload/types';
 import { getFile, InputFile } from './file_tools';
-import { File, FileState } from './file';
+import { FileState } from './file';
 
 export interface ProgressEvent {
   totalPercent: number;
@@ -87,7 +87,13 @@ export class Upload {
     this.uploader.on('progress', this.handleProgress.bind(this));
   }
 
-  // @deprecated
+  /**
+   * Set session object to uploader
+   *
+   * @deprecated
+   * @param {Session} session
+   * @memberof Upload
+   */
   setSession(session: Session) {
     this.uploader.setApikey(session.apikey);
 
@@ -139,8 +145,10 @@ export class Upload {
    * @memberof Upload
    */
   async upload(input: InputFile): Promise<any> {
-    const file = this.applyStoreFilename(await getFile(input));
-    this.uploader.addFile(file);
+
+    const f = await getFile(input);
+    f.customName = this.overwriteFileName;
+    this.uploader.addFile(f);
 
     this.startProgressInterval();
     const res = (await this.uploader.execute()).pop();
@@ -165,8 +173,9 @@ export class Upload {
       if (!input.hasOwnProperty(i)) {
         continue;
       }
-
-      this.uploader.addFile(this.applyStoreFilename(await getFile(input[i])));
+      const f = await getFile(input[i]);
+      f.customName = this.overwriteFileName;
+      this.uploader.addFile(f);
     }
 
     this.startProgressInterval();
@@ -174,28 +183,6 @@ export class Upload {
     this.stopProgressInterval();
 
     return Promise.resolve(res);
-  }
-
-  /**
-   * Apply store defined filename to file
-   *
-   * @private
-   * @param {File} file
-   * @returns {File}
-   * @memberof Upload
-   */
-  private applyStoreFilename(file: File): File {
-    let fn = this.overwriteFileName;
-
-    if (fn === 'string') {
-      file.name = fn;
-    }
-
-    if (typeof fn === 'function') {
-      file.name = fn(file);
-    }
-
-    return file;
   }
 
   /**

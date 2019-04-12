@@ -110,7 +110,7 @@ const isFilePath = (input: InputFile): input is string => {
 /**
  * Returns mimetype of input file
  *
- * @param file 
+ * @param file
  */
 const getMimetype = (file: any): string => {
   let type = fileType(file);
@@ -231,7 +231,7 @@ const getFileBrowser = (input: InputFile): Promise<FsFile> => {
   return readFile(file).then((buffer) => {
     return new FsFile({
       buffer,
-      name: sanitizeName(filename) || undefined,
+      name: sanitizeName(filename),
       size: file.size || buffer.byteLength,
       type: file.type || getMimetype(new Uint8Array(buffer)),
     });
