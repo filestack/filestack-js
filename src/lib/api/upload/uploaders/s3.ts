@@ -185,6 +185,9 @@ export class S3Uploader extends EventEmitter {
    */
   public setIntelligentChunkSize(size: number): void {
     debug(`Set inteligent chunk size to ${size}`);
+    if (size < MIN_CHUNK_SIZE) {
+      throw new Error(`Minimum intelligent chunk size is ${MIN_CHUNK_SIZE}`);
+    }
     this.intelligentChunkSize = size;
   }
 
@@ -551,7 +554,7 @@ export class S3Uploader extends EventEmitter {
     let payload = this.getPayloadById(id);
     const partMetadata = payload.parts[partNumber];
     const part = payload.file.getPartByMetadata(partMetadata);
-    console.log(part);
+
     const { data, headers } = await this.getPartMetadata(id, part);
 
     debug(`[${id}] Received part ${partNumber} info body: \n%O\n headers: \n%O\n`, data, headers);
@@ -627,6 +630,7 @@ export class S3Uploader extends EventEmitter {
     const payload = this.getPayloadById(id);
     const part = payload.parts[partNumber];
     const size = Math.min(chunkSize, part.size - part.offset);
+
     const chunk = payload.file.getChunkByMetadata(part, part.offset, size);
 
     debug(

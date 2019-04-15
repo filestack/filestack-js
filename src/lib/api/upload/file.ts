@@ -195,8 +195,6 @@ export class File {
       size = this._file.buffer.byteLength - start;
     }
 
-    console.log('Calculated part Size:', size);
-
     return {
       partNumber: partNum,
       startByte: start,
@@ -238,10 +236,13 @@ export class File {
     let slice = this._file.buffer.slice(start, end);
 
     return {
+      ...meta,
       buffer: slice,
       md5: md5(slice),
+      size: slice.byteLength,
+      startByte: start,
+      endByte: end,
       offset,
-      ...meta,
     };
   }
   /**
