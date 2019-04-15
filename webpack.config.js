@@ -7,7 +7,7 @@ const merge = require('lodash.merge');
 const banner = fs.readFileSync('./LICENSE', 'utf8').replace('{year}', new Date().getFullYear());
 
 const config =  {
-  mode: 'development',
+  mode: 'production',
   node: { Buffer: false },
   watchOptions: {
     ignored: /node_modules/

@@ -365,7 +365,7 @@ export class Client {
    * @returns {Promise}
    */
   upload(file: InputFile, options?: UploadOptions, storeOptions?: StoreUploadOptions, token?: any, security?: Security) {
-    const upload = new Upload(options, storeOptions);
+    let upload = new Upload(options, storeOptions);
     upload.setSession(this.session);
 
     if (token) {
@@ -376,7 +376,9 @@ export class Client {
       upload.setSecurity(security);
     }
 
-    return upload.upload(file);
+    return upload.upload(file).finally(() => {
+      upload = null;
+    });
   }
 
   /**
@@ -412,7 +414,7 @@ export class Client {
    * @returns {Promise}
    */
   multiupload(file: InputFile[], options?: UploadOptions, storeOptions?: StoreUploadOptions, token?: any, security?: Security) {
-    const upload = new Upload(options, storeOptions);
+    let upload = new Upload(options, storeOptions);
 
     upload.setSession(this.session);
 
@@ -424,6 +426,8 @@ export class Client {
       upload.setSecurity(security);
     }
 
-    return upload.multiupload(file);
+    return upload.multiupload(file).finally(() => {
+      upload = null;
+    });
   }
 }
