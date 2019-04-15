@@ -767,8 +767,6 @@ export class Filelink {
     return this.addTask('tags', true);
   }
 
-  
-
   /**
    * Adds sfw transformation
    *
