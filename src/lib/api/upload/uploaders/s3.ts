@@ -559,7 +559,7 @@ export class S3Uploader extends EventEmitter {
 
     debug(`[${id}] Received part ${partNumber} info body: \n%O\n headers: \n%O\n`, data, headers);
 
-    const requestInstance = request.create();
+    let requestInstance = request.create();
 
     // retry only in regular upload mode
     if (this.retryConfig && this.uploadMode !== UploadMode.FALLBACK) {
@@ -582,14 +582,12 @@ export class S3Uploader extends EventEmitter {
 
         this.onProgressUpdate(id, partNumber, part.size);
 
-        part = null;
         return res;
       })
       .catch(err => {
         // reset upload progress on failed part
         this.onProgressUpdate(id, partNumber, 0);
 
-        part = null;
         // if fallback, set upload mode to intelligent and restart current part
         if ((this.uploadMode === UploadMode.FALLBACK && !this.isModeLocked) || this.uploadMode === UploadMode.INTELLIGENT) {
           this.setUploadMode(UploadMode.INTELLIGENT);
@@ -599,6 +597,9 @@ export class S3Uploader extends EventEmitter {
 
         payload.file.status = FileState.FAILED;
         throw err;
+      }).finally(() => {
+        part = null;
+        requestInstance = null;
       });
   }
 
@@ -630,7 +631,7 @@ export class S3Uploader extends EventEmitter {
    */
   private async uploadNextChunk(id: string, partNumber: number, chunkSize: number) {
     const payload = this.getPayloadById(id);
-    const part = payload.parts[partNumber];
+    let part = payload.parts[partNumber];
     const size = Math.min(chunkSize, part.size - part.offset);
 
     let chunk = payload.file.getChunkByMetadata(part, part.offset, size);
@@ -662,8 +663,6 @@ export class S3Uploader extends EventEmitter {
 
         this.setPartData(id, partNumber, 'offset', newOffset);
 
-        chunk = null;
-
         // if all chunks was uploaded then return resolve
         if (newOffset === part.size) {
           return Promise.resolve(res);
@@ -672,8 +671,6 @@ export class S3Uploader extends EventEmitter {
         return this.uploadNextChunk(id, partNumber, chunkSize);
       })
       .catch(err => {
-
-        chunk = null;
         // reset progress on failed upload
         this.onProgressUpdate(id, partNumber, part.offset);
         const nextChunkSize = chunkSize / 2;
@@ -690,6 +687,9 @@ export class S3Uploader extends EventEmitter {
 
         payload.file.status = FileState.FAILED;
         throw err;
+      }).finally(() => {
+        part = null;
+        chunk = null;
       });
   }
 
