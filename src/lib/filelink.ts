@@ -1240,7 +1240,7 @@ export class Filelink {
   }
 
   /**
-   * Add task which minify css file
+   * Add task which minify a css file
    *
    * @returns this
    * @memberof Filelink
@@ -1250,7 +1250,8 @@ export class Filelink {
   }
 
   /**
-   * Add task which minify javascript file
+   * Add task which minify a javascript file.
+   * For better handling of 'targets' param, use with b64 flag enabled.
    *
    * @returns this
    * @memberof Filelink

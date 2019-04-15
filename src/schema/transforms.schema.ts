@@ -1394,13 +1394,9 @@ export const TransformSchema = {
         remove_undefined: {
           type: 'boolean',
         },
-        targets: [{
-          oneOf: [{
-            type: 'null',
-          }, {
-            type: 'string',
-          }],
-        }],
+        targets: {
+          type: 'string',
+        },
       },
     },
   },
