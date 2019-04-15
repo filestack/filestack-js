@@ -43,6 +43,10 @@ export interface FilePart extends FilePartMetadata {
   md5: string;
 }
 
+export interface FileChunk extends FilePart {
+  offset: number; // offset for chunk - from part start
+}
+
 /**
  * File representation to unify file object in nodejs and browser
  *
@@ -70,6 +74,17 @@ export class File {
    */
   public get name(): string {
     return this._file.name || 'untitled';
+  }
+
+  /**
+   * Alias for name getter
+   *
+   * @readonly
+   * @type {string}
+   * @memberof File
+   */
+  public get filename(): string {
+    return this.name;
   }
 
   /**
@@ -175,17 +190,18 @@ export class File {
    */
   public getPartMetadata (partNum: number = 0, size): FilePartMetadata {
     const start = size * partNum;
-    let end = size;
 
-    if (this._file.buffer.byteLength < start + end) {
-      end = this._file.buffer.byteLength - start + end;
+    if (this._file.buffer.byteLength < start + size) {
+      size = this._file.buffer.byteLength - start;
     }
+
+    console.log('Calculated part Size:', size);
 
     return {
       partNumber: partNum,
       startByte: start,
-      endByte: end,
-      size: end - start,
+      endByte: start + size,
+      size: size,
     };
   }
 
@@ -215,7 +231,7 @@ export class File {
    * @returns {FilePart}
    * @memberof File
    */
-  public getChunkByMetadata(meta: FilePartMetadata, offset: number, chunkSize: number): FilePart {
+  public getChunkByMetadata(meta: FilePartMetadata, offset: number, chunkSize: number): FileChunk {
     const start = meta.startByte + offset;
     const end = Math.min(start + chunkSize, meta.endByte);
 
@@ -224,6 +240,7 @@ export class File {
     return {
       buffer: slice,
       md5: md5(slice),
+      offset,
       ...meta,
     };
   }

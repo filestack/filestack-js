@@ -19,7 +19,6 @@ import fileType from 'file-type';
 import issvg from 'is-svg';
 import * as isutf8 from 'isutf8';
 import { isNode, sanitizeName } from './../../utils';
-import * as fs from 'fs';
 
 export type RawFile = Blob | Buffer | File | string;
 export type NamedInputFile = {
@@ -44,7 +43,7 @@ const isFileBuffer = (input: InputFile): input is Buffer => {
  * @param input
  */
 const isFileBlob = (input: InputFile): input is Blob => {
-  return input.toString() === '[object File]' || input.toString() === '[object Blob]';
+  return  input.toString() === '[object Blob]';
 };
 
 /**
@@ -100,7 +99,7 @@ const isFilePath = (input: InputFile): input is string => {
     return false;
   }
 
-  if (fs.existsSync(input)) {
+  if (require('fs').existsSync(input)) {
     return true;
   }
 
@@ -224,8 +223,6 @@ const getFileBrowser = (input: InputFile): Promise<FsFile> => {
 
   if (isFileBlob(input)) {
     file = input;
-  } else {
-    return Promise.reject(new Error('File argument is not a valid Blob'));
   }
 
   return readFile(file).then((buffer) => {
@@ -275,7 +272,7 @@ const getFileNode = (input: InputFile): Promise<FsFile> => {
     let path = input;
 
     return new Promise((resolve, reject) => {
-      fs.readFile(path, (err, buffer) => {
+      require('fs').readFile(path, (err, buffer) => {
         if (err) {
           return reject(err);
         }

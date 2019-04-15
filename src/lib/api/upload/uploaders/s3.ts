@@ -1,3 +1,4 @@
+
 /*
  * Copyright (c) 2019 by Filestack.
  * Some rights reserved.
@@ -15,8 +16,8 @@
  * limitations under the License.
  */
 
-import Debug from 'debug';
 import PQueue from 'p-queue';
+import Debug from 'debug';
 import { CancelTokenSource, AxiosResponse } from 'axios';
 import * as EventEmitter from 'eventemitter3';
 
@@ -85,7 +86,7 @@ export class S3Uploader extends EventEmitter {
   // application settings
   private apikey: string;
   private security: Security;
-  private partsQueue: PQueue;
+  private partsQueue;
   private cancelToken: CancelTokenSource; // global cancel token for all requests
   private isModeLocked: boolean = false; // if account does not support ii in fallback mode we should abort
   private retryConfig: RetryConfig;
@@ -550,7 +551,7 @@ export class S3Uploader extends EventEmitter {
     let payload = this.getPayloadById(id);
     const partMetadata = payload.parts[partNumber];
     const part = payload.file.getPartByMetadata(partMetadata);
-
+    console.log(part);
     const { data, headers } = await this.getPartMetadata(id, part);
 
     debug(`[${id}] Received part ${partNumber} info body: \n%O\n headers: \n%O\n`, data, headers);
@@ -681,33 +682,6 @@ export class S3Uploader extends EventEmitter {
         throw err;
       });
   }
-
-  // private processUpload(id: string, part: FilePart) {
-  //   // get part data
-  //   // check offset in regulart do not send
-
-  //   // const payload = this.getPayloadById(id);
-
-  //   // debug(
-  //   //   `[${id}] PartNum: ${partNumber}, PartSize: ${part.size}, StartByte: ${part.startByte}, Offset: ${part.offset}, ChunkSize: ${
-  //   //     chunk.size
-  //   //   }, Left: ${part.size - part.offset - chunk.size}`
-  //   // );
-
-  //   // // catch error for debug purposes
-  //   // const { data } = await this.getPartMetadata(id, chunk, part.offset).catch(err => {
-  //   //   debug(`[${id}] Getting chunk data for ii failed %O, Chunk size: ${chunkSize}, offset ${part.offset}, part ${partNumber}`, err);
-  //   //   throw err;
-  //   // });
-
-  //   // return request
-  //   //   .put(data.url, part.buffer, {
-  //   //     cancelToken: this.cancelToken.token,
-  //   //     timeout: this.timeout,
-  //   //     headers: data.headers,
-  //   //     onUploadProgress: (pr: ProgressEvent) => this.onProgressUpdate(id, partNumber, part.offset + pr.loaded),
-  //   //   });
-  // }
 
   /**
    * Commit after upload all chunks of the part in ii mode
