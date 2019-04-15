@@ -514,10 +514,10 @@ export class S3Uploader extends EventEmitter {
    * @returns
    * @memberof MultipartUploader
    */
-  private getPartMetadata(id: string, part: FilePart, offset?: number): Promise<any> {
+  private getPartS3Metadata(id: string, part: FilePart, offset?: number): Promise<any> {
     const url = this.getUploadHost(id);
 
-    debug(`[${id}] Get data for part ${part.partNumber}, url ${url}`);
+    debug(`[${id}] Get data for part ${part.partNumber}, url ${url}, Md5: ${part.md5}, Size: ${part.size}`);
 
     return multipart(
       `${url}/multipart/upload`,
@@ -553,9 +553,9 @@ export class S3Uploader extends EventEmitter {
   private async uploadRegular(id: string, partNumber: number): Promise<any> {
     let payload = this.getPayloadById(id);
     const partMetadata = payload.parts[partNumber];
-    const part = payload.file.getPartByMetadata(partMetadata);
+    let part = payload.file.getPartByMetadata(partMetadata);
 
-    const { data, headers } = await this.getPartMetadata(id, part);
+    const { data, headers } = await this.getPartS3Metadata(id, part);
 
     debug(`[${id}] Received part ${partNumber} info body: \n%O\n headers: \n%O\n`, data, headers);
 
@@ -582,12 +582,14 @@ export class S3Uploader extends EventEmitter {
 
         this.onProgressUpdate(id, partNumber, part.size);
 
+        part = null;
         return res;
       })
       .catch(err => {
         // reset upload progress on failed part
         this.onProgressUpdate(id, partNumber, 0);
 
+        part = null;
         // if fallback, set upload mode to intelligent and restart current part
         if ((this.uploadMode === UploadMode.FALLBACK && !this.isModeLocked) || this.uploadMode === UploadMode.INTELLIGENT) {
           this.setUploadMode(UploadMode.INTELLIGENT);
@@ -631,7 +633,7 @@ export class S3Uploader extends EventEmitter {
     const part = payload.parts[partNumber];
     const size = Math.min(chunkSize, part.size - part.offset);
 
-    const chunk = payload.file.getChunkByMetadata(part, part.offset, size);
+    let chunk = payload.file.getChunkByMetadata(part, part.offset, size);
 
     debug(
       `[${id}] PartNum: ${partNumber}, PartSize: ${part.size}, StartByte: ${part.startByte}, Offset: ${part.offset}, ChunkSize: ${
@@ -640,7 +642,7 @@ export class S3Uploader extends EventEmitter {
     );
 
     // catch error for debug purposes
-    const { data } = await this.getPartMetadata(id, chunk, part.offset).catch(err => {
+    const { data } = await this.getPartS3Metadata(id, chunk, part.offset).catch(err => {
       debug(`[${id}] Getting chunk data for ii failed %O, Chunk size: ${chunkSize}, offset ${part.offset}, part ${partNumber}`, err);
       throw err;
     });
@@ -660,6 +662,8 @@ export class S3Uploader extends EventEmitter {
 
         this.setPartData(id, partNumber, 'offset', newOffset);
 
+        chunk = null;
+
         // if all chunks was uploaded then return resolve
         if (newOffset === part.size) {
           return Promise.resolve(res);
@@ -668,6 +672,8 @@ export class S3Uploader extends EventEmitter {
         return this.uploadNextChunk(id, partNumber, chunkSize);
       })
       .catch(err => {
+
+        chunk = null;
         // reset progress on failed upload
         this.onProgressUpdate(id, partNumber, part.offset);
         const nextChunkSize = chunkSize / 2;
