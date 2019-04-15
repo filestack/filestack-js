@@ -25,7 +25,7 @@ import { File, FilePart, FilePartMetadata, FileState } from './../file';
 import { StoreUploadOptions } from './../types';
 import { Security } from './../../../client';
 import { multipart, request, RetryConfig, useRetryPolicy, shouldRetry } from './../../request';
-import { uniqueTime, isMobile } from './../../../utils';
+import { uniqueTime, isMobile, uniqueId } from './../../../utils';
 
 const debug = Debug('fs:upload:multipart');
 
@@ -908,6 +908,6 @@ export class S3Uploader extends EventEmitter {
    * @memberof S3Uploader
    */
   private getFileUniqueId(file: File) {
-    return `${file.md5}_${uniqueTime()}`;
+    return `${uniqueId(15)}_${uniqueTime()}`;
   }
 }

@@ -200,6 +200,8 @@ export class Upload {
     this.progressIntervalHandler = setInterval(() => {
       this.options.onProgress(this.lastProgress);
     }, this.options.progressInterval || DEFAULT_PROGRESS_INTERVAL);
+
+    this.options.onProgress(this.lastProgress);
   }
 
   /**
