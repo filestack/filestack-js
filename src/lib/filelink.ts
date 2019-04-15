@@ -425,6 +425,23 @@ export interface FallbackParams {
   cache: number;
 }
 
+export interface MinifyCssParams {
+  gzip?: boolean;
+  level?: number;
+}
+
+export interface MinifyJsParams {
+  gzip?: boolean;
+  use_babel_polyfill?: boolean;
+  keep_fn_name?: boolean;
+  keep_class_name?: boolean;
+  mangle?: boolean;
+  merge_vars?: boolean;
+  remove_console?: boolean;
+  remove_undefined?: boolean;
+  targets?: null | string;
+}
+
 const handleRegexp = /^[\w\-]{20}$/;
 
 /**
@@ -1208,6 +1225,38 @@ export class Filelink {
    */
   fallback(params: FallbackParams) {
     return this.addTask('fallback', params);
+  }
+
+  /**
+   * Add zip transformation which create a zip package on files
+   * used on actual context
+   *
+   * @see https://www.filestack.com/docs/api/processing/#zip
+   * @returns this
+   * @memberof Filelink
+   */
+  zip() {
+    return this.addTask('zip', true);
+  }
+
+  /**
+   * Add task which minify css file
+   *
+   * @returns this
+   * @memberof Filelink
+   */
+  minifyCss(params: MinifyCssParams) {
+    return this.addTask('minify_css', params);
+  }
+
+  /**
+   * Add task which minify javascript file
+   *
+   * @returns this
+   * @memberof Filelink
+   */
+  minifyJs(params: MinifyJsParams) {
+    return this.addTask('minify_js', params);
   }
 
   /**

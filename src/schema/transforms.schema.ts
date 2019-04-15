@@ -1350,5 +1350,58 @@ export const TransformSchema = {
       },
       required: ['handle'],
     },
+    zip: {
+      type: 'string',
+    },
+    minify_css: {
+      type: 'object',
+      additionalProperties: false,
+      properties: {
+        gzip: {
+          type: 'boolean',
+        },
+        level: {
+          type: 'number',
+          enum: [1, 2],
+        },
+      },
+    },
+    minify_js: {
+      type: 'object',
+      additionalProperties: false,
+      properties: {
+        gzip: {
+          type: 'boolean',
+        },
+        use_babel_polyfill: {
+          type: 'boolean',
+        },
+        keep_fn_name: {
+          type: 'boolean',
+        },
+        keep_class_name: {
+          type: 'boolean',
+        },
+        mangle: {
+          type: 'boolean',
+        },
+        merge_vars: {
+          type: 'boolean',
+        },
+        remove_console: {
+          type: 'boolean',
+        },
+        remove_undefined: {
+          type: 'boolean',
+        },
+        targets: [{
+          oneOf: [{
+            type: 'null',
+          }, {
+            type: 'string',
+          }],
+        }],
+      },
+    },
   },
 };
