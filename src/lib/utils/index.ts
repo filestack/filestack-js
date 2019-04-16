@@ -168,17 +168,16 @@ export const md5 = (data: any) => {
  *
  * @param name
  */
-export const sanitizeName = (name: string): string  => {
+export const sanitizeName = (name: string, ext: string = ''): string  => {
   if (!name || name.length === 0) {
     return 'undefined';
   }
 
   const fileParts = name.split('.');
 
-  let ext = '';
   if (fileParts.length > 1) {
     ext = fileParts.pop();
   }
 
-  return `${fileParts.join('_').replace(/\s+/gi, '_').replace(/[^a-zA-Z0-9\-\_]/gi, '_')}.${ext}`;
+  return `${fileParts.join('_').replace(/\s+/gi, '_').replace(/[^a-zA-Z0-9\-\_]/gi, '_')}${ext ? `.${ext}` : '' }`;
 };

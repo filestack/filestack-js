@@ -788,7 +788,7 @@ export class S3Uploader extends EventEmitter {
         let file = this.payloads[id].file;
         file.handle = res.data.handle;
         file.url = res.data.url;
-        file.status = res.data.status || FileState.STORED;
+        file.status = (res.data.status || FileState.STORED).toLowerCase();
 
         return file;
       })

@@ -27,7 +27,7 @@ export const enum FileState {
   INIT = 'init',
   PROGRESS = 'progress',
   STORED = 'stored',
-  INTRANSIT = 'inTransit',
+  INTRANSIT = 'intransit',
   FAILED = 'failed',
 }
 
@@ -64,6 +64,7 @@ export class File {
   public url: string;
 
   constructor(private readonly _file: FileInstance) {
+    this._file.name = sanitizeName(this._file.name);
   }
 
   /**
@@ -251,7 +252,7 @@ export class File {
    * @memberof File
    */
   public release() {
-    this._file.buffer = null;
+    delete this._file.buffer;
   }
 
   public toJSON() {
