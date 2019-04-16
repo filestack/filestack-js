@@ -64,7 +64,7 @@ export class CloudClient {
     return requestWithSource().get(`${this.cloudApiUrl}/prefetch`, { params }).then((res) => res.data);
   }
 
-  list(clouds: any, token: any = {}) {
+  list(clouds: any, token?: any) {
     const payload: any = {
       apikey: this.session.apikey,
       clouds,
@@ -95,8 +95,7 @@ export class CloudClient {
     });
   }
 
-  store(name: string, path: string, options: StoreParams = {}, customSource: any = {}, token: any = {}) {
-
+  store(name: string, path: string, options: StoreParams = {}, customSource: any = {}, token?: any) {
     // Default to S3
     if (options.location === undefined) options.location = 's3';
 
@@ -147,8 +146,7 @@ export class CloudClient {
       return res.data;
     });
   }
-
-  link(name: string, path: string, customSource: any = {}, token: any = {}) {
+  link(name: string, path: string, customSource: any = {}, token?: any) {
     const payload: any = {
       apikey: this.session.apikey,
       token: this.token,

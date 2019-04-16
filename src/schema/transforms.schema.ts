@@ -182,7 +182,7 @@ export const TransformSchema = {
       type: 'boolean',
       additionalProperties: false,
     },
-    enchance: {
+    enhance: {
       type: 'boolean',
       additionalProperties: false,
     },
@@ -798,7 +798,7 @@ export const TransformSchema = {
         additionalProperties: false,
       }],
     },
-    asci: {
+    ascii: {
       oneOf: [{
         type: 'boolean',
       }, {

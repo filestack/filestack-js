@@ -99,7 +99,6 @@ export class Client {
       this.setSecurity(security);
       this.setCname(cname);
     }
-
     this.cloud = new CloudClient(this.session, options);
   }
 
@@ -397,7 +396,7 @@ export class Client {
    *
    * client.multiupload([file], { onRetry }, token)
    *   .then(res => console.log(res));
-   * 
+   *
    * client.multiupload([{file, filename}], { onRetry }, token)
    *   .then(res => console.log(res));
    *

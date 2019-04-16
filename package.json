@@ -47,6 +47,7 @@
     "isutf8": "^2.0.3",
     "jsonschema": "^1.2.4",
     "p-queue": "^4.0.0",
+    "prettier-tslint": "^0.4.2",
     "spark-md5": "^3.0.0",
     "tcomb-validation": "^3.4.1",
     "tslib": "^1.9.3"

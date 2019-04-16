@@ -16,13 +16,10 @@
       "es6",
       "dom"
     ],
-    "types" : [
-      "node",
-      "jest",
-    ],
     "baseUrl": ".",
     "typeRoots": [
       "@types",
+      "./node_modules/@types",
       "./src/types"
     ]
   },

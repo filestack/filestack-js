@@ -6,6 +6,7 @@ const replace = require('gulp-replace');
 const del = require('del');
 const version = require('../package.json').version;
 const rename = require('gulp-rename');
+const gzip = require('gulp-gzip');
 
 gulp.task('build:clean', function () {
   return del([

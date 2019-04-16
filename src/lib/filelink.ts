@@ -1232,6 +1232,7 @@ export class Filelink {
       urls.cdnUrl = this.customDomain;
     }
 
+    // FIXME: resolveHost is broken, it always return the same
     urls = resolveHost(urls, this.cname);
 
     return urls.cdnUrl;
