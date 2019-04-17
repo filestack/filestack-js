@@ -74,7 +74,7 @@ export class File {
    * @memberof File
    */
   public get name(): string {
-    return this._file.name || 'untitled';
+    return this._file.name;
   }
 
   /**
@@ -121,6 +121,7 @@ export class File {
    * @memberof File
    */
   public get type(): string {
+    /* istanbul ignore next */
     return this._file.type || 'application/octet-stream';
   }
 
@@ -152,7 +153,7 @@ export class File {
    * @memberof File
    */
   public get size(): number {
-    return this._file.size || this._file.buffer.byteLength;
+    return this._file.size;
   }
 
   /**
@@ -189,8 +190,12 @@ export class File {
    * @returns {FilePartMetadata}
    * @memberof File
    */
-  public getPartMetadata (partNum: number = 0, size): FilePartMetadata {
+  public getPartMetadata (partNum: number, size): FilePartMetadata {
     const start = size * partNum;
+
+    if (start > this._file.buffer.byteLength) {
+      throw new Error(`Start byte of the part is higher than buffer size`);
+    }
 
     if (this._file.buffer.byteLength < start + size) {
       size = this._file.buffer.byteLength - start;
@@ -260,7 +265,6 @@ export class File {
       name: this.name,
       status: this.status,
       type: this.type,
-      md5: this.md5,
       size: this.size,
       url: this.url,
       handle: this.handle,

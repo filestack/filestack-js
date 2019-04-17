@@ -22,11 +22,13 @@ import { isNode, sanitizeName } from './../../utils';
 
 export type RawFile = Blob | Buffer | File | string;
 export type NamedInputFile = {
-  filename?: string;
+  name?: string;
   file: RawFile;
 };
 
 export type InputFile = RawFile | NamedInputFile;
+
+const base64Regexp = /data:([a-zA-Z]*\/[a-zA-Z]*);base64,([^\"]*)/i;
 
 /**
  * Check if file is buffer
@@ -66,11 +68,23 @@ const isFileBase = (input: InputFile): input is string => {
     return false;
   }
 
-  if (isNode) {
+  if (input.indexOf('base64') > -1) {
+    const matches = input.match(base64Regexp);
+    input = matches.pop();
+  }
+
+  if (isNode()) {
     if (Buffer.from(input, 'base64').toString('base64') === input) {
       return true;
     }
 
+    return false;
+  }
+
+  try {
+    return btoa(atob(input)) === input;
+  } catch (err) {
+    /* istanbul ignore next */
     return false;
   }
 };
@@ -81,7 +95,7 @@ const isFileBase = (input: InputFile): input is string => {
  * @param input
  */
 const isFileNamed = (input: InputFile): input is NamedInputFile => {
-  if (input['file'] && input['filename']) {
+  if (input['file'] && input['name']) {
     return true;
   }
 
@@ -95,10 +109,6 @@ const isFileNamed = (input: InputFile): input is NamedInputFile => {
  * @param input
  */
 const isFilePath = (input: InputFile): input is string => {
-  if (typeof input !== 'string') {
-    return false;
-  }
-
   if (require('fs').existsSync(input)) {
     return true;
   }
@@ -113,7 +123,6 @@ const isFilePath = (input: InputFile): input is string => {
  */
 const getMimetype = (file: any): string => {
   let type = fileType(file);
-
   if (type) {
     return type.mime;
   }
@@ -144,15 +153,14 @@ const getMimetype = (file: any): string => {
  * @returns {Blob}
  */
 const b64toBlob = (b64Data: string, sliceSize = 512): Blob => {
-  let byteString;
   let contentType = '';
-  if (b64Data.split(',')[0].indexOf('base64') >= 0) {
-    byteString = b64Data.split(',')[1];
+
+  if (b64Data.indexOf('base64') > -1) {
+    const matches = b64Data.match(base64Regexp);
+    b64Data = matches.pop();
+    contentType = matches[1];
   }
-  if (byteString !== undefined) {
-    contentType = b64Data.split(',')[0].split(':')[1].split(';')[0];
-    b64Data = decodeURI(byteString);
-  }
+
   const byteCharacters = atob(b64Data);
   const byteArrays: any[] = [];
 
@@ -179,6 +187,7 @@ const b64toBlob = (b64Data: string, sliceSize = 512): Blob => {
  */
 const readFile = (file): Promise<any> => {
   return new Promise((resolve, reject) => {
+    /* istanbul ignore next */
     if (!File || !FileReader || !Blob) {
       return reject(new Error('The File APIs are not fully supported by your browser'));
     }
@@ -204,32 +213,28 @@ const getFileBrowser = (input: InputFile): Promise<FsFile> => {
   let file: Blob;
 
   if (isFileNamed(input)) {
-    filename = input.filename;
+    filename = input.name;
     input = input.file;
   }
 
-  if (!input) {
-    return Promise.reject(new TypeError('File is empty'));
-  }
+  console.log(isFileBase(input), '==============');
 
   if (isFileBrowser(input)) {
     file = input;
     filename = input.name;
-  }
-
-  if (isFileBase(input)) {
+  } else if (isFileBase(input)) {
     file = b64toBlob(input);
-  }
-
-  if (isFileBlob(input)) {
+  } else if (isFileBlob(input)) {
     file = input;
+  } else {
+    return Promise.reject(new Error('Unsupported input file type'));
   }
 
   return readFile(file).then((buffer) => {
     return new FsFile({
       buffer,
       name: sanitizeName(filename),
-      size: file.size || buffer.byteLength,
+      size: buffer.byteLength,
       type: file.type || getMimetype(new Uint8Array(buffer)),
     });
   });
@@ -246,26 +251,9 @@ const getFileBrowser = (input: InputFile): Promise<FsFile> => {
 const getFileNode = (input: InputFile): Promise<FsFile> => {
   let filename;
 
-  if (isFileBlob(input)) {
-    return Promise.reject(new Error('Blobs are not supported in nodejs'));
-  }
-
   if (isFileNamed(input)) {
-    filename = input.filename;
+    filename = input.name;
     input = input.file;
-  }
-
-  if (isFileBase(input)) {
-    input = Buffer.from(input, 'base64');
-  }
-
-  if (isFileBuffer(input)) {
-    return Promise.resolve(new FsFile({
-      buffer: input,
-      name: filename,
-      size: input.byteLength,
-      type: getMimetype(input),
-    }));
   }
 
   if (isFilePath(input)) {
@@ -286,6 +274,21 @@ const getFileNode = (input: InputFile): Promise<FsFile> => {
       });
     });
   }
+
+  if (isFileBase(input)) {
+    input = Buffer.from(input, 'base64');
+  }
+
+  if (isFileBuffer(input)) {
+    return Promise.resolve(new FsFile({
+      buffer: input,
+      name: filename,
+      size: input.byteLength,
+      type: getMimetype(input),
+    }));
+  }
+
+  return Promise.reject(new Error('Unsupported input file type'));
 };
 
-export const getFile = isNode ? getFileNode : getFileBrowser;
+export const getFile = isNode() ? getFileNode : getFileBrowser;

@@ -75,7 +75,7 @@ export class S3Uploader extends EventEmitter {
   private partSize: number = DEFAULT_PART_SIZE;
 
   // chunk size for ii uploads
-  private intelligentChunkSize: number = isMobile ? INTELLIGENT_MOBILE_CHUNK_SIZE : INTELLIGENT_CHUNK_SIZE;
+  private intelligentChunkSize: number = isMobile() ? INTELLIGENT_MOBILE_CHUNK_SIZE : INTELLIGENT_CHUNK_SIZE;
 
   // upload options
   private defaultStoreLocation = 's3';

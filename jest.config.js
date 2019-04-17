@@ -1,12 +1,35 @@
 module.exports = {
   name: 'filestack-js',
-  clearMocks: true,
   collectCoverage: true,
-  testEnvironment: 'node',
-  roots: ['<rootDir>/src'],
-  transform: {
-    '^.+\\.tsx?$': 'ts-jest'
-  },
-  testRegex: '(/__tests__/.*|(\\.|/)(test|spec))\\.tsx?$',
-  moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node']
+  clearMocks: true,
+  projects: [{
+    displayName: 'Common',
+    clearMocks: true,
+    testMatch: ['<rootDir>/src/**/*.spec.ts'],
+    testEnvironment: 'node',
+    moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
+    transform: {
+      '^.+\\.tsx?$': 'ts-jest'
+    },
+  }, {
+    displayName: 'Node',
+    clearMocks: true,
+    testMatch: ['<rootDir>/src/**/*.spec.ts'],
+    moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
+    testMatch: ['<rootDir>/src/**/*.spec.node.ts'],
+    testEnvironment: 'node',
+    transform: {
+      '^.+\\.tsx?$': 'ts-jest'
+    },
+  }, {
+    displayName: 'Browser',
+    testMatch: ['<rootDir>/src/**/*.browser.spec.ts'],
+    clearMocks: true,
+    testEnvironment: 'jsdom',
+    testMatch: ['<rootDir>/src/**/*.spec.browser.ts'],
+    moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
+    transform: {
+      '^.+\\.tsx?$': 'ts-jest'
+    },
+  }]
 };

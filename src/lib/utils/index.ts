@@ -45,18 +45,15 @@ export const resolveCdnUrl = (session: Session, handle: string): string => {
 };
 
 export const resolveHost = (urls: Hosts, cname: string): Hosts => {
-  let result = urls;
-
   if (cname) {
-    // FIXME: override func param
     const hosts = /filestackapi.com|filestackcontent.com/i;
 
     Object.keys(urls).forEach(key => {
-      result[key] = urls[key].replace(hosts, cname);
+      urls[key] = urls[key].replace(hosts, cname);
     });
   }
 
-  return result;
+  return urls;
 };
 
 /**
@@ -110,32 +107,18 @@ export const removeEmpty = (obj: any) => {
 /**
  * Returns information about current env (browser|nodejs)
  */
-export const isNode = typeof process !== 'undefined' && process.versions && process.versions.node;
+export const isNode = () => typeof process !== 'undefined' && process.versions && process.versions.node;
 
 /**
  * Returns if browser is a mobile device (if node env always return false)
  */
-export const isMobile = !isNode && navigator && navigator.userAgent && mobileRegexp.test(navigator.userAgent);
+/* istanbul ignore next */
+export const isMobile = () => !isNode() && navigator && navigator.userAgent && mobileRegexp.test(navigator.userAgent);
 
-/**
- *
- * @private
- * @param start
- * @param stop
- * @param step
- */
-export const range = (start: number, stop: number, step: number = 1) => {
-  const toReturn: any[] = [];
-  for (; start < stop; start += step) {
-    toReturn.push(start);
-  }
-  return toReturn;
-};
-
-let last;
 /**
  * Returns unique time
  */
+let last;
 export const uniqueTime = () => {
   const time = Date.now();
   last = time === last ? time + 1 : time;
@@ -158,10 +141,11 @@ export const uniqueId = (len: number = 10): string => {
  * @returns     base64 encoded MD5 hash
  */
 export const md5 = (data: any) => {
-  if (isNode) {
+  if ((isNode())) {
     return (require('crypto')).createHash('md5').update(data).digest('base64');
   }
 
+  /* istanbul ignore next */
   return btoa(SparkMD5.ArrayBuffer.hash(data, true));
 };
 

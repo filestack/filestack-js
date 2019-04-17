@@ -99,6 +99,7 @@ export class Client {
       this.setSecurity(security);
       this.setCname(cname);
     }
+
     this.cloud = new CloudClient(this.session, options);
   }
 
@@ -112,6 +113,7 @@ export class Client {
     if (security && !(security.policy && security.signature)) {
       throw new Error('Both policy and signature are required for client security');
     }
+
     if (security && security.policy && security.signature) {
       this.session.policy = security.policy;
       this.session.signature = security.signature;
@@ -130,6 +132,7 @@ export class Client {
       return;
     }
 
+    this.session.cname = cname;
     this.session.urls = resolveHost(this.session.urls, cname);
   }
 
