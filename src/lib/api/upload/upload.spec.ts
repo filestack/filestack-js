@@ -15,6 +15,58 @@
  * limitations under the License.
  */
 
-test.skip('skip', () => {
-  console.log('tests');
+import { Upload } from './upload';
+import { File } from './file';
+import { S3Uploader } from './uploaders/s3';
+
+const testBuffer = Buffer.from('test test test');
+
+jest.mock('./uploaders/s3');
+
+jest.mock('./file_tools', () => ({
+  getFile: (f) => new File(f),
+}));
+
+describe.only('Api/Upload/upload', () => {
+
+  beforeAll(() => {
+    spyOn(S3Uploader.prototype, 'execute').and.callFake(() => {
+      console.log(this, 'asd');
+      return Promise.resolve();
+    });
+  });
+
+  it('Should execute normal upload without errors and return single file response', async () => {
+    const u = new Upload();
+    const res = await u.upload(testBuffer);
+    // expect(res).toEqual(testBuffer);
+  });
+
+  it('Should execute multiupload without errors and return single file response', async () => {
+    const u = new Upload();
+    const res = await u.multiupload([testBuffer, testBuffer]);
+    // expect(res).toEqual([testBuffer, testBuffer]);
+  });
+
+  it('Should set correct security to uploader', () => {
+    const security = {
+      policy: 'p',
+      signature: 's',
+    };
+
+    const u = new Upload();
+    u.setSecurity(security);
+
+    expect(S3Uploader.prototype.setSecurity).toHaveBeenCalledWith(security);
+  });
+
+  // it('Should set correct host to uplaoder', () => {
+
+  // });
+
+  // it('Should parse session object', () => {
+
+  // });
+
+
 });

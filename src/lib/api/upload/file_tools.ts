@@ -217,8 +217,6 @@ const getFileBrowser = (input: InputFile): Promise<FsFile> => {
     input = input.file;
   }
 
-  console.log(isFileBase(input), '==============');
-
   if (isFileBrowser(input)) {
     file = input;
     filename = input.name;

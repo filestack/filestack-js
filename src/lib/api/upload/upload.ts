@@ -151,7 +151,7 @@ export class Upload {
     this.uploader.addFile(f);
 
     this.startProgressInterval();
-    const res = (await this.uploader.execute()).pop();
+    const res = (await this.uploader.execute()).shift();
     this.stopProgressInterval();
 
     if (res.status === FileState.FAILED) {

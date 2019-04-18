@@ -84,7 +84,7 @@ describe('Api/Upload/FileTools', () => {
 
     it('Should reject on unsupported input file type', () => {
       // @ts-ignore
-      expect(getFile({})).rejects.toEqual('Unsupported input file type');
+      expect(getFile({})).rejects.toEqual(new Error('Unsupported input file type'));
     });
   });
 });

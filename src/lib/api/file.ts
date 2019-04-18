@@ -49,7 +49,9 @@ export const remove = (session: Session, handle?: string, skipStorage?: boolean,
     options.skip_storage = true;
   }
 
-  return request.delete(baseURL, options);
+  return request.delete(baseURL, {
+    params: removeEmpty(options),
+  });
 };
 
 export interface MetadataOptions {
@@ -120,7 +122,9 @@ export const metadata = (session: Session, handle?: string, opts?: MetadataOptio
   const baseURL = `${session.urls.fileApiUrl}/${handle}/metadata`;
   return new Promise((resolve, reject) => {
     request
-      .get(baseURL, removeEmpty(options))
+      .get(baseURL, {
+        params: removeEmpty(options),
+      })
       .then((res) => {
         resolve({
           ...res.data,
