@@ -50,7 +50,6 @@ const mockedSession: Session = {
 };
 
 describe('FileAPI', () => {
-
   describe('Metadata', () => {
     it('should call correct metadata without options', async () => {
       const methodMocked = jest.fn(() => Promise.resolve({ data: {} }));
@@ -59,7 +58,7 @@ describe('FileAPI', () => {
       const resp = await metadata(mockedSession, 'fakeHandle');
 
       expect(resp).toEqual({ handle: 'fakeHandle' });
-      expect(methodMocked).toHaveBeenLastCalledWith('fakeApiUrl/fakeHandle/metadata', {});
+      expect(methodMocked).toHaveBeenLastCalledWith('fakeApiUrl/fakeHandle/metadata', { params: {} });
     });
 
     it('should call correct metadata with options', async () => {
@@ -69,7 +68,7 @@ describe('FileAPI', () => {
       const resp = await metadata(mockedSession, 'fakeHandle', { size: true });
 
       expect(resp).toEqual({ handle: 'fakeHandle' });
-      expect(methodMocked).toHaveBeenLastCalledWith('fakeApiUrl/fakeHandle/metadata', { size: true });
+      expect(methodMocked).toHaveBeenLastCalledWith('fakeApiUrl/fakeHandle/metadata', { params: { size: true } });
     });
 
     it('should throw on wrong option', async () => {
@@ -93,7 +92,7 @@ describe('FileAPI', () => {
 
       // @ts-ignore
       axios.get.mockImplementation(() => Promise.resolve({ data: {} }));
-      const resp = await metadata(mockedSession, 'fakeHandle',{}, fakeSecurity);
+      const resp = await metadata(mockedSession, 'fakeHandle', {}, fakeSecurity);
 
       expect(resp).toEqual({ handle: 'fakeHandle' });
     });
@@ -105,13 +104,16 @@ describe('FileAPI', () => {
 
       // @ts-ignore
       axios.delete.mockImplementation(deleteMocked);
-      const resp = await remove(Object.assign({}, mockedSession, {
-        signature: 'fakeS',
-        policy: 'fakeP',
-      }), 'fakeHandle');
+      const resp = await remove(
+        Object.assign({}, mockedSession, {
+          signature: 'fakeS',
+          policy: 'fakeP',
+        }),
+        'fakeHandle'
+      );
 
       expect(resp).toEqual({ data: {} });
-      expect(deleteMocked).toHaveBeenCalledWith('fakeApiUrl/fakeHandle', { key: 'fakeApikey', policy: 'fakeP', signature: 'fakeS' });
+      expect(deleteMocked).toHaveBeenCalledWith('fakeApiUrl/fakeHandle', { params: { key: 'fakeApikey', policy: 'fakeP', signature: 'fakeS' } });
     });
 
     it('should respect skip storage option', async () => {
@@ -119,13 +121,17 @@ describe('FileAPI', () => {
 
       // @ts-ignore
       axios.delete.mockImplementation(methodMocked);
-      const resp = await remove(Object.assign({}, mockedSession, {
-        signature: 'fakeS',
-        policy: 'fakeP',
-      }), 'fakeHandle', true);
+      const resp = await remove(
+        Object.assign({}, mockedSession, {
+          signature: 'fakeS',
+          policy: 'fakeP',
+        }),
+        'fakeHandle',
+        true
+      );
 
       expect(resp).toEqual({ data: {} });
-      expect(methodMocked).toHaveBeenCalledWith('fakeApiUrl/fakeHandle', { key: 'fakeApikey', policy: 'fakeP', signature: 'fakeS', skip_storage: true });
+      expect(methodMocked).toHaveBeenCalledWith('fakeApiUrl/fakeHandle', { params: { key: 'fakeApikey', policy: 'fakeP', signature: 'fakeS', skip_storage: true } });
     });
 
     it('should throw on empty handle', () => {
@@ -214,7 +220,11 @@ describe('FileAPI', () => {
       const resp = await retrieve(mockedSession, 'fakeHandle', {}, fakeSecurity);
 
       expect(resp).toEqual({});
-      expect(methodMocked).toHaveBeenCalledWith({ method: 'get', params: { key: 'fakeApikey', policy: 'fakeP', signature: 'fakeS' }, url: 'fakeApiUrl/fakeHandle' });
+      expect(methodMocked).toHaveBeenCalledWith({
+        method: 'get',
+        params: { key: 'fakeApikey', policy: 'fakeP', signature: 'fakeS' },
+        url: 'fakeApiUrl/fakeHandle',
+      });
     });
 
     it('should make correct retrieve request with extension', async () => {
@@ -258,5 +268,4 @@ describe('FileAPI', () => {
       }).toThrowError();
     });
   });
-
 });

@@ -76,7 +76,7 @@ export interface UploadOptions {
   intelligentChunkSize?: number;
 }
 
-export interface StoreUploadOptions extends StoreBaseParams {
+export type StoreUploadOptions = StoreBaseParams & {
   /**
    * Filename or function that returns custom filename for stored file
    */
@@ -86,7 +86,7 @@ export interface StoreUploadOptions extends StoreBaseParams {
    * Workflows ids to run after upload
    */
   workflows?: (string | WorkflowConfig)[];
-}
+};
 
 export interface WorkflowConfig {
   id: string;

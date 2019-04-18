@@ -177,10 +177,10 @@ export interface StoreBaseParams {
  * @export
  * @interface StoreParams
  */
-export interface StoreParams extends StoreBaseParams {
+export type StoreParams = StoreBaseParams & {
   filename?: string;
   base64decode?: boolean;
-}
+};
 
 export interface ResizeParams {
   width?: number;

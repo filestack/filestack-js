@@ -170,9 +170,11 @@ export class Upload {
    */
   async multiupload(input: InputFile[]): Promise<any> {
     for (let i in input) {
+      /* istanbul ignore next */
       if (!input.hasOwnProperty(i)) {
         continue;
       }
+
       const f = await getFile(input[i]);
       f.customName = this.overwriteFileName;
       this.uploader.addFile(f);
@@ -196,7 +198,6 @@ export class Upload {
     if (typeof this.options.onProgress !== 'function') {
       return;
     }
-
     this.progressIntervalHandler = setInterval(() => {
       this.options.onProgress(this.lastProgress);
     }, this.options.progressInterval || DEFAULT_PROGRESS_INTERVAL);
