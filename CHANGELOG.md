@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file. See [standa
 <a name="2.0.7"></a>
 ## [2.0.7](https://github.com/filestack/filestack-js/compare/v2.0.6...v2.0.7) (2019-04-18)
 
+* **picker** Update version of picker (1.4.7)
 
 
 <a name="2.0.6"></a>
