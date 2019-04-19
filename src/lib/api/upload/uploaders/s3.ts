@@ -19,21 +19,16 @@
 import PQueue from 'p-queue';
 import Debug from 'debug';
 import { CancelTokenSource, AxiosResponse } from 'axios';
-import * as EventEmitter from 'eventemitter3';
 
 import { File, FilePart, FilePartMetadata, FileState } from './../file';
 import { StoreUploadOptions } from './../types';
-import { Security } from './../../../client';
-import { multipart, request, RetryConfig, useRetryPolicy, shouldRetry } from './../../request';
-import { uniqueTime, isMobile, uniqueId } from './../../../utils';
+import { multipart, request, useRetryPolicy, shouldRetry } from './../../request';
+import { uniqueTime, uniqueId } from './../../../utils';
+import { UploaderAbstract, UploadMode, INTELLIGENT_CHUNK_SIZE, MIN_CHUNK_SIZE } from './abstract';
 
 const debug = Debug('fs:upload:multipart');
 
-export const enum UploadMode {
-  DEFAULT = 'default',
-  INTELLIGENT = 'intelligent',
-  FALLBACK = 'fallback',
-}
+const COMPLETE_TIMEOUT = 1000 * 1;
 
 export interface UploadPart extends FilePartMetadata {
   etag?: string;
@@ -52,49 +47,15 @@ export interface UploadPayload {
   location_region?: string;
 }
 
-// regular part size
-const DEFAULT_PART_SIZE = 6 * 1024 * 1024;
+export class S3Uploader extends UploaderAbstract {
 
-// Minimum part size for upload by multipart
-const MIN_PART_SIZE = 5 * 1024 * 1024;
-
-// when mode is set to fallback or intelligent, this part size is required
-const INTELLIGENT_CHUNK_SIZE = 8 * 1024 * 1024;
-
-// Mobile Chunk size for ii
-const INTELLIGENT_MOBILE_CHUNK_SIZE = 1024 * 1024;
-
-// minimum intelligent chunk size
-const MIN_CHUNK_SIZE = 32 * 1024;
-
-// timeout for complete request on 202 response (II)
-const COMPLETE_TIMEOUT = 2 * 1000;
-
-export class S3Uploader extends EventEmitter {
-  // Parts size options
-  private partSize: number = DEFAULT_PART_SIZE;
-
-  // chunk size for ii uploads
-  private intelligentChunkSize: number = isMobile() ? INTELLIGENT_MOBILE_CHUNK_SIZE : INTELLIGENT_CHUNK_SIZE;
-
-  // upload options
-  private defaultStoreLocation = 's3';
-  private host: string;
-  private timeout: number = 30 * 1000;
-  private uploadMode: UploadMode = UploadMode.DEFAULT;
-
-  // application settings
-  private apikey: string;
-  private security: Security;
   private partsQueue;
   private cancelToken: CancelTokenSource; // global cancel token for all requests
-  private isModeLocked: boolean = false; // if account does not support ii in fallback mode we should abort
-  private retryConfig: RetryConfig;
 
   private payloads: { [key: string]: UploadPayload } = {};
 
-  constructor(private readonly storeOptions: StoreUploadOptions, private readonly concurrency: number = 3) {
-    super();
+  constructor(storeOptions: StoreUploadOptions, concurrency: number = 3) {
+    super(storeOptions, concurrency);
 
     this.partsQueue = new PQueue({
       autoStart: false,
@@ -104,91 +65,6 @@ export class S3Uploader extends EventEmitter {
     // setup cancel token
     const CancelToken = request.CancelToken;
     this.cancelToken = CancelToken.source();
-  }
-
-  public setSecurity(security: Security): void {
-    debug('Set security %O', security);
-    this.security = security;
-  }
-
-  public setApikey(apikey: string): void {
-    debug(`Set apikey to ${apikey}`);
-    this.apikey = apikey;
-  }
-
-  public setTimeout(timeout: number): void {
-    debug(`Set request timeout to ${timeout}`);
-    this.timeout = timeout;
-  }
-
-  public setRetryConfig(cfg: RetryConfig) {
-    this.retryConfig = cfg;
-  }
-
-  public setHost(url: string): void {
-    this.host = url;
-  }
-
-  /**
-   * Sets upload mode
-   *
-   * @param {UploadMode} mode
-   * @param {boolean} [lock=false]
-   * @returns
-   * @memberof MultipartUploader
-   */
-  public setUploadMode(mode: UploadMode, lock: boolean = false): void {
-    if (this.uploadMode === mode) {
-      return;
-    }
-
-    if (this.isModeLocked === true) {
-      debug(`Cannot switch mode to ${mode}. Locked! Probably mode is not supported at this apikey`);
-      return;
-    }
-
-    this.isModeLocked = lock;
-
-    debug(`Set upload mode to ${mode}`);
-
-    this.uploadMode = mode;
-  }
-
-  /**
-   * Set upload part size
-   * if part size is smaller than minimum 5mb it will throw error
-   *
-   * @param {number} size
-   * @returns {void}
-   * @memberof S3Uploader
-   */
-  public setPartSize(size: number): void {
-    if (this.uploadMode !== UploadMode.DEFAULT) {
-      debug('Cannot set part size because upload mode is other than default. ');
-      return;
-    }
-
-    debug(`Set part size to ${size}`);
-
-    if (size < MIN_PART_SIZE) {
-      throw new Error('Minimum part size is 5MB');
-    }
-
-    this.partSize = size;
-  }
-
-  /**
-   * Set start part size for ii
-   *
-   * @param {number} size
-   * @memberof S3Uploader
-   */
-  public setIntelligentChunkSize(size: number): void {
-    debug(`Set inteligent chunk size to ${size}`);
-    if (size < MIN_CHUNK_SIZE) {
-      throw new Error(`Minimum intelligent chunk size is ${MIN_CHUNK_SIZE}`);
-    }
-    this.intelligentChunkSize = size;
   }
 
   /**
@@ -277,21 +153,6 @@ export class S3Uploader extends EventEmitter {
     };
 
     return id;
-  }
-
-  /**
-   * Returns filestack upload host
-   *
-   * @private
-   * @returns
-   * @memberof MultipartUploader
-   */
-  private getHost(): string {
-    if (!this.host) {
-      throw new Error('Upload url not set');
-    }
-
-    return this.host;
   }
 
   /**

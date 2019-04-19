@@ -16,10 +16,12 @@
  */
 
 import { Session, Security } from '../../client';
-import { S3Uploader, UploadMode } from './uploaders/s3';
+import { S3Uploader } from './uploaders/s3';
+
 import { UploadOptions, StoreUploadOptions } from '../upload/types';
 import { getFile, InputFile } from './file_tools';
 import { FileState } from './file';
+import { UploadMode } from './uploaders/abstract';
 
 export interface ProgressEvent {
   totalPercent: number;

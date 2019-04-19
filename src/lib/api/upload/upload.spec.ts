@@ -16,11 +16,11 @@
  */
 
 import { Upload } from './upload';
-import { File, FileState } from './file';
-import { S3Uploader, UploadMode } from './uploaders/s3';
+import { FileState } from './file';
+import { S3Uploader } from './uploaders/s3';
 import { config } from './../../../config';
 import { StoreUploadOptions } from './types';
-// import { getFile } from './file_tools';
+import { UploadMode } from './uploaders/abstract';
 
 const testBuffer = Buffer.from('test test test');
 
