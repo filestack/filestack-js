@@ -23,7 +23,7 @@ const fs = new Client('APEkwxKMZTsWNIP0XQsv2z');
 fs.multiupload([
   {
     file: Path.resolve(__dirname, './manual_10mb.mp4'),
-    filename: 'test.mp4',
+    name: 'test.mp4',
   },
 ], {}, {
   filename: () => 'test2.mp4',

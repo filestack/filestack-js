@@ -24,11 +24,11 @@ export interface FileInstance {
 }
 
 export const enum FileState {
-  INIT = 'init',
-  PROGRESS = 'progress',
-  STORED = 'stored',
-  INTRANSIT = 'intransit',
-  FAILED = 'failed',
+  INIT = 'Initialized',
+  PROGRESS = 'Progress',
+  STORED = 'Stored',
+  INTRANSIT = 'InTransit',
+  FAILED = 'Failed',
 }
 
 export interface FilePartMetadata {

@@ -38,6 +38,8 @@ export const INTELLIGENT_MOBILE_CHUNK_SIZE = 1024 * 1024;
 // minimum intelligent chunk size
 export const MIN_CHUNK_SIZE = 32 * 1024;
 
+export const DEFAULT_STORE_LOCATION = 's3';
+
 const debug = Debug('fs:upload:multipart');
 
 export const enum UploadMode {
@@ -54,7 +56,6 @@ export abstract class UploaderAbstract extends EventEmitter {
   protected intelligentChunkSize: number = isMobile() ? INTELLIGENT_MOBILE_CHUNK_SIZE : INTELLIGENT_CHUNK_SIZE;
 
   // upload options
-  protected defaultStoreLocation = 's3';
   protected host: string;
   protected timeout: number = 30 * 1000;
   protected uploadMode: UploadMode = UploadMode.DEFAULT;

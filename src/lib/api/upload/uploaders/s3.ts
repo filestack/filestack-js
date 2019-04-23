@@ -24,7 +24,7 @@ import { File, FilePart, FilePartMetadata, FileState } from './../file';
 import { StoreUploadOptions } from './../types';
 import { multipart, request, useRetryPolicy, shouldRetry } from './../../request';
 import { uniqueTime, uniqueId } from './../../../utils';
-import { UploaderAbstract, UploadMode, INTELLIGENT_CHUNK_SIZE, MIN_CHUNK_SIZE } from './abstract';
+import { UploaderAbstract, UploadMode, INTELLIGENT_CHUNK_SIZE, MIN_CHUNK_SIZE, DEFAULT_STORE_LOCATION } from './abstract';
 
 const debug = Debug('fs:upload:multipart');
 
@@ -163,8 +163,8 @@ export class S3Uploader extends UploaderAbstract {
    * @memberof MultupartUploader
    */
   private getUploadHost(id: string): string {
-    const { location_url } = this.getDefaultFields(id);
-    return `https://${location_url}`;
+    const { location_url } = this.getDefaultFields(id, ['location_url']);
+    return location_url.indexOf('http') === 0 ? location_url : `https://${location_url}`;
   }
 
   /**
@@ -178,7 +178,7 @@ export class S3Uploader extends UploaderAbstract {
     const opts = this.storeOptions || {};
 
     return {
-      store_location: this.defaultStoreLocation, // this parameter is required, if not set use default one
+      store_location: DEFAULT_STORE_LOCATION, // this parameter is required, if not set use default one
       ...Object.keys(opts).map(k => ({ [`store_${k}`]: opts[k] })),
     };
   }
@@ -190,7 +190,7 @@ export class S3Uploader extends UploaderAbstract {
    * @returns
    * @memberof MultipartUploader
    */
-  private getDefaultFields(id: string, multipartFallback: boolean = false) {
+  private getDefaultFields(id: string, requiredFields: string[] = [], multipartFallback: boolean = false) {
     const payload = this.getPayloadById(id);
 
     let fields = {
@@ -205,6 +205,10 @@ export class S3Uploader extends UploaderAbstract {
 
     if (this.uploadMode === UploadMode.INTELLIGENT || (this.uploadMode === UploadMode.FALLBACK && multipartFallback)) {
       fields['multipart'] = 'true';
+    }
+
+    if (requiredFields.length > 0) {
+      Object.keys(fields).filter(f => requiredFields.indexOf(f)).reduce((obj, key) => ({ ...obj, [key]: fields[key] }), {});
     }
 
     return fields;
@@ -287,7 +291,7 @@ export class S3Uploader extends UploaderAbstract {
         filename: payload.file.name,
         mimetype: payload.file.type,
         size: payload.file.size,
-        ...this.getDefaultFields(id, true),
+        ...this.getDefaultFields(id, ['apikey', 'policy', 'signature', 'multipart'], true),
       },
       {
         timeout: this.timeout,
@@ -300,7 +304,6 @@ export class S3Uploader extends UploaderAbstract {
         if (!data || !data.upload_id) {
           throw new Error('Incorrect start response');
         }
-
         debug(`[${id}] Assign payload data: \n%O\n`, data);
 
         this.updatePayload(id, data);
@@ -383,7 +386,7 @@ export class S3Uploader extends UploaderAbstract {
     return multipart(
       `${url}/multipart/upload`,
       {
-        ...this.getDefaultFields(id),
+        ...this.getDefaultFields(id, ['apikey', 'uri', 'region', 'signature', 'policy', 'upload_id']),
         // method specific keys
         part: part.partNumber + 1,
         md5: part.md5,
@@ -417,17 +420,14 @@ export class S3Uploader extends UploaderAbstract {
     let part = payload.file.getPartByMetadata(partMetadata);
 
     const { data, headers } = await this.getPartS3Metadata(id, part);
-
     debug(`[${id}] Received part ${partNumber} info body: \n%O\n headers: \n%O\n`, data, headers);
-
-    let requestInstance = request.create();
 
     // retry only in regular upload mode
     if (this.retryConfig && this.uploadMode !== UploadMode.FALLBACK) {
-      useRetryPolicy(requestInstance, this.retryConfig);
+      useRetryPolicy(request, this.retryConfig);
     }
 
-    return requestInstance
+    return request
       .put(data.url, part.buffer, {
         cancelToken: this.cancelToken.token,
         timeout: this.timeout,
@@ -460,7 +460,6 @@ export class S3Uploader extends UploaderAbstract {
         throw err;
       }).finally(() => {
         part = null;
-        requestInstance = null;
       });
   }
 
@@ -569,7 +568,7 @@ export class S3Uploader extends UploaderAbstract {
     return multipart(
       `${this.getUploadHost(id)}/multipart/commit`,
       {
-        ...this.getDefaultFields(id),
+        ...this.getDefaultFields(id, ['apikey', 'region', 'upload_id', 'policy', 'signature']),
         size: payload.file.size,
         part: part.partNumber + 1,
       },
@@ -617,7 +616,7 @@ export class S3Uploader extends UploaderAbstract {
     return multipart(
       `${this.getHost()}/multipart/complete`,
       {
-        ...this.getDefaultFields(id, true),
+        ...this.getDefaultFields(id, ['apikey', 'policy', 'signature', 'uri', 'region', 'upload_id'], true),
         // method specific keys
         filename: payload.file.name,
         mimetype: payload.file.type,
@@ -649,7 +648,7 @@ export class S3Uploader extends UploaderAbstract {
         let file = this.payloads[id].file;
         file.handle = res.data.handle;
         file.url = res.data.url;
-        file.status = (res.data.status || FileState.STORED).toLowerCase();
+        file.status = res.data.status || FileState.STORED;
 
         return file;
       })

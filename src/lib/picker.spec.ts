@@ -63,20 +63,23 @@ describe('picker', () => {
   const client = filestack.init(defaultApikey);
   const pickerOptions = {};
   let pickerInstance = picker(client, pickerOptions);
+
   afterEach(() => {
     pickerInstance = picker(client, pickerOptions);
   });
+
   it('should properly open picker', (done) => {
     return pickerInstance.open().then(() => {
-      expect.assertions(1);
       expect(mockPickerOpen).toHaveBeenCalledTimes(1);
       done();
     });
   });
+
   it('should properly crop picker', (done) => {
     const pickerOptions = {};
     const pickerInstance = picker(client, pickerOptions);
     const files = ['file1.txt', 'file2.txt'];
+
     return pickerInstance.crop(files).then(() => {
       expect.assertions(2);
       expect(mockPickerCrop).toHaveBeenCalledTimes(1);
@@ -86,14 +89,12 @@ describe('picker', () => {
   });
   it('should properly close picker', (done) => {
     return pickerInstance.close().then(() => {
-      expect.assertions(1);
       expect(mockPickerClose).toHaveBeenCalledTimes(1);
       done();
     });
   });
   it('should properly cancel picker', (done) => {
     return pickerInstance.cancel().then(() => {
-      expect.assertions(1);
       expect(mockPickerCancel).toHaveBeenCalledTimes(1);
       done();
     });

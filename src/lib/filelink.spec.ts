@@ -20,38 +20,47 @@ import { TransformSchema } from './../schema/transforms.schema';
 
 const globalAny: any = global;
 
-globalAny.btoa = (str) => {
+globalAny.btoa = str => {
   return Buffer.from(str).toString('base64');
 };
 
 describe('filelink', () => {
   const defaultSource = '5aYkEQJSQCmYShsoCnZN';
   const defaultApikey = 'DEFAULT_API_KEY';
+
   it('should properly instantiate Filelink', () => {
     const filelink = new Filelink(defaultSource);
     expect(filelink).toBeDefined();
     expect(filelink).toBeInstanceOf(Filelink);
   });
+
   it('should throw an error when handle is invalid', () => {
     const source = '*/5aYkEQJSQCmYShsoCnZN';
-    let filelink;
-    expect(() => { filelink = new Filelink(source); }).toThrow('Invalid filestack source provided');
+    expect(() => {
+      const f = new Filelink(source);
+    }).toThrow('Invalid filestack source provided');
   });
+
   it('should throw an error when external handle and without apikey', () => {
     const source = 'src://test123/example.jpg';
-    let filelink;
-    expect(() => { filelink = new Filelink(source); }).toThrow('External sources requires apikey to handle transforms');
+
+    expect(() => {
+      const filelink = new Filelink(source);
+    }).toThrow('External sources requires apikey to handle transforms');
   });
+
   it('should be able to convert filelink to string', () => {
     const filelink = new Filelink(defaultSource);
     const result = filelink.toString();
     expect(result).toBe('https://cdn.filestackcontent.com/5aYkEQJSQCmYShsoCnZN');
   });
+
   it('should create filelink with apikey when is provided', () => {
     const filelink = new Filelink(defaultSource, defaultApikey);
     const result = filelink.toString();
     expect(result).toBe('https://cdn.filestackcontent.com/DEFAULT_API_KEY/5aYkEQJSQCmYShsoCnZN');
   });
+
   it('should be able to use many tasks at once and reset them', () => {
     const filelink = new Filelink(defaultSource);
     const resizeParams = {
@@ -60,13 +69,17 @@ describe('filelink', () => {
     const rotateParams = {
       deg: 90,
     };
-    filelink.resize(resizeParams).rotate(rotateParams).crop({
-      dim: [20, 20, 250, 250],
-    });
+    filelink
+      .resize(resizeParams)
+      .rotate(rotateParams)
+      .crop({
+        dim: [20, 20, 250, 250],
+      });
     expect(filelink.toString()).toBe('https://cdn.filestackcontent.com/resize=width:200/rotate=deg:90/crop=dim:[20,20,250,250]/5aYkEQJSQCmYShsoCnZN');
     filelink.reset();
     expect(filelink.toString()).toBe('https://cdn.filestackcontent.com/5aYkEQJSQCmYShsoCnZN');
   });
+
   it('should be able to get transformations', () => {
     const filelink = new Filelink(defaultSource);
     const resizeParams = {
@@ -75,22 +88,32 @@ describe('filelink', () => {
     const rotateParams = {
       deg: 90,
     };
-    filelink.resize(resizeParams).rotate(rotateParams).crop({
-      dim: [20, 20, 250, 250],
-    });
-    const expected = [{ 'name': 'resize', 'params': { 'width': 200 } }, { 'name': 'rotate', 'params': { 'deg': 90 } }, { 'name': 'crop', 'params': { 'dim': [20, 20, 250, 250] } }];
+    filelink
+      .resize(resizeParams)
+      .rotate(rotateParams)
+      .crop({
+        dim: [20, 20, 250, 250],
+      });
+    const expected = [
+      { name: 'resize', params: { width: 200 } },
+      { name: 'rotate', params: { deg: 90 } },
+      { name: 'crop', params: { dim: [20, 20, 250, 250] } },
+    ];
     expect(filelink.getTransformations()).toEqual(expected);
   });
+
   it('should be able to getValidationSchema', () => {
     const filelink = new Filelink(defaultSource);
     const result = filelink.getValidationSchema();
     expect(result).toEqual(TransformSchema);
   });
+
   it('should be able to disable selected task', () => {
     const filelink = new Filelink(defaultSource);
     filelink.shadow(false).upscale();
     expect(filelink.toString()).toBe('https://cdn.filestackcontent.com/upscale/5aYkEQJSQCmYShsoCnZN');
   });
+
   it('should be able to create filelink for many handles', () => {
     const sourceArr = ['5aYkEQJSQCmYShsoCnZN', '4aYkEQJSQCmYShsoCnZN'];
     const filelink = new Filelink(sourceArr);
@@ -98,18 +121,28 @@ describe('filelink', () => {
     filelink.setBase64(true);
     expect(filelink.toString()).toBe('https://cdn.filestackcontent.com/b64://WzVhWWtFUUpTUUNtWVNoc29DblpOLDRhWWtFUUpTUUNtWVNoc29DblpOXQ==');
   });
+
   it('should be able to create filelink for many src handles', () => {
     const sourceArr = ['src://test123/example.jpg', 'src://test123/flug_9-trans_atlantik-400dpi.jpg'];
     const filelink = new Filelink(sourceArr, defaultApikey);
-    expect(filelink.toString()).toEqual('https://cdn.filestackcontent.com/DEFAULT_API_KEY/["src://test123/example.jpg","src://test123/flug_9-trans_atlantik-400dpi.jpg"]');
+    expect(filelink.toString()).toEqual(
+      'https://cdn.filestackcontent.com/DEFAULT_API_KEY/["src://test123/example.jpg","src://test123/flug_9-trans_atlantik-400dpi.jpg"]'
+    );
   });
+
   it('should throw an error if task params are not valid', () => {
     const filelink = new Filelink(defaultSource);
-    expect(() => { filelink.resize({}); }).toThrow('Task \"resize\" validation error, Params: {}');
+    expect(() => {
+      filelink.resize({});
+    }).toThrow('Task "resize" validation error, Params: {}');
   });
+
   it('should throw an error if source does not exists', () => {
-    expect(() => { return new Filelink(''); }).toThrow('Source not Set');
+    expect(() => {
+      return new Filelink('');
+    }).toThrow('Source not Set');
   });
+
   describe('Different tasks', () => {
     let filelink = new Filelink(defaultSource, defaultApikey);
     afterEach(() => {
@@ -302,30 +335,26 @@ describe('filelink', () => {
     });
     it('should be able to partialPixelate', () => {
       filelink.partialPixelate({
-        objects: [
-          [20, 20, 50, 50],
-        ],
+        objects: [[20, 20, 50, 50]],
       });
       expect(filelink.toString()).toBe('https://customDomain.com/DEFAULT_API_KEY/partial_pixelate=objects:[[20,20,50,50]]/5aYkEQJSQCmYShsoCnZN');
     });
     it('should be able to partialBlur', () => {
       filelink.partialBlur({
         amount: 5,
-        objects: [
-          [20, 20, 50, 50],
-        ],
+        objects: [[20, 20, 50, 50]],
       });
       expect(filelink.toString()).toBe('https://customDomain.com/DEFAULT_API_KEY/partial_blur=amount:5,objects:[[20,20,50,50]]/5aYkEQJSQCmYShsoCnZN');
     });
     it('should be able to collage', () => {
       filelink.collage({
-        files: [
-          'http://welcome-swiss.com/wp-content/uploads/2015/12/Swiss-landscape.jpg',
-        ],
+        files: ['http://welcome-swiss.com/wp-content/uploads/2015/12/Swiss-landscape.jpg'],
         width: 200,
         height: 200,
       });
-      expect(filelink.toString()).toBe('https://customDomain.com/DEFAULT_API_KEY/collage=files:[\"http://welcome-swiss.com/wp-content/uploads/2015/12/Swiss-landscape.jpg\"],width:200,height:200/5aYkEQJSQCmYShsoCnZN');
+      expect(filelink.toString()).toBe(
+        'https://customDomain.com/DEFAULT_API_KEY/collage=files:["http://welcome-swiss.com/wp-content/uploads/2015/12/Swiss-landscape.jpg"],width:200,height:200/5aYkEQJSQCmYShsoCnZN'
+      );
     });
     it('should be able to upscale', () => {
       filelink.upscale();
@@ -348,7 +377,9 @@ describe('filelink', () => {
         signature: 'exampleSignature',
       };
       filelink.security(securityParams);
-      expect(filelink.toString()).toBe('https://customDomain.com/DEFAULT_API_KEY/security=policy:examplePolicy,signature:exampleSignature/5aYkEQJSQCmYShsoCnZN');
+      expect(filelink.toString()).toBe(
+        'https://customDomain.com/DEFAULT_API_KEY/security=policy:examplePolicy,signature:exampleSignature/5aYkEQJSQCmYShsoCnZN'
+      );
     });
     it('should be able output', () => {
       const outputParams = {

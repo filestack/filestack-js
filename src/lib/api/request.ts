@@ -37,7 +37,7 @@ export interface RetryConfig {
 export const requestWithSource = (retryConfig?): AxiosInstance => {
   const axiosInstance = axios.create({ headers: {
     'Filestack-Source': 'JS-@{VERSION}',
-    // 'Filestack-Trace-Id': uniqueId(),
+    // 'Filestack-Trace-Id': `${Date.now() / 100}-${uniqueId()}`,
     // 'Filestack-Trace-Span': `jssdk-${uniqueId()}`,
   }});
 
@@ -85,7 +85,7 @@ const multipart = (url: string, fields: Object, config: AxiosRequestConfig = {},
     config.headers,
     {
       'Filestack-Source': 'JS-@{VERSION}',
-      // 'Filestack-Trace-Id': uniqueId(),
+      // 'Filestack-Trace-Id': uniqueId(), // add time in minutes before id
       // 'Filestack-Trace-Span': `jssdk-${uniqueId()}`,
     }
   );
@@ -132,7 +132,7 @@ export const useRetryPolicy = (instance: AxiosInstance, retryConfig: RetryConfig
     return config;
   });
 
-  instance.interceptors.response.use(null, err => {
+  return instance.interceptors.response.use(null, err => {
     const requestConfig = err.config;
 
     if (axios.isCancel(err)) {

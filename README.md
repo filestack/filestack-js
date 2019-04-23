@@ -20,11 +20,34 @@
 * An interface to the [Filestack Processing Engine](https://www.filestack.com/docs/image-transformations) for transforming assets via URLs.
 * The Filestack Picker - an upload widget for the web that integrates over a dozen cloud providers and provides pre-upload image editing. 
 
+**Table of Contents**
+
+<!-- toc -->
+- [What's in the box?](#whats-in-the-box)
+- [Installation](#installation)
+- [API Documentation](#api-documentation)
+- [Usage](#usage)
+  - [Browsers](#browsers)
+  - [Node](#node)
+  - [Module Overview](#module-overview)
+- [Live examples (JSFiddle)](#live-examples-jsfiddle)
+- [Picker Quick Start](#picker-quick-start)
+  - [Promises](#promises)
+- [Development](#development)
+- [Debugging](#debugging)
+- [Contributing](#contributing)
+
+
 ## Installation
 
 ```sh
 npm install filestack-js
 ```
+
+## API Documentation
+
+[https://filestack.github.io/filestack-js/](https://filestack.github.io/filestack-js/)
+
 ## Usage
 
 ### Browsers
@@ -55,7 +78,7 @@ where VERSION is one of the MAJOR versions of the filestack-js ie:
 ```HTML
 To speed up library loading you can use gzipped file available after adding gz before the file extension
 
-<script src="//static.filestackapi.com/filestack-js/{MAJOR_VERSION}.x.x/filestack.min.gz.js"></script>
+<script src="//static.filestackapi.com/filestack-js/{MAJOR_VERSION}.x.x/filestack.min.js.gz"></script>
 <script>
   const client = filestack.init('apikey');
 </script>
@@ -114,10 +137,6 @@ The picker instance returned from `client.picker` can be controlled with a few m
 
 Please see our examples above to learn more about customizing the picker for your use case.
 
-## API Documentation
-
-[https://filestack.github.io/filestack-js/](https://filestack.github.io/filestack-js/)
-
 ### Promises
 
 This library requires an environment that implements the [`Promise`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise) object spec. 
@@ -136,7 +155,7 @@ Script (for script tag):
 Most tests in this library are expected to interface with actual backend services. Because we like to run tests during development, these services are mocked 
 during unit testing.
 
-All tests are using Mocha. Browser tests are run with Karma.
+All tests are using Jest. 
 
 To run units:
 
@@ -144,28 +163,15 @@ To run units:
 npm test
 ```
 
-To run integration tests:
-
-```
-npm run test:integration
-```
-
-Integration tests require a `.env` file in the root of your project with the following fields:
-
-```
-BROWSERSTACK_USERNAME=
-BROWSERSTACK_ACCESS_KEY=
-TEST_APIKEY=
-TEST_CLOUD_APIKEY=
-TEST_INTELLIGENT_APIKEY=
-TEST_SECURE_APIKEY=
-TEST_SIGNATURE=
-TEST_POLICY=
-TEST_FILELINK=
-TEST_SECURE_FILELINK=
-```
-
 You will need to acquire this data from a Filestack developer if you plan on running the integration suite.
+
+## Debugging
+
+Filestack-js uses [`debug`](https://github.com/visionmedia/debug), so just run with environmental variable `DEBUG` set to `js.*`.
+
+```js
+$ DEBUG=fs.* node example_upload.js
+```
 
 ## Contributing
 
