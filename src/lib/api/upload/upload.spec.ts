@@ -52,7 +52,7 @@ const defaultSession = {
 
 const mockExecute = jest.fn();
 
-describe.only('Api/Upload/upload', () => {
+describe('Api/Upload/upload', () => {
   beforeAll(() => {
     spyOn(S3Uploader.prototype, 'execute').and.callFake(mockExecute);
   });

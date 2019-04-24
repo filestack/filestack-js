@@ -23,7 +23,7 @@ import { CancelTokenSource, AxiosResponse } from 'axios';
 import { File, FilePart, FilePartMetadata, FileState } from './../file';
 import { StoreUploadOptions } from './../types';
 import { multipart, request, useRetryPolicy, shouldRetry } from './../../request';
-import { uniqueTime, uniqueId } from './../../../utils';
+import { uniqueTime, uniqueId, filterObject } from './../../../utils';
 import { UploaderAbstract, UploadMode, INTELLIGENT_CHUNK_SIZE, MIN_CHUNK_SIZE, DEFAULT_STORE_LOCATION } from './abstract';
 
 const debug = Debug('fs:upload:multipart');
@@ -100,7 +100,6 @@ export class S3Uploader extends UploaderAbstract {
   /**
    * Execute all queued files
    *
-   * @todo break on error
    * @returns {Promise<any>}
    * @memberof MultipartUploader
    */
@@ -114,7 +113,8 @@ export class S3Uploader extends UploaderAbstract {
             await this.startPartsQueue(id);
             await this.completeRequest(id);
           } catch (e) {
-            debug(`[${id}] File upload failed. %0`, e.message);
+            /* istanbul ignore next */
+            debug(`[${id}] File upload failed. %O`, e.message);
           }
 
           const file = this.getPayloadById(id).file;
@@ -195,7 +195,6 @@ export class S3Uploader extends UploaderAbstract {
 
     let fields = {
       ...this.security,
-      ...this.getStoreOptions(),
       apikey: this.apikey,
       uri: payload.uri,
       location_url: payload.location_url,
@@ -208,8 +207,13 @@ export class S3Uploader extends UploaderAbstract {
     }
 
     if (requiredFields.length > 0) {
-      Object.keys(fields).filter(f => requiredFields.indexOf(f)).reduce((obj, key) => ({ ...obj, [key]: fields[key] }), {});
+      fields = filterObject(fields, requiredFields) as any;
     }
+
+    fields = {
+      ...fields,
+      ...this.getStoreOptions(),
+    };
 
     return fields;
   }
@@ -233,11 +237,7 @@ export class S3Uploader extends UploaderAbstract {
   }
 
   private getPayloadById(id: string): UploadPayload {
-    if (this.payloads[id]) {
-      return this.payloads[id];
-    }
-
-    throw new Error(`[${id}] Cannot find file by id`);
+    return this.payloads[id];
   }
 
   /**
@@ -302,6 +302,7 @@ export class S3Uploader extends UploaderAbstract {
     )
       .then(({ data }) => {
         if (!data || !data.upload_id) {
+          debug(`[${id}] Incorrect start response: \n%O\n`, data)
           throw new Error('Incorrect start response');
         }
         debug(`[${id}] Assign payload data: \n%O\n`, data);
@@ -320,7 +321,8 @@ export class S3Uploader extends UploaderAbstract {
         return data;
       })
       .catch(err => {
-        payload.file.status = FileState.FAILED;
+        debug(`[${id}] Start request error %O`, err);
+        this.setPayloadStatus(id, FileState.FAILED);
         throw err;
       });
   }
@@ -331,7 +333,6 @@ export class S3Uploader extends UploaderAbstract {
    * @private
    * @returns
    * @memberof MultipartUploader
-   * @todo filter waiting parts only
    */
   private async startPartsQueue(id: string): Promise<any> {
     const payload = this.getPayloadById(id);
@@ -360,7 +361,7 @@ export class S3Uploader extends UploaderAbstract {
     debug(`[${id}] Start processing part ${partNumber} with mode ${this.uploadMode}`);
 
     let payload = this.getPayloadById(id);
-    // omit all done and all failed parts of files
+    // Take only initialized files to process
     if ([FileState.INIT, FileState.PROGRESS].indexOf(payload.file.status) === -1) {
       return Promise.resolve();
     }
@@ -378,7 +379,7 @@ export class S3Uploader extends UploaderAbstract {
    * @returns
    * @memberof MultipartUploader
    */
-  private getPartS3Metadata(id: string, part: FilePart, offset?: number): Promise<any> {
+  private getS3PartMetadata(id: string, part: FilePart, offset?: number): Promise<any> {
     const url = this.getUploadHost(id);
 
     debug(`[${id}] Get data for part ${part.partNumber}, url ${url}, Md5: ${part.md5}, Size: ${part.size}`);
@@ -412,14 +413,13 @@ export class S3Uploader extends UploaderAbstract {
    * @param {number} partNumber
    * @returns {Promise<any>}
    * @memberof MultipartUploader
-   *  @todo handle progress, s3 errors, fallback mode
    */
   private async uploadRegular(id: string, partNumber: number): Promise<any> {
     let payload = this.getPayloadById(id);
     const partMetadata = payload.parts[partNumber];
     let part = payload.file.getPartByMetadata(partMetadata);
 
-    const { data, headers } = await this.getPartS3Metadata(id, part);
+    const { data, headers } = await this.getS3PartMetadata(id, part);
     debug(`[${id}] Received part ${partNumber} info body: \n%O\n headers: \n%O\n`, data, headers);
 
     // retry only in regular upload mode
@@ -456,7 +456,7 @@ export class S3Uploader extends UploaderAbstract {
           return this.startPart(id, partNumber);
         }
 
-        payload.file.status = FileState.FAILED;
+        this.setPayloadStatus(id, FileState.FAILED);
         throw err;
       }).finally(() => {
         part = null;
@@ -473,14 +473,13 @@ export class S3Uploader extends UploaderAbstract {
    * @memberof MultipartUploader
    */
   private async uploadIntelligent(id: string, partNumber: number): Promise<any> {
-    const part = this.payloads[id].parts[partNumber];
-
+    const part = this.getPayloadById(id).parts[partNumber];
     return this.uploadNextChunk(id, partNumber, this.intelligentChunkSize).then(() => this.commitPart(id, part));
   }
 
   /**
    * Recursively upload file in chunk mode (intelligent ingession)
-   * @todo add part state, add progress
+   * @todo set part state by method
    *
    * @private
    * @param {string} id
@@ -503,7 +502,7 @@ export class S3Uploader extends UploaderAbstract {
     );
 
     // catch error for debug purposes
-    const { data } = await this.getPartS3Metadata(id, chunk, part.offset).catch(err => {
+    const { data } = await this.getS3PartMetadata(id, chunk, part.offset).catch(err => {
       debug(`[${id}] Getting chunk data for ii failed %O, Chunk size: ${chunkSize}, offset ${part.offset}, part ${partNumber}`, err);
       throw err;
     });
@@ -519,7 +518,7 @@ export class S3Uploader extends UploaderAbstract {
         this.onProgressUpdate(id, partNumber, part.offset + chunk.size);
         const newOffset = Math.min(part.offset + chunkSize, part.size);
 
-        // debug(`[${id}] S3 Chunk uploaded! offset: ${part.offset}, part ${partNumber}! response headers for ${partNumber}: \n%O\n`, res.headers);
+        debug(`[${id}] S3 Chunk uploaded! offset: ${part.offset}, part ${partNumber}! response headers for ${partNumber}: \n%O\n`, res.headers);
 
         this.setPartData(id, partNumber, 'offset', newOffset);
 
@@ -533,7 +532,7 @@ export class S3Uploader extends UploaderAbstract {
       .catch(err => {
         // reset progress on failed upload
         this.onProgressUpdate(id, partNumber, part.offset);
-        const nextChunkSize = chunkSize / 2;
+        const nextChunkSize = size / 2;
 
         if (nextChunkSize < MIN_CHUNK_SIZE) {
           debug(`[${id}] Minimal chunk size limit. Upload file failed!`);
@@ -545,7 +544,7 @@ export class S3Uploader extends UploaderAbstract {
           return this.uploadNextChunk(id, partNumber, nextChunkSize);
         }
 
-        payload.file.status = FileState.FAILED;
+        this.setPayloadStatus(id, FileState.FAILED);
         throw err;
       }).finally(() => {
         part = null;
@@ -616,7 +615,7 @@ export class S3Uploader extends UploaderAbstract {
     return multipart(
       `${this.getHost()}/multipart/complete`,
       {
-        ...this.getDefaultFields(id, ['apikey', 'policy', 'signature', 'uri', 'region', 'upload_id'], true),
+        ...this.getDefaultFields(id, ['apikey', 'policy', 'signature', 'uri', 'region', 'upload_id', 'multipart'], true),
         // method specific keys
         filename: payload.file.name,
         mimetype: payload.file.type,
@@ -648,12 +647,12 @@ export class S3Uploader extends UploaderAbstract {
         let file = this.payloads[id].file;
         file.handle = res.data.handle;
         file.url = res.data.url;
-        file.status = res.data.status || FileState.STORED;
+        file.status = res.data.status;
 
         return file;
       })
       .catch(err => {
-        payload.file.status = FileState.FAILED;
+        this.setPayloadStatus(id, FileState.FAILED);
         throw err;
       });
   }
@@ -757,6 +756,15 @@ export class S3Uploader extends UploaderAbstract {
   private setPartData(id: string, partNumber: number, key: string, value: any) {
     debug(`[${id}] Set ${key} = ${value} for part ${partNumber}`);
     this.getPayloadById(id).parts[partNumber][key] = value;
+  }
+
+  /**
+   * Set payload file state
+   * @param id
+   * @param status
+   */
+  private setPayloadStatus(id: string, status: FileState) {
+    this.payloads[id].file.status = status;
   }
 
   /**

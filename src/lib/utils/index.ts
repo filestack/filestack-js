@@ -167,3 +167,17 @@ export const sanitizeName = (name: string, ext: string = ''): string  => {
 
   return `${fileParts.join('_').replace(/\s+/gi, '_').replace(/[^a-zA-Z0-9\-\_]/gi, '_')}${ext ? `.${ext}` : '' }`;
 };
+
+/**
+ * Filter object to given fields
+ *
+ * @param toFilter
+ * @param requiredFields
+ */
+export const filterObject = (toFilter: Object, requiredFields): Object => {
+  if (!requiredFields || requiredFields.length === 0) {
+    return toFilter;
+  }
+
+  return Object.keys(toFilter).filter(f => requiredFields.indexOf(f) > -1).reduce((obj, key) => ({ ...obj, [key]: toFilter[key] }), {});
+};

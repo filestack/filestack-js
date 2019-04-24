@@ -18,7 +18,7 @@ import { resolveCdnUrl, resolveHost, checkOptions, removeEmpty, isMobile, unique
 import * as t from 'tcomb-validation';
 import { config } from '../../config';
 
-describe.only('utils:index', () => {
+describe('utils:index', () => {
   describe('resolveCdnUrl', () => {
 
     const session = {

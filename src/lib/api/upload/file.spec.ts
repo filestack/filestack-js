@@ -16,7 +16,7 @@
  */
 import { FileInstance, File } from './file';
 
-describe.only('Api/Upload/File', () => {
+describe('Api/Upload/File', () => {
   const testBuff = Buffer.from('test');
   const fileName = 'text.txt';
   const type = 'text/plain';

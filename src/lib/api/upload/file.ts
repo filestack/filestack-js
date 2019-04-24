@@ -191,7 +191,7 @@ export class File {
    * @memberof File
    */
   public getPartMetadata (partNum: number, size): FilePartMetadata {
-    const start = size * partNum;
+    let start = size * partNum;
 
     if (start > this._file.buffer.byteLength) {
       throw new Error(`Start byte of the part is higher than buffer size`);
