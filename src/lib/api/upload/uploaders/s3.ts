@@ -178,6 +178,11 @@ export class S3Uploader extends UploaderAbstract {
     let toReturn = {};
 
     Object.keys(opts).forEach(k => {
+      if (k === 'workflows') {
+        toReturn[`workflows`] = opts[k];
+        return;
+      }
+
       toReturn[`store_${k}`] = opts[k];
     });
 

@@ -175,6 +175,9 @@ describe.only('Api/Upload/Uploaders/S3', () => {
     it('Should respect provided store options and add prefix to them', async () => {
       const storeOption = {
         container: 'test',
+        workflows: [{
+          id: 'test',
+        }],
       };
 
       const u = new S3Uploader(storeOption);
@@ -191,6 +194,7 @@ describe.only('Api/Upload/Uploaders/S3', () => {
         size: testFile.size,
         store_container: storeOption.container,
         store_location: DEFAULT_STORE_LOCATION,
+        workflows: storeOption.workflows,
         apikey: testApikey,
       });
     });
@@ -271,7 +275,6 @@ describe.only('Api/Upload/Uploaders/S3', () => {
       expect(res[0].handle).toEqual('test_handle');
       expect(res[0].status).toEqual('test_status');
     });
-
 
     it('Should respect abort() command', (done) => {
       const u = new S3Uploader({});
