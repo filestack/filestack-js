@@ -1,4 +1,3 @@
-
 /*
  * Copyright (c) 2019 by Filestack.
  * Some rights reserved.
@@ -48,7 +47,6 @@ export interface UploadPayload {
 }
 
 export class S3Uploader extends UploaderAbstract {
-
   private partsQueue;
   private cancelToken: CancelTokenSource; // global cancel token for all requests
 
@@ -82,6 +80,7 @@ export class S3Uploader extends UploaderAbstract {
    * @memberof MultipartUploader
    */
   public resume(): void {
+    /* istanbul ignore next */
     if (this.partsQueue.isPaused) {
       this.partsQueue.start();
     }
@@ -106,10 +105,10 @@ export class S3Uploader extends UploaderAbstract {
   public async execute(): Promise<any> {
     const tasks = Object.keys(this.payloads).map(
       id =>
-        new Promise(async (resolve) => {
+        new Promise(async resolve => {
           try {
-            await this.prepareParts(id);
             await this.startRequest(id);
+            await this.prepareParts(id);
             await this.startPartsQueue(id);
             await this.completeRequest(id);
           } catch (e) {
@@ -142,7 +141,7 @@ export class S3Uploader extends UploaderAbstract {
   public addFile(file: File): string {
     debug('Add file to queue: \n %o', file);
 
-    const id = this.getFileUniqueId(file);
+    const id = this.getFileUniqueId();
 
     file.status = FileState.INIT;
 
@@ -175,11 +174,16 @@ export class S3Uploader extends UploaderAbstract {
    * @memberof MultipartUploader
    */
   private getStoreOptions() {
-    const opts = this.storeOptions || {};
+    const opts = this.storeOptions;
+    let toReturn = {};
+
+    Object.keys(opts).forEach(k => {
+      toReturn[`store_${k}`] = opts[k];
+    });
 
     return {
       store_location: DEFAULT_STORE_LOCATION, // this parameter is required, if not set use default one
-      ...Object.keys(opts).map(k => ({ [`store_${k}`]: opts[k] })),
+      ...toReturn,
     };
   }
 
@@ -301,19 +305,18 @@ export class S3Uploader extends UploaderAbstract {
       this.retryConfig
     )
       .then(({ data }) => {
-        if (!data || !data.upload_id) {
-          debug(`[${id}] Incorrect start response: \n%O\n`, data)
-          throw new Error('Incorrect start response');
+        if (!data || !data.location_url || !data.region || !data.upload_id || !data.uri) {
+          debug(`[${id}] Incorrect start response: \n%O\n`, data);
+          this.setPayloadStatus(id, FileState.FAILED);
+          return Promise.reject(new Error('Incorrect start response'));
         }
+
         debug(`[${id}] Assign payload data: \n%O\n`, data);
 
         this.updatePayload(id, data);
 
         // ii is not enabled in backend switch back to default upload mode
-        if (
-          [UploadMode.INTELLIGENT, UploadMode.FALLBACK].indexOf(this.uploadMode) > -1 &&
-          (!data.upload_type || data.upload_type !== 'intelligent_ingestion')
-        ) {
+        if ([UploadMode.INTELLIGENT, UploadMode.FALLBACK].indexOf(this.uploadMode) > -1 && (!data.upload_type || data.upload_type !== 'intelligent_ingestion')) {
           debug(`[${id}] Intelligent Ingestion is not enabled on account, switch back to regular upload and lock mode change`);
           this.setUploadMode(UploadMode.DEFAULT, true);
         }
@@ -323,7 +326,7 @@ export class S3Uploader extends UploaderAbstract {
       .catch(err => {
         debug(`[${id}] Start request error %O`, err);
         this.setPayloadStatus(id, FileState.FAILED);
-        throw err;
+        return Promise.reject(err);
       });
   }
 
@@ -340,7 +343,14 @@ export class S3Uploader extends UploaderAbstract {
     const waitingLength = parts.length;
 
     debug(`[${id}] Create uploading queue from file. parts count - %d`, waitingLength);
-    parts.forEach(part => this.partsQueue.add(() => this.startPart(id, part.partNumber)));
+    parts.forEach(part =>
+      this.partsQueue
+        .add(() => this.startPart(id, part.partNumber))
+        .catch(e => {
+          this.setPayloadStatus(id, FileState.FAILED);
+          debug(`[${id}] Failed to upload part %s`, e.message);
+        })
+    );
 
     debug(`[${id}] All tasks for %s enqueued. Start processing main upload queue`, id);
     this.partsQueue.start();
@@ -361,10 +371,6 @@ export class S3Uploader extends UploaderAbstract {
     debug(`[${id}] Start processing part ${partNumber} with mode ${this.uploadMode}`);
 
     let payload = this.getPayloadById(id);
-    // Take only initialized files to process
-    if ([FileState.INIT, FileState.PROGRESS].indexOf(payload.file.status) === -1) {
-      return Promise.resolve();
-    }
 
     payload.file.status = FileState.PROGRESS;
     return (this.uploadMode !== UploadMode.INTELLIGENT ? this.uploadRegular : this.uploadIntelligent).apply(this, [id, partNumber]);
@@ -401,8 +407,8 @@ export class S3Uploader extends UploaderAbstract {
       },
       this.retryConfig
     ).catch(err => {
-      this.getPayloadById(id).file.status = FileState.FAILED;
-      throw err;
+      this.setPayloadStatus(id, FileState.FAILED);
+      return Promise.reject(err);
     });
   }
 
@@ -426,12 +432,13 @@ export class S3Uploader extends UploaderAbstract {
     if (this.retryConfig && this.uploadMode !== UploadMode.FALLBACK) {
       useRetryPolicy(request, this.retryConfig);
     }
-
     return request
       .put(data.url, part.buffer, {
         cancelToken: this.cancelToken.token,
         timeout: this.timeout,
         headers: data.headers,
+        // for now we cant test progress callback from upload
+        /* istanbul ignore next */
         onUploadProgress: (pr: ProgressEvent) => this.onProgressUpdate(id, partNumber, pr.loaded),
       })
       .then(res => {
@@ -451,15 +458,13 @@ export class S3Uploader extends UploaderAbstract {
 
         // if fallback, set upload mode to intelligent and restart current part
         if ((this.uploadMode === UploadMode.FALLBACK && !this.isModeLocked) || this.uploadMode === UploadMode.INTELLIGENT) {
+          debug(`[${id}] Regular upload failed. Switching to intelligent ingestion mode`);
           this.setUploadMode(UploadMode.INTELLIGENT);
           // restart part
           return this.startPart(id, partNumber);
         }
 
-        this.setPayloadStatus(id, FileState.FAILED);
-        throw err;
-      }).finally(() => {
-        part = null;
+        return Promise.reject(err);
       });
   }
 
@@ -473,8 +478,7 @@ export class S3Uploader extends UploaderAbstract {
    * @memberof MultipartUploader
    */
   private async uploadIntelligent(id: string, partNumber: number): Promise<any> {
-    const part = this.getPayloadById(id).parts[partNumber];
-    return this.uploadNextChunk(id, partNumber, this.intelligentChunkSize).then(() => this.commitPart(id, part));
+    return this.uploadNextChunk(id, partNumber).then(() => this.commitPart(id, partNumber));
   }
 
   /**
@@ -488,23 +492,23 @@ export class S3Uploader extends UploaderAbstract {
    * @returns
    * @memberof MultipartUploader
    */
-  private async uploadNextChunk(id: string, partNumber: number, chunkSize: number) {
+  private async uploadNextChunk(id: string, partNumber: number, chunkSize: number = this.intelligentChunkSize) {
     const payload = this.getPayloadById(id);
     let part = payload.parts[partNumber];
-    const size = Math.min(chunkSize, part.size - part.offset);
+    chunkSize = Math.min(chunkSize, part.size - part.offset);
 
-    let chunk = payload.file.getChunkByMetadata(part, part.offset, size);
+    let chunk = payload.file.getChunkByMetadata(part, part.offset, chunkSize);
 
     debug(
-      `[${id}] PartNum: ${partNumber}, PartSize: ${part.size}, StartByte: ${part.startByte}, Offset: ${part.offset}, ChunkSize: ${
-        chunk.size
-      }, Left: ${part.size - part.offset - chunk.size}`
+      `[${id}] PartNum: ${partNumber}, PartSize: ${part.size}, StartByte: ${part.startByte}, Offset: ${part.offset}, ChunkSize: ${chunk.size}, Left: ${part.size -
+        part.offset -
+        chunk.size}`
     );
 
     // catch error for debug purposes
     const { data } = await this.getS3PartMetadata(id, chunk, part.offset).catch(err => {
       debug(`[${id}] Getting chunk data for ii failed %O, Chunk size: ${chunkSize}, offset ${part.offset}, part ${partNumber}`, err);
-      throw err;
+      return Promise.reject(err);
     });
 
     return request
@@ -512,6 +516,8 @@ export class S3Uploader extends UploaderAbstract {
         cancelToken: this.cancelToken.token,
         timeout: this.timeout,
         headers: data.headers,
+        // for now we cant test progress callback from upload
+        /* istanbul ignore next */
         onUploadProgress: (pr: ProgressEvent) => this.onProgressUpdate(id, partNumber, part.offset + pr.loaded),
       })
       .then(res => {
@@ -532,11 +538,11 @@ export class S3Uploader extends UploaderAbstract {
       .catch(err => {
         // reset progress on failed upload
         this.onProgressUpdate(id, partNumber, part.offset);
-        const nextChunkSize = size / 2;
+        const nextChunkSize = chunkSize / 2;
 
         if (nextChunkSize < MIN_CHUNK_SIZE) {
           debug(`[${id}] Minimal chunk size limit. Upload file failed!`);
-          throw err;
+          return Promise.reject(err);
         }
 
         if (shouldRetry(err)) {
@@ -544,9 +550,9 @@ export class S3Uploader extends UploaderAbstract {
           return this.uploadNextChunk(id, partNumber, nextChunkSize);
         }
 
-        this.setPayloadStatus(id, FileState.FAILED);
-        throw err;
-      }).finally(() => {
+        return Promise.reject(err);
+      })
+      .finally(() => {
         part = null;
         chunk = null;
       });
@@ -561,8 +567,9 @@ export class S3Uploader extends UploaderAbstract {
    * @returns
    * @memberof MultipartUploader
    */
-  private commitPart(id: string, part: FilePartMetadata) {
-    const payload = this.payloads[id];
+  private commitPart(id: string, partNumber: number) {
+    const payload = this.getPayloadById(id);
+    const part = payload.parts[partNumber];
 
     return multipart(
       `${this.getUploadHost(id)}/multipart/commit`,
@@ -644,7 +651,7 @@ export class S3Uploader extends UploaderAbstract {
         }
 
         // update file object
-        let file = this.payloads[id].file;
+        let file = this.getPayloadById(id).file;
         file.handle = res.data.handle;
         file.url = res.data.url;
         file.status = res.data.status;
@@ -653,7 +660,7 @@ export class S3Uploader extends UploaderAbstract {
       })
       .catch(err => {
         this.setPayloadStatus(id, FileState.FAILED);
-        throw err;
+        return Promise.reject(err);
       });
   }
 
@@ -724,11 +731,7 @@ export class S3Uploader extends UploaderAbstract {
   private updatePayload(id: string, data: any) {
     this.payloads[id] = {
       ...this.payloads[id],
-      uri: data.uri,
-      region: data.region,
-      upload_id: data.upload_id,
-      location_url: data.location_url,
-      location_region: data.location_region, // cname
+      ...data,
     };
   }
 
@@ -775,7 +778,7 @@ export class S3Uploader extends UploaderAbstract {
    * @returns
    * @memberof S3Uploader
    */
-  private getFileUniqueId(file: File) {
+  private getFileUniqueId() {
     return `${uniqueId(15)}_${uniqueTime()}`;
   }
 }

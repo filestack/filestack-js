@@ -107,10 +107,10 @@ export abstract class UploaderAbstract extends EventEmitter {
       return;
     }
 
-    if (this.isModeLocked === true) {
-      debug(`Cannot switch mode to ${mode}. Locked! Probably mode is not supported at this apikey`);
-      return;
-    }
+    // if (this.isModeLocked === true) {
+    //   debug(`Cannot switch mode to ${mode}. Locked! Probably mode is not supported at this apikey`);
+    //   return;
+    // }
 
     this.isModeLocked = lock;
 
