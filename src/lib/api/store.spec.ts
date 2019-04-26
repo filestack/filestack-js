@@ -104,8 +104,9 @@ describe('StoreURL', () => {
       }, 100);
     }));
 
-    expect(storeURL(mockedSession, 'fakeUrl', {}, token)).rejects.toThrowError();
-    token.cancel();
+    setImmediate(() => token.cancel())
+    return expect(storeURL(mockedSession, 'fakeUrl', {}, token)).rejects.toThrowError();
+
   });
 
   it('should throw an error when missing url', async () => {

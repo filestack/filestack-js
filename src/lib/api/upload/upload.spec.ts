@@ -198,7 +198,7 @@ describe('Api/Upload/upload', () => {
         ])
       );
 
-      expect(u.upload(testBuffer)).rejects.toEqual({
+      return expect(u.upload(testBuffer)).rejects.toEqual({
         status: FileState.FAILED,
       });
     });

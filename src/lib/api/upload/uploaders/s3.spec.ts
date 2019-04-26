@@ -18,8 +18,6 @@
 import { S3Uploader } from './s3';
 import { File } from './../file';
 import * as nock from 'nock';
-import axios from 'axios';
-import * as request from './../../request';
 import { UploadMode, DEFAULT_STORE_LOCATION, INTELLIGENT_CHUNK_SIZE, DEFAULT_PART_SIZE } from './abstract';
 
 const testBufferSize = 1024 * 1024 * 9;
@@ -71,20 +69,7 @@ const s3Callback = function(url) {
 
 let complete202 = false;
 
-describe.only('Api/Upload/Uploaders/S3', () => {
-  beforeAll(() => {
-    // @todo remove after multipart will be updated
-    spyOn(request, 'multipart').and.callFake((url, fields, config, retryConfig) => {
-      let instance = axios.create();
-
-      if (retryConfig) {
-        request.useRetryPolicy(instance, retryConfig);
-      }
-
-      return instance.post(url, fields, config);
-    });
-  });
-
+describe('Api/Upload/Uploaders/S3', () => {
   beforeEach(() => {
     scope = nock(testHost);
     scope.persist();

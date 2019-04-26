@@ -16,14 +16,13 @@
  */
 import Debug from 'debug';
 import axios, { AxiosError, AxiosInstance, AxiosResponse, AxiosRequestConfig } from 'axios';
-import * as FormData from 'form-data';
-// import { uniqueId } from '../utils';
+import { uniqueId } from '../utils';
 
 const debug = Debug('fs:request');
 
 export interface RetryConfig {
   retry: number;
-  onRetry?: () => void;
+  onRetry?: (requestConfig: any) => void;
   retryMaxTime: number;
   retryFactor: number;
 }
@@ -34,12 +33,14 @@ export interface RetryConfig {
  * @param method
  * @param url
  */
-export const requestWithSource = (retryConfig?): AxiosInstance => {
-  const axiosInstance = axios.create({ headers: {
-    'Filestack-Source': 'JS-@{VERSION}',
-    // 'Filestack-Trace-Id': `${Date.now() / 100}-${uniqueId()}`,
-    // 'Filestack-Trace-Span': `jssdk-${uniqueId()}`,
-  }});
+export const requestWithSource = (retryConfig?: RetryConfig): AxiosInstance => {
+  const axiosInstance = axios.create({
+    headers: {
+      'filestack-source': 'JS-@{VERSION}',
+      'filestack-trace-id': `${Math.floor(Date.now() / 1000)}-${uniqueId()}`,
+      'filestack-trace-span': `jssdk-${uniqueId()}`,
+    },
+  });
 
   if (retryConfig) {
     useRetryPolicy(axiosInstance, retryConfig);
@@ -48,47 +49,18 @@ export const requestWithSource = (retryConfig?): AxiosInstance => {
   return axiosInstance;
 };
 
-/**
- * Make multipart POST request to given url with parsed form data
- *
- * @private
- * @param url - request url
- * @param fields - multipart fields (key->value)
- * @config Axios Config
- */
-const multipart = (url: string, fields: Object, config: AxiosRequestConfig = {}, retryConfig?: RetryConfig): Promise<AxiosResponse> => {
-  const fd = new FormData();
-
-  debug(`[Multipart] set mulitpart fields %O for url ${url}`, fields);
-  Object.keys(fields).forEach((key: string) => {
-    let field = fields[key];
-
-    if (field === undefined) {
-      return;
-    }
-
-    if (typeof field === 'object') {
-      field = JSON.stringify(field);
-    }
-
-    fd.append(key, field);
-  });
+export const postWithRetry = (url: string, fields: Object, config: AxiosRequestConfig = {}, retryConfig?: RetryConfig): Promise<AxiosResponse> => {
+  debug(`[RequestWithRetry] set fields %O for url ${url}`, fields);
 
   if (!config.headers) {
     config.headers = {};
   }
 
-  config.headers = Object.assign(
-    {},
-    // support for node boundary
-    fd.getHeaders ? fd.getHeaders() : undefined,
-    config.headers,
-    {
-      'Filestack-Source': 'JS-@{VERSION}',
-      // 'Filestack-Trace-Id': uniqueId(), // add time in minutes before id
-      // 'Filestack-Trace-Span': `jssdk-${uniqueId()}`,
-    }
-  );
+  config.headers = Object.assign({}, config.headers, {
+    'filestack-source': 'JS-@{VERSION}',
+    'filestack-trace-id': `${Math.floor(Date.now() / 1000)}-${uniqueId()}`,
+    'filestack-trace-span': `jssdk-${uniqueId()}`,
+  });
 
   const axiosInstance = axios.create();
 
@@ -96,7 +68,7 @@ const multipart = (url: string, fields: Object, config: AxiosRequestConfig = {},
     useRetryPolicy(axiosInstance, retryConfig);
   }
 
-  return axiosInstance.post(url, fd, config);
+  return axiosInstance.post(url, fields, config);
 };
 
 export const shouldRetry = (err: AxiosError) => {
@@ -125,7 +97,7 @@ export const shouldRetry = (err: AxiosError) => {
 };
 
 export const useRetryPolicy = (instance: AxiosInstance, retryConfig: RetryConfig) => {
-  axios.interceptors.request.use(config => {
+  instance.interceptors.request.use(config => {
     const currentState = config['retry'] || {};
     currentState.retryCount = currentState.retryCount || 0;
     config['retry'] = currentState;
@@ -142,32 +114,37 @@ export const useRetryPolicy = (instance: AxiosInstance, retryConfig: RetryConfig
 
     debug(`[Retry] Start retry process code: ${err.code}, %O`, err);
 
+    /* istanbul ignore next */
     if (!requestConfig) {
+      debug(`[Retry] Retry config not found, Rejecting request`);
       return Promise.reject(err);
     }
 
     const state = requestConfig.retry;
-
-    if (!state) {
-      return Promise.reject(err);
-    }
 
     if (!shouldRetry(err)) {
       debug(`[Retry] Response code not allowing to retry`);
       return Promise.reject(err);
     }
 
-    state.retryCount += 1;
+    requestConfig.retry.retryCount += 1;
 
-    if (requestConfig.retryCount > retryConfig.retry) {
+    if (requestConfig.retry.retryCount > retryConfig.retry) {
+      debug(`[Retry] Max retry count reached ${requestConfig.retry.retryCount}`);
       return Promise.reject(err);
     }
 
-    const retryDelay = Math.max(Math.min(retryConfig.retryMaxTime, retryConfig.retryFactor ** requestConfig.retryCount * 1000), 1);
+    const retryDelay = Math.max(Math.min(retryConfig.retryMaxTime, (retryConfig.retryFactor ** state.retryCount) * 1000), 1);
 
     debug(`[Retry] Retrying request to ${requestConfig.url}, count ${state.retryCount} of ${retryConfig.retry} - Delay: ${retryDelay}`);
-    return new Promise(resolve => setTimeout(() => resolve(instance(requestConfig)), retryDelay));
+    return new Promise(resolve => setTimeout(() => {
+      if (typeof retryConfig.onRetry === 'function') {
+        retryConfig.onRetry.call(instance, requestConfig);
+      }
+
+      resolve(instance(requestConfig));
+    }, retryDelay));
   });
 };
 
-export { axios as request, multipart };
+export { axios as request };

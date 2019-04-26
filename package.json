@@ -40,9 +40,8 @@
     "axios": "^0.18.0",
     "debug": "^4.1.1",
     "eventemitter3": "^3.1.0",
-    "file-type": "^10.10.0",
+    "file-type": "^10.11.0",
     "filestack-loader": "^3.0.4",
-    "form-data": "^2.3.3",
     "is-svg": "^4.1.0",
     "isutf8": "^2.0.3",
     "jsonschema": "^1.2.4",
@@ -61,7 +60,7 @@
     "@types/node": "^11.13.7",
     "@types/spark-md5": "^3.0.1",
     "@types/uuid": "^3.4.4",
-    "aws-sdk": "^2.441.0",
+    "aws-sdk": "^2.443.0",
     "babel-loader": "^8.0.5",
     "compression-webpack-plugin": "^2.0.0",
     "del": "^4.1.0",
@@ -94,7 +93,7 @@
     "validate-commit-msg": "^2.14.0",
     "webpack": "^4.30.0",
     "webpack-bundle-analyzer": "^3.3.2",
-    "webpack-cli": "^3.3.0",
+    "webpack-cli": "^3.3.1",
     "webpack-node-externals": "^1.7.2"
   },
   "keywords": [

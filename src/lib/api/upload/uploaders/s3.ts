@@ -21,7 +21,7 @@ import { CancelTokenSource, AxiosResponse } from 'axios';
 
 import { File, FilePart, FilePartMetadata, FileState } from './../file';
 import { StoreUploadOptions } from './../types';
-import { multipart, request, useRetryPolicy, shouldRetry } from './../../request';
+import { postWithRetry, request, useRetryPolicy, shouldRetry } from './../../request';
 import { uniqueTime, uniqueId, filterObject } from './../../../utils';
 import { UploaderAbstract, UploadMode, INTELLIGENT_CHUNK_SIZE, MIN_CHUNK_SIZE, DEFAULT_STORE_LOCATION } from './abstract';
 
@@ -294,7 +294,7 @@ export class S3Uploader extends UploaderAbstract {
 
     debug(`[${id}] Make start request`);
 
-    return multipart(
+    return postWithRetry(
       `${this.getHost()}/multipart/start`,
       {
         filename: payload.file.name,
@@ -395,7 +395,7 @@ export class S3Uploader extends UploaderAbstract {
 
     debug(`[${id}] Get data for part ${part.partNumber}, url ${url}, Md5: ${part.md5}, Size: ${part.size}`);
 
-    return multipart(
+    return postWithRetry(
       `${url}/multipart/upload`,
       {
         ...this.getDefaultFields(id, ['apikey', 'uri', 'region', 'signature', 'policy', 'upload_id']),
@@ -576,7 +576,7 @@ export class S3Uploader extends UploaderAbstract {
     const payload = this.getPayloadById(id);
     const part = payload.parts[partNumber];
 
-    return multipart(
+    return postWithRetry(
       `${this.getUploadHost(id)}/multipart/commit`,
       {
         ...this.getDefaultFields(id, ['apikey', 'region', 'upload_id', 'policy', 'signature']),
@@ -624,7 +624,7 @@ export class S3Uploader extends UploaderAbstract {
 
     debug(`[${id}] Etags %O`, parts);
 
-    return multipart(
+    return postWithRetry(
       `${this.getHost()}/multipart/complete`,
       {
         ...this.getDefaultFields(id, ['apikey', 'policy', 'signature', 'uri', 'region', 'upload_id', 'multipart'], true),

@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { resolveCdnUrl, resolveHost, checkOptions, removeEmpty, isMobile, uniqueTime, uniqueId, md5, sanitizeName } from './index';
+import { resolveCdnUrl, resolveHost, checkOptions, removeEmpty, isMobile, uniqueTime, uniqueId, md5, sanitizeName, filterObject } from './index';
 import * as t from 'tcomb-validation';
 import { config } from '../../config';
 
@@ -135,6 +135,31 @@ describe('utils:index', () => {
 
     it('should return undefined on empty string', () => {
       expect(sanitizeName('')).toEqual('undefined');
+    });
+  });
+
+  describe('filterObject', () => {
+    it('should filter object', () => {
+      expect(filterObject({
+        test: 1,
+        test2: 2,
+        test3: 3,
+      }, ['test', 'test2'])).toEqual({
+        test: 1,
+        test2: 2,
+      });
+    });
+
+    it('should result the same object on empty requirements', () => {
+      expect(filterObject({
+        test: 1,
+        test2: 2,
+        test3: 3,
+      }, [])).toEqual({
+        test: 1,
+        test2: 2,
+        test3: 3,
+      });
     });
   });
 });

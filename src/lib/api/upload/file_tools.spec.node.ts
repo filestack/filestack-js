@@ -45,7 +45,7 @@ describe('Api/Upload/FileTools', () => {
         cb('error');
       });
 
-      expect(getFile('/testfile.txt')).rejects.toEqual('error');
+      return expect(getFile('/testfile.txt')).rejects.toEqual('error');
     });
 
     it('Should return correct mimetype', async () => {
@@ -68,7 +68,7 @@ describe('Api/Upload/FileTools', () => {
     });
 
     it('Should throw error when random string is provided', async () => {
-      expect(getFile('asdasdfasdf')).rejects.toEqual(new Error('Unsupported input file type'));
+      return expect(getFile('asdasdfasdf')).rejects.toEqual(new Error('Unsupported input file type'));
     });
 
     it('Should handle named file input', async () => {
@@ -84,7 +84,7 @@ describe('Api/Upload/FileTools', () => {
 
     it('Should reject on unsupported input file type', () => {
       // @ts-ignore
-      expect(getFile({})).rejects.toEqual(new Error('Unsupported input file type'));
+      return expect(getFile({})).rejects.toEqual(new Error('Unsupported input file type'));
     });
   });
 });
