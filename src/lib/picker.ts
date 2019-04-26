@@ -554,10 +554,6 @@ export interface PickerOptions {
    * Called when all files have been uploaded.
    */
   onUploadDone?: PickerUploadDoneCallback;
-  /**
-   * For cloud sources whether to link or store files. Defaults to `false`.
-   */
-  preferLinkOverStore?: boolean;
 
   /**
    * Define a unique id for the application mount point.
