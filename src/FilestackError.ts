@@ -27,6 +27,7 @@ export class FilestackError extends Error {
 
   constructor(message: string, details?: any) {
     super(message);
+
     Object.setPrototypeOf(this, FilestackError.prototype);
     this.details = details;
   }

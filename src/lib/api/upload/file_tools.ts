@@ -19,6 +19,7 @@ import fileType from 'file-type';
 import issvg from 'is-svg';
 import * as isutf8 from 'isutf8';
 import { isNode, sanitizeName } from './../../utils';
+import { FilestackError } from './../../../FilestackError';
 
 export type RawFile = Blob | Buffer | File | string;
 export type NamedInputFile = {
@@ -189,7 +190,7 @@ const readFile = (file): Promise<any> => {
   return new Promise((resolve, reject) => {
     /* istanbul ignore next */
     if (!File || !FileReader || !Blob) {
-      return reject(new Error('The File APIs are not fully supported by your browser'));
+      return reject(new FilestackError('The File APIs are not fully supported by your browser'));
     }
 
     const reader = new FileReader();
@@ -225,7 +226,7 @@ const getFileBrowser = (input: InputFile): Promise<FsFile> => {
   } else if (isFileBlob(input)) {
     file = input;
   } else {
-    return Promise.reject(new Error('Unsupported input file type'));
+    return Promise.reject(new FilestackError('Unsupported input file type'));
   }
 
   return readFile(file).then((buffer) => {
@@ -286,7 +287,7 @@ const getFileNode = (input: InputFile): Promise<FsFile> => {
     }));
   }
 
-  return Promise.reject(new Error('Unsupported input file type'));
+  return Promise.reject(new FilestackError('Unsupported input file type'));
 };
 
 export const getFile = isNode() ? getFileNode : getFileBrowser;

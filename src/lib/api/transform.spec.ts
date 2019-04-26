@@ -14,8 +14,124 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { transform } from './transform';
+import { config } from './../../config';
+import { Filelink } from './../filelink';
 
+jest.mock('./../filelink');
 
-test.skip('skip', () => {
-  console.log('tests');
+const defaultApikey = 'EXAMPLE_API_KEY';
+const defaultHandle = 'EXAMPLE_HANDLE';
+const defaultSecurity = {
+  policy: 'examplePolicy',
+  signature: 'exampleSignature',
+};
+
+const sessionURls = config.urls;
+const defaultSession = {
+  apikey: defaultApikey,
+  urls: sessionURls,
+};
+
+describe('OldTransforms', () => {
+  it('should pass params to Filelink class', () => {
+    transform(
+      defaultSession,
+      defaultHandle,
+      {
+        partial_pixelate: {
+          amount: 2,
+        },
+      }
+    );
+
+    expect(Filelink.prototype.addTask).toHaveBeenCalledWith('partial_pixelate', {
+      amount: 2,
+    });
+  });
+
+  it('should respect security params', () => {
+    transform(
+      {
+        ...defaultSession,
+        ...defaultSecurity,
+      },
+      defaultHandle,
+      {
+        partial_pixelate: {
+          amount: 2,
+        },
+      }
+    );
+
+    expect(Filelink.prototype.addTask).toHaveBeenCalledWith('security', defaultSecurity);
+  });
+
+  it('should respect cache=false transformation', () => {
+    transform(
+      defaultSession,
+      defaultHandle,
+      {
+        // @ts-ignore
+        cache: false,
+      }
+    );
+
+    expect(Filelink.prototype.addTask).toHaveBeenCalledWith('cache', false);
+  });
+
+  it('should remove falsy parameters transformation', () => {
+    transform(
+      defaultSession,
+      defaultHandle,
+      {
+        flip: false,
+      }
+    );
+
+    expect(Filelink.prototype.addTask).not.toHaveBeenCalledWith('flip', false);
+  });
+
+  it('should change cammel case to snake case transformations', () => {
+    transform(
+      defaultSession,
+      defaultHandle,
+      {
+        // @ts-ignore
+        partialPixelate: {
+          amount: 2,
+        },
+      }
+    );
+
+    expect(Filelink.prototype.addTask).toHaveBeenCalledWith('partial_pixelate', {
+      amount: 2,
+    });
+  });
+
+  it('return call toString on filelink when params are empty', () => {
+    const testUrl = 'nanana';
+    spyOn(Filelink.prototype, 'toString').and.callFake(() => testUrl);
+
+    expect(transform(
+      defaultSession,
+      defaultHandle
+    )).toEqual(testUrl);
+  });
+
+  it('should enable base64 on filelink', () => {
+    transform(
+      defaultSession,
+      defaultHandle,
+      {
+        // @ts-ignore
+        partialPixelate: {
+          amount: 2,
+        },
+      },
+      true
+    );
+
+    expect(Filelink.prototype.setBase64).toHaveBeenCalledWith(true);
+  });
 });

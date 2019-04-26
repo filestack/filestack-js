@@ -34,21 +34,19 @@
 import { storeURL } from './store';
 import { Session } from '../client';
 import { Filelink } from './../filelink';
-import * as axios from 'axios';
+import * as nock from 'nock';
 
-jest.mock('axios');
-
-const storeResponseBody = {
-  url: 'testUrl/testHandle',
-  type: 'testMimetype',
-};
+const testHost = 'https://test.com';
+const testUrl = 'testurl';
+const mockGet = jest.fn().mockName('mockGet');
+const mockHandle = 'mockHandle';
 
 jest.mock('./../filelink');
 
 const mockedSession: Session = {
   apikey: 'fakeApikey',
   urls: {
-    cdnUrl: 'fakeUrl',
+    cdnUrl: testHost,
     fileApiUrl: 'fakeApiUrl',
     uploadApiUrl: 'fakeUploadApiUrl',
     cloudApiUrl: 'fakeCloudApiUrl',
@@ -57,23 +55,27 @@ const mockedSession: Session = {
 };
 
 const responseObj = {
-  url: 'testUrl/testHandle',
+  filename: 'testFilename',
+  handle: 'testHandle',
+  url: 'testUrl',
   type: 'testMimetype',
+  mimetype: 'testMimetype',
+  size: 1,
 };
 
 describe('StoreURL', () => {
+  beforeAll(() => {
+    spyOn(Filelink.prototype, 'toString').and.returnValue(`${testHost}/${testUrl}`);
+    mockGet.mockReturnValue(responseObj);
+
+    nock(testHost)
+      .persist()
+      .get(`/${testUrl}`)
+      .reply(200, mockGet);
+  });
 
   it('should call correct store method', async () => {
-    // @ts-ignore
-    axios.get.mockImplementation(() => Promise.resolve({ data: responseObj }));
-    const res = await storeURL(mockedSession, 'http://test.com');
-
-    expect(res).toEqual({
-      url: 'testUrl/testHandle',
-      type: 'testMimetype',
-      handle: 'testHandle',
-      mimetype: 'testMimetype',
-    });
+    expect(await storeURL(mockedSession, 'http://test.com')).toEqual(responseObj);
   });
 
   it('should respect passed security and policy', async () => {
@@ -82,14 +84,10 @@ describe('StoreURL', () => {
       policy: 'fakeP',
     };
 
-    // @ts-ignore
-    axios.get.mockImplementation(() => Promise.resolve({ data: responseObj }));
-    const res = await storeURL(mockedSession, 'fakeUrl', {}, null, fakeSecurity);
+    const res = await storeURL(mockedSession, mockHandle, {}, null, fakeSecurity);
 
     expect(Filelink.prototype.security).toBeCalledWith(fakeSecurity);
-    expect(res.url).toEqual(storeResponseBody.url);
-    expect(res.handle).toEqual('testHandle');
-    expect(res.mimetype).toEqual(storeResponseBody.type);
+    expect(res).toEqual(responseObj);
   });
 
   it('should respect token cancel', () => {
@@ -97,16 +95,8 @@ describe('StoreURL', () => {
       cancel: () => jest.fn(),
     };
 
-    // @ts-ignore
-    axios.get.mockImplementation(() => new Promise((res) => {
-      setTimeout(() => {
-        return { data: responseObj };
-      }, 100);
-    }));
-
-    setImmediate(() => token.cancel())
-    return expect(storeURL(mockedSession, 'fakeUrl', {}, token)).rejects.toThrowError();
-
+    setImmediate(() => token.cancel());
+    return expect(storeURL(mockedSession, mockHandle, {}, token)).rejects.toEqual({});
   });
 
   it('should throw an error when missing url', async () => {
@@ -115,29 +105,29 @@ describe('StoreURL', () => {
     }).toThrowError();
   });
 
-  it('should rejects on request error', (done) => {
+  it('should rejects on request error', () => {
     // @ts-ignore
-    jest.spyOn(axios, 'get').mockImplementation(() => new Promise((res, rej) => {
-      rej();
-    }));
+    Filelink.prototype.toString.and.returnValue(`${testHost}/${testUrl}/404`);
 
-    storeURL(mockedSession, 'fakehandle').then(done).catch((e) => {
-      done();
-    });
+    nock(testHost)
+      .get(`/${testUrl}/404`)
+      .reply(404);
+
+    return expect(storeURL(mockedSession, mockHandle, {})).rejects.toEqual(expect.any(Error));
   });
 
-  it('should rejects on wrong body structure', (done) => {
+  it('should rejects on wrong body structure', async () => {
     // @ts-ignore
-    jest.spyOn(axios, 'get').mockImplementation(() => new Promise((res) => {
-      // @ts-ignore
-      res({
-        body: 'somebody',
-      });
-    }));
+    Filelink.prototype.toString.and.returnValue(`${testHost}/${testUrl}/body`);
 
-    storeURL(mockedSession, 'fakehandle').then(done).catch((e) => {
-      done();
+    mockGet.mockReturnValue({
+      test: 123,
     });
-  });
 
+    nock(testHost)
+      .get(`/${testUrl}/body`)
+      .reply(200, mockGet);
+
+    return expect(storeURL(mockedSession, mockHandle, {})).rejects.toEqual(expect.any(Error));
+  });
 });

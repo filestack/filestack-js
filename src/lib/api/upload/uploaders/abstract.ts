@@ -22,6 +22,7 @@ import { StoreUploadOptions } from './../types';
 import { Security } from './../../../client';
 import { RetryConfig } from './../../request';
 import { isMobile } from './../../../utils';
+import { FilestackError } from './../../../../FilestackError';
 
 // regular part size
 export const DEFAULT_PART_SIZE = 6 * 1024 * 1024;
@@ -103,14 +104,12 @@ export abstract class UploaderAbstract extends EventEmitter {
    * @memberof MultipartUploader
    */
   public setUploadMode(mode: UploadMode, lock: boolean = false): void {
-    if (this.uploadMode === mode) {
+    // this shouldnt happend but for safety reasons if will stay
+    /* istanbul ignore next */
+    if (this.isModeLocked === true) {
+      debug(`Cannot switch mode to ${mode}. Locked! Probably mode is not supported at this apikey`);
       return;
     }
-
-    // if (this.isModeLocked === true) {
-    //   debug(`Cannot switch mode to ${mode}. Locked! Probably mode is not supported at this apikey`);
-    //   return;
-    // }
 
     this.isModeLocked = lock;
 
@@ -136,10 +135,17 @@ export abstract class UploaderAbstract extends EventEmitter {
     debug(`Set part size to ${size}`);
 
     if (size < MIN_PART_SIZE) {
-      throw new Error('Minimum part size is 5MB');
+      throw new FilestackError('Minimum part size is 5MB');
     }
 
     this.partSize = size;
+  }
+
+  /**
+   * Returns current part size
+   */
+  public getPartSize() {
+    return this.partSize;
   }
 
   /**
@@ -151,9 +157,16 @@ export abstract class UploaderAbstract extends EventEmitter {
   public setIntelligentChunkSize(size: number): void {
     debug(`Set inteligent chunk size to ${size}`);
     if (size < MIN_CHUNK_SIZE) {
-      throw new Error(`Minimum intelligent chunk size is ${MIN_CHUNK_SIZE}`);
+      throw new FilestackError(`Minimum intelligent chunk size is ${MIN_CHUNK_SIZE}`);
     }
     this.intelligentChunkSize = size;
+  }
+
+  /**
+   * Returns intelligent chunk size
+   */
+  public getIntelligentChunkSize(): number {
+    return this.intelligentChunkSize;
   }
 
   /**
@@ -163,9 +176,9 @@ export abstract class UploaderAbstract extends EventEmitter {
    * @returns
    * @memberof MultipartUploader
    */
-  protected getHost(): string {
+  public getHost(): string {
     if (!this.host) {
-      throw new Error('Upload url not set');
+      throw new FilestackError('Upload url not set');
     }
 
     return this.host;

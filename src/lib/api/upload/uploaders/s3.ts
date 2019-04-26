@@ -24,6 +24,7 @@ import { StoreUploadOptions } from './../types';
 import { postWithRetry, request, useRetryPolicy, shouldRetry } from './../../request';
 import { uniqueTime, uniqueId, filterObject } from './../../../utils';
 import { UploaderAbstract, UploadMode, INTELLIGENT_CHUNK_SIZE, MIN_CHUNK_SIZE, DEFAULT_STORE_LOCATION } from './abstract';
+import { FilestackError } from './../../../../FilestackError';
 
 const debug = Debug('fs:upload:multipart');
 
@@ -52,7 +53,7 @@ export class S3Uploader extends UploaderAbstract {
 
   private payloads: { [key: string]: UploadPayload } = {};
 
-  constructor(storeOptions: StoreUploadOptions, concurrency: number = 3) {
+  constructor(storeOptions: StoreUploadOptions, concurrency?) {
     super(storeOptions, concurrency);
 
     this.partsQueue = new PQueue({
@@ -313,7 +314,7 @@ export class S3Uploader extends UploaderAbstract {
         if (!data || !data.location_url || !data.region || !data.upload_id || !data.uri) {
           debug(`[${id}] Incorrect start response: \n%O\n`, data);
           this.setPayloadStatus(id, FileState.FAILED);
-          return Promise.reject(new Error('Incorrect start response'));
+          return Promise.reject(new FilestackError('Incorrect start response'));
         }
 
         debug(`[${id}] Assign payload data: \n%O\n`, data);
@@ -698,6 +699,8 @@ export class S3Uploader extends UploaderAbstract {
       const payload = this.payloads[i];
 
       // omit all failed files in progress event
+      // this shouldn't happend because of promises rejection in execute. Left to be sure
+      /* istanbul ignore next */
       if (payload.file.status === FileState.FAILED) {
         continue;
       }

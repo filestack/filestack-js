@@ -18,7 +18,8 @@
 import { S3Uploader } from './s3';
 import { File } from './../file';
 import * as nock from 'nock';
-import { UploadMode, DEFAULT_STORE_LOCATION, INTELLIGENT_CHUNK_SIZE, DEFAULT_PART_SIZE } from './abstract';
+import { UploadMode, DEFAULT_STORE_LOCATION, INTELLIGENT_CHUNK_SIZE, DEFAULT_PART_SIZE, INTELLIGENT_MOBILE_CHUNK_SIZE } from './abstract';
+import * as utils from '../../../utils';
 
 const testBufferSize = 1024 * 1024 * 9;
 const testSmallBufferSize = 1024 * 1024 * 2;
@@ -124,15 +125,47 @@ describe('Api/Upload/Uploaders/S3', () => {
     it('should initialize class without errors', () => {
       expect(() => {
         const u = new S3Uploader({});
+        const uu = new S3Uploader({}, 10);
       }).not.toThrowError();
     });
 
-    it('Should allow adding files', () => {
+    it('should allow adding files', () => {
       const u = new S3Uploader({});
       u.addFile(getTestFile());
     });
 
-    it('Should retry complete request on 202 status code', async () => {
+    it('should not allow to set min part size lower than defined', () => {
+      const u = new S3Uploader({});
+      expect(() => u.setPartSize(10)).toThrowError();
+    });
+
+    it('should throw an error when setting to small intelligent chunk size', () => {
+      const u = new S3Uploader({});
+      expect(() => u.setIntelligentChunkSize(10)).toThrowError();
+    });
+
+    it('should throw an error when trying to get host when it is undefined', () => {
+      const u = new S3Uploader({});
+      expect(() => u.getHost()).toThrowError();
+    });
+
+    it('should set intelligent mobile chunk size on mobile devices', () => {
+      spyOn(utils, 'isMobile').and.returnValue(true);
+      const u = new S3Uploader({});
+      expect(u.getIntelligentChunkSize()).toEqual(INTELLIGENT_MOBILE_CHUNK_SIZE)
+    });
+
+    it('should allow to set part size on other mode thant regular', () => {
+      const u = new S3Uploader({});
+      u.setUploadMode(UploadMode.INTELLIGENT);
+
+      const partSize = 1024 * 1024;
+      u.setPartSize(partSize);
+
+      expect(u.getPartSize()).toEqual(DEFAULT_PART_SIZE);
+    });
+
+    it('should retry complete request on 202 status code', async () => {
       const mock202 = jest
         .fn()
         .mockName('202 mock')
@@ -157,7 +190,7 @@ describe('Api/Upload/Uploaders/S3', () => {
       expect(mockComplete).toHaveBeenCalledTimes(1);
     });
 
-    it('Should respect provided store options and add prefix to them', async () => {
+    it('should respect provided store options and add prefix to them', async () => {
       const storeOption = {
         container: 'test',
         workflows: [{
@@ -184,7 +217,7 @@ describe('Api/Upload/Uploaders/S3', () => {
       });
     });
 
-    it('Should add https protocol to location_url', async () => {
+    it('should add https protocol to location_url', async () => {
       mockStart.mockReturnValue({
         uri: mockedUri,
         region: mockRegion,
@@ -205,7 +238,7 @@ describe('Api/Upload/Uploaders/S3', () => {
       expect(mockPut).toHaveBeenCalled();
     });
 
-    it('Should add Filestack-Upload-Region header on location_region param', async () => {
+    it('should add Filestack-Upload-Region header on location_region param', async () => {
       mockStart.mockReturnValue({
         uri: mockedUri,
         region: mockRegion,
@@ -246,7 +279,7 @@ describe('Api/Upload/Uploaders/S3', () => {
       expect(mockPut).toHaveBeenCalled();
     });
 
-    it('Should respect pause() and resume() command', async () => {
+    it('should respect pause() and resume() command', async () => {
       const u = new S3Uploader({});
       u.setHost(testHost);
       u.setApikey(testApikey);
@@ -261,7 +294,7 @@ describe('Api/Upload/Uploaders/S3', () => {
       expect(res[0].status).toEqual('test_status');
     });
 
-    it('Should respect abort() command', (done) => {
+    it('should respect abort() command', (done) => {
       const u = new S3Uploader({});
       u.setHost(testHost);
       u.setApikey(testApikey);
@@ -274,7 +307,7 @@ describe('Api/Upload/Uploaders/S3', () => {
       });
     });
 
-    it('Should send correct security', async () => {
+    it('should send correct security', async () => {
       const testSecurity = {
         policy: 'test_p',
         signature: 'test_s',
@@ -389,7 +422,7 @@ describe('Api/Upload/Uploaders/S3', () => {
         });
       });
 
-      it('Should lower chunk size on network error', async () => {
+      it('should lower chunk size on network error', async () => {
         const putRequestTimeout = 300;
 
         let delayApplied = false;
@@ -468,7 +501,7 @@ describe('Api/Upload/Uploaders/S3', () => {
         });
       });
 
-      it('Should exit when chunk size reaches min chunk size', async () => {
+      it('should exit when chunk size reaches min chunk size', async () => {
         interceptorS3.reply((url, _, cb) => cb('Error'));
 
         const u = new S3Uploader({});
@@ -482,7 +515,7 @@ describe('Api/Upload/Uploaders/S3', () => {
         expect(res[0].status).toEqual('Failed');
       });
 
-      it('Should exit on 4xx errors', async () => {
+      it('should exit on 4xx errors', async () => {
         mockStart.mockReturnValue({
           uri: mockedUri,
           region: mockRegion,
@@ -507,7 +540,7 @@ describe('Api/Upload/Uploaders/S3', () => {
         expect(res[0].status).toEqual('Failed');
       });
 
-      it('Should nor process upload on multipart/upload network error', async () => {
+      it('should nor process upload on multipart/upload network error', async () => {
         interceptorUpload.reply(400, {
           message: 'something awful happened',
           code: 'bad_request',
@@ -531,7 +564,7 @@ describe('Api/Upload/Uploaders/S3', () => {
     });
 
     describe('Fallback mode', () => {
-      it('Should switch to fallback mode if regular upload fails', async () => {
+      it('should switch to fallback mode if regular upload fails', async () => {
         mockStart.mockReturnValue({
           uri: mockedUri,
           region: mockRegion,
@@ -594,7 +627,7 @@ describe('Api/Upload/Uploaders/S3', () => {
         });
       });
 
-      it('Should exit if intelligent ingestion is not enabled in account settings', async () => {
+      it('should exit if intelligent ingestion is not enabled in account settings', async () => {
         mockStart.mockReturnValue({
           uri: mockedUri,
           region: mockRegion,
@@ -702,7 +735,7 @@ describe('Api/Upload/Uploaders/S3', () => {
       expect(res[0].status).toEqual('test_status');
     });
 
-    it('Should not process upload on multipart/upload network error', async () => {
+    it('should not process upload on multipart/upload network error', async () => {
       interceptorUpload.reply(400, {
         message: 'something awful happened',
         code: 'bad_request',
@@ -723,7 +756,7 @@ describe('Api/Upload/Uploaders/S3', () => {
       expect(mockComplete).not.toHaveBeenCalled();
     });
 
-    it('Should repsect retry config', async () => {
+    it('should repsect retry config', async () => {
       // simulate first request network fail
       let networkFail = true;
       nock.removeInterceptor(interceptorS3);
@@ -759,7 +792,7 @@ describe('Api/Upload/Uploaders/S3', () => {
   });
 
   describe('Common network errors', () => {
-    it('Should not process upload on wrong start response', async () => {
+    it('should not process upload on wrong start response', async () => {
       mockStart.mockReset();
       mockStart.mockReturnValue({
         test: 123,
@@ -779,7 +812,7 @@ describe('Api/Upload/Uploaders/S3', () => {
       expect(mockComplete).not.toHaveBeenCalled();
     });
 
-    it('Should not process upload on start error', async () => {
+    it('should not process upload on start error', async () => {
       interceptorStart.reply(400, {
         message: 'something awful happened',
         code: 'bad_request',
@@ -800,7 +833,7 @@ describe('Api/Upload/Uploaders/S3', () => {
       expect(mockComplete).not.toHaveBeenCalled();
     });
 
-    it('Should nor process upload on multipart/complete network error', async () => {
+    it('should nor process upload on multipart/complete network error', async () => {
       interceptorComplete.reply(400, {
         message: 'something awful happened',
         code: 'bad_request',
@@ -819,7 +852,5 @@ describe('Api/Upload/Uploaders/S3', () => {
       expect(mockPut).toHaveBeenCalled();
       expect(mockCommit).not.toHaveBeenCalled();
     });
-
-    it('Should call retry function on network error', async () => {});
   });
 });

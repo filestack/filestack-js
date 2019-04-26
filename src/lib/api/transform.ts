@@ -459,10 +459,6 @@ export const transform = (session: Session, url: string | string[], options: Tra
   filelink.setCname(session.cname);
   filelink.setBase64(b64);
 
-  if (session.urls.cdnUrl.indexOf('localhost') > -1) {
-    filelink.setCustomDomain(session.urls.cdnUrl);
-  }
-
   Object.keys(options).forEach((key: keyof TransformOptions) => {
     if (typeof options[key] === 'boolean' && !options[key] && key !== 'cache') {
       return;

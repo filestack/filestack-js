@@ -19,6 +19,7 @@ import * as t from 'tcomb-validation';
 import { Security, Session } from '../client';
 import { request } from './request';
 import { checkOptions, removeEmpty } from '../utils';
+import { FilestackError } from './../../FilestackError';
 
 /**
  * Remove given file
@@ -30,11 +31,11 @@ import { checkOptions, removeEmpty } from '../utils';
  */
 export const remove = (session: Session, handle?: string, skipStorage?: boolean, security?: Security): Promise<any> => {
   if (!handle || typeof handle !== 'string') {
-    throw new Error('A valid Filestack handle is required for remove');
+    throw new FilestackError('A valid Filestack handle is required for remove');
   }
 
   if (!(session.policy && session.signature) && (!security || !(security.policy && security.signature))) {
-    throw new Error('Security policy and signature are required for remove');
+    throw new FilestackError('Security policy and signature are required for remove');
   }
 
   const fileApiUrl = session.urls.fileApiUrl;
@@ -87,7 +88,7 @@ export interface MetadataOptions {
  */
 export const metadata = (session: Session, handle?: string, opts?: MetadataOptions, security?: Security): Promise<any> => {
   if (!handle || typeof handle !== 'string') {
-    throw new Error('A valid Filestack handle is required for metadata');
+    throw new FilestackError('A valid Filestack handle is required for metadata');
   }
 
   const allowed = [
@@ -176,7 +177,7 @@ export const retrieve = (session: Session,
     || handle.length === 0
     || typeof handle !== 'string') {
 
-    throw new Error('File handle is required');
+    throw new FilestackError('File handle is required');
   }
 
   const allowed = [
@@ -211,7 +212,7 @@ export const retrieve = (session: Session,
   let metadata;
   if (requestOptions.metadata) {
     if (method === ERequestMethod.head) {
-      throw new Error('Head and metadata options cannot be used together');
+      throw new FilestackError('Head and metadata options cannot be used together');
     }
 
     metadata = requestOptions.metadata;

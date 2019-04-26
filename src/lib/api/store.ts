@@ -18,6 +18,7 @@
 import { request } from './request';
 import { Security, Session } from '../client';
 import { Filelink, StoreParams } from './../filelink';
+import { FilestackError } from './../../FilestackError';
 
 /**
  *
@@ -54,30 +55,21 @@ export const storeURL = (
   }
 
   baseURL.store(opts);
+  let options: any = {};
 
-  return new Promise((resolve, reject) => {
-    let options: any = {};
+  if (token) {
+    const CancelToken = request.CancelToken;
+    const source = CancelToken.source();
+    token.cancel = source.cancel;
 
-    if (token) {
-      const CancelToken = request.CancelToken;
-      const source = CancelToken.source();
-      token.cancel = source.cancel;
+    options.cancelToken = source.token;
+  }
 
-      options.cancelToken = source.token;
+  return request.get(baseURL.toString(), options).then((res) => {
+    if (res.data && res.data.handle) {
+      return { ...res.data, mimetype: res.data.type };
     }
 
-    const req = request.get(baseURL.toString(), options);
-
-    return req.then((res: any) => {
-      if (res.data && res.data.url) {
-        const handle = res.data.url.split('/').pop();
-        const response = { ...res.data, handle, mimetype: res.data.type };
-        return resolve(response);
-      }
-
-      return reject(res.data);
-    }).catch((err) => {
-      reject(err);
-    });
+    throw new FilestackError(`Invalid store response ${JSON.stringify(res.data)}`);
   });
 };

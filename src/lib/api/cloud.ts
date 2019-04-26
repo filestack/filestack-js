@@ -19,6 +19,7 @@ import { removeEmpty } from '../utils';
 import { StoreParams } from '../filelink';
 import { ClientOptions, Session } from '../client';
 import { requestWithSource, request } from '../api/request';
+import { FilestackError } from './../../FilestackError';
 
 /**
  * @private
@@ -234,7 +235,7 @@ export class CloudClient {
   // OpenTok API Endpoints
   tokInit(type: string) {
     if (type !== 'video' && type !== 'audio') {
-      throw new Error('Type must be one of video or audio.');
+      throw new FilestackError('Type must be one of video or audio.');
     }
     return requestWithSource().post(`${this.cloudApiUrl}/recording/${type}/init`).then((res) => {
       return {
@@ -245,7 +246,7 @@ export class CloudClient {
 
   tokStart(type: string, key: string, sessionId: string) {
     if (type !== 'video' && type !== 'audio') {
-      throw new Error('Type must be one of video or audio.');
+      throw new FilestackError('Type must be one of video or audio.');
     }
     const payload = {
       apikey: key,
@@ -261,7 +262,7 @@ export class CloudClient {
 
   tokStop(type: string, key: string, sessionId: string, archiveId: string) {
     if (type !== 'video' && type !== 'audio') {
-      throw new Error('Type must be one of video or audio.');
+      throw new FilestackError('Type must be one of video or audio.');
     }
     const payload = {
       apikey: key,
