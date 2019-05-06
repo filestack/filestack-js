@@ -97,6 +97,12 @@ export class File {
     this._file.name = sanitizeName(val);
   }
 
+  /**
+   * Sets custom name using string or function
+   * Name will be sanitized
+   *
+   * @memberof File
+   */
   public set customName(val: ((file: this) => string) | string) {
     switch (typeof val) {
       case 'string':
