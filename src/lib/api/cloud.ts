@@ -72,6 +72,7 @@ export class CloudClient {
       flow: 'web',
       token: this.token,
     };
+
     if (this.session.policy && this.session.signature) {
       payload.policy = this.session.policy;
       payload.signature = this.session.signature;
@@ -144,52 +145,6 @@ export class CloudClient {
         return res.data[name];
       }
 
-      return res.data;
-    });
-  }
-  link(name: string, path: string, customSource: any = {}, token?: any) {
-    const payload: any = {
-      apikey: this.session.apikey,
-      token: this.token,
-      flow: 'web',
-      clouds: {
-        [name]: {
-          path,
-        },
-      },
-    };
-
-    if (name === 'customsource' && customSource.customSourcePath) {
-      payload.clouds.customsource.customSourcePath = customSource.customSourcePath;
-    }
-
-    if (name === 'customsource' && customSource.customSourceContainer) {
-      payload.clouds.customsource.customSourceContainer = customSource.customSourceContainer;
-    }
-
-    if (this.session.policy && this.session.signature) {
-      payload.policy = this.session.policy;
-      payload.signature = this.session.signature;
-    }
-
-    let requestOptions: any = {};
-
-    if (token) {
-      const CancelToken = request.CancelToken;
-      const source = CancelToken.source();
-      token.cancel = source.cancel;
-
-      requestOptions.cancelToken = source.token;
-    }
-
-    return requestWithSource().post(`${this.cloudApiUrl}/link/`, payload, requestOptions).then((res) => {
-      if (res.data && res.data.token) {
-        this.token = res.data.token;
-      }
-
-      if (res.data && res.data[name]) {
-        return res.data[name];
-      }
       return res.data;
     });
   }

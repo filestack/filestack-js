@@ -18,30 +18,16 @@
 import { picker } from './picker';
 import * as filestack from './../index';
 
-const mockPickerOpen = jest.fn(() => {
-  return new Promise((resolve) => {
-    resolve();
-  });
-});
-const mockPickerCrop = jest.fn(() => {
-  return new Promise((resolve) => {
-    resolve();
-  });
-});
-const mockPickerClose = jest.fn(() => {
-  return new Promise((resolve) => {
-    resolve();
-  });
-});
-const mockPickerCancel = jest.fn(() => {
-  return new Promise((resolve) => {
-    resolve();
-  });
-});
+const mockPickerOpen = jest.fn(() => Promise.resolve());
+
+const mockPickerCrop = jest.fn(() => Promise.resolve());
+const mockPickerClose = jest.fn(() => Promise.resolve());
+const mockPickerCancel = jest.fn(() => Promise.resolve());
+
 jest.mock('filestack-loader', () => {
   return {
-    loadModule: jest.fn((url, pickerModuleId) => {
-      return new Promise((resolve, reject) => {
+    loadModule: jest.fn(() => {
+      return new Promise((resolve) => {
         resolve(jest.fn().mockImplementation(() => {
           return {
             open: mockPickerOpen,
@@ -58,45 +44,40 @@ jest.mock('filestack-loader', () => {
   };
 });
 
+let pickerInstance;
+let client;
+
 describe('picker', () => {
-  const defaultApikey = 'DEFAULT_API_KEY';
-  const client = filestack.init(defaultApikey);
-  const pickerOptions = {};
-  let pickerInstance = picker(client, pickerOptions);
-
-  afterEach(() => {
-    pickerInstance = picker(client, pickerOptions);
+  beforeAll(() => {
+    const defaultApikey = 'DEFAULT_API_KEY';
+    client = filestack.init(defaultApikey);
   });
 
-  it('should properly open picker', (done) => {
-    return pickerInstance.open().then(() => {
-      expect(mockPickerOpen).toHaveBeenCalledTimes(1);
-      done();
-    });
+  beforeEach(() => {
+    pickerInstance = picker(client, {});
   });
 
-  it('should properly crop picker', (done) => {
-    const pickerOptions = {};
-    const pickerInstance = picker(client, pickerOptions);
+  it('should properly open picker', async () => {
+    await pickerInstance.open();
+    expect(mockPickerOpen).toHaveBeenCalledTimes(1);
+  });
+
+  it('should properly crop picker', async () => {
     const files = ['file1.txt', 'file2.txt'];
 
-    return pickerInstance.crop(files).then(() => {
-      expect.assertions(2);
-      expect(mockPickerCrop).toHaveBeenCalledTimes(1);
-      expect(mockPickerCrop).toHaveBeenCalledWith(files);
-      done();
-    });
+    await pickerInstance.crop(files);
+    expect.assertions(2);
+    expect(mockPickerCrop).toHaveBeenCalledTimes(1);
+    expect(mockPickerCrop).toHaveBeenCalledWith(files);
   });
-  it('should properly close picker', (done) => {
-    return pickerInstance.close().then(() => {
-      expect(mockPickerClose).toHaveBeenCalledTimes(1);
-      done();
-    });
+
+  it('should properly close picker', async () => {
+    await pickerInstance.close();
+    expect(mockPickerClose).toHaveBeenCalledTimes(1);
   });
-  it('should properly cancel picker', (done) => {
-    return pickerInstance.cancel().then(() => {
-      expect(mockPickerCancel).toHaveBeenCalledTimes(1);
-      done();
-    });
+
+  it('should properly cancel picker', async () => {
+    await pickerInstance.cancel();
+    expect(mockPickerCancel).toHaveBeenCalledTimes(1);
   });
 });

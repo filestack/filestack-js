@@ -109,7 +109,6 @@ describe('Api/Upload/File', () => {
     expect(chunk.md5).toEqual('EkcP5AbUQBfZbqs33WX8FA==');
     expect(chunk.startByte).toEqual(1);
     expect(chunk.endByte).toEqual(3);
-
   });
 
   it('should release file buffer', () => {
