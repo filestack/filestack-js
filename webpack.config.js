@@ -4,6 +4,7 @@ const path = require('path');
 const fs = require('fs');
 const EsmWebpackPlugin = require('@purtuga/esm-webpack-plugin');
 const merge = require('lodash.merge');
+const CleanWebpackPlugin = require('clean-webpack-plugin');
 const banner = fs.readFileSync('./LICENSE', 'utf8').replace('{year}', new Date().getFullYear());
 
 const config =  {
@@ -47,11 +48,12 @@ const config =  {
     // 'tcomb',
   ],
   plugins: [
+    new CleanWebpackPlugin(),
     new CompressionPlugin(),
     new webpack.BannerPlugin({ banner }),
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': '"production"',
-    })
+    }),
   ],
   devtool: 'source-map',
 };
@@ -77,7 +79,17 @@ const prod = merge({}, config,  {
   output: {
     libraryTarget: 'umd',
     filename: 'filestack.min.js',
-  }
+  },
+  plugins: [
+    // new SriPlugin({
+    //   hashFuncNames: ['sha256', 'sha384'],
+    //   enabled: process.env.NODE_ENV === 'production',
+    // }),
+    // new WebpackAssetsManifest({
+    //   writeToDisk: true,
+    //   integrity: true,
+    // }),
+  ],
 });
 
 module.exports = [umd, prod, esm];

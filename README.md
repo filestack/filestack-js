@@ -4,11 +4,16 @@
 <p align="center">
   <strong>Javascript SDK for the Filestack API and content management system.</strong>
 </p>
+<span align="center">
+
+[![codecov](https://codecov.io/gh/filestack/filestack-js/branch/master/graph/badge.svg)](https://codecov.io/gh/filestack/filestack-js) 
+[![Build Status](https://travis-ci.org/filestack/filestack-js.svg?branch=master)](https://travis-ci.org/filestack/filestack-js)
+
+</span>
 <p align="center">
-  <img src="https://codecov.io/gh/filestack/filestack-js/branch/master/graph/badge.svg" />
   <a href="https://npmjs.com/package/filestack-js"><img src="https://img.shields.io/npm/v/filestack-js.svg" /></a>
-  <a href="https://static.filestackapi.com/filestack-js/1.x.x/filestack.min.js"><img src="https://img.badgesize.io/https://static.filestackapi.com/filestack-js/1.x.x/filestack.min.js?compression=gzip&color=green" /></a>
-  <a href="https://static.filestackapi.com/filestack-js/1.x.x/filestack.min.js"><img src="https://img.badgesize.io/https://static.filestackapi.com/filestack-js/1.x.x/filestack.min.js?color=green" /></a>
+  <a href="https://static.filestackapi.com/filestack-js/3.x.x/filestack.min.js"><img src="https://img.badgesize.io/https://static.filestackapi.com/filestack-js/3.x.x/filestack.min.js?compression=gzip&color=green" /></a>
+  <a href="https://static.filestackapi.com/filestack-js/3.x.x/filestack.min.js"><img src="https://img.badgesize.io/https://static.filestackapi.com/filestack-js/3.x.x/filestack.min.js?color=green" /></a>
   <img src="https://img.shields.io/badge/module%20formats-umd%2C%20esm%2C%20cjs-green.svg" />
   <br/>
   <img src="https://badges.herokuapp.com/browsers?labels=none&googlechrome=latest&firefox=latest&microsoftedge=latest&iexplore=11&safari=latest&iphone=latest" />
@@ -36,6 +41,8 @@
   - [Promises](#promises)
 - [Development](#development)
 - [Debugging](#debugging)
+  - [Node](#node-1)
+  - [Browser](#browser)
 - [Contributing](#contributing)
 
 
@@ -69,16 +76,15 @@ const client = filestack.init('apikey');
 
 where VERSION is one of the MAJOR versions of the filestack-js ie: 
 ```HTML
-<script src="//static.filestackapi.com/filestack-js/2.x.x/filestack.min.js"></script>
+<script src="//static.filestackapi.com/filestack-js/3.x.x/filestack.min.js"></script>
 <script>
   const client = filestack.init('apikey');
 </script>
 ```
 
 **GZIP support**
+To speed up library loading you can use gzipped file available after adding gz to file extension
 ```HTML
-To speed up library loading you can use gzipped file available after adding gz before the file extension
-
 <script src="//static.filestackapi.com/filestack-js/{MAJOR_VERSION}.x.x/filestack.min.js.gz"></script>
 <script>
   const client = filestack.init('apikey');
@@ -103,8 +109,8 @@ Node projects which depend on filestack-js will follow the `main` field in `pack
 
 The pre-bundled browser module is also available in UMD format. This is useful if you are using script tags on a web page instead of bundling your application. It can be retrieved from both the Filestack CDN and the unpkg CDN:
 
-* [Filestack CDN](https://static.filestackapi.com/filestack-js/1.x.x/filestack.min.js)
-* [unpkg](https://unpkg.com/filestack-js@1.x.x)
+* [Filestack CDN](https://static.filestackapi.com/filestack-js/3.x.x/filestack.min.js)
+* [unpkg](https://unpkg.com/filestack-js@3.x.x)
 
 ## Live examples (JSFiddle)
 
@@ -153,8 +159,7 @@ Script (for script tag):
 
 ## Development
 
-Most tests in this library are expected to interface with actual backend services. Because we like to run tests during development, these services are mocked 
-during unit testing.
+Most tests in this library are expected to interface with actual backend services. Because we like to run tests during development, these services are mocked during unit testing.
 
 All tests are using Jest. 
 
@@ -164,15 +169,23 @@ To run units:
 npm test
 ```
 
-You will need to acquire this data from a Filestack developer if you plan on running the integration suite.
-
 ## Debugging
 
-Filestack-js uses [`debug`](https://github.com/visionmedia/debug), so just run with environmental variable `DEBUG` set to `js.*`.
+Filestack-js uses [`debug`](https://github.com/visionmedia/debug), so just run with environmental variable `DEBUG` set to `fs.*`.
+
+### Node
+```js
+DEBUG=fs.* node example_upload.js
+```
+
+### Browser
+Debug's enable state is persisted by localStorage
 
 ```js
-$ DEBUG=fs.* node example_upload.js
+localStorage.debug = 'fs:*'
 ```
+
+And then refresh the page.
 
 ## Contributing
 
