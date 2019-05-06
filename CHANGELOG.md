@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="2.1.0"></a>
+# [2.1.0](https://github.com/filestack/filestack-js/compare/v2.0.7...v2.1.0) (2019-05-06)
+
+
+### Features
+
+* **config:** Update version of picker ([#226](https://github.com/filestack/filestack-js/issues/226)) ([11be0cc](https://github.com/filestack/filestack-js/commit/11be0cc))
+
+
+
 <a name="2.0.7"></a>
 ## [2.0.7](https://github.com/filestack/filestack-js/compare/v2.0.6...v2.0.7) (2019-04-18)
 
