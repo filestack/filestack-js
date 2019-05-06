@@ -72,16 +72,12 @@ describe('FileAPI', () => {
     });
 
     it('should throw on wrong option', async () => {
-      expect(() => {
-        // @ts-ignore
-        metadata(mockedSession, 'fakekey', { bla: 123 });
-      }).toThrowError();
+      // @ts-ignore
+      return expect(() => metadata(mockedSession, 'fakekey', { bla: 123 })).toThrowError();
     });
 
     it('should throw an error on empty handle', () => {
-      expect(() => {
-        metadata(mockedSession);
-      }).toThrowError();
+      return expect(() => metadata(mockedSession)).toThrowError();
     });
 
     it('should respect provided security options', async () => {
@@ -135,9 +131,7 @@ describe('FileAPI', () => {
     });
 
     it('should throw on empty handle', () => {
-      expect(() => {
-        remove(mockedSession);
-      }).toThrowError();
+      expect(() => remove(mockedSession)).toThrowError();
     });
 
     it('should call remove with provided session', async () => {
@@ -159,9 +153,7 @@ describe('FileAPI', () => {
         policy: 'fakeP',
       };
 
-      expect(() => {
-        remove(mockedSession, 'fakeHandle', false, fakeSecurity);
-      }).toThrowError();
+      expect(() => remove(mockedSession, 'fakeHandle', false, fakeSecurity)).toThrowError();
     });
 
     it('should throw on empty policy', async () => {
@@ -170,15 +162,11 @@ describe('FileAPI', () => {
         policy: null,
       };
 
-      expect(() => {
-        remove(mockedSession, 'fakeHandle', false, fakeSecurity);
-      }).toThrowError();
+      expect(() => remove(mockedSession, 'fakeHandle', false, fakeSecurity)).toThrowError();
     });
 
     it('should throw on empty policy on session', async () => {
-      expect(() => {
-        remove(mockedSession, 'fakeHandle');
-      }).toThrowError();
+      return expect(() => remove(mockedSession, 'fakeHandle')).toThrowError();
     });
   });
 
@@ -253,19 +241,15 @@ describe('FileAPI', () => {
       expect(methodMocked).toHaveBeenCalledWith({ method: 'get', params: { key: 'fakeApikey' }, url: 'fakeApiUrl/fakeHandle/metadata' });
     });
 
-    it('should throw an error on empty handle', async () => {
-      expect(() => {
-        retrieve(mockedSession, '');
-      }).toThrowError();
+    it('should throw an error on empty handle', () => {
+      return expect(() => retrieve(mockedSession, '')).toThrowError();
     });
 
-    it('should throw an error when metadata and head is provided', async () => {
-      expect(() => {
-        retrieve(mockedSession, 'fakeHandle', {
-          metadata: true,
-          head: true,
-        });
-      }).toThrowError();
+    it('should throw an error when metadata and head is provided', () => {
+      return expect(() => retrieve(mockedSession, 'fakeHandle', {
+        metadata: true,
+        head: true,
+      })).toThrowError();
     });
   });
 });

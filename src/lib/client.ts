@@ -163,7 +163,7 @@ export class Client {
    * @see [File API - Metadata](https://www.filestack.com/docs/api/file#metadata).
    * @param handle Valid Filestack handle.
    * @param options Metadata fields to enable on response.
-   * @param security @deprecated Optional security override.
+   * @param security Optional security override.
    */
   metadata(handle: string, options?: MetadataOptions, security?: Security) {
     /* istanbul ignore next */
@@ -213,7 +213,7 @@ export class Client {
    * ```
    * @see [File API - Delete](https://www.filestack.com/docs/api/file#delete)
    * @param handle Valid Filestack handle.
-   * @param security @deprecated Optional security override.
+   * @param security Optional security override.
    */
   remove(handle: string, security?: Security): Promise<any> {
     /* istanbul ignore next */
@@ -238,7 +238,7 @@ export class Client {
    * ```
    * @see [File API - Delete](https://www.filestack.com/docs/api/file#delete)
    * @param handle Valid Filestack handle.
-   * @param security @deprecated Optional security override.
+   * @param security Optional security override.
    */
   removeMetadata(handle: string, security?: Security): Promise<any> {
     /* istanbul ignore next */
@@ -258,7 +258,7 @@ export class Client {
    * @param url       Valid URL to a file.
    * @param options   Configure file storage.
    * @param token     Optional control token to call .cancel()
-   * @param security  @deprecated Optional security override.
+   * @param security  Optional security override.
    */
   storeURL(url: string, options?: StoreParams, token?: any, security?: Security): Promise<Object> {
     /* istanbul ignore next */
@@ -288,7 +288,7 @@ export class Client {
    * @see [File API - Download](https://www.filestack.com/docs/api/file#download)
    * @param handle    Valid file handle
    * @param options   RetrieveOptions
-   * @param security  @deprecated Optional security override.
+   * @param security  Optional security override.
    * @throws          Error
    */
   retrieve(handle: string, options?: RetrieveOptions, security?: Security): Promise<Object | Blob> {
@@ -362,7 +362,7 @@ export class Client {
    * @param uploadOptions  Uploader options.
    * @param storeOptions   Storage options.
    * @param token          A control token that can be used to call cancel(), pause(), and resume().
-   * @param security       @deprecated Optional security policy and signature override.
+   * @param security       Optional security policy and signature override.
    *
    * @returns {Promise}
    */
@@ -411,7 +411,7 @@ export class Client {
    * @param uploadOptions  Upload options.
    * @param storeOptions   Storage options.
    * @param token          A control token that can be used to call cancel(), pause(), and resume().
-   * @param security       @deprecated Optional security policy and signature override.
+   * @param security       Optional security policy and signature override.
    *
    * @returns {Promise}
    */

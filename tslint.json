@@ -1,6 +1,7 @@
 {
   "extends": "tslint-config-semistandard",
   "rules": {
+    "deprecation": false,
     "file-header": [true, "Copyright"],
     "space-before-function-paren": false,
     "no-multi-spaces": false,

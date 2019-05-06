@@ -153,7 +153,7 @@ describe('client', () => {
     const retrieveOptions = {};
 
     await client.retrieve(defaultHandle, retrieveOptions, defaultSecurity);
-    expect(retrieve).toHaveBeenCalledWith(defaultSession, defaultHandle, retrieveOptions, defaultSecurity)
+    expect(retrieve).toHaveBeenCalledWith(defaultSession, defaultHandle, retrieveOptions, defaultSecurity);
   });
 
   it('should be able to transform url with b64', () => {

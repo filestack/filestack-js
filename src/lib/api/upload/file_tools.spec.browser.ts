@@ -31,23 +31,23 @@ describe('Api/Upload/FileTools', () => {
   describe('getFileBrowser', () => {
 
     it('Should handle base64 encoded string (svg)', async () => {
-      expect((await getFile(base64Svg)).mimetype).toEqual('application/octet-stream');
+      return expect((await getFile(base64Svg)).mimetype).toEqual('application/octet-stream');
     });
 
     it('Should handle base64 encoded string (png)', async () => {
-      expect((await getFile(base64Png)).mimetype).toEqual('image/png');
+      return expect((await getFile(base64Png)).mimetype).toEqual('image/png');
     });
 
     it('Should handle base64 encoded string (gif)', async () => {
-      expect((await getFile(base64Gif)).mimetype).toEqual('image/gif');
+      return expect((await getFile(base64Gif)).mimetype).toEqual('image/gif');
     });
 
     it('Should handle base64 encoded string with b64 prefix (gif)', async () => {
-      expect((await getFile(`data:image/gif;base64,${base64Gif}`)).mimetype).toEqual('image/gif');
+      return expect((await getFile(`data:image/gif;base64,${base64Gif}`)).mimetype).toEqual('image/gif');
     });
 
-    it('Should throw error when random string is provided', async () => {
-      expect(getFile('asdasdfasdf')).rejects.toEqual(new Error('Unsupported input file type'));
+    it('Should throw error when random string is provided', () => {
+      return expect(getFile('asdasdfasdf')).rejects.toEqual(new Error('Unsupported input file type'));
     });
 
     it('Should handle base64 named file (gif)', async () => {

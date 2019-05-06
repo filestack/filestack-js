@@ -152,7 +152,7 @@ describe('Api/Upload/Uploaders/S3', () => {
     it('should set intelligent mobile chunk size on mobile devices', () => {
       spyOn(utils, 'isMobile').and.returnValue(true);
       const u = new S3Uploader({});
-      expect(u.getIntelligentChunkSize()).toEqual(INTELLIGENT_MOBILE_CHUNK_SIZE)
+      return expect(u.getIntelligentChunkSize()).toEqual(INTELLIGENT_MOBILE_CHUNK_SIZE);
     });
 
     it('should allow to set part size on other mode thant regular', () => {
@@ -304,6 +304,8 @@ describe('Api/Upload/Uploaders/S3', () => {
       u.execute().then((res) => {
         expect(res[0].status).toEqual('Failed');
         done();
+      }).catch(() => {
+        done('Execution failed');
       });
     });
 

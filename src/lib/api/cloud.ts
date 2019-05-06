@@ -219,6 +219,7 @@ export class CloudClient {
     if (type !== 'video' && type !== 'audio') {
       throw new FilestackError('Type must be one of video or audio.');
     }
+
     const payload = {
       apikey: key,
       session_id: sessionId,

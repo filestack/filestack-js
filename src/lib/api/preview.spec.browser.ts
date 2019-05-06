@@ -26,7 +26,7 @@ const defaultSession = {
     'uploadApiUrl': 'https://upload.filestackapi.com',
     'cloudApiUrl': 'https://cloud.filestackapi.com',
     'cdnUrl': 'https://cdn.filestackcontent.com',
-    'pickerUrl': 'https://static.filestackapi.com/picker/1.4.4/picker.js'
+    'pickerUrl': 'https://static.filestackapi.com/picker/1.4.4/picker.js',
   },
 };
 

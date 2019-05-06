@@ -17,6 +17,7 @@
 /* globals global */
 
 import { CloudClient } from './cloud';
+import { FilestackError } from '../../FilestackError';
 
 const globalAny: any = global;
 
@@ -116,7 +117,7 @@ describe('api:cloud', () => {
       const cloudClient = createCloudClient();
       const expectedReqParams = {
         apikey: 'TEST_API_KEY',
-        clouds: { dropbox: { path: '/' }, facebook: { path: '/' }, googledrive: { path: '/' }, instagram: { path: '/' } },
+        clouds,
         flow: 'web',
         token: undefined,
       };
@@ -366,9 +367,7 @@ describe('api:cloud', () => {
     it('should throw an error when type is incorrect', () => {
       const cloudClient = createCloudClient();
 
-      expect(() => {
-        cloudClient.tokInit('wrongType');
-      }).toThrow('Type must be one of video or audio.');
+      return expect(() => cloudClient.tokInit('wrongType')).toThrowError('Type must be one of video or audio.');
     });
   });
 
@@ -380,7 +379,7 @@ describe('api:cloud', () => {
       const cloudClient = createCloudClient();
       const payload = { apikey: tokApiKey, session_id: sessionId };
 
-      cloudClient.tokStart('video', tokApiKey, sessionId);
+      expect(() => cloudClient.tokStart('video', tokApiKey, sessionId)).not.toThrowError();
       expect(mockPost).toBeCalledTimes(1);
       expect(mockPost).toBeCalledWith('https://cloud.filestackapi.com/recording/video/start', payload);
     });
@@ -388,9 +387,7 @@ describe('api:cloud', () => {
     it('should throw an error when type is incorrect', () => {
       const cloudClient = createCloudClient();
 
-      expect(() => {
-        cloudClient.tokStart('wrongType', tokApiKey, sessionId);
-      }).toThrow('Type must be one of video or audio.');
+      return expect(() => cloudClient.tokStart('wrongType', tokApiKey, sessionId)).toThrowError('Type must be one of video or audio.');
     });
   });
 
@@ -403,16 +400,14 @@ describe('api:cloud', () => {
       const cloudClient = createCloudClient();
       const payload = { apikey: tokApiKey, session_id: sessionId, archive_id: archiveId };
 
-      cloudClient.tokStop('video', tokApiKey, sessionId, archiveId);
+      expect(() => cloudClient.tokStop('video', tokApiKey, sessionId, archiveId)).not.toThrowError();
       expect(mockPost).toBeCalledTimes(1);
       expect(mockPost).toBeCalledWith('https://cloud.filestackapi.com/recording/video/stop', payload);
     });
 
     it('should throw an error when type is incorrect', () => {
       const cloudClient = createCloudClient();
-      expect(() => {
-        cloudClient.tokStop('wrongType', tokApiKey, sessionId, archiveId);
-      }).toThrow('Type must be one of video or audio.');
+      return expect(() => cloudClient.tokStop('wrongType', tokApiKey, sessionId, archiveId)).toThrowError('Type must be one of video or audio.');
     });
   });
 });

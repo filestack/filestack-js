@@ -100,9 +100,7 @@ describe('StoreURL', () => {
   });
 
   it('should throw an error when missing url', async () => {
-    expect(() => {
-      storeURL(mockedSession);
-    }).toThrowError();
+    expect(() => storeURL(mockedSession)).toThrowError();
   });
 
   it('should rejects on request error', () => {
