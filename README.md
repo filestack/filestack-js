@@ -5,6 +5,7 @@
   <strong>Javascript SDK for the Filestack API and content management system.</strong>
 </p>
 <p align="center">
+  <img src="https://codecov.io/gh/filestack/filestack-js/branch/master/graph/badge.svg" />
   <a href="https://npmjs.com/package/filestack-js"><img src="https://img.shields.io/npm/v/filestack-js.svg" /></a>
   <a href="https://static.filestackapi.com/filestack-js/1.x.x/filestack.min.js"><img src="https://img.badgesize.io/https://static.filestackapi.com/filestack-js/1.x.x/filestack.min.js?compression=gzip&color=green" /></a>
   <a href="https://static.filestackapi.com/filestack-js/1.x.x/filestack.min.js"><img src="https://img.badgesize.io/https://static.filestackapi.com/filestack-js/1.x.x/filestack.min.js?color=green" /></a>
