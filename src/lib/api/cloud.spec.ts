@@ -20,30 +20,24 @@ import { CloudClient } from './cloud';
 
 const globalAny: any = global;
 
-const mockGet = jest.fn().mockImplementation(url => {
-  return new Promise((resolve, reject) => {
-    resolve({ data: 'test' });
-  });
-});
+const mockGet = jest.fn().mockImplementation(() => Promise.resolve({ data: 'test' }));
 
 const mockPost = jest.fn().mockImplementation((url, payload) => {
-  return new Promise((resolve, reject) => {
-    if (payload) {
-      if (payload.apikey === 'setNewTokenApiKey') {
-        resolve({ data: { token: 'newToken' } });
-      }
+  if (payload && payload.apikey === 'setNewTokenApiKey') {
+    return Promise.resolve({ data: { token: 'newToken' } });
+  }
 
-      if (payload.clouds && Object.keys(payload.clouds).length > 0) {
-        if (payload.clouds.customsource) {
-          resolve({ data: { customsource: 'test customSource' } });
-        } else if (url === 'https://cloud.filestackapi.com/auth/logout/') {
-          resolve({ data: { dropbox: 'test dropbox' } });
-        }
-      }
+  if (payload && payload.clouds && Object.keys(payload.clouds).length > 0) {
+    if (payload.clouds.customsource) {
+      return Promise.resolve({ data: { customsource: 'test customSource' } });
     }
 
-    resolve({ data: 'test' });
-  });
+    if (url === 'https://cloud.filestackapi.com/auth/logout/') {
+      return Promise.resolve({ data: { dropbox: 'test dropbox' } });
+    }
+  }
+
+  return Promise.resolve({ data: 'test' });
 });
 
 jest.mock('./../api/request', () => {
@@ -78,9 +72,7 @@ describe('api:cloud', () => {
     },
   };
 
-  const createCloudClient = (session = defaultSession, clientOptions = {}) => {
-    return new CloudClient(session, clientOptions);
-  };
+  const createCloudClient = (session = defaultSession, clientOptions = {}) => new CloudClient(session, clientOptions);
 
   it('should properly instantiate CloudClient', () => {
     const cloudClient = createCloudClient();
@@ -94,6 +86,7 @@ describe('api:cloud', () => {
       const expectedReqParams = {
         params: { apikey: 'TEST_API_KEY' },
       };
+
       expect.assertions(2);
       return cloudClient.prefetch().then(data => {
         expect(mockGet).toBeCalledTimes(1);
@@ -145,7 +138,7 @@ describe('api:cloud', () => {
       const cloudClient = createCloudClient(session);
       const expectedReqParams = {
         apikey: 'TEST_API_KEY',
-        clouds: { dropbox: { path: '/' }, facebook: { path: '/' }, googledrive: { path: '/' }, instagram: { path: '/' } },
+        clouds,
         flow: 'web',
         policy: 'newPolicy',
         signature: 'newSignature',
@@ -171,7 +164,7 @@ describe('api:cloud', () => {
 
       const expectedReqParams = {
         apikey: session.apikey,
-        clouds: { dropbox: { path: '/' }, facebook: { path: '/' }, googledrive: { path: '/' }, instagram: { path: '/' } },
+        clouds,
         flow: 'web',
         token: undefined,
       };
@@ -191,10 +184,12 @@ describe('api:cloud', () => {
     it('should be able to store file from an url', done => {
       const name = 'image.jpg';
       const path = 'http://test.pl/images/';
+
       const cloudClient = createCloudClient();
       const expectedReqParams = { apikey: 'TEST_API_KEY', clouds: { 'image.jpg': { path: 'http://test.pl/images/', store: { location: 's3' } } }, flow: 'web', token: undefined };
 
       expect.assertions(2);
+
       return cloudClient.store(name, path).then(data => {
         expect(mockPost).toBeCalledTimes(1);
         expect(mockPost).toBeCalledWith('https://cloud.filestackapi.com/store/', expectedReqParams, {});
@@ -219,6 +214,7 @@ describe('api:cloud', () => {
       };
 
       expect.assertions(3);
+
       return cloudClient.store(name, path, {}, customSource).then(data => {
         expect(mockPost).toBeCalledTimes(1);
         expect(mockPost).toBeCalledWith('https://cloud.filestackapi.com/store/', expectedReqParams, {});
@@ -233,6 +229,7 @@ describe('api:cloud', () => {
         policy: 'newPolicy',
         signature: 'newSignature',
       };
+
       const options = {
         location: 'instagram',
       };
@@ -240,6 +237,7 @@ describe('api:cloud', () => {
       const name = 'image.jpg';
       const path = 'http://test.pl/images/';
       const cloudClient = createCloudClient(session, options);
+
       const expectedReqParams = {
         apikey: 'TEST_API_KEY',
         clouds: { 'image.jpg': { path: 'http://test.pl/images/', store: { location: 'instagram' } } },
@@ -250,7 +248,8 @@ describe('api:cloud', () => {
       };
 
       expect.assertions(2);
-      return cloudClient.store(name, path, options).then(data => {
+
+      return cloudClient.store(name, path, options).then(() => {
         expect(mockPost).toBeCalledTimes(1);
         expect(mockPost).toBeCalledWith('https://cloud.filestackapi.com/store/', expectedReqParams, {});
         done();
@@ -267,12 +266,14 @@ describe('api:cloud', () => {
       const path = 'http://test.pl/images/';
       const cloudClient = createCloudClient(session);
       const setToken = jest.spyOn(cloudClient, 'token', 'set');
+
       const expectedReqParams = {
         apikey: session.apikey,
         clouds: { 'image.jpg': { path: 'http://test.pl/images/', store: { location: 's3' } } },
         flow: 'web',
         token: undefined,
       };
+
       expect.assertions(3);
 
       return cloudClient.store(name, path).then(data => {
@@ -312,6 +313,7 @@ describe('api:cloud', () => {
 
       const cloudClient = createCloudClient(defaultSession, options);
       const expectedReqParams = { apikey: 'TEST_API_KEY', flow: 'web', token: 'eXaMpLeToken' };
+
       expect.assertions(2);
 
       return cloudClient.logout().then(data => {
@@ -339,6 +341,7 @@ describe('api:cloud', () => {
       };
 
       expect.assertions(2);
+
       return cloudClient.metadata('https://upload.wikimedia.org/wikipedia/commons/0/0e/Tree_example_VIS.jpg').then(data => {
         expect(mockPost).toBeCalledTimes(1);
         expect(mockPost).toBeCalledWith('https://cloud.filestackapi.com/metadata/', expectedReqParams);
@@ -350,6 +353,7 @@ describe('api:cloud', () => {
   describe('tokInit', () => {
     it('should correctly init recording process', done => {
       const cloudClient = createCloudClient();
+
       expect.assertions(2);
 
       return cloudClient.tokInit('video').then(data => {

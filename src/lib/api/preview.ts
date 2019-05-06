@@ -63,6 +63,7 @@ export const getUrl = (
   if (hasSecurity) {
     baseUrl.push(`security=policy:${policy},signature:${signature}`);
   }
+
   baseUrl.push(handle);
   return baseUrl.join('/');
 };
