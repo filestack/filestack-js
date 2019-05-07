@@ -44,14 +44,23 @@ export const resolveCdnUrl = (session: Session, handle: string): string => {
   return cdnURL;
 };
 
+/**
+ * Resolve all urls with provided cnames
+ *
+ * @private
+ * @param urls
+ * @param cname
+ */
 export const resolveHost = (urls: Hosts, cname: string): Hosts => {
-  if (cname) {
-    const hosts = /filestackapi.com|filestackcontent.com/i;
-
-    Object.keys(urls).forEach(key => {
-      urls[key] = urls[key].replace(hosts, cname);
-    });
+  if (!cname) {
+    return urls;
   }
+
+  const hosts = /filestackapi.com|filestackcontent.com/i;
+
+  Object.keys(urls).forEach(key => {
+    urls[key] = urls[key].replace(hosts, cname);
+  });
 
   return urls;
 };

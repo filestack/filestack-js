@@ -23,12 +23,6 @@
 </p>
 <hr/>
 
-## What's in the box?
-
-* A multi-part uploader powered on the backend by the [Filestack CIN](https://www.filestack.com/products/content-ingestion-network).
-* An interface to the [Filestack Processing Engine](https://www.filestack.com/docs/image-transformations) for transforming assets via URLs.
-* The Filestack Picker - an upload widget for the web that integrates over a dozen cloud providers and provides pre-upload image editing. 
-
 **Table of Contents**
 
 <!-- toc -->
@@ -37,16 +31,29 @@
 - [API Documentation](#api-documentation)
 - [Usage](#usage)
   - [Browsers](#browsers)
+    - [ES module](#es-module)
+    - [UMD module](#umd-module)
+    - [GZIP support](#gzip-support)
+    - [SRI](#sri)
   - [Node](#node)
-  - [Module Overview](#module-overview)
+    - [CommonJS module](#commonjs-module)
+- [Module Overview](#module-overview)
 - [Live examples (JSFiddle)](#live-examples-jsfiddle)
 - [Picker Quick Start](#picker-quick-start)
-  - [Promises](#promises)
+- [Promises](#promises)
 - [Development](#development)
 - [Debugging](#debugging)
   - [Node](#node-1)
   - [Browser](#browser)
+- [Versioning](#versioning)
 - [Contributing](#contributing)
+
+
+## What's in the box?
+
+* A multi-part uploader powered on the backend by the [Filestack CIN](https://www.filestack.com/products/content-ingestion-network).
+* An interface to the [Filestack Processing Engine](https://www.filestack.com/docs/image-transformations) for transforming assets via URLs.
+* The Filestack Picker - an upload widget for the web that integrates over a dozen cloud providers and provides pre-upload image editing. 
 
 
 ## Installation
@@ -63,45 +70,62 @@ npm install filestack-js
 
 ### Browsers
 
-**ES module**:
+#### ES module
 ```js
 import * as filestack from 'filestack-js';
 const client = filestack.init('apikey');
 ```
 
-**UMD module**:
+#### UMD module
 ```HTML
-<script src="//static.filestackapi.com/filestack-js/{MAJOR_VERSION}.x.x/filestack.min.js"></script>
+<script src="//static.filestackapi.com/filestack-js/{MAJOR_VERSION}.x.x/filestack.min.js" crossorigin="anonymous"></script>
 <script>
   const client = filestack.init('apikey');
 </script>
 ```
 
-where VERSION is one of the MAJOR versions of the filestack-js ie: 
+where ```{MAJOR_VERSION}``` is one of the MAJOR versions of the filestack-js ie: 
 ```HTML
-<script src="//static.filestackapi.com/filestack-js/3.x.x/filestack.min.js"></script>
+<script src="//static.filestackapi.com/filestack-js/3.x.x/filestack.min.js" crossorigin="anonymous"></script>
 <script>
   const client = filestack.init('apikey');
 </script>
 ```
 
-**GZIP support**
+#### GZIP support
 To speed up library loading you can use gzipped file available after adding gz to file extension
 ```HTML
-<script src="//static.filestackapi.com/filestack-js/{MAJOR_VERSION}.x.x/filestack.min.js.gz"></script>
+<script src="//static.filestackapi.com/filestack-js/{MAJOR_VERSION}.x.x/filestack.min.js.gz" crossorigin="anonymous"></script>
 <script>
   const client = filestack.init('apikey');
 </script>
 ```
+
+#### SRI
+Subresource Integrity (SRI) is a security feature that enables browsers to verify that files they fetch (for example, from a CDN) are delivered without unexpected manipulation. It works by allowing you to provide a cryptographic hash that a fetched file must match
+
+To obtain sri hashes for filestack-js library check manifest.json file on CDN:
+
+```
+https://static.filestackapi.com/filestack-js/{LIBRARY_VERSION}/manifest.json
+```
+
+```HTML
+<script src="//static.filestackapi.com/filestack-js/{LIBRARY_VERSION}/filestack.min.js.gz" integrity="{FILE_HASH}" crossorigin="anonymous"></script>
+```
+
+Where ```{LIBRARY_VERSION}``` is currently used library version and ```{FILE_HASH}``` is one of the hashes from manifest.json file
+
 
 ### Node
 
-**CommonJS module**:
+#### CommonJS module
 ```js
 const client = require('filestack-js').init('apikey');
 ```
 
-### Module Overview 
+
+## Module Overview 
 
 The `package.json` specifies two separate modules: 
 
@@ -147,12 +171,12 @@ The picker instance returned from `client.picker` can be controlled with a few m
 
 Please see our examples above to learn more about customizing the picker for your use case.
 
-### Promises
+## Promises
 
 This library requires an environment that implements the [`Promise`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise) object spec. 
 If you target IE11 or iOS before 8.0 you will need to add a `Promise` polyfill to your page or application.
 
-**Polyfills we recommend:**
+Polyfills we recommend:**
 
 Module (for bundling):
 * https://github.com/taylorhakes/promise-polyfill
@@ -189,6 +213,10 @@ localStorage.debug = 'fs:*'
 ```
 
 And then refresh the page.
+
+## Versioning
+
+We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags](https://github.com/filestack/filestack-js/tags) on this repository.
 
 ## Contributing
 

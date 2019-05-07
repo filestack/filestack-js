@@ -5,8 +5,6 @@ const ts = require('gulp-typescript');
 const replace = require('gulp-replace');
 const del = require('del');
 const version = require('../package.json').version;
-const rename = require('gulp-rename');
-const gzip = require('gulp-gzip');
 
 gulp.task('build:clean', function () {
   return del([
@@ -33,11 +31,3 @@ gulp.task('typescript:modules', () => {
 gulp.task('build:typescript', gulp.series(['typescript:main', 'typescript:modules']));
 
 gulp.task('build', gulp.series(['build:clean', 'build:typescript']));
-
-gulp.task('build:prod', gulp.series(['build:clean', 'build:typescript', () => {
-  // return gulp.src(['build/browser/filestack.min.js'])
-  // // .pipe(gzip({
-  // //   preExtension: 'gz'
-  // // }))
-  // .pipe(gulp.dest('build/browser'));
-}]));
