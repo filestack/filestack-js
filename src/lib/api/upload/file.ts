@@ -197,21 +197,19 @@ export class File {
    * @memberof File
    */
   public getPartMetadata (partNum: number, size): FilePartMetadata {
-    let start = size * partNum;
+    const startByte = size * partNum;
 
-    if (start > this._file.buffer.byteLength) {
+    if (startByte > this._file.buffer.byteLength) {
       throw new Error(`Start byte of the part is higher than buffer size`);
     }
 
-    if (this._file.buffer.byteLength < start + size) {
-      size = this._file.buffer.byteLength - start;
-    }
+    const endByte = Math.min(startByte + size, this._file.buffer.byteLength);
 
     return {
       partNumber: partNum,
-      startByte: start,
-      endByte: start + size,
-      size: size,
+      startByte,
+      endByte,
+      size: endByte - startByte,
     };
   }
 
@@ -226,9 +224,9 @@ export class File {
     let slice = this._file.buffer.slice(meta.startByte, meta.endByte);
 
     return {
+      ...meta,
       buffer: slice,
       md5: md5(slice),
-      ...meta,
     };
   }
 
@@ -242,18 +240,18 @@ export class File {
    * @memberof File
    */
   public getChunkByMetadata(meta: FilePartMetadata, offset: number, chunkSize: number): FileChunk {
-    const start = meta.startByte + offset;
-    const end = Math.min(start + chunkSize, meta.endByte);
+    const startByte = meta.startByte + offset;
+    const endByte = Math.min(startByte + chunkSize, meta.endByte);
 
-    let slice = this._file.buffer.slice(start, end);
+    let slice = this._file.buffer.slice(startByte, endByte);
 
     return {
       ...meta,
       buffer: slice,
       md5: md5(slice),
       size: slice.byteLength,
-      startByte: start,
-      endByte: end,
+      startByte,
+      endByte,
       offset,
     };
   }

@@ -41,7 +41,7 @@ export const MIN_CHUNK_SIZE = 32 * 1024;
 
 export const DEFAULT_STORE_LOCATION = 's3';
 
-const debug = Debug('fs:upload:multipart');
+const debug = Debug('fs:upload:abstract');
 
 export const enum UploadMode {
   DEFAULT = 'default',

@@ -138,7 +138,7 @@ const getMimetype = (file: any): string => {
       return 'text/plain';
     }
   } catch (e) {
-    console.warn('Checking svg is currently not supported for browsers');
+    console.warn('Additional mimetype checks (svg, text/plain) are currently not supported for browsers');
   }
 
   return 'application/octet-stream';

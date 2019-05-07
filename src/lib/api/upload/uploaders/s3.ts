@@ -438,6 +438,7 @@ export class S3Uploader extends UploaderAbstract {
     if (this.retryConfig && this.uploadMode !== UploadMode.FALLBACK) {
       useRetryPolicy(request, this.retryConfig);
     }
+
     return request
       .put(data.url, part.buffer, {
         cancelToken: this.cancelToken.token,
