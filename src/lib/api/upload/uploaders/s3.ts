@@ -213,7 +213,7 @@ export class S3Uploader extends UploaderAbstract {
     };
 
     if (this.uploadMode === UploadMode.INTELLIGENT || (this.uploadMode === UploadMode.FALLBACK && multipartFallback)) {
-      fields['multipart'] = 'true';
+      fields['ffi'] = true;
     }
 
     if (requiredFields.length > 0) {
@@ -301,7 +301,7 @@ export class S3Uploader extends UploaderAbstract {
         filename: payload.file.name,
         mimetype: payload.file.type,
         size: payload.file.size,
-        ...this.getDefaultFields(id, ['apikey', 'policy', 'signature', 'multipart'], true),
+        ...this.getDefaultFields(id, ['apikey', 'policy', 'signature', 'ffi'], true),
       },
       {
         timeout: this.timeout,
@@ -628,7 +628,7 @@ export class S3Uploader extends UploaderAbstract {
     return postWithRetry(
       `${this.getHost()}/multipart/complete`,
       {
-        ...this.getDefaultFields(id, ['apikey', 'policy', 'signature', 'uri', 'region', 'upload_id', 'multipart'], true),
+        ...this.getDefaultFields(id, ['apikey', 'policy', 'signature', 'uri', 'region', 'upload_id', 'ffi'], true),
         // method specific keys
         filename: payload.file.name,
         mimetype: payload.file.type,

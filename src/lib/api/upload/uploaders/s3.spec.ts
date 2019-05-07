@@ -378,7 +378,7 @@ describe('Api/Upload/Uploaders/S3', () => {
           size: testFile.size,
           store_location: DEFAULT_STORE_LOCATION,
           apikey: testApikey,
-          multipart: 'true',
+          ffi: true,
         });
 
         const firstPartOffset = 0;
@@ -433,7 +433,7 @@ describe('Api/Upload/Uploaders/S3', () => {
           region: mockRegion,
           upload_id: mockUploadId,
           store_location: DEFAULT_STORE_LOCATION,
-          multipart: 'true',
+          ffi: true,
           uri: mockedUri,
         });
       });
