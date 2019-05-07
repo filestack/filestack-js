@@ -6,7 +6,6 @@ const EsmWebpackPlugin = require('@purtuga/esm-webpack-plugin');
 const merge = require('lodash.merge');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const WebpackAssetsManifest = require('webpack-assets-manifest');
-const SriPlugin = require('webpack-subresource-integrity');
 const banner = fs.readFileSync('./LICENSE', 'utf8').replace('{year}', new Date().getFullYear());
 
 const config =  {
@@ -26,7 +25,6 @@ const config =  {
     rules: [
       {
         test: /\.(js|jsx)$/,
-        // exclude: /node_modules/,
         use: {
           loader: 'babel-loader',
           options: {
@@ -73,7 +71,7 @@ const esm = merge({}, config, {
     filename: 'filestack.esm.js',
   },
   plugins: [
-    new EsmWebpackPlugin()
+    new EsmWebpackPlugin(),
   ]
 });
 
@@ -83,10 +81,6 @@ const prod = merge({}, config,  {
     filename: 'filestack.min.js',
   },
   plugins: [
-    new SriPlugin({
-      hashFuncNames: ['sha256', 'sha384'],
-      enabled: process.env.NODE_ENV === 'production',
-    }),
     new WebpackAssetsManifest({
       writeToDisk: true,
       integrity: true,
