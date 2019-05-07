@@ -26,7 +26,7 @@ import { uniqueTime, uniqueId, filterObject } from './../../../utils';
 import { UploaderAbstract, UploadMode, INTELLIGENT_CHUNK_SIZE, MIN_CHUNK_SIZE, DEFAULT_STORE_LOCATION } from './abstract';
 import { FilestackError } from './../../../../FilestackError';
 
-const debug = Debug('fs:upload:multipart');
+const debug = Debug('fs:upload:s3');
 
 const COMPLETE_TIMEOUT = 1000 * 1;
 
@@ -69,7 +69,7 @@ export class S3Uploader extends UploaderAbstract {
   /**
    * Pause upload queue
    *
-   * @memberof MultipartUploader
+   * @memberof S3Uploader
    */
   public pause(): void {
     this.partsQueue.pause();
@@ -78,7 +78,7 @@ export class S3Uploader extends UploaderAbstract {
   /**
    * resume upload queue if its paused
    *
-   * @memberof MultipartUploader
+   * @memberof S3Uploader
    */
   public resume(): void {
     /* istanbul ignore next */
@@ -90,7 +90,7 @@ export class S3Uploader extends UploaderAbstract {
   /**
    * Aborts queue (all pending requests with will be aborted)
    *
-   * @memberof MultipartUploader
+   * @memberof S3Uploader
    */
   public abort(msg?: string): void {
     this.cancelToken.cancel(msg || 'Aborted by user');
@@ -101,7 +101,7 @@ export class S3Uploader extends UploaderAbstract {
    * Execute all queued files
    *
    * @returns {Promise<any>}
-   * @memberof MultipartUploader
+   * @memberof S3Uploader
    */
   public async execute(): Promise<any> {
     const tasks = Object.keys(this.payloads).map(
@@ -137,7 +137,7 @@ export class S3Uploader extends UploaderAbstract {
    *
    * @param {File} file
    * @returns
-   * @memberof MultipartUploader
+   * @memberof S3Uploader
    */
   public addFile(file: File): string {
     debug('Add file to queue: \n %o', file);
@@ -160,7 +160,7 @@ export class S3Uploader extends UploaderAbstract {
    *
    * @private
    * @returns
-   * @memberof MultupartUploader
+   * @memberof S3Uploader
    */
   private getUploadHost(id: string): string {
     const { location_url } = this.getDefaultFields(id, ['location_url']);
@@ -172,7 +172,7 @@ export class S3Uploader extends UploaderAbstract {
    *
    * @private
    * @returns
-   * @memberof MultipartUploader
+   * @memberof S3Uploader
    */
   private getStoreOptions() {
     const opts = this.storeOptions;
@@ -198,9 +198,9 @@ export class S3Uploader extends UploaderAbstract {
    *
    * @private
    * @returns
-   * @memberof MultipartUploader
+   * @memberof S3Uploader
    */
-  private getDefaultFields(id: string, requiredFields: string[] = [], multipartFallback: boolean = false) {
+  private getDefaultFields(id: string, requiredFields: string[] = [], ffiFallback: boolean = false) {
     const payload = this.getPayloadById(id);
 
     let fields = {
@@ -212,7 +212,7 @@ export class S3Uploader extends UploaderAbstract {
       region: payload.region,
     };
 
-    if (this.uploadMode === UploadMode.INTELLIGENT || (this.uploadMode === UploadMode.FALLBACK && multipartFallback)) {
+    if (this.uploadMode === UploadMode.INTELLIGENT || (this.uploadMode === UploadMode.FALLBACK && ffiFallback)) {
       fields['ffi'] = true;
     }
 
@@ -233,7 +233,7 @@ export class S3Uploader extends UploaderAbstract {
    *
    * @private
    * @returns
-   * @memberof MultipartUploader
+   * @memberof S3Uploader
    */
   private getDefaultHeaders(id: string) {
     let headers = {};
@@ -254,7 +254,7 @@ export class S3Uploader extends UploaderAbstract {
    * Split file onto parts for uploading with multipart mechanism and setup start
    *
    * @private
-   * @memberof MultipartUploader
+   * @memberof S3Uploader
    */
   private prepareParts(id: string): Promise<void> {
     const file = this.getPayloadById(id).file;
@@ -286,7 +286,7 @@ export class S3Uploader extends UploaderAbstract {
    *
    * @private
    * @returns {Promise<any>}
-   * @memberof MultipartUploader
+   * @memberof S3Uploader
    * @todo pare response check if can intelligent can be used response->upload_type (regular-> go back to normal upload)
    */
   private startRequest(id: string): Promise<any> {
@@ -341,7 +341,7 @@ export class S3Uploader extends UploaderAbstract {
    *
    * @private
    * @returns
-   * @memberof MultipartUploader
+   * @memberof S3Uploader
    */
   private async startPartsQueue(id: string): Promise<any> {
     const payload = this.getPayloadById(id);
@@ -371,7 +371,7 @@ export class S3Uploader extends UploaderAbstract {
    * @private
    * @param {number} partNumber
    * @returns {Promise<any>}
-   * @memberof MultipartUploader
+   * @memberof S3Uploader
    */
   private startPart(id: string, partNumber: number): Promise<any> {
     debug(`[${id}] Start processing part ${partNumber} with mode ${this.uploadMode}`);
@@ -389,7 +389,7 @@ export class S3Uploader extends UploaderAbstract {
    * @param {string} id - id of a currently uploading file
    * @param {FilePart} part
    * @returns
-   * @memberof MultipartUploader
+   * @memberof S3Uploader
    */
   private getS3PartMetadata(id: string, part: FilePart, offset?: number): Promise<any> {
     const url = this.getUploadHost(id);
@@ -424,7 +424,7 @@ export class S3Uploader extends UploaderAbstract {
    * @private
    * @param {number} partNumber
    * @returns {Promise<any>}
-   * @memberof MultipartUploader
+   * @memberof S3Uploader
    */
   private async uploadRegular(id: string, partNumber: number): Promise<any> {
     let payload = this.getPayloadById(id);
@@ -481,7 +481,7 @@ export class S3Uploader extends UploaderAbstract {
    * @param {string} id
    * @param {number} partNumber
    * @returns {Promise<any>}
-   * @memberof MultipartUploader
+   * @memberof S3Uploader
    */
   private async uploadIntelligent(id: string, partNumber: number): Promise<any> {
     return this.uploadNextChunk(id, partNumber).then(() => this.commitPart(id, partNumber));
@@ -496,7 +496,7 @@ export class S3Uploader extends UploaderAbstract {
    * @param {number} partNumber
    * @param {number} chunkSize
    * @returns
-   * @memberof MultipartUploader
+   * @memberof S3Uploader
    */
   private async uploadNextChunk(id: string, partNumber: number, chunkSize: number = this.intelligentChunkSize) {
     const payload = this.getPayloadById(id);
@@ -571,7 +571,7 @@ export class S3Uploader extends UploaderAbstract {
    * @param {string} id
    * @param {FilePart} part
    * @returns
-   * @memberof MultipartUploader
+   * @memberof S3Uploader
    */
   private commitPart(id: string, partNumber: number) {
     const payload = this.getPayloadById(id);
@@ -602,7 +602,7 @@ export class S3Uploader extends UploaderAbstract {
    *
    * @private
    * @returns
-   * @memberof MultipartUploader
+   * @memberof S3Uploader
    */
   private completeRequest(id: string): Promise<any> {
     const payload = this.getPayloadById(id);
@@ -749,7 +749,7 @@ export class S3Uploader extends UploaderAbstract {
    * @private
    * @param {number} partNumber
    * @param {string} etag
-   * @memberof MultipartUploader
+   * @memberof S3Uploader
    */
   private setPartETag(id: string, partNumber: number, etag: string) {
     debug(`[${id}] Set ${etag} etag for part ${partNumber}`);
@@ -762,7 +762,7 @@ export class S3Uploader extends UploaderAbstract {
    * @private
    * @param {number} partNumber
    * @param {string} etag
-   * @memberof MultipartUploader
+   * @memberof S3Uploader
    */
   private setPartData(id: string, partNumber: number, key: string, value: any) {
     debug(`[${id}] Set ${key} = ${value} for part ${partNumber}`);
