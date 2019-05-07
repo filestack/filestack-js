@@ -14,6 +14,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+// @todo add etag assertion
+// @todo add workflows assertion
 
 import { S3Uploader } from './s3';
 import { File } from './../file';
@@ -67,8 +69,6 @@ const mockComplete = jest.fn().mockName('multipart/complete');
 const s3Callback = function(url) {
   return mockPut(url, this.req.headers);
 };
-
-let complete202 = false;
 
 describe('Api/Upload/Uploaders/S3', () => {
   beforeEach(() => {
@@ -214,6 +214,20 @@ describe('Api/Upload/Uploaders/S3', () => {
         store_location: DEFAULT_STORE_LOCATION,
         workflows: storeOption.workflows,
         apikey: testApikey,
+      });
+
+      expect(mockComplete).toHaveBeenCalledWith({
+        filename: testFile.name,
+        mimetype: testFile.mimetype,
+        size: testFile.size,
+        store_container: storeOption.container,
+        store_location: DEFAULT_STORE_LOCATION,
+        workflows: storeOption.workflows,
+        apikey: testApikey,
+        parts: [{ part_number: 1, etag: 'test' }],
+        region: mockRegion,
+        upload_id: mockUploadId,
+        uri: mockedUri,
       });
     });
 
@@ -726,7 +740,7 @@ describe('Api/Upload/Uploaders/S3', () => {
         filename: testFile.name,
         mimetype: testFile.mimetype,
         size: testFile.size,
-        parts: '1:test;2:test',
+        parts: [{ part_number: 1, etag: 'test' }, { part_number: 2, etag: 'test' }],
         region: mockRegion,
         upload_id: mockUploadId,
         store_location: DEFAULT_STORE_LOCATION,

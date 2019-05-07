@@ -180,7 +180,7 @@ export class S3Uploader extends UploaderAbstract {
 
     Object.keys(opts).forEach(k => {
       if (k === 'workflows') {
-        toReturn[`workflows`] = opts[k];
+        toReturn['workflows'] = opts[k];
         return;
       }
 
@@ -619,7 +619,7 @@ export class S3Uploader extends UploaderAbstract {
 
     for (let i = 0; i < partLen; i++) {
       if (partsHandle[i].etag) {
-        parts.push(`${i + 1}:${partsHandle[i].etag}`);
+        parts.push({ part_number: i + 1, etag: partsHandle[i].etag });
       }
     }
 
@@ -633,7 +633,7 @@ export class S3Uploader extends UploaderAbstract {
         filename: payload.file.name,
         mimetype: payload.file.type,
         size: payload.file.size,
-        parts: parts.length ? parts.join(';') : undefined,
+        parts: parts.length ? parts : undefined,
       },
       {
         timeout: this.timeout,

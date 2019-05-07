@@ -4,12 +4,15 @@
 <p align="center">
   <strong>Javascript SDK for the Filestack API and content management system.</strong>
 </p>
-<span align="center">
+<p align="center">
+  <a href="https://codecov.io/gh/filestack/filestack-js">
+    <img src="https://codecov.io/gh/filestack/filestack-js/branch/master/graph/badge.svg" />
+  </a>
 
-[![codecov](https://codecov.io/gh/filestack/filestack-js/branch/master/graph/badge.svg)](https://codecov.io/gh/filestack/filestack-js) 
-[![Build Status](https://travis-ci.org/filestack/filestack-js.svg?branch=master)](https://travis-ci.org/filestack/filestack-js)
-
-</span>
+  <a href="https://travis-ci.org/filestack/filestack-js">
+    <img src="https://travis-ci.org/filestack/filestack-js.svg?branch=master" />
+  </a>
+</p>
 <p align="center">
   <a href="https://npmjs.com/package/filestack-js"><img src="https://img.shields.io/npm/v/filestack-js.svg" /></a>
   <a href="https://static.filestackapi.com/filestack-js/3.x.x/filestack.min.js"><img src="https://img.badgesize.io/https://static.filestackapi.com/filestack-js/3.x.x/filestack.min.js?compression=gzip&color=green" /></a>
