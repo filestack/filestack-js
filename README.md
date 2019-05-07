@@ -114,7 +114,7 @@ https://static.filestackapi.com/filestack-js/{LIBRARY_VERSION}/manifest.json
 <script src="//static.filestackapi.com/filestack-js/{LIBRARY_VERSION}/filestack.min.js.gz" integrity="{FILE_HASH}" crossorigin="anonymous"></script>
 ```
 
-Where ```{LIBRARY_VERSION}``` is currently used library version and ```{FILE_HASH}``` is one of the hashes from manifest.json file
+Where ```{LIBRARY_VERSION}``` is currently used library version and ```{FILE_HASH}``` is one of the hashes from integrity field in manifest.json file
 
 
 ### Node
