@@ -133,8 +133,9 @@ describe('filelink', () => {
   it('should throw an error if task params are not valid', () => {
     const filelink = new Filelink(defaultSource);
     expect(() => {
-      filelink.resize({});
-    }).toThrow('Task "resize" validation error, Params: {}');
+      // @ts-ignore
+      filelink.resize({ r: 2 }).toString();
+    }).toThrow('Params validation error: [{"name":"resize","params":{"r":2}}]');
   });
 
   it('should throw an error if source does not exists', () => {

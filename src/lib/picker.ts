@@ -155,6 +155,13 @@ export interface PickerFileMetadata {
   url: string;
 }
 
+export interface CustomAuthTextOptions {
+  [key: string]: {
+    top?: string[],
+    bottom?: string[]
+  };
+}
+
 export interface PickerResponse {
   filesUploaded: PickerFileMetadata[];
   filesFailed: PickerFileMetadata[];
@@ -387,6 +394,36 @@ export interface PickerOptions {
   cleanupImageExif?: boolean | {
     keepOrientation: boolean
   };
+  /**
+   * Customize the text on the cloud authentication screen in Picker.
+   * Use a cloud source name (see [[PickerOptions.fromSources]])
+   * or a 'default' as a key, then put your custom notice or consent
+   * to the 'top' or the 'bottom' key to show it respectivly above or under 'Connect button'.
+   *
+   * ```javascript
+   * customAuthText: {
+   *   // use it for every cloud authentication screen
+   *   default: {
+   *     top: [
+   *       'default top first line',
+   *       'default top second line'
+   *     ],
+   *     bottom: [
+   *       'default bottom first line',
+   *       'default bottom second line'
+   *     ]
+   *   },
+   *   // override a default bottom text for only gmail
+   *   gmail: {
+   *     bottom: [
+   *       'We need your permission to access your data and',
+   *       'process it with our machine learning system.'
+   *     ]
+   *   }
+   * }
+   * ```
+   */
+  customAuthText?: CustomAuthTextOptions;
   /**
    * Picker display mode, one of `'inline'`, `'overlay'`, `'dropPane'` - default is `'overlay'`.
    */

@@ -112,18 +112,18 @@ export enum CropfacesType {
  * Convert to format
  */
 export enum VideoTypes {
-    h264 = 'h264',
-    h264_hi = 'h264.hi',
-    webm = 'webm',
-    'webm-hi' = 'webm.hi',
-    ogg = 'ogg',
-    'ogg-hi' = 'ogg.hi',
-    'hls-variant' = 'hls.variant',
-    mp3 = 'mp3',
-    oga = 'oga',
-    m4a = 'm4a',
-    aac = 'aac',
-    hls = 'hls.variant.audio',
+  h264 = 'h264',
+  h264_hi = 'h264.hi',
+  webm = 'webm',
+  'webm-hi' = 'webm.hi',
+  ogg = 'ogg',
+  'ogg-hi' = 'ogg.hi',
+  'hls-variant' = 'hls.variant',
+  mp3 = 'mp3',
+  oga = 'oga',
+  m4a = 'm4a',
+  aac = 'aac',
+  hls = 'hls.variant.audio',
 }
 
 export enum URLScreenshotAgent {
@@ -425,6 +425,28 @@ export interface PdfConvertParams {
   pages?: (string | number)[];
 }
 
+export interface FallbackParams {
+  handle: string;
+  cache: number;
+}
+
+export interface MinifyCssParams {
+  gzip?: boolean;
+  level?: number;
+}
+
+export interface MinifyJsParams {
+  gzip?: boolean;
+  use_babel_polyfill?: boolean;
+  keep_fn_name?: boolean;
+  keep_class_name?: boolean;
+  mangle?: boolean;
+  merge_vars?: boolean;
+  remove_console?: boolean;
+  remove_undefined?: boolean;
+  targets?: null | string;
+}
+
 const handleRegexp = /^[\w\-]{20}$/;
 
 /**
@@ -450,7 +472,7 @@ export class Filelink {
    * @private
    * @memberof Filelink
    */
-  private validator = getValidator(TransformSchema);
+  private static validator = getValidator(TransformSchema);
 
   /**
    * Applied transforms array
@@ -487,6 +509,14 @@ export class Filelink {
   private b64: boolean = false;
 
   /**
+   * should use a validator to check params of every task
+   * @private
+   * @type {boolean}
+   * @memberof Filelink
+   */
+  private useValidator: boolean = true;
+
+  /**
    * Custom CNAME
    *
    * @private
@@ -515,7 +545,7 @@ export class Filelink {
     this.source = source;
     const isExternal = this.isSourceExternal();
 
-    Debug(`Source ${source} - isExternal? ${isExternal}`);
+    debug(`Source ${source} - isExternal? ${isExternal}`);
 
     if (isExternal && !apikey) {
       throw new FilestackError('External sources requires apikey to handle transforms');
@@ -537,6 +567,18 @@ export class Filelink {
    */
   setBase64(flag: boolean) {
     this.b64 = flag;
+    return this;
+  }
+
+  /**
+   * Switch the useValidator flag
+   *
+   * @param {boolean} flag
+   * @returns
+   * @memberof Filelink
+   */
+  setUseValidator(flag: boolean) {
+    this.useValidator = flag;
     return this;
   }
 
@@ -581,6 +623,9 @@ export class Filelink {
    * @memberof Filelink
    */
   getTransformations() {
+    if (this.useValidator) {
+      this.validateTasks(this.transforms);
+    }
     return this.transforms;
   }
 
@@ -593,6 +638,10 @@ export class Filelink {
   toString() {
     const returnUrl = [];
     returnUrl.push(this.getCdnHost());
+
+    if (this.useValidator) {
+      this.validateTasks(this.transforms);
+    }
 
     if (this.apikey) {
       returnUrl.push(this.apikey);
@@ -636,8 +685,6 @@ export class Filelink {
    * @memberof Filelink
    */
   addTask(name: string, params?) {
-    this.validateTask(name, params);
-
     Debug(`Add task  ${name} with params %O`, params);
 
     if (name !== 'cache' && typeof params === 'boolean') {
@@ -736,7 +783,7 @@ export class Filelink {
   }
 
   /**
-   * Adds enchance transformation
+   * Adds tags transformation
    *
    * @see https://www.filestack.com/docs/api/processing/#tags
    * @returns this
@@ -1178,6 +1225,51 @@ export class Filelink {
   }
 
   /**
+   * Adds fallback transformation
+   *
+   * @see https://www.filestack.com/docs/api/processing/#fallback
+   * @param {(FallbackParams)} params
+   * @returns this
+   * @memberof Filelink
+   */
+  fallback(params: FallbackParams) {
+    return this.addTask('fallback', params);
+  }
+
+  /**
+   * Add zip transformation which create a zip package on files
+   * used on actual context
+   *
+   * @see https://www.filestack.com/docs/api/processing/#zip
+   * @returns this
+   * @memberof Filelink
+   */
+  zip() {
+    return this.addTask('zip', true);
+  }
+
+  /**
+   * Add task which minify a css file
+   *
+   * @returns this
+   * @memberof Filelink
+   */
+  minifyCss(params: MinifyCssParams) {
+    return this.addTask('minify_css', params);
+  }
+
+  /**
+   * Add task which minify a javascript file.
+   * For better handling of 'targets' param, use with b64 flag enabled.
+   *
+   * @returns this
+   * @memberof Filelink
+   */
+  minifyJs(params: MinifyJsParams) {
+    return this.addTask('minify_js', params);
+  }
+
+  /**
    * Checks if source is external
    *
    * @private
@@ -1204,21 +1296,19 @@ export class Filelink {
   }
 
   /**
-   * Validate single task against schema
+   * Validate every task against schema
    *
    * @private
-   * @param {*} name
-   * @param {*} options
+   * @param {object[]} transformations - object which contain all transformations
    * @returns {void}
    * @memberof Filelink
    */
-  private validateTask(name, options): void {
-    const toValidate = {};
-    toValidate[name] = options;
+  private validateTasks(transformations: object[]): void {
+    const transformationsObj = this.arrayToObject(transformations, 'name', 'params');
+    const res = Filelink.validator(transformationsObj);
 
-    const res = this.validator(toValidate);
     if (res.errors.length) {
-      throw new FilestackError(`Task "${name}" validation error, Params: ${JSON.stringify(options)}`, res.errors);
+      throw new FilestackError(`Params validation error: ${JSON.stringify(transformations)}`, res.errors);
     }
 
     return;
@@ -1238,7 +1328,6 @@ export class Filelink {
       urls.cdnUrl = this.customDomain;
     }
 
-    // FIXME: resolveHost is broken, it always return the same
     urls = resolveHost(urls, this.cname);
 
     return urls.cdnUrl;
@@ -1311,7 +1400,7 @@ export class Filelink {
    * @returns {string}
    * @memberof Filelink
    */
-  private escapeValue (value: string): string {
+  private escapeValue(value: string): string {
     if (typeof value !== 'string') {
       return value;
     }
@@ -1342,4 +1431,17 @@ export class Filelink {
     return `[${toReturn}]`;
   }
 
+  /**
+   * Converts array of objects to object
+   *
+   * @private
+   * @example [{name: 'resize', params: {height: 125}}] => {resize: {height: 125}}
+   * @param arr - any array
+   */
+  private arrayToObject = (array: object[], nameKey: string, dataKey: string) => {
+    return array.reduce((obj, item) => {
+      obj[item[nameKey]] = item[dataKey];
+      return obj;
+    }, {});
+  }
 }

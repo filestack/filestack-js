@@ -2,6 +2,54 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="2.1.0"></a>
+# [2.1.0](https://github.com/filestack/filestack-js/compare/v2.0.7...v2.1.0) (2019-05-06)
+
+
+### Features
+
+* **config:** Update version of picker ([#226](https://github.com/filestack/filestack-js/issues/226)) ([11be0cc](https://github.com/filestack/filestack-js/commit/11be0cc))
+
+
+
+<a name="2.0.7"></a>
+## [2.0.7](https://github.com/filestack/filestack-js/compare/v2.0.6...v2.0.7) (2019-04-18)
+
+* **picker** Update version of picker (1.4.7)
+
+
+<a name="2.0.6"></a>
+## [2.0.6](https://github.com/filestack/filestack-js/compare/v2.0.5...v2.0.6) (2019-04-15)
+
+* **filelink:** Add zip, minifyCss and minifyJs tasks
+* **picker** Update version of picker (1.4.6)
+
+<a name="2.0.5"></a>
+## [2.0.5](https://github.com/filestack/filestack-js/compare/v2.0.4...v2.0.5) (2019-04-08)
+
+
+### Bug Fixes
+
+* **transforms:** Fix typo in schema ([d6cf4b0](https://github.com/filestack/filestack-js/commit/d6cf4b0))
+
+
+
+<a name="2.0.4"></a>
+## [2.0.4](https://github.com/filestack/filestack-js/compare/v2.0.3...v2.0.4) (2019-04-08)
+
+* **filelink:** Add possibility to disable validation on tasks params ([2d3eb7f](https://github.com/filestack/filestack-js/commit/2d3eb7f))
+
+
+<a name="2.0.3"></a>
+## [2.0.3](https://github.com/filestack/filestack-js/compare/v2.0.2...v2.0.3) (2019-03-28)
+
+
+### Features
+
+* **filelink:** Add support for fallback task ([dbb0b4b](https://github.com/filestack/filestack-js/commit/dbb0b4b))
+
+
+
 <a name="2.0.2"></a>
 ## [2.0.2](https://github.com/filestack/filestack-js/compare/v2.0.1...v2.0.2) (2019-03-19)
 
