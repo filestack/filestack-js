@@ -21,6 +21,9 @@ export const UploadParamsSchema = {
   type: 'object',
   additionalProperties: false,
   properties: {
+    filename: {
+      type: 'string',
+    },
     partSize: {
       type: 'integer',
       minimum: 5 * 1024 * 1024,
