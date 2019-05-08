@@ -135,7 +135,7 @@ describe('filelink', () => {
     expect(() => {
       // @ts-ignore
       filelink.resize({ r: 2 }).toString();
-    }).toThrow('Params validation error: [{"name":"resize","params":{"r":2}}]');
+    }).toThrow('Params validation error');
   });
 
   it('should throw an error if source does not exists', () => {

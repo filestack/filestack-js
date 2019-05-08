@@ -661,6 +661,9 @@ export class S3Uploader extends UploaderAbstract {
         let file = this.getPayloadById(id).file;
         file.handle = res.data.handle;
         file.url = res.data.url;
+        file.container = res.data.container;
+        file.key = res.data.key;
+        file.workflows = res.data.workflows;
         file.status = res.data.status;
 
         return file;

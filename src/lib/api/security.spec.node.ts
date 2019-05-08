@@ -33,5 +33,16 @@ describe('api:security', () => {
       };
       expect(result).toEqual(expected);
     });
+
+    it('should throw error on invalid security params', () => {
+      const policy = {
+        expiry: 'test',
+        call: ['pick1', 'read', 'stat', 'write', 'writeUrl', 'store', 'convert', 'remove', 'exif', 'runWorkflow'],
+        handle: 'TEST_HANDLE',
+      };
+      const appSecret = 'testAppSecret';
+      // @ts-ignore
+      expect(() => getSecurity(policy, appSecret)).toThrowError('Invalid security params');
+    });
   });
 });

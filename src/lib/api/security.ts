@@ -17,8 +17,8 @@
 
 import * as crypto from 'crypto';
 import { Security } from '../client';
-import { checkOptions } from '../utils';
-import * as t from 'tcomb-validation';
+import { FilestackError } from './../../FilestackError';
+import { getValidator, SecurityParamsSchema } from './../../schema';
 
 /**
  * Configures a security policy
@@ -51,18 +51,12 @@ export interface SecurityOptions {
  * @param appSecret
  */
 export const getSecurity = (policyOptions: SecurityOptions, appSecret: string): Security => {
-  const allowed = [
-    { name: 'expiry', type: t.Integer },
-    { name: 'call', type: t.list(t.enums.of('pick read stat write writeUrl store convert remove exif runWorkflow')) },
-    { name: 'handle', type: t.String },
-    { name: 'url', type: t.String },
-    { name: 'maxSize', type: t.Integer },
-    { name: 'minSize', type: t.Integer },
-    { name: 'path', type: t.String },
-    { name: 'container', type: t.String },
-  ];
 
-  checkOptions('Policy options', allowed, policyOptions);
+  const validateRes = getValidator(SecurityParamsSchema)(policyOptions);
+
+  if (validateRes.errors.length) {
+    throw new FilestackError(`Invalid security params`, validateRes.errors);
+  }
 
   const policy = Buffer.from(JSON.stringify(policyOptions)).toString('base64');
   const signature = crypto.createHmac('sha256', appSecret)

@@ -1308,7 +1308,7 @@ export class Filelink {
     const res = Filelink.validator(transformationsObj);
 
     if (res.errors.length) {
-      throw new FilestackError(`Params validation error: ${JSON.stringify(transformations)}`, res.errors);
+      throw new FilestackError(`Params validation error`, res.errors);
     }
 
     return;

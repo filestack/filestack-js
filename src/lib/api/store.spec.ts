@@ -90,6 +90,13 @@ describe('StoreURL', () => {
     expect(res).toEqual(responseObj);
   });
 
+  it('should throw error on wrong store params', () => {
+    expect(() => storeURL(mockedSession, mockHandle, {
+      // @ts-ignore
+      test: 123,
+    })).toThrowError('Invalid store params');
+  });
+
   it('should respect token cancel', () => {
     const token = {
       cancel: () => jest.fn(),

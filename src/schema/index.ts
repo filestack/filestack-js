@@ -17,3 +17,5 @@
 
 export * from './transforms.schema';
 export * from './validator';
+export * from './store.schema';
+export * from './security.schema';

@@ -14,17 +14,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Validator } from 'jsonschema';
-import { DefinitionsSchema } from './definitions.schema';
-
-const v = new Validator();
-
-/**
- * Returns validator instance
- */
-export const getValidator = (schema) => {
-  return (params) => {
-    v.addSchema(DefinitionsSchema);
-    return v.validate(params, schema);
-  };
+export const SecurityParamsSchema = {
+  '$schema': 'http://json-schema.org/draft-07/schema#',
+  title: 'Filestack Security',
+  description: 'Filestack Security Options',
+  type: 'object',
+  additionalProperties: false,
+  properties: {
+    expiry: {
+      type: 'number',
+    },
+    call: {
+      '$ref': 'securityCallDef',
+    },
+    handle: {
+      type: 'string',
+    },
+    url: {
+      type: 'string',
+    },
+    maxSize: {
+      type: 'number',
+    },
+    minSize: {
+      type: 'number',
+    },
+    path: {
+      type: 'string',
+    },
+    container: {
+      type: 'string',
+    },
+  },
 };

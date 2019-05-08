@@ -47,6 +47,14 @@ export interface FileChunk extends FilePart {
   offset: number; // offset for chunk - from part start
 }
 
+// {
+//   id: {
+//     jobid: ''
+//     error: ''
+//   }
+
+// }
+
 /**
  * File representation to unify file object in nodejs and browser
  *
@@ -62,6 +70,12 @@ export class File {
   public handle: string;
 
   public url: string;
+
+  public container: string;
+
+  public key: string;
+
+  public workflows: any[];
 
   constructor(private readonly _file: FileInstance) {
     this._file.name = sanitizeName(this._file.name);

@@ -19,6 +19,7 @@ import { request } from './request';
 import { Security, Session } from '../client';
 import { Filelink, StoreParams } from './../filelink';
 import { FilestackError } from './../../FilestackError';
+import { getValidator, StoreParamsSchema } from './../../schema';
 
 /**
  *
@@ -38,6 +39,12 @@ export const storeURL = (
 ): Promise<any> => {
   if (!url || typeof url !== 'string') {
     throw new Error('url is required for storeURL');
+  }
+
+  const validateRes = getValidator(StoreParamsSchema)(opts);
+
+  if (validateRes.errors.length) {
+    throw new FilestackError(`Invalid store params`, validateRes.errors);
   }
 
   session.policy = security && security.policy || session.policy;
