@@ -37,8 +37,8 @@ export const requestWithSource = (retryConfig?: RetryConfig): AxiosInstance => {
   const axiosInstance = axios.create({
     headers: {
       'filestack-source': 'JS-@{VERSION}',
-      // 'filestack-trace-id': `${Math.floor(Date.now() / 1000)}-${uniqueId()}`,
-      // 'filestack-trace-span': `jssdk-${uniqueId()}`,
+      'filestack-trace-id': `${Math.floor(Date.now() / 1000)}-${uniqueId()}`,
+      'filestack-trace-span': `jssdk-${uniqueId()}`,
     },
   });
 
@@ -58,8 +58,8 @@ export const postWithRetry = (url: string, fields: Object, config: AxiosRequestC
 
   config.headers = Object.assign({}, config.headers, {
     'filestack-source': 'JS-@{VERSION}',
-    // 'filestack-trace-id': `${Math.floor(Date.now() / 1000)}-${uniqueId()}`,
-    // 'filestack-trace-span': `jssdk-${uniqueId()}`,
+    'filestack-trace-id': `${Math.floor(Date.now() / 1000)}-${uniqueId()}`,
+    'filestack-trace-span': `jssdk-${uniqueId()}`,
   });
 
   const axiosInstance = axios.create();
