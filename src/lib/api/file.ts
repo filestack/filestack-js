@@ -15,11 +15,11 @@
  * limitations under the License.
  */
 
-import * as t from 'tcomb-validation';
 import { Security, Session } from '../client';
 import { request } from './request';
-import { checkOptions, removeEmpty } from '../utils';
+import { removeEmpty } from '../utils';
 import { FilestackError } from './../../FilestackError';
+import { getValidator, MetadataParamsSchema, RetrieveParamsSchema } from './../../schema';
 
 /**
  * Remove given file
@@ -91,29 +91,11 @@ export const metadata = (session: Session, handle?: string, opts?: MetadataOptio
     throw new FilestackError('A valid Filestack handle is required for metadata');
   }
 
-  const allowed = [
-    { name: 'size',       type: t.Boolean },
-    { name: 'mimetype',   type: t.Boolean },
-    { name: 'filename',   type: t.Boolean },
-    { name: 'width',      type: t.Boolean },
-    { name: 'height',     type: t.Boolean },
-    { name: 'uploaded',   type: t.Boolean },
-    { name: 'writeable',  type: t.Boolean },
-    { name: 'cloud',      type: t.Boolean },
-    { name: 'sourceUrl',  type: t.Boolean },
-    { name: 'md5',        type: t.Boolean },
-    { name: 'sha1',       type: t.Boolean },
-    { name: 'sha224',     type: t.Boolean },
-    { name: 'sha256',     type: t.Boolean },
-    { name: 'sha384',     type: t.Boolean },
-    { name: 'sha512',     type: t.Boolean },
-    { name: 'location',   type: t.Boolean },
-    { name: 'path',       type: t.Boolean },
-    { name: 'container',  type: t.Boolean },
-    { name: 'exif',       type: t.Boolean },
-  ];
+  const validateRes = getValidator(MetadataParamsSchema)(opts);
 
-  checkOptions('metadata', allowed, opts);
+  if (validateRes.errors.length) {
+    throw new FilestackError(`Invalid metadata params`, validateRes.errors);
+  }
 
   const options: any = { ...opts };
   options.source_url = options.sourceUrl; // source_url is snake_case
@@ -124,7 +106,7 @@ export const metadata = (session: Session, handle?: string, opts?: MetadataOptio
   return new Promise((resolve, reject) => {
     request
       .get(baseURL, { params: removeEmpty(options) })
-      .then((res) => resolve({ ...res.data, handle }))
+      .then(res => resolve({ ...res.data, handle }))
       .catch(reject);
   });
 };
@@ -162,31 +144,21 @@ export interface RetrieveOptions {
  * @param options
  * @param security
  */
-export const retrieve = (session: Session,
-  handle: string,
-  options: RetrieveOptions = {},
-  security?: Security): Promise<Object | Blob> => {
-  if (!handle
-    || handle.length === 0
-    || typeof handle !== 'string') {
-
+export const retrieve = (session: Session, handle: string, options: RetrieveOptions = {}, security?: Security): Promise<Object | Blob> => {
+  if (!handle || handle.length === 0 || typeof handle !== 'string') {
     throw new FilestackError('File handle is required');
   }
 
-  const allowed = [
-    { name: 'metadata', type: t.Boolean },
-    { name: 'head', type: t.Boolean },
-    { name: 'dl', type: t.Boolean },
-    { name: 'cache', type: t.Boolean },
-    { name: 'extension', type: t.String },
-  ];
+  const validateRes = getValidator(RetrieveParamsSchema)(options);
 
-  checkOptions('retrieveOptions', allowed, options);
+  if (validateRes.errors.length) {
+    throw new FilestackError(`Invalid retrieve params`, validateRes.errors);
+  }
 
   const requestOptions: any = { ...options };
   requestOptions.key = session.apikey;
-  requestOptions.policy = security && security.policy || session.policy;
-  requestOptions.signature = security && security.signature || session.signature;
+  requestOptions.policy = (security && security.policy) || session.policy;
+  requestOptions.signature = (security && security.signature) || session.signature;
 
   let method: ERequestMethod = ERequestMethod.get;
 
@@ -219,7 +191,8 @@ export const retrieve = (session: Session,
       url: baseURL,
       method,
       params: removeEmpty(requestOptions),
-    }).then((res) => resolve(method === ERequestMethod.head ? res.headers : res.data))
-    .catch(reject);
+    })
+      .then(res => resolve(method === ERequestMethod.head ? res.headers : res.data))
+      .catch(reject);
   });
 };

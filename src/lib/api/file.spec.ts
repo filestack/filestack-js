@@ -73,7 +73,7 @@ describe('FileAPI', () => {
 
     it('should throw on wrong option', async () => {
       // @ts-ignore
-      return expect(() => metadata(mockedSession, 'fakekey', { bla: 123 })).toThrowError();
+      return expect(() => metadata(mockedSession, 'fakekey', { bla: 123 })).toThrowError('Invalid metadata params');
     });
 
     it('should throw an error on empty handle', () => {
@@ -243,6 +243,19 @@ describe('FileAPI', () => {
 
     it('should throw an error on empty handle', () => {
       return expect(() => retrieve(mockedSession, '')).toThrowError();
+    });
+
+    it('should throw an error worng options provided', () => {
+      return expect(() => retrieve(mockedSession, 'fakeHandle', {
+        // @ts-ignore
+        test: 123,
+      })).toThrowError('Invalid retrieve params');
+    });
+
+    it('should not throw an error worng options provided', () => {
+      return expect(() => retrieve(mockedSession, 'fakeHandle', {
+        metadata: true,
+      })).not.toThrowError('Invalid retrieve params');
     });
 
     it('should throw an error when metadata and head is provided', () => {

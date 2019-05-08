@@ -81,7 +81,7 @@ describe('picker', () => {
     expect(mockPickerCancel).toHaveBeenCalledTimes(1);
   });
 
-  it.only('should not throw error on correct params', () => {
+  it('should not throw error on correct params', () => {
     return expect(() => picker(client, {
       onOpen: () => {
         console.log(123);

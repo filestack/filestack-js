@@ -14,8 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { resolveCdnUrl, resolveHost, checkOptions, removeEmpty, isMobile, uniqueTime, uniqueId, md5, sanitizeName, filterObject } from './index';
-import * as t from 'tcomb-validation';
+import { resolveCdnUrl, resolveHost, removeEmpty, isMobile, uniqueTime, uniqueId, md5, sanitizeName, filterObject } from './index';
 import { config } from '../../config';
 
 describe('utils:index', () => {
@@ -74,25 +73,6 @@ describe('utils:index', () => {
     });
   });
 
-  describe('checkOptions', () => {
-    const name = 'metadata';
-    const allowed = [{ name: 'size', type: t.Boolean }, { name: 'location', type: t.String }, { name: 'filename', type: t.Boolean }];
-
-    it('should not throwe error if options are valid', () => {
-      const options = { size: true };
-      const result = checkOptions(name, allowed, options);
-      expect(result).toEqual(Object.keys(options));
-    });
-
-    it('should throw an error when option is not allowed', () => {
-      expect(() => { checkOptions(name, allowed, { wrongOption: true }); }).toThrow('wrongOption is not a valid option for metadata. Valid options are: size, location, filename');
-    });
-
-    it('should throw an error when option is allowed, but it has a wrong type', () => {
-      expect(() => { checkOptions(name, allowed, { size: 'It is a string!' }); }).toThrow('Invalid value \"It is a string!\" supplied to Boolean');
-    });
-  });
-
   describe('removeEmpty', () => {
     it('should remove empty options from an object', () => {
       const testOb = { test1: true, test2: undefined, test3: false };
@@ -123,7 +103,7 @@ describe('utils:index', () => {
     });
   });
 
-  describe.only('sanitizeName', () => {
+  describe('sanitizeName', () => {
     it('should sanitize file name with extension', () => {
       expect(sanitizeName('!@#te"\'.jpg')).toEqual('!@#te__.jpg');
       expect(sanitizeName('!# test.jpg')).toEqual('!#_test.jpg');

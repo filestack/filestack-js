@@ -14,13 +14,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-export * from './transforms.schema';
-export * from './validator';
-export * from './store.schema';
-export * from './security.schema';
-export * from './preview.schema';
-export * from './picker.schema';
-export * from './upload.schema';
-export * from './metadata.schema';
-export * from './retrieve.schema';
+export const RetrieveParamsSchema = {
+  '$schema': 'http://json-schema.org/draft-07/schema#',
+  title: 'Filestack Retrieve',
+  description: 'Filestack Retrieve Options',
+  type: 'object',
+  additionalProperties: false,
+  properties: {
+    metadata: {
+      type: 'boolean',
+    },
+    head: {
+      type: 'boolean',
+    },
+    dl: {
+      type: 'boolean',
+    },
+    cache: {
+      type: 'boolean',
+    },
+    extension: {
+      type: 'string',
+    },
+  },
+};

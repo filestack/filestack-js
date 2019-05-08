@@ -45,7 +45,6 @@ const config =  {
     // those externals are only used in nodejs
     'fs',
     'crypto',
-    // 'tcomb',
   ],
   plugins: [
     new CleanWebpackPlugin(),

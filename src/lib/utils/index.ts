@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 
-import * as t from 'tcomb-validation';
 import { Session } from '../client';
 import { Hosts } from './../../config';
 import * as SparkMD5 from 'spark-md5';
@@ -63,42 +62,6 @@ export const resolveHost = (urls: Hosts, cname: string): Hosts => {
   });
 
   return urls;
-};
-
-/**
- * Check config options
- *
- * @private
- * @param name
- * @param allowed
- * @param options
- */
-export const checkOptions = (name: string, allowed: any, options: any = {}): {} => {
-  const keys = Object.keys(options);
-  const allowedNames = allowed.map((a: any) => a.name);
-  const namesFormatted = allowedNames.join(', ');
-  keys.forEach(key => {
-    if (allowedNames.indexOf(key) < 0) {
-      throw new Error(`${key} is not a valid option for ${name}. Valid options are: ${namesFormatted}`);
-    }
-  });
-  allowed.forEach((obj: any) => {
-    let value = options[obj.name];
-    // Should we transform a location value if we return only keys?
-    if (obj.name === 'location' && typeof value === 'string') {
-      value = value.toLowerCase();
-    }
-    if (value !== undefined) {
-      const result = t.validate(value, obj.type);
-      if (!result.isValid()) {
-        const error = result.firstError();
-        if (error && error.message) {
-          throw new Error(error.message);
-        }
-      }
-    }
-  });
-  return keys;
 };
 
 /**
