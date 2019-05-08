@@ -58,28 +58,38 @@ describe('Api/Upload/upload', () => {
   });
 
   describe('Settings', () => {
-    it('Should handle constructor options', () => {
+    it('should handle constructor options', () => {
       const u = new Upload({
-        partSize: 1,
-        intelligentChunkSize: 1,
+        partSize: 5 * 1024 * 1024,
+        intelligentChunkSize: 5 * 1024 * 1024,
       });
 
-      expect(S3Uploader.prototype.setPartSize).toHaveBeenCalledWith(1);
-      expect(S3Uploader.prototype.setIntelligentChunkSize).toHaveBeenCalledWith(1);
+      expect(S3Uploader.prototype.setPartSize).toHaveBeenCalledWith(5 * 1024 * 1024);
+      expect(S3Uploader.prototype.setIntelligentChunkSize).toHaveBeenCalledWith(5 * 1024 * 1024);
     });
 
-    it('Should set intelligent upload mode', () => {
+    it('should throw error on wrong upload options', () => {
+      // @ts-ignore
+      expect(() => new Upload({ intelligent1: true })).toThrowError('Invalid upload params');
+    });
+
+    it('should throw error on wrong store options', () => {
+      // @ts-ignore
+      expect(() => new Upload({ intelligent: true }, { test: 123 })).toThrowError('Invalid store upload params');
+    });
+
+    it('should set intelligent upload mode', () => {
       const u = new Upload({ intelligent: true });
       expect(S3Uploader.prototype.setUploadMode).toHaveBeenCalledWith(UploadMode.INTELLIGENT);
     });
 
-    it('Should fallback upload mode', () => {
+    it('should fallback upload mode', () => {
       const u = new Upload({ intelligent: 'fallback' });
 
       expect(S3Uploader.prototype.setUploadMode).toHaveBeenCalledWith(UploadMode.FALLBACK);
     });
 
-    it('Should pass store options to uploader class', () => {
+    it('should pass store options to uploader class', () => {
       const storeOptions: StoreUploadOptions = {
         location: 's3',
       };
@@ -88,7 +98,7 @@ describe('Api/Upload/upload', () => {
       expect(S3Uploader.prototype.constructor).toHaveBeenCalledWith(storeOptions, undefined);
     });
 
-    it('Should respect concurrency param in upload options', () => {
+    it('should respect concurrency param in upload options', () => {
       const uploadOptions = {
         concurrency: 4,
       };
@@ -97,7 +107,7 @@ describe('Api/Upload/upload', () => {
       expect(S3Uploader.prototype.constructor).toHaveBeenCalledWith({}, 4);
     });
 
-    it('Should set correct security to uploader', () => {
+    it('should set correct security to uploader', () => {
       const security = {
         policy: 'p',
         signature: 's',
@@ -109,7 +119,7 @@ describe('Api/Upload/upload', () => {
       expect(S3Uploader.prototype.setSecurity).toHaveBeenCalledWith(security);
     });
 
-    it('Should pass session variable to uploader', () => {
+    it('should pass session variable to uploader', () => {
       const u = new Upload();
       u.setSession(defaultSession);
 
@@ -118,7 +128,7 @@ describe('Api/Upload/upload', () => {
       expect(S3Uploader.prototype.setSecurity).toHaveBeenCalledWith({ policy: defaultSession.policy, signature: defaultSession.signature });
     });
 
-    it('Should set storeOption filename to class', async () => {
+    it('should set storeOption filename to class', async () => {
       mockExecute.mockReturnValue(Promise.resolve([mockedFileResponse]));
       const filenameFn = () => 'test';
 
@@ -133,7 +143,7 @@ describe('Api/Upload/upload', () => {
       expect(customNameMocked).toHaveBeenCalledWith(filenameFn);
     });
 
-    it('Should assign methods to user provided token', () => {
+    it('should assign methods to user provided token', () => {
       let token = {};
 
       const u = new Upload();
@@ -148,7 +158,7 @@ describe('Api/Upload/upload', () => {
       token['resume']();
     });
 
-    it('Should set token with methods that pause,cancel or resume uploads', () => {
+    it('should set token with methods that pause,cancel or resume uploads', () => {
       let token = {};
 
       const u = new Upload();
@@ -163,7 +173,7 @@ describe('Api/Upload/upload', () => {
       expect(S3Uploader.prototype.resume).toHaveBeenCalled();
     });
 
-    it('Should throw an error if token is not an object', () => {
+    it('should throw an error if token is not an object', () => {
       const token = '123123';
 
       const u = new Upload();
@@ -172,8 +182,8 @@ describe('Api/Upload/upload', () => {
       }).toThrowError();
     });
 
-    // it.skip('Should set default retry config to uploader');
-    // it.skip('Should respect options retry config');
+    // it.skip('should set default retry config to uploader');
+    // it.skip('should respect options retry config');
   });
 
   describe('Upload', () => {
@@ -181,13 +191,13 @@ describe('Api/Upload/upload', () => {
       mockExecute.mockReturnValue(Promise.resolve([mockedFileResponse, mockedFileResponse]));
     });
 
-    it('Should execute normal upload without errors and return single file response', async () => {
+    it('should execute normal upload without errors and return single file response', async () => {
       const u = new Upload();
       const res = await u.upload(testBuffer);
       expect(res).toEqual(mockedFileResponse);
     });
 
-    it('Should execute normal upload with errors and return rejected promise', () => {
+    it('should execute normal upload with errors and return rejected promise', () => {
       const u = new Upload();
 
       mockExecute.mockReturnValue(
@@ -203,7 +213,7 @@ describe('Api/Upload/upload', () => {
       });
     });
 
-    it('Should execute multiupload without errors and return single file response', async () => {
+    it('should execute multiupload without errors and return single file response', async () => {
       const u = new Upload();
       const res = await u.multiupload([testBuffer, testBuffer]);
       expect(res).toEqual([mockedFileResponse, mockedFileResponse]);
@@ -244,7 +254,7 @@ describe('Api/Upload/upload', () => {
       ],
     };
 
-    it('Should handle correct progress event', async () => {
+    it('should handle correct progress event', async () => {
       spyOn(S3Uploader.prototype, 'on').and.callFake((ev, cb) => {
         cb(progress1);
         cb(progress100);
@@ -262,7 +272,7 @@ describe('Api/Upload/upload', () => {
       expect(progressMock).toHaveBeenCalledTimes(1);
     });
 
-    it('Should call progress event on given interval', async () => {
+    it('should call progress event on given interval', async () => {
       let progressCb;
 
       mockExecute.mockImplementation(() => {
@@ -294,7 +304,7 @@ describe('Api/Upload/upload', () => {
       expect(progressMock).toHaveBeenCalledWith(progress100);
     });
 
-    it('Should stay at the same progress when uploader goes back with file progress', async () => {
+    it('should stay at the same progress when uploader goes back with file progress', async () => {
       let progressCb;
 
       mockExecute.mockImplementation(() => {

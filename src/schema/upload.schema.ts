@@ -32,7 +32,7 @@ export const UploadParamsSchema = {
     },
     progressInterval: {
       type: 'integer',
-      minimum: 10,
+      minimum: 1,
     },
     retry: {
       type: 'integer',

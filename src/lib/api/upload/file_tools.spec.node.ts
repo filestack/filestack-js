@@ -51,8 +51,8 @@ describe('Api/Upload/FileTools', () => {
     it('Should return correct mimetype', async () => {
       jest.unmock('fs');
 
-      const file = await getFile('./filestack-logo.png');
-      expect(file.mimetype).toEqual('image/png');
+      const file = await getFile('./package.json');
+      expect(file.mimetype).toEqual('text/plain');
     });
 
     it('Should return correct file instance from buffer', async () => {

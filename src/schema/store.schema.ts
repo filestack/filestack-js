@@ -22,7 +22,11 @@ export const StoreParamsSchema = {
   additionalProperties: false,
   properties: {
     filename: {
-      type: 'string',
+      oneOf: [{
+        type: 'string',
+      }, {
+        format: 'callback',
+      }],
     },
     location: {
       '$ref': 'locationsDef',

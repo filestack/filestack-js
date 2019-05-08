@@ -17,11 +17,13 @@
 
 import { Session, Security } from '../../client';
 import { S3Uploader } from './uploaders/s3';
+import { FilestackError } from './../../../FilestackError';
 
 import { UploadOptions, StoreUploadOptions } from '../upload/types';
 import { getFile, InputFile } from './file_tools';
 import { FileState } from './file';
 import { UploadMode } from './uploaders/abstract';
+import { getValidator, UploadParamsSchema, StoreParamsSchema } from './../../../schema';
 
 export interface ProgressEvent {
   totalPercent: number;
@@ -58,6 +60,16 @@ export class Upload {
   private progressIntervalHandler;
 
   constructor(private readonly options: UploadOptions = {}, private readonly storeOptions: StoreUploadOptions = {}) {
+    const validateRes = getValidator(UploadParamsSchema)(options);
+    if (validateRes.errors.length) {
+      throw new FilestackError(`Invalid upload params`, validateRes.errors);
+    }
+
+    const storeValidateRes = getValidator(StoreParamsSchema)(storeOptions);
+    if (storeValidateRes.errors.length) {
+      throw new FilestackError(`Invalid store upload params`, storeValidateRes.errors);
+    }
+
     this.uploader = new S3Uploader(storeOptions, options.concurrency);
 
     if (storeOptions.filename) {

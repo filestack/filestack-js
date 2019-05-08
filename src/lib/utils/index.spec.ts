@@ -108,6 +108,8 @@ describe('utils:index', () => {
       expect(sanitizeName('!@#te"\'.jpg')).toEqual('!@#te__.jpg');
       expect(sanitizeName('!# test.jpg')).toEqual('!#_test.jpg');
       expect(sanitizeName('123qwe.png')).toEqual('123qwe.png');
+      expect(sanitizeName('\/?%*:|"\'<>.png')).toEqual('__________.png');
+
     });
 
     it('should sanitize file name without extension', () => {
