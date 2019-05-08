@@ -123,15 +123,8 @@ export const metadata = (session: Session, handle?: string, opts?: MetadataOptio
   const baseURL = `${session.urls.fileApiUrl}/${handle}/metadata`;
   return new Promise((resolve, reject) => {
     request
-      .get(baseURL, {
-        params: removeEmpty(options),
-      })
-      .then((res) => {
-        resolve({
-          ...res.data,
-          handle,
-        });
-      })
+      .get(baseURL, { params: removeEmpty(options) })
+      .then((res) => resolve({ ...res.data, handle }))
       .catch(reject);
   });
 };
@@ -226,13 +219,7 @@ export const retrieve = (session: Session,
       url: baseURL,
       method,
       params: removeEmpty(requestOptions),
-    }).then((res) => {
-      if (method === ERequestMethod.head) {
-        return resolve(res.headers);
-      }
-
-      resolve(res.data);
-    })
+    }).then((res) => resolve(method === ERequestMethod.head ? res.headers : res.data))
     .catch(reject);
   });
 };

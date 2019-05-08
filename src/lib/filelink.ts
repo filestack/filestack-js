@@ -20,7 +20,9 @@ import { TransformSchema } from './../schema/transforms.schema';
 import { getValidator } from './../schema/validator';
 import { resolveHost } from './utils';
 import { FilestackError } from './../FilestackError';
+import Debug from 'debug';
 
+const debug = Debug('fs:filelink');
 /**
  * Align enum
  */
@@ -513,6 +515,8 @@ export class Filelink {
     this.source = source;
     const isExternal = this.isSourceExternal();
 
+    Debug(`Source ${source} - isExternal? ${isExternal}`);
+
     if (isExternal && !apikey) {
       throw new FilestackError('External sources requires apikey to handle transforms');
     }
@@ -633,6 +637,8 @@ export class Filelink {
    */
   addTask(name: string, params?) {
     this.validateTask(name, params);
+
+    Debug(`Add task  ${name} with params %O`, params);
 
     if (name !== 'cache' && typeof params === 'boolean') {
       if (!params) {

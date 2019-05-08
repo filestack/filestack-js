@@ -400,7 +400,7 @@ export class Client {
    * client.multiupload([file], { onRetry }, token)
    *   .then(res => console.log(res));
    *
-   * client.multiupload([{file, filename}], { onRetry }, token)
+   * client.multiupload([{file, name}], { onRetry }, token)
    *   .then(res => console.log(res));
    *
    * token.pause();  // Pause flow

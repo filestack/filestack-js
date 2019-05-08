@@ -45,7 +45,7 @@ export const storeURL = (
 
   const baseURL = new Filelink(url, session.apikey);
   baseURL.setCname(session.cname);
-  baseURL.setBase64(true); // Enable it after fix in mocks
+  baseURL.setBase64(true);
 
   if (session.policy && session.signature) {
     baseURL.security({

@@ -200,7 +200,7 @@ export class S3Uploader extends UploaderAbstract {
    * @returns
    * @memberof S3Uploader
    */
-  private getDefaultFields(id: string, requiredFields: string[] = [], ffiFallback: boolean = false) {
+  private getDefaultFields(id: string, requiredFields: string[] = [], fiiFallback: boolean = false) {
     const payload = this.getPayloadById(id);
 
     let fields = {
@@ -212,8 +212,8 @@ export class S3Uploader extends UploaderAbstract {
       region: payload.region,
     };
 
-    if (this.uploadMode === UploadMode.INTELLIGENT || (this.uploadMode === UploadMode.FALLBACK && ffiFallback)) {
-      fields['ffi'] = true;
+    if (this.uploadMode === UploadMode.INTELLIGENT || (this.uploadMode === UploadMode.FALLBACK && fiiFallback)) {
+      fields['fii'] = true;
     }
 
     if (requiredFields.length > 0) {
@@ -301,7 +301,7 @@ export class S3Uploader extends UploaderAbstract {
         filename: payload.file.name,
         mimetype: payload.file.type,
         size: payload.file.size,
-        ...this.getDefaultFields(id, ['apikey', 'policy', 'signature', 'ffi'], true),
+        ...this.getDefaultFields(id, ['apikey', 'policy', 'signature', 'fii'], true),
       },
       {
         timeout: this.timeout,
@@ -581,7 +581,7 @@ export class S3Uploader extends UploaderAbstract {
     return postWithRetry(
       `${this.getUploadHost(id)}/multipart/commit`,
       {
-        ...this.getDefaultFields(id, ['apikey', 'region', 'upload_id', 'policy', 'signature']),
+        ...this.getDefaultFields(id, ['apikey', 'region', 'upload_id', 'policy', 'signature', 'uri']),
         size: payload.file.size,
         part: part.partNumber + 1,
       },
@@ -629,7 +629,7 @@ export class S3Uploader extends UploaderAbstract {
     return postWithRetry(
       `${this.getHost()}/multipart/complete`,
       {
-        ...this.getDefaultFields(id, ['apikey', 'policy', 'signature', 'uri', 'region', 'upload_id', 'ffi'], true),
+        ...this.getDefaultFields(id, ['apikey', 'policy', 'signature', 'uri', 'region', 'upload_id', 'fii'], true),
         // method specific keys
         filename: payload.file.name,
         mimetype: payload.file.type,
