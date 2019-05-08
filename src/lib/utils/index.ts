@@ -174,7 +174,7 @@ export const sanitizeName = (name: string, ext: string = ''): string  => {
     ext = fileParts.pop();
   }
 
-  return `${fileParts.join('_').replace(/\s+/gi, '_').replace(/[^a-zA-Z0-9\-\_]/gi, '_')}${ext ? `.${ext}` : '' }`;
+  return `${fileParts.join('_').replace(/\s+/gi, '_').replace(/[//\/\?\%\*\:\|\"\'\<\>\"]/gi, '_')}${ext ? `.${ext}` : '' }`;
 };
 
 /**

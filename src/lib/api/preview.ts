@@ -15,9 +15,10 @@
  * limitations under the License.
  */
 
-import * as t from 'tcomb-validation';
 import { Security, Session } from '../client';
-import { checkOptions, removeEmpty } from '../utils';
+import { removeEmpty } from '../utils';
+import { getValidator, PreviewParamsSchema } from './../../schema';
+import { FilestackError } from './../../FilestackError';
 
 export interface PreviewOptions {
   /**
@@ -80,12 +81,12 @@ export const preview = (session: Session, handle?: string, opts?: PreviewOptions
   if (!handle || typeof handle !== 'string') {
     throw new Error('A valid Filestack handle or storage alias is required for preview');
   }
-  const allowed = [
-    { name: 'id', type: t.String },
-    { name: 'css', type: t.String },
-  ];
 
-  checkOptions('preview', allowed, opts);
+  const validateRes = getValidator(PreviewParamsSchema)(opts);
+
+  if (validateRes.errors.length) {
+    throw new FilestackError(`Invalid preview params`, validateRes.errors);
+  }
 
   const options = removeEmpty(opts || {});
   const url = getUrl(session, handle, options);

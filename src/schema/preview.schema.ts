@@ -14,20 +14,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Validator } from 'jsonschema';
-import { DefinitionsSchema } from './definitions.schema';
-
-const v = new Validator();
-
-Validator.prototype.customFormats.callback = (input) => typeof input === 'function';
-Validator.prototype.customFormats.HTMLContainer = (input) => (input instanceof Node) || typeof input === 'string';
-
-/**
- * Returns validator instance
- */
-export const getValidator = (schema) => {
-  return (params) => {
-    v.addSchema(DefinitionsSchema);
-    return v.validate(params, schema);
-  };
+export const PreviewParamsSchema = {
+  '$schema': 'http://json-schema.org/draft-07/schema#',
+  title: 'Filestack Preview',
+  description: 'Filestack Preview Options',
+  type: 'object',
+  additionalProperties: false,
+  properties: {
+    id: {
+      type: 'string',
+    },
+    css: {
+      type: 'string',
+    },
+  },
 };

@@ -80,4 +80,33 @@ describe('picker', () => {
     await pickerInstance.cancel();
     expect(mockPickerCancel).toHaveBeenCalledTimes(1);
   });
+
+  it.only('should not throw error on correct params', () => {
+    return expect(() => picker(client, {
+      onOpen: () => {
+        console.log(123);
+      },
+      customText: {
+        Upload: 'customUpload',
+      },
+      uploadConfig: {
+        partSize: 6 * 1024 * 1024,
+      },
+      storeTo: {
+        container: 'test',
+      },
+    })).not.toThrowError('Invalid picker params');
+  });
+
+  it('should throw error on invalid options', () => {
+    return expect(() => picker(client, {
+      // @ts-ignore
+      onOpen: 'test',
+      customText: {
+        Upload: 'customUpload',
+        // @ts-ignore
+        asd: {},
+      },
+    })).toThrowError('Invalid picker params');
+  });
 });

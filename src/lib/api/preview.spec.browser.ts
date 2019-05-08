@@ -91,6 +91,16 @@ describe('api:upload:preview', () => {
       };
       expect(() => { preview(defaultSession, handle, options); }).toThrow('DOM Element with id "testId2" not found.');
     });
+
+    it('should throw an error on invalid preview params', () => {
+      const handle = 'src://test123/test.jpg';
+      const options = {
+        id: {},
+        test: 123,
+      };
+      // @ts-ignore
+      expect(() => { preview(defaultSession, handle, options); }).toThrow('Invalid preview params');
+    });
   });
 
   describe('getUrl', () => {

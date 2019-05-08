@@ -19,3 +19,6 @@ export * from './transforms.schema';
 export * from './validator';
 export * from './store.schema';
 export * from './security.schema';
+export * from './preview.schema';
+export * from './picker.schema';
+export * from './upload.schema';

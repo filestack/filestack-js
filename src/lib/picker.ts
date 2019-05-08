@@ -16,8 +16,10 @@
  */
 
 import { loadModule, knownModuleIds } from 'filestack-loader';
+import { FilestackError } from './../FilestackError';
 import { Client } from './client';
 import { FSProgressEvent, UploadOptions, WorkflowConfig } from './api/upload/types';
+import { getValidator, PickerParamsSchema } from './../schema';
 
 export interface PickerInstance {
   /**
@@ -261,88 +263,88 @@ export interface PickerStoreOptions {
 
 export interface PickerCustomText {
   // Actions
-  Upload: string;
-  'Deselect All': string;
-  'View/Edit Selected': string;
-  'Sign Out': string;
+  Upload?: string;
+  'Deselect All'?: string;
+  'View/Edit Selected'?: string;
+  'Sign Out'?: string;
 
   // Source Labels
-  'My Device': string;
-  'Web Search': string;
-  'Take Photo': string;
-  'Link (URL)': string;
-  'Record Video': string;
-  'Record Audio': string;
+  'My Device'?: string;
+  'Web Search'?: string;
+  'Take Photo'?: string;
+  'Link (URL)'?: string;
+  'Record Video'?: string;
+  'Record Audio'?: string;
 
   // Custom Source
-  'Custom Source': string;
+  'Custom Source'?: string;
 
   // Footer Text
-  Add: string;
-  'more file': string;
-  'more files': string;
+  Add?: string;
+  'more file'?: string;
+  'more files'?: string;
 
   // Cloud
-  Connect: string;
-  'Select Files from': string;
-  'You need to authenticate with ': string;
-  'A new page will open to connect your account.': string;
-  'We only extract images and never modify or delete them.': string;
+  Connect?: string;
+  'Select Files from'?: string;
+  'You need to authenticate with '?: string;
+  'A new page will open to connect your account.'?: string;
+  'We only extract images and never modify or delete them.'?: string;
 
   // Summary
-  Files: string;
-  Images: string;
-  Uploaded: string;
-  Uploading: string;
-  Completed: string;
-  Filter: string;
-  'Cropped Images': string;
-  'Edited Images': string;
-  'Selected Files': string;
-  'Crop is required on images': string;
+  Files?: string;
+  Images?: string;
+  Uploaded?: string;
+  Uploading?: string;
+  Completed?: string;
+  Filter?: string;
+  'Cropped Images'?: string;
+  'Edited Images'?: string;
+  'Selected Files'?: string;
+  'Crop is required on images'?: string;
 
   // Transform
-  Crop: string;
-  Circle: string;
-  Rotate: string;
-  Mask: string;
-  Revert: string;
-  Edit: string;
-  Reset: string;
-  Done: string;
-  Save: string;
-  Next: string;
-  'Edit Image': string;
-  'This image cannot be edited': string;
+  Crop?: string;
+  Circle?: string;
+  Rotate?: string;
+  Mask?: string;
+  Revert?: string;
+  Edit?: string;
+  Reset?: string;
+  Done?: string;
+  Save?: string;
+  Next?: string;
+  'Edit Image'?: string;
+  'This image cannot be edited'?: string;
 
   // Retry messaging
-  'Connection Lost': string;
-  'Failed While Uploading': string;
-  'Retrying in': string;
-  'Try again': string;
-  'Try now': string;
+  'Connection Lost'?: string;
+  'Failed While Uploading'?: string;
+  'Retrying in'?: string;
+  'Try again'?: string;
+  'Try now'?: string;
 
   // Local File Source
-  'or Drag and Drop, Copy and Paste Files': string;
-  'Select Files to Upload': string;
-  'Select From': string;
-  'Drop your files anywhere': string;
+  'or Drag and Drop, Copy and Paste Files'?: string;
+  'Select Files to Upload'?: string;
+  'Select From'?: string;
+  'Drop your files anywhere'?: string;
 
   // Input placeholders
-  'Enter a URL': string;
-  'Search images': string;
+  'Enter a URL'?: string;
+  'Search images'?: string;
 
   // Webcam Source
-  'Webcam Disabled': string;
-  'Webcam Not Supported': string;
-  'Please enable your webcam to take a photo.': string;
-  'Your current browser does not support webcam functionality.': string;
-  'We suggest using Chrome or Firefox.': string;
+  'Webcam Disabled'?: string;
+  'Webcam Not Supported'?: string;
+  'Please enable your webcam to take a photo.'?: string;
+  'Your current browser does not support webcam functionality.'?: string;
+  'We suggest using Chrome or Firefox.'?: string;
 
   // Error Notifications
-  'File {displayName} is not an accepted file type. The accepted file types are {types}': string;
-  'File {displayName} is too big. The accepted file size is less than {roundFileSize}': string;
-  'Our file upload limit is {maxFiles} {filesText}': string;
+  'File {displayName} is not an accepted file type. The accepted file types are {types}'?: string;
+  'File {displayName} is too big. The accepted file size is less than {roundFileSize}'?: string;
+  'Our file upload limit is {maxFiles} {filesText}'?: string;
 }
 
 export interface PickerOptions {
@@ -665,6 +667,11 @@ class PickerLoader {
   private _initialized: Promise<PickerInstance>;
 
   constructor(client: Client, options?: PickerOptions) {
+    const validateRes = getValidator(PickerParamsSchema)(options);
+    if (validateRes.errors.length) {
+      throw new FilestackError(`Invalid picker params`, validateRes.errors);
+    }
+
     this._initialized = this.loadModule(client, options);
   }
 
