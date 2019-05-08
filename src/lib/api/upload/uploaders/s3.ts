@@ -399,7 +399,7 @@ export class S3Uploader extends UploaderAbstract {
     return postWithRetry(
       `${url}/multipart/upload`,
       {
-        ...this.getDefaultFields(id, ['apikey', 'uri', 'region', 'signature', 'policy', 'upload_id']),
+        ...this.getDefaultFields(id, ['apikey', 'uri', 'region', 'signature', 'policy', 'upload_id', 'fii']),
         // method specific keys
         part: part.partNumber + 1,
         md5: part.md5,

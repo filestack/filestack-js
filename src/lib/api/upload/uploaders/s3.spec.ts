@@ -394,6 +394,7 @@ describe('Api/Upload/Uploaders/S3', () => {
           uri: mockedUri,
           upload_id: mockUploadId,
           offset: firstPartOffset,
+          fii: true,
           part: 1,
         });
 
@@ -411,6 +412,7 @@ describe('Api/Upload/Uploaders/S3', () => {
           uri: mockedUri,
           upload_id: mockUploadId,
           offset: secondPartOffset,
+          fii: true,
           part: 1,
         });
 
