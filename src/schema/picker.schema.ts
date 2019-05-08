@@ -242,6 +242,9 @@ export const PickerParamsSchema = {
       additionalProperties: false,
       type: 'object',
       properties: {
+        filename: {
+          type: 'string',
+        },
         location: {
           $ref: 'locationsDef',
         },
