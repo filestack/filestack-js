@@ -72,7 +72,7 @@ export class Upload {
     this.uploader = new S3Uploader(storeOptions, options.concurrency);
 
     if (storeOptions.filename) {
-      this.storeOptions = JSON.parse(JSON.stringify(storeOptions)); // do not delete filename from original options reference - copy it first
+      this.storeOptions = Object.assign({}, storeOptions); // do not delete filename from original options reference - copy it first
       this.overwriteFileName = storeOptions.filename;
       delete this.storeOptions.filename;
     }
@@ -153,8 +153,7 @@ export class Upload {
   /**
    * Upload single file
    *
-   * @param {(string | Buffer | Blob)} file
-   * @param {string} [name] - overwrite file name?
+   * @param {(InputFile)} file
    * @returns {Promise<any>}
    * @memberof Upload
    */
@@ -178,7 +177,7 @@ export class Upload {
   /**
    * Upload multiple files at once
    *
-   * @param {(string[] | Buffer[] | Blob[])} input
+   * @param {(InputFile[])} input
    * @returns {Promise<any>}
    * @memberof Upload
    */
