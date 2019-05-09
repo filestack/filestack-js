@@ -79,7 +79,7 @@ export class Upload {
 
     this.uploader.setRetryConfig({
       retry: options.retry || 10,
-      onRetry: options.onRetry,
+      onRetry: options.onRetry, // @todo bind file to retry in s3 uploader
       retryFactor: options.retryFactor || 2,
       retryMaxTime: options.retryMaxTime || 15000,
     });

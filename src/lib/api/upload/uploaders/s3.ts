@@ -285,10 +285,8 @@ export class S3Uploader extends UploaderAbstract {
    * @private
    * @returns {Promise<any>}
    * @memberof S3Uploader
-   * @todo pare response check if can intelligent can be used response->upload_type (regular-> go back to normal upload)
    */
   private startRequest(id: string): Promise<any> {
-    // @todo add interface to return value
     const payload = this.getPayloadById(id);
 
     debug(`[${id}] Make start request`);
@@ -488,7 +486,6 @@ export class S3Uploader extends UploaderAbstract {
 
   /**
    * Recursively upload file in chunk mode (intelligent ingession)
-   * @todo set part state by method
    *
    * @private
    * @param {string} id

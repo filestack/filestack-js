@@ -27,6 +27,7 @@ export class FilestackError extends Error {
 
   constructor(message?: string, details?: any) {
 
+    /* istanbul ignore next */
     super(message);
 
     Object.setPrototypeOf(this, FilestackError.prototype);

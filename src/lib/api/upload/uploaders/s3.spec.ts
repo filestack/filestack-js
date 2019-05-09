@@ -14,8 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-// @todo add etag assertion
-// @todo add workflows assertion
 
 import { S3Uploader } from './s3';
 import { File } from './../file';
