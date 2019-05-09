@@ -28,15 +28,17 @@ export const DefinitionsSchema = {
       minItems: 1,
       maxItems: 20,
       items: [{
-        type: 'string',
-      }, {
-        type: 'object',
-        additionalProperties: false,
-        properties: {
-          id: {
-            type: 'string',
+        oneOf: [{
+          type: 'string',
+        }, {
+          type: 'object',
+          additionalProperties: false,
+          properties: {
+            id: {
+              type: 'string',
+            },
           },
-        },
+        }],
       }],
     },
     securityCallDef: {

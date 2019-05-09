@@ -20,7 +20,7 @@ import { DefinitionsSchema } from './definitions.schema';
 const v = new Validator();
 
 Validator.prototype.customFormats.callback = (input) => typeof input === 'function';
-Validator.prototype.customFormats.HTMLContainer = (input) => (input instanceof Node) || typeof input === 'string';
+Validator.prototype.customFormats.HTMLContainer = (input) => typeof input === 'string' || (input.toString() === '[object HTMLDivElement]');
 
 /**
  * Returns validator instance

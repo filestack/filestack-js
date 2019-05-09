@@ -75,16 +75,16 @@ export const PickerParamsSchema = {
       ],
     },
     container: {
-      type: 'HTMLContainer',
+      format: 'HTMLContainer',
     },
     cleanupImageExif: {
-      additionalProperties: false,
       oneOf: [
         {
           type: 'boolean',
         },
         {
           type: 'object',
+          additionalProperties: false,
           properties: {
             keepOrientation: {
               type: 'boolean',
@@ -265,35 +265,35 @@ export const PickerParamsSchema = {
           $ref: 'workflowsDef',
         },
       },
-      transformations: {
-        type: 'object',
-        additionalProperties: false,
-        properties: {
-          circle: {
-            type: 'boolean',
-          },
-          rotate: {
-            type: 'boolean',
-          },
-          crop: {
-            oneOf: [
-              {
-                type: 'boolean',
-              },
-              {
-                type: 'object',
-                additionalProperties: false,
-                properties: {
-                  force: {
-                    type: 'boolean',
-                  },
-                  aspectRatio: {
-                    type: 'number',
-                  },
+    },
+    transformations: {
+      type: 'object',
+      additionalProperties: false,
+      properties: {
+        circle: {
+          type: 'boolean',
+        },
+        rotate: {
+          type: 'boolean',
+        },
+        crop: {
+          oneOf: [
+            {
+              type: 'boolean',
+            },
+            {
+              type: 'object',
+              additionalProperties: false,
+              properties: {
+                force: {
+                  type: 'boolean',
+                },
+                aspectRatio: {
+                  type: 'number',
                 },
               },
-            ],
-          },
+            },
+          ],
         },
       },
     },
