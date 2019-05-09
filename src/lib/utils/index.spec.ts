@@ -103,7 +103,7 @@ describe('utils:index', () => {
     });
   });
 
-  describe.only('sanitizeName', () => {
+  describe('sanitizeName', () => {
     it('should sanitize file name with extension', () => {
       expect(sanitizeName('!@#te"\'.jpg')).toEqual('!@#te__.jpg');
       expect(sanitizeName('!# test.jpg')).toEqual('!#_test.jpg');
