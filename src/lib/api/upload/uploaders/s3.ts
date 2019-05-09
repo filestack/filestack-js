@@ -200,7 +200,7 @@ export class S3Uploader extends UploaderAbstract {
    * @returns
    * @memberof S3Uploader
    */
-  private getDefaultFields(id: string, requiredFields: string[] = [], fiiFallback: boolean = false) {
+  private getDefaultFields(id: string, requiredFields: string[], fiiFallback: boolean = false) {
     const payload = this.getPayloadById(id);
 
     let fields = {
@@ -216,9 +216,7 @@ export class S3Uploader extends UploaderAbstract {
       fields['fii'] = true;
     }
 
-    if (requiredFields.length > 0) {
-      fields = filterObject(fields, requiredFields) as any;
-    }
+    fields = filterObject(fields, requiredFields) as any;
 
     fields = {
       ...fields,

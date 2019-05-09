@@ -99,7 +99,7 @@ describe('utils:index', () => {
 
   describe('md5', () => {
     it('should return correct md5 value', () => {
-      expect(md5('test')).toEqual('CY9rzUYh03PK3k6DJie09g==');
+      expect(md5(Buffer.from('test'))).toEqual('CY9rzUYh03PK3k6DJie09g==');
     });
   });
 
@@ -110,6 +110,8 @@ describe('utils:index', () => {
       expect(sanitizeName('123qwe.png')).toEqual('123qwe.png');
       expect(sanitizeName('\/?%*:|"\'<>.png')).toEqual('__________.png');
       expect(sanitizeName('name/names/Numero\\%20 ')).toEqual('name_names_Numero__20_');
+
+      expect(sanitizeName('name/names/Numero\\%20 ', 'png')).toEqual('name_names_Numero__20_.png');
     });
 
     it('should sanitize file name without extension', () => {

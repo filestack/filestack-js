@@ -427,7 +427,7 @@ export interface PdfConvertParams {
 
 export interface FallbackParams {
   handle: string;
-  cache: number;
+  cache?: number;
 }
 
 export interface MinifyCssParams {
@@ -1283,6 +1283,7 @@ export class Filelink {
 
     let toTest = Array.isArray(this.source) ? this.source : [this.source];
     for (let i in toTest) {
+      /* istanbul ignore next */
       if (!toTest.hasOwnProperty(i)) {
         continue;
       }
@@ -1304,9 +1305,7 @@ export class Filelink {
    * @memberof Filelink
    */
   private validateTasks(transformations: object[]): void {
-    const transformationsObj = this.arrayToObject(transformations, 'name', 'params');
-    const res = Filelink.validator(transformationsObj);
-
+    const res = Filelink.validator(this.arrayToObject(transformations, 'name', 'params'));
     if (res.errors.length) {
       throw new FilestackError(`Params validation error`, res.errors);
     }
@@ -1364,17 +1363,10 @@ export class Filelink {
       return key;
     }
 
-    if (typeof values === 'object' && !Object.keys(values).length) {
-      return key;
-    }
-
     // if we just want to enable feature
     if (typeof values === 'boolean') {
-      if (!values) {
-        if (key === 'cache') {
-          return 'cache=false';
-        }
-        return '';
+      if (!values && key === 'cache') {
+        return 'cache=false';
       }
 
       return key;
