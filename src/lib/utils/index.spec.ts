@@ -103,13 +103,13 @@ describe('utils:index', () => {
     });
   });
 
-  describe('sanitizeName', () => {
+  describe.only('sanitizeName', () => {
     it('should sanitize file name with extension', () => {
       expect(sanitizeName('!@#te"\'.jpg')).toEqual('!@#te__.jpg');
       expect(sanitizeName('!# test.jpg')).toEqual('!#_test.jpg');
       expect(sanitizeName('123qwe.png')).toEqual('123qwe.png');
       expect(sanitizeName('\/?%*:|"\'<>.png')).toEqual('__________.png');
-
+      expect(sanitizeName('name/names/Numero\\%20 ')).toEqual('name_names_Numero__20_');
     });
 
     it('should sanitize file name without extension', () => {

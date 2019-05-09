@@ -21,6 +21,8 @@ import * as Path from 'path';
 import { S3Uploader } from './../src/lib/api/upload/uploaders/s3';
 import { getFile } from '../src/lib/api/upload';
 
+const createFile = (size = 44320) => new Buffer(size);
+
 // const fs = new Client('APEkwxKMZTsWNIP0XQsv2z');
 
 // fs.multiupload(
@@ -43,7 +45,7 @@ import { getFile } from '../src/lib/api/upload';
 // });
 
 (async () => {
-  const file = await getFile(Path.resolve(__dirname, './manual_10mb.mp4'));
+  const file = await getFile(createFile());
   const u = new S3Uploader({});
   u.setHost('https://upload.filestackapi.com');
   u.setApikey('APEkwxKMZTsWNIP0XQsv2z');
