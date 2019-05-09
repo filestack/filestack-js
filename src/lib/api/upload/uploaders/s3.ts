@@ -24,7 +24,7 @@ import { StoreUploadOptions } from './../types';
 import { postWithRetry, request, useRetryPolicy, shouldRetry } from './../../request';
 import { uniqueTime, uniqueId, filterObject } from './../../../utils';
 import { UploaderAbstract, UploadMode, INTELLIGENT_CHUNK_SIZE, MIN_CHUNK_SIZE, DEFAULT_STORE_LOCATION } from './abstract';
-import { FilestackError } from './../../../../FilestackError';
+import { FilestackError } from './../../../../filestack_error';
 
 const debug = Debug('fs:upload:s3');
 

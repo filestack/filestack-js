@@ -18,7 +18,7 @@
 import { Security, Session } from '../client';
 import { request } from './request';
 import { removeEmpty } from '../utils';
-import { FilestackError } from './../../FilestackError';
+import { FilestackError } from './../../filestack_error';
 import { getValidator, MetadataParamsSchema, RetrieveParamsSchema } from './../../schema';
 
 /**

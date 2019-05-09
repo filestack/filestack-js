@@ -55,8 +55,10 @@ describe.only('Picker Params Schema', () => {
   it('should validate container param', () => {
     assert.ok(validate({ container: 'test' }));
 
-    const node = JSDOM.fragment(`<div>Hello</div>`).querySelector('div');
-    assert.ok(validate({ container: node }));
+    const nodeDiv = JSDOM.fragment(`<div>Hello</div>`).querySelector('div');
+    const nodeP = JSDOM.fragment(`<p>Hello</p>`).querySelector('p');
+    assert.ok(validate({ container: nodeDiv }));
+    assert.ok(validate({ container: nodeP }));
     assertFail(validate({ container: {} }));
   });
 

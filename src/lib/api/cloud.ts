@@ -19,7 +19,7 @@ import { removeEmpty } from '../utils';
 import { StoreParams } from '../filelink';
 import { ClientOptions, Session } from '../client';
 import { requestWithSource, request } from '../api/request';
-import { FilestackError } from './../../FilestackError';
+import { FilestackError } from './../../filestack_error';
 
 /**
  * @private

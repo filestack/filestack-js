@@ -19,7 +19,7 @@ import fileType from 'file-type';
 import issvg from 'is-svg';
 import * as isutf8 from 'isutf8';
 import { isNode, sanitizeName } from './../../utils';
-import { FilestackError } from './../../../FilestackError';
+import { FilestackError } from './../../../filestack_error';
 
 export type RawFile = Blob | Buffer | File | string;
 export type NamedInputFile = {

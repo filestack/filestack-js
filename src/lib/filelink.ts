@@ -19,7 +19,7 @@ import { config } from './../config';
 import { TransformSchema } from './../schema/transforms.schema';
 import { getValidator } from './../schema/validator';
 import { resolveHost } from './utils';
-import { FilestackError } from './../FilestackError';
+import { FilestackError } from './../filestack_error';
 import Debug from 'debug';
 
 const debug = Debug('fs:filelink');
@@ -659,6 +659,7 @@ export class Filelink {
       if (Array.isArray(source)) {
         source = this.arrayToString(source);
       }
+
       source = `b64://${btoa(source)}`;
     } else {
       if (Array.isArray(source)) {

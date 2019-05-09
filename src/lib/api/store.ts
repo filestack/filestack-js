@@ -18,7 +18,7 @@
 import { request } from './request';
 import { Security, Session } from '../client';
 import { Filelink, StoreParams } from './../filelink';
-import { FilestackError } from './../../FilestackError';
+import { FilestackError } from './../../filestack_error';
 import { getValidator, StoreParamsSchema } from './../../schema';
 
 /**

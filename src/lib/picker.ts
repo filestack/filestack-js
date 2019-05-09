@@ -16,7 +16,7 @@
  */
 
 import { loadModule, knownModuleIds } from 'filestack-loader';
-import { FilestackError } from './../FilestackError';
+import { FilestackError } from './../filestack_error';
 import { Client } from './client';
 import { FSProgressEvent, UploadOptions, WorkflowConfig } from './api/upload/types';
 import { getValidator, PickerParamsSchema } from './../schema';

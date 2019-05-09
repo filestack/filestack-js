@@ -22,7 +22,7 @@ import { StoreUploadOptions } from './../types';
 import { Security } from './../../../client';
 import { RetryConfig } from './../../request';
 import { isMobile } from './../../../utils';
-import { FilestackError } from './../../../../FilestackError';
+import { FilestackError } from './../../../../filestack_error';
 
 // regular part size
 export const DEFAULT_PART_SIZE = 6 * 1024 * 1024;

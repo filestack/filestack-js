@@ -17,7 +17,7 @@
 
 import * as crypto from 'crypto';
 import { Security } from '../client';
-import { FilestackError } from './../../FilestackError';
+import { FilestackError } from './../../filestack_error';
 import { getValidator, SecurityParamsSchema } from './../../schema';
 
 /**

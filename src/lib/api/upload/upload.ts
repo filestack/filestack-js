@@ -17,7 +17,7 @@
 
 import { Session, Security } from '../../client';
 import { S3Uploader } from './uploaders/s3';
-import { FilestackError } from './../../../FilestackError';
+import { FilestackError } from './../../../filestack_error';
 
 import { UploadOptions, StoreUploadOptions } from '../upload/types';
 import { getFile, InputFile } from './file_tools';

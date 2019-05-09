@@ -17,7 +17,7 @@
 /* globals global */
 
 import { CloudClient } from './cloud';
-import { FilestackError } from '../../FilestackError';
+import { FilestackError } from '../../filestack_error';
 
 const globalAny: any = global;
 

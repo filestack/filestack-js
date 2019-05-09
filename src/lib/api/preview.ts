@@ -18,7 +18,7 @@
 import { Security, Session } from '../client';
 import { removeEmpty } from '../utils';
 import { getValidator, PreviewParamsSchema } from './../../schema';
-import { FilestackError } from './../../FilestackError';
+import { FilestackError } from './../../filestack_error';
 
 export interface PreviewOptions {
   /**
