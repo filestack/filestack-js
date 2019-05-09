@@ -41,9 +41,8 @@ const normalizeProgress = (current, last) => {
 };
 
 /**
- * Overlay to connect new uploader with old one without changing options
+ * Uploader main class for now its supporting only s3 upload type
  *
- * @todo accept function as filename -> dynamic filename generation
  * @export
  * @class Upload
  */
