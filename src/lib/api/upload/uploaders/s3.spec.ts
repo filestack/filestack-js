@@ -191,6 +191,7 @@ describe('Api/Upload/Uploaders/S3', () => {
     it('should respect provided store options and add prefix to them', async () => {
       const storeOption = {
         container: 'test',
+        location: DEFAULT_STORE_LOCATION,
         workflows: [{
           id: 'test',
         }],
@@ -208,9 +209,7 @@ describe('Api/Upload/Uploaders/S3', () => {
         filename: testFile.name,
         mimetype: testFile.mimetype,
         size: testFile.size,
-        store_container: storeOption.container,
-        store_location: DEFAULT_STORE_LOCATION,
-        workflows: storeOption.workflows,
+        store: storeOption,
         apikey: testApikey,
       });
 
@@ -218,9 +217,7 @@ describe('Api/Upload/Uploaders/S3', () => {
         filename: testFile.name,
         mimetype: testFile.mimetype,
         size: testFile.size,
-        store_container: storeOption.container,
-        store_location: DEFAULT_STORE_LOCATION,
-        workflows: storeOption.workflows,
+        store: storeOption,
         apikey: testApikey,
         parts: [{ part_number: 1, etag: 'test' }],
         region: mockRegion,
@@ -280,7 +277,9 @@ describe('Api/Upload/Uploaders/S3', () => {
           size: testFile.size,
           apikey: testApikey,
           region: mockRegion,
-          store_location: DEFAULT_STORE_LOCATION,
+          store: {
+            location: DEFAULT_STORE_LOCATION,
+          },
           uri: mockedUri,
           upload_id: mockUploadId,
           part: 1,
@@ -374,7 +373,9 @@ describe('Api/Upload/Uploaders/S3', () => {
           filename: testFile.name,
           mimetype: testFile.mimetype,
           size: testFile.size,
-          store_location: DEFAULT_STORE_LOCATION,
+          store: {
+            location: DEFAULT_STORE_LOCATION,
+          },
           apikey: testApikey,
           fii: true,
         });
@@ -388,7 +389,9 @@ describe('Api/Upload/Uploaders/S3', () => {
           size: firstPartChunk.size,
           apikey: testApikey,
           region: mockRegion,
-          store_location: DEFAULT_STORE_LOCATION,
+          store: {
+            location: DEFAULT_STORE_LOCATION,
+          },
           uri: mockedUri,
           upload_id: mockUploadId,
           offset: firstPartOffset,
@@ -406,7 +409,9 @@ describe('Api/Upload/Uploaders/S3', () => {
           size: firstPartSecondChunk.size,
           apikey: testApikey,
           region: mockRegion,
-          store_location: DEFAULT_STORE_LOCATION,
+          store: {
+            location: DEFAULT_STORE_LOCATION,
+          },
           uri: mockedUri,
           upload_id: mockUploadId,
           offset: secondPartOffset,
@@ -423,7 +428,9 @@ describe('Api/Upload/Uploaders/S3', () => {
           region: mockRegion,
           uri: mockedUri,
           upload_id: mockUploadId,
-          store_location: DEFAULT_STORE_LOCATION,
+          store: {
+            location: DEFAULT_STORE_LOCATION,
+          },
         });
 
         expect(mockComplete).toHaveBeenCalledWith({
@@ -433,7 +440,9 @@ describe('Api/Upload/Uploaders/S3', () => {
           size: testFile.size,
           region: mockRegion,
           upload_id: mockUploadId,
-          store_location: DEFAULT_STORE_LOCATION,
+          store: {
+            location: DEFAULT_STORE_LOCATION,
+          },
           fii: true,
           uri: mockedUri,
         });
@@ -481,7 +490,9 @@ describe('Api/Upload/Uploaders/S3', () => {
           apikey: testApikey,
           region: mockRegion,
           fii: true,
-          store_location: DEFAULT_STORE_LOCATION,
+          store: {
+            location: DEFAULT_STORE_LOCATION,
+          },
           uri: mockedUri,
           upload_id: mockUploadId,
           offset: 0,
@@ -497,7 +508,9 @@ describe('Api/Upload/Uploaders/S3', () => {
           size: chunk1.size,
           apikey: testApikey,
           region: mockRegion,
-          store_location: DEFAULT_STORE_LOCATION,
+          store: {
+            location: DEFAULT_STORE_LOCATION,
+          },
           fii: true,
           uri: mockedUri,
           upload_id: mockUploadId,
@@ -512,7 +525,9 @@ describe('Api/Upload/Uploaders/S3', () => {
           size: chunk2.size,
           apikey: testApikey,
           region: mockRegion,
-          store_location: DEFAULT_STORE_LOCATION,
+          store: {
+            location: DEFAULT_STORE_LOCATION,
+          },
           fii: true,
           uri: mockedUri,
           upload_id: mockUploadId,
@@ -628,7 +643,9 @@ describe('Api/Upload/Uploaders/S3', () => {
           size: firstPart.size,
           apikey: testApikey,
           region: mockRegion,
-          store_location: DEFAULT_STORE_LOCATION,
+          store: {
+            location: DEFAULT_STORE_LOCATION,
+          },
           uri: mockedUri,
           upload_id: mockUploadId,
           part: 1,
@@ -640,7 +657,9 @@ describe('Api/Upload/Uploaders/S3', () => {
           fii: true,
           apikey: testApikey,
           region: mockRegion,
-          store_location: DEFAULT_STORE_LOCATION,
+          store: {
+            location: DEFAULT_STORE_LOCATION,
+          },
           uri: mockedUri,
           offset: 0,
           upload_id: mockUploadId,
@@ -707,7 +726,9 @@ describe('Api/Upload/Uploaders/S3', () => {
         filename: testFile.name,
         mimetype: testFile.mimetype,
         size: testFile.size,
-        store_location: DEFAULT_STORE_LOCATION,
+        store: {
+          location: DEFAULT_STORE_LOCATION,
+        },
         apikey: testApikey,
       });
 
@@ -719,7 +740,9 @@ describe('Api/Upload/Uploaders/S3', () => {
         size: firstPart.size,
         apikey: testApikey,
         region: mockRegion,
-        store_location: DEFAULT_STORE_LOCATION,
+        store: {
+          location: DEFAULT_STORE_LOCATION,
+        },
         uri: mockedUri,
         upload_id: mockUploadId,
         part: 1,
@@ -733,7 +756,9 @@ describe('Api/Upload/Uploaders/S3', () => {
         size: secondPart.size,
         apikey: testApikey,
         region: mockRegion,
-        store_location: DEFAULT_STORE_LOCATION,
+        store: {
+          location: DEFAULT_STORE_LOCATION,
+        },
         uri: mockedUri,
         upload_id: mockUploadId,
         part: 2,
@@ -748,7 +773,9 @@ describe('Api/Upload/Uploaders/S3', () => {
         parts: [{ part_number: 1, etag: 'test' }, { part_number: 2, etag: 'test' }],
         region: mockRegion,
         upload_id: mockUploadId,
-        store_location: DEFAULT_STORE_LOCATION,
+        store: {
+          location: DEFAULT_STORE_LOCATION,
+        },
         uri: mockedUri,
       });
 

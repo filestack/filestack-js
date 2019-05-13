@@ -175,21 +175,10 @@ export class S3Uploader extends UploaderAbstract {
    * @memberof S3Uploader
    */
   private getStoreOptions() {
-    const opts = this.storeOptions;
-    let toReturn = {};
-
-    Object.keys(opts).forEach(k => {
-      if (k === 'workflows') {
-        toReturn['workflows'] = opts[k];
-        return;
-      }
-
-      toReturn[`store_${k}`] = opts[k];
-    });
 
     return {
-      store_location: DEFAULT_STORE_LOCATION, // this parameter is required, if not set use default one
-      ...toReturn,
+      location: DEFAULT_STORE_LOCATION, // this parameter is required, if not set use default one
+      ...this.storeOptions,
     };
   }
 
@@ -218,12 +207,10 @@ export class S3Uploader extends UploaderAbstract {
 
     fields = filterObject(fields, requiredFields) as any;
 
-    fields = {
+    return {
       ...fields,
-      ...this.getStoreOptions(),
+      store: this.getStoreOptions(),
     };
-
-    return fields;
   }
 
   /**
