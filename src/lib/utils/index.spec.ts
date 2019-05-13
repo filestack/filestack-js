@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { resolveCdnUrl, resolveHost, removeEmpty, isMobile, uniqueTime, uniqueId, md5, sanitizeName, filterObject } from './index';
+import { resolveCdnUrl, resolveHost, removeEmpty, isMobile, uniqueTime, uniqueId, md5, sanitizeName, filterObject, b64 } from './index';
 import { config } from '../../config';
 
 describe('utils:index', () => {
@@ -100,6 +100,12 @@ describe('utils:index', () => {
   describe('md5', () => {
     it('should return correct md5 value', () => {
       expect(md5(Buffer.from('test'))).toEqual('CY9rzUYh03PK3k6DJie09g==');
+    });
+  });
+
+  describe('b64', () => {
+    it('should return correct b65 value', () => {
+      expect(b64('testtext')).toEqual('dGVzdHRleHQ=');
     });
   });
 

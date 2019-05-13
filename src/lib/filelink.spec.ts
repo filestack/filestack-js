@@ -19,12 +19,6 @@ import { Filelink, ShapeType, VideoAccessMode } from './filelink';
 import { TransformSchema } from './../schema/transforms.schema';
 import * as validator from '../schema';
 
-const globalAny: any = global;
-
-globalAny.btoa = str => {
-  return Buffer.from(str).toString('base64');
-};
-
 describe('filelink', () => {
 
   beforeAll(() => {

@@ -18,7 +18,7 @@
 import { config } from './../config';
 import { TransformSchema } from './../schema/transforms.schema';
 import { getValidator } from './../schema/validator';
-import { resolveHost } from './utils';
+import { resolveHost, b64 } from './utils';
 import { FilestackError } from './../filestack_error';
 import Debug from 'debug';
 
@@ -653,14 +653,14 @@ export class Filelink {
 
     if (this.b64) {
       if (this.transforms.length > 0) {
-        transformsString = `b64/${btoa(JSON.stringify(this.transforms))}`;
+        transformsString = `b64/${b64(JSON.stringify(this.transforms))}`;
       }
 
       if (Array.isArray(source)) {
         source = this.arrayToString(source);
       }
 
-      source = `b64://${btoa(source)}`;
+      source = `b64://${b64(source)}`;
     } else {
       if (Array.isArray(source)) {
         source = this.arrayToString(source);

@@ -26,4 +26,10 @@ describe('utils:index', () => {
       expect(utils.md5(Buffer.from('test'))).toEqual('CY9rzUYh03PK3k6DJie09g==');
     });
   });
+
+  describe.only('b64', () => {
+    it('should return correct b65 value', () => {
+      expect(utils.b64('testtext')).toEqual('dGVzdHRleHQ=');
+    });
+  });
 });

@@ -112,13 +112,25 @@ export const uniqueId = (len: number = 10): string => {
  * @param data  Data to be hashed
  * @returns     base64 encoded MD5 hash
  */
-export const md5 = (data: any) => {
-  if ((isNode())) {
+export const md5 = (data: any): string => {
+  if (isNode()) {
     return (require('crypto')).createHash('md5').update(data).digest('base64');
   }
 
   /* istanbul ignore next */
   return btoa(SparkMD5.ArrayBuffer.hash(data, true));
+};
+
+/**
+ * return based string
+ * @param data
+ */
+export const b64 = (data: string): string => {
+  if (isNode()) {
+    return Buffer.from(data).toString('base64');
+  }
+
+  return btoa(data);
 };
 
 /**
