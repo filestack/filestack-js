@@ -61,7 +61,7 @@ describe('Api/Upload/File', () => {
       return 'test123 ##.txt';
     };
 
-    expect(file.name).toEqual('test123_##.txt');
+    expect(file.name).toEqual('test123 ##.txt');
   });
 
   it('should throw an error when custom name function is not returning string', () => {

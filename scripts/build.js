@@ -1,6 +1,4 @@
 const gulp = require('gulp');
-const path = require('path');
-const fs = require('fs');
 const ts = require('gulp-typescript');
 const replace = require('gulp-replace');
 const del = require('del');

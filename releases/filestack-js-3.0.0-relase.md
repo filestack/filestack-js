@@ -1,7 +1,7 @@
 # Filestack-js@3.0.0 Releases notes
 
 ## Features
-
+- StoreUrl now use new base64 transform protocol by default
 - Add multiupload feature
   ```js
     client
@@ -77,8 +77,13 @@
     })
 
   ```
-- rewrite all tests (now tests are splitter to integrations and units)
+- rewrite all tests (now tests are splitted to integrations and units)
 - add missing transformations uglifyJs and uglifyCss
+- add name sanitization
+  ```
+  [/\?%*:|"'] 
+  ```
+  will be replaced with _
 - minor fixes
 
 ## Deprecation: 
@@ -86,7 +91,7 @@
   
 ## Others:
 - move to new build system (webpack)
-- reduce bundle size to 150kb (~50kb gzipped)
+- reduce bundle size to ~160kb (~50kb gzipped)
 - add codeconv service and setup pull requests to minimum tests coverage (99%)
 - add sri hashes to manifest.json
 - update outdated packages

@@ -358,7 +358,7 @@ export class Client {
    * token.resume(); // Resume flow
    * token.cancel(); // Cancel flow (rejects)
    * ```
-   * @param file           Must be a valid [File](https://developer.mozilla.org/en-US/docs/Web/API/File), Blob, base64 encoded string, or file path in Node.
+   * @param file           Must be a valid [File | Blob | Buffer | string]
    * @param uploadOptions  Uploader options.
    * @param storeOptions   Storage options.
    * @param token          A control token that can be used to call cancel(), pause(), and resume().
@@ -407,7 +407,7 @@ export class Client {
    * token.resume(); // Resume flow
    * token.cancel(); // Cancel flow (rejects)
    * ```
-   * @param file           Must be a valid [File](https://developer.mozilla.org/en-US/docs/Web/API/File), Blob, base64 encoded string, or file path in Node.
+   * @param file           Must be a valid [File | Blob | Buffer | string (base64)]
    * @param uploadOptions  Upload options.
    * @param storeOptions   Storage options.
    * @param token          A control token that can be used to call cancel(), pause(), and resume().
