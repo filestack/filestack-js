@@ -38,6 +38,7 @@
   - [Node](#node)
     - [CommonJS module](#commonjs-module)
 - [Module Overview](#module-overview)
+- [Releases Info](#releases-info)
 - [Live examples (JSFiddle)](#live-examples-jsfiddle)
 - [Picker Quick Start](#picker-quick-start)
 - [Promises](#promises)
@@ -138,6 +139,11 @@ The pre-bundled browser module is also available in UMD format. This is useful i
 
 * [Filestack CDN](https://static.filestackapi.com/filestack-js/3.x.x/filestack.min.js)
 * [unpkg](https://unpkg.com/filestack-js@3.x.x)
+
+## Releases Info
+
+Major releases will bo listed (with detailed examples) in releases folder starting from version 3.0.0
+
 
 ## Live examples (JSFiddle)
 
