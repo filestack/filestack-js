@@ -129,7 +129,7 @@ const getMimetype = (file: Uint8Array | Buffer): string => {
       return 'text/plain';
     }
   } catch (e) {
-    console.warn('Additional mimetype checks (svg, text/plain) are currently not supported for browsers');
+    console.warn('Additional mimetype checks (text/plain) are currently not supported for browsers');
   }
 
   return 'application/octet-stream';

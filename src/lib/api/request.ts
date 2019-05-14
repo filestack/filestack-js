@@ -101,6 +101,7 @@ export const shouldRetry = (err: AxiosError) => {
 };
 
 const useDebugInterceptor = (instance) => {
+  /* istanbul ignore next */ // this is internal debug method
   instance.interceptors.response.use(resp => {
     if (debug.enabled) {
       for (let i in resp.headers) {

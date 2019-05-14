@@ -5,4 +5,4 @@ codecov:
 coverage:
   precision: 2
   round: down
-  range: "98...100"
+  range: "99...100"
