@@ -144,7 +144,7 @@ describe('Api/Upload/Uploaders/S3', () => {
 
     it('should throw an error when trying to get host when it is undefined', () => {
       const u = new S3Uploader({});
-      expect(() => u.getHost()).toThrowError();
+      expect(() => u.getUrl()).toThrowError();
     });
 
     it('should set intelligent mobile chunk size on mobile devices', () => {
@@ -175,7 +175,7 @@ describe('Api/Upload/Uploaders/S3', () => {
       scope.post('/multipart/complete').reply(200, (_, data) => mockComplete(JSON.parse(data)));
 
       const u = new S3Uploader({});
-      u.setHost(testHost);
+      u.setUrl(testHost);
       u.setApikey(testApikey);
       u.addFile(getTestFile());
 
@@ -198,7 +198,7 @@ describe('Api/Upload/Uploaders/S3', () => {
       };
 
       const u = new S3Uploader(storeOption);
-      u.setHost(testHost);
+      u.setUrl(testHost);
       u.setApikey(testApikey);
       u.addFile(getSmallTestFile());
 
@@ -235,7 +235,7 @@ describe('Api/Upload/Uploaders/S3', () => {
       });
 
       const u = new S3Uploader({});
-      u.setHost(testHost);
+      u.setUrl(testHost);
       u.setApikey(testApikey);
       u.addFile(getSmallTestFile());
 
@@ -261,7 +261,7 @@ describe('Api/Upload/Uploaders/S3', () => {
       });
 
       const u = new S3Uploader({});
-      u.setHost(testHost);
+      u.setUrl(testHost);
       u.setApikey(testApikey);
       u.addFile(getSmallTestFile());
 
@@ -292,7 +292,7 @@ describe('Api/Upload/Uploaders/S3', () => {
 
     it('should respect pause() and resume() command', async () => {
       const u = new S3Uploader({});
-      u.setHost(testHost);
+      u.setUrl(testHost);
       u.setApikey(testApikey);
       u.addFile(getTestFile());
 
@@ -307,7 +307,7 @@ describe('Api/Upload/Uploaders/S3', () => {
 
     it('should respect abort() command', (done) => {
       const u = new S3Uploader({});
-      u.setHost(testHost);
+      u.setUrl(testHost);
       u.setApikey(testApikey);
       u.addFile(getTestFile());
 
@@ -327,7 +327,7 @@ describe('Api/Upload/Uploaders/S3', () => {
       };
 
       const u = new S3Uploader({});
-      u.setHost(testHost);
+      u.setUrl(testHost);
       u.setApikey(testApikey);
       u.setSecurity(testSecurity);
       u.addFile(getSmallTestFile());
@@ -359,7 +359,7 @@ describe('Api/Upload/Uploaders/S3', () => {
         const chunkSize = 1024 * 1024;
 
         const u = new S3Uploader({});
-        u.setHost(testHost);
+        u.setUrl(testHost);
         u.setApikey(testApikey);
         u.setUploadMode(UploadMode.INTELLIGENT);
         u.setIntelligentChunkSize(chunkSize);
@@ -469,7 +469,7 @@ describe('Api/Upload/Uploaders/S3', () => {
         );
 
         const u = new S3Uploader({});
-        u.setHost(testHost);
+        u.setUrl(testHost);
         u.setApikey(testApikey);
         u.setTimeout(putRequestTimeout);
         u.setUploadMode(UploadMode.INTELLIGENT);
@@ -540,7 +540,7 @@ describe('Api/Upload/Uploaders/S3', () => {
         interceptorS3.reply((url, _, cb) => cb('Error'));
 
         const u = new S3Uploader({});
-        u.setHost(testHost);
+        u.setUrl(testHost);
         u.setApikey(testApikey);
         u.setTimeout(100);
         u.setUploadMode(UploadMode.INTELLIGENT);
@@ -565,7 +565,7 @@ describe('Api/Upload/Uploaders/S3', () => {
         });
 
         const u = new S3Uploader({});
-        u.setHost(testHost);
+        u.setUrl(testHost);
         u.setApikey(testApikey);
         u.setTimeout(100);
         u.setUploadMode(UploadMode.INTELLIGENT);
@@ -582,7 +582,7 @@ describe('Api/Upload/Uploaders/S3', () => {
         });
 
         const u = new S3Uploader({});
-        u.setHost(testHost);
+        u.setUrl(testHost);
         u.setApikey(testApikey);
         u.setUploadMode(UploadMode.INTELLIGENT);
         u.addFile(getSmallTestFile());
@@ -624,7 +624,7 @@ describe('Api/Upload/Uploaders/S3', () => {
         );
 
         const u = new S3Uploader({});
-        u.setHost(testHost);
+        u.setUrl(testHost);
         u.setApikey(testApikey);
         u.setUploadMode(UploadMode.FALLBACK);
         u.addFile(getSmallTestFile());
@@ -694,7 +694,7 @@ describe('Api/Upload/Uploaders/S3', () => {
         );
 
         const u = new S3Uploader({});
-        u.setHost(testHost);
+        u.setUrl(testHost);
         u.setApikey(testApikey);
         u.setUploadMode(UploadMode.FALLBACK);
         u.addFile(getSmallTestFile());
@@ -713,7 +713,7 @@ describe('Api/Upload/Uploaders/S3', () => {
       const partSize = 1024 * 1024 * 7;
 
       const u = new S3Uploader({});
-      u.setHost(testHost);
+      u.setUrl(testHost);
       u.setApikey(testApikey);
       u.setPartSize(partSize);
       u.addFile(getTestFile());
@@ -790,7 +790,7 @@ describe('Api/Upload/Uploaders/S3', () => {
       });
 
       const u = new S3Uploader({});
-      u.setHost(testHost);
+      u.setUrl(testHost);
       u.setApikey(testApikey);
       u.addFile(getSmallTestFile());
 
@@ -825,7 +825,7 @@ describe('Api/Upload/Uploaders/S3', () => {
       );
 
       const u = new S3Uploader({});
-      u.setHost(testHost);
+      u.setUrl(testHost);
       u.setApikey(testApikey);
       u.addFile(getSmallTestFile());
       u.setRetryConfig({
@@ -847,7 +847,7 @@ describe('Api/Upload/Uploaders/S3', () => {
       });
 
       const u = new S3Uploader({});
-      u.setHost(testHost);
+      u.setUrl(testHost);
       u.setApikey(testApikey);
       u.addFile(getSmallTestFile());
 
@@ -867,7 +867,7 @@ describe('Api/Upload/Uploaders/S3', () => {
       });
 
       const u = new S3Uploader({});
-      u.setHost(testHost);
+      u.setUrl(testHost);
       u.setApikey(testApikey);
       u.addFile(getSmallTestFile());
 
@@ -888,7 +888,7 @@ describe('Api/Upload/Uploaders/S3', () => {
       });
 
       const u = new S3Uploader({});
-      u.setHost(testHost);
+      u.setUrl(testHost);
       u.setApikey(testApikey);
       u.addFile(getSmallTestFile());
 

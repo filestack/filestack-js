@@ -118,7 +118,7 @@ export class Upload {
       });
     }
 
-    this.uploader.setHost(session.urls.uploadApiUrl);
+    this.uploader.setUrl(session.urls.uploadApiUrl);
   }
 
   /**

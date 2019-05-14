@@ -123,7 +123,7 @@ describe('Api/Upload/upload', () => {
       const u = new Upload();
       u.setSession(defaultSession);
 
-      expect(S3Uploader.prototype.setHost).toHaveBeenCalledWith(defaultSession.urls.uploadApiUrl);
+      expect(S3Uploader.prototype.setUrl).toHaveBeenCalledWith(defaultSession.urls.uploadApiUrl);
       expect(S3Uploader.prototype.setApikey).toHaveBeenCalledWith(defaultSession.apikey);
       expect(S3Uploader.prototype.setSecurity).toHaveBeenCalledWith({ policy: defaultSession.policy, signature: defaultSession.signature });
     });

@@ -57,7 +57,7 @@ export abstract class UploaderAbstract extends EventEmitter {
   protected intelligentChunkSize: number = isMobile() ? INTELLIGENT_MOBILE_CHUNK_SIZE : INTELLIGENT_CHUNK_SIZE;
 
   // upload options
-  protected host: string;
+  protected url: string;
   protected timeout: number = 30 * 1000;
   protected uploadMode: UploadMode = UploadMode.DEFAULT;
 
@@ -91,8 +91,8 @@ export abstract class UploaderAbstract extends EventEmitter {
     this.retryConfig = cfg;
   }
 
-  public setHost(url: string): void {
-    this.host = url;
+  public setUrl(url: string): void {
+    this.url = url;
   }
 
   /**
@@ -170,18 +170,18 @@ export abstract class UploaderAbstract extends EventEmitter {
   }
 
   /**
-   * Returns filestack upload host
+   * Returns filestack upload url
    *
    * @private
    * @returns
    * @memberof MultipartUploader
    */
-  public getHost(): string {
-    if (!this.host) {
+  public getUrl(): string {
+    if (!this.url) {
       throw new FilestackError('Upload url not set');
     }
 
-    return this.host;
+    return this.url;
   }
 
   /**

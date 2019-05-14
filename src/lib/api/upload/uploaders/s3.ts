@@ -162,7 +162,7 @@ export class S3Uploader extends UploaderAbstract {
    * @returns
    * @memberof S3Uploader
    */
-  private getUploadHost(id: string): string {
+  private getUploadUrl(id: string): string {
     const { location_url } = this.getDefaultFields(id, ['location_url']);
     return location_url.indexOf('http') === 0 ? location_url : `https://${location_url}`;
   }
@@ -276,7 +276,7 @@ export class S3Uploader extends UploaderAbstract {
     debug(`[${id}] Make start request`);
 
     return postWithRetry(
-      `${this.getHost()}/multipart/start`,
+      `${this.getUrl()}/multipart/start`,
       {
         filename: payload.file.name,
         mimetype: payload.file.type,
@@ -372,7 +372,7 @@ export class S3Uploader extends UploaderAbstract {
    * @memberof S3Uploader
    */
   private getS3PartMetadata(id: string, part: FilePart, offset?: number): Promise<any> {
-    const url = this.getUploadHost(id);
+    const url = this.getUploadUrl(id);
 
     debug(`[${id}] Get data for part ${part.partNumber}, url ${url}, Md5: ${part.md5}, Size: ${part.size}`);
 
@@ -558,7 +558,7 @@ export class S3Uploader extends UploaderAbstract {
     const part = payload.parts[partNumber];
 
     return postWithRetry(
-      `${this.getUploadHost(id)}/multipart/commit`,
+      `${this.getUploadUrl(id)}/multipart/commit`,
       {
         ...this.getDefaultFields(id, ['apikey', 'region', 'upload_id', 'policy', 'signature', 'uri']),
         size: payload.file.size,
@@ -606,7 +606,7 @@ export class S3Uploader extends UploaderAbstract {
     debug(`[${id}] Etags %O`, parts);
 
     return postWithRetry(
-      `${this.getHost()}/multipart/complete`,
+      `${this.getUrl()}/multipart/complete`,
       {
         ...this.getDefaultFields(id, ['apikey', 'policy', 'signature', 'uri', 'region', 'upload_id', 'fii'], true),
         // method specific keys
