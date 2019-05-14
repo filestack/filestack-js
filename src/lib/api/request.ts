@@ -20,6 +20,8 @@ import { uniqueId } from '../utils';
 
 const debug = Debug('fs:request');
 
+const RESPONSE_DEBUG_PREFIX = 'x-filestack-';
+
 export interface RetryConfig {
   retry: number;
   onRetry?: (requestConfig: any) => void;
@@ -46,6 +48,7 @@ export const requestWithSource = (retryConfig?: RetryConfig): AxiosInstance => {
     useRetryPolicy(axiosInstance, retryConfig);
   }
 
+  useDebugInterceptor(axiosInstance);
   return axiosInstance;
 };
 
@@ -68,6 +71,7 @@ export const postWithRetry = (url: string, fields: Object, config: AxiosRequestC
     useRetryPolicy(axiosInstance, retryConfig);
   }
 
+  useDebugInterceptor(axiosInstance);
   return axiosInstance.post(url, fields, config);
 };
 
@@ -94,6 +98,22 @@ export const shouldRetry = (err: AxiosError) => {
 
   // we should not retry on other errors (4xx) ie: BadRequest etc
   return false;
+};
+
+const useDebugInterceptor = (instance) => {
+  instance.interceptors.response.use(resp => {
+    if (debug.enabled) {
+      for (let i in resp.headers) {
+        if (!resp.headers.hasOwnProperty(resp.headers) && i.indexOf(RESPONSE_DEBUG_PREFIX) === -1) {
+          continue;
+        }
+
+        debug(`Filestack Response Debug Header - ${i}: ${resp.headers[i]}`);
+      }
+    }
+
+    return resp;
+  });
 };
 
 export const useRetryPolicy = (instance: AxiosInstance, retryConfig: RetryConfig) => {
@@ -147,4 +167,6 @@ export const useRetryPolicy = (instance: AxiosInstance, retryConfig: RetryConfig
   });
 };
 
+// set global debug inspector
+useDebugInterceptor(axios);
 export { axios as request };
