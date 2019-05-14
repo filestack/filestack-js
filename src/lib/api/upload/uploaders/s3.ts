@@ -142,7 +142,7 @@ export class S3Uploader extends UploaderAbstract {
   public addFile(file: File): string {
     debug('Add file to queue: \n %o', file);
 
-    const id = this.getFileUniqueId();
+    const id = `${uniqueId(15)}_${uniqueTime()}`;
 
     file.status = FileState.INIT;
 
@@ -175,7 +175,6 @@ export class S3Uploader extends UploaderAbstract {
    * @memberof S3Uploader
    */
   private getStoreOptions() {
-
     return {
       location: DEFAULT_STORE_LOCATION, // this parameter is required, if not set use default one
       ...this.storeOptions,
@@ -205,10 +204,8 @@ export class S3Uploader extends UploaderAbstract {
       fields['fii'] = true;
     }
 
-    fields = filterObject(fields, requiredFields) as any;
-
     return {
-      ...fields,
+      ...filterObject(fields, requiredFields),
       store: this.getStoreOptions(),
     };
   }
@@ -761,18 +758,7 @@ export class S3Uploader extends UploaderAbstract {
    * @param status
    */
   private setPayloadStatus(id: string, status: FileState) {
+    debug(`[${id}] Set payload status to ${status}`);
     this.payloads[id].file.status = status;
-  }
-
-  /**
-   * Returns unique file id combined from md5 + unique time
-   *
-   * @private
-   * @param {File} file
-   * @returns
-   * @memberof S3Uploader
-   */
-  private getFileUniqueId() {
-    return `${uniqueId(15)}_${uniqueTime()}`;
   }
 }

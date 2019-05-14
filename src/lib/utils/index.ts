@@ -158,7 +158,7 @@ export const sanitizeName = (name: string, ext: string = ''): string  => {
  * @param toFilter
  * @param requiredFields
  */
-export const filterObject = (toFilter: Object, requiredFields): Object => {
+export const filterObject = (toFilter, requiredFields: string[]) => {
   if (!requiredFields || requiredFields.length === 0) {
     return toFilter;
   }
