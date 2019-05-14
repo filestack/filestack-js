@@ -46,6 +46,7 @@
       .then(res => console.log(res));
   ```
 - change request library to axios (better error handling)
+- rewrite all options validation to JSONSchema and remove old tcomb library
   ```js
     const apikey = 'YOUR_APIKEY';
     const src = new filestack.Filelink('EXAMPLE_HANDLE', apikey)
@@ -76,9 +77,8 @@
     })
 
   ```
-- rewrite all options validation to JSONSchema and remove old library
 - rewrite all tests (now tests are splitter to integrations and units)
-- add missing transformations uglifyJs and uglyfyCss
+- add missing transformations uglifyJs and uglifyCss
 - minor fixes
 
 ## Deprecation: 
