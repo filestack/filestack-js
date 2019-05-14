@@ -31,7 +31,7 @@ describe('Api/Upload/FileTools', () => {
   describe('getFileBrowser', () => {
 
     it('Should handle base64 encoded string (svg)', async () => {
-      return expect((await getFile(base64Svg)).mimetype).toEqual('application/octet-stream');
+      return expect((await getFile(base64Svg)).mimetype).toEqual('image/svg+xml');
     });
 
     it('Should handle base64 encoded string (png)', async () => {

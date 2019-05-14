@@ -47,8 +47,8 @@ console.log(this);
 (async () => {
   const file = await getFile(createFile());
   const u = new S3Uploader({});
-  u.setUrl('');
-  u.setApikey('');
+  u.setUrl('https://upload.rc.filepickerapp.com');
+  u.setApikey('AbHASoTdORfqk8APJB72Wz');
   u.addFile(file);
 
   const res = await u.execute().catch((e) => {

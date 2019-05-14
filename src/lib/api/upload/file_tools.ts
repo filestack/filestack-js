@@ -16,7 +16,6 @@
  */
 import { File as FsFile } from './file';
 import fileType from 'file-type';
-import issvg from 'is-svg';
 import * as isutf8 from 'isutf8';
 import { isNode, sanitizeName } from './../../utils';
 import { FilestackError } from './../../../filestack_error';
@@ -30,6 +29,8 @@ export type NamedInputFile = {
 export type InputFile = RawFile | NamedInputFile;
 
 const base64Regexp = /data:([a-zA-Z]*\/[a-zA-Z]*);base64,([^\"]*)/i;
+const htmlCommentsRegexp = /<!--([\s\S]*?)-->/g;
+const svgRegexp = /^\s*(?:<\?xml[^>]*>\s*)?(?:<!doctype svg[^>]*\s*(?:\[?(?:\s*<![^>]*>\s*)*\]?)*[^>]*>\s*)?<svg[^>]*>[^]*<\/svg>\s*$/i;
 
 /**
  * Check if file is buffer
@@ -99,11 +100,19 @@ const isFileNamed = (input: InputFile): input is NamedInputFile => input && inpu
 const isFilePath = (input: InputFile): input is string => require('fs').existsSync(input);
 
 /**
+ * Check if input is a svg
+ *
+ * @node
+ * @param input
+ */
+const isSvg = (input: Uint8Array | Buffer) => input && svgRegexp.test(String.fromCharCode.apply(null, input).replace(htmlCommentsRegexp, ''));
+
+/**
  * Returns mimetype of input file
  *
  * @param file
  */
-const getMimetype = (file: any): string => {
+const getMimetype = (file: Uint8Array | Buffer): string => {
   let type = fileType(file);
   if (type) {
     return type.mime;
@@ -111,7 +120,8 @@ const getMimetype = (file: any): string => {
 
   // @todo we can check it only for node currently, rewrite it for browser as well
   try {
-    if (issvg(file)) {
+
+    if (isSvg(file)) {
       return 'image/svg+xml';
     }
 
