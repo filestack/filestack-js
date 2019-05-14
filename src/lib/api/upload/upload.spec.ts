@@ -182,8 +182,6 @@ describe('Api/Upload/upload', () => {
       }).toThrowError();
     });
 
-    // it.skip('should set default retry config to uploader');
-    // it.skip('should respect options retry config');
   });
 
   describe('Upload', () => {

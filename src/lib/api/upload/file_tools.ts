@@ -37,17 +37,13 @@ const base64Regexp = /data:([a-zA-Z]*\/[a-zA-Z]*);base64,([^\"]*)/i;
  * @node
  * @param input
  */
-const isFileBuffer = (input: InputFile): input is Buffer => {
-  return Buffer.isBuffer(input);
-};
+const isFileBuffer = (input: InputFile): input is Buffer => Buffer.isBuffer(input);
 
 /**
  * Check if file is blob
  * @param input
  */
-const isFileBlob = (input: InputFile): input is Blob => {
-  return  input.toString() === '[object Blob]';
-};
+const isFileBlob = (input: InputFile): input is Blob => input.toString() === '[object Blob]';
 
 /**
  * Check if input is instance of browser file
@@ -55,9 +51,7 @@ const isFileBlob = (input: InputFile): input is Blob => {
  * @browser
  * @param input
  */
-const isFileBrowser = (input: InputFile): input is File => {
-  return input instanceof File;
-};
+const isFileBrowser = (input: InputFile): input is File => input instanceof File;
 
 /**
  * Check if file is base64 string
@@ -70,8 +64,7 @@ const isFileBase = (input: InputFile): input is string => {
   }
 
   if (input.indexOf('base64') > -1) {
-    const matches = input.match(base64Regexp);
-    input = matches.pop();
+    input = input.match(base64Regexp).pop();
   }
 
   if (isNode()) {
@@ -95,13 +88,7 @@ const isFileBase = (input: InputFile): input is string => {
  *
  * @param input
  */
-const isFileNamed = (input: InputFile): input is NamedInputFile => {
-  if (input['file'] && input['name']) {
-    return true;
-  }
-
-  return false;
-};
+const isFileNamed = (input: InputFile): input is NamedInputFile => input && input['file'] && input['name'];
 
 /**
  * Check if input is a valid file path
@@ -109,13 +96,7 @@ const isFileNamed = (input: InputFile): input is NamedInputFile => {
  * @node
  * @param input
  */
-const isFilePath = (input: InputFile): input is string => {
-  if (require('fs').existsSync(input)) {
-    return true;
-  }
-
-  return false;
-};
+const isFilePath = (input: InputFile): input is string => require('fs').existsSync(input);
 
 /**
  * Returns mimetype of input file

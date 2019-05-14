@@ -19,6 +19,7 @@ import * as crypto from 'crypto';
 import { Security } from '../client';
 import { FilestackError } from './../../filestack_error';
 import { getValidator, SecurityParamsSchema } from './../../schema';
+import { isNode } from '../utils';
 
 /**
  * Configures a security policy
@@ -51,6 +52,9 @@ export interface SecurityOptions {
  * @param appSecret
  */
 export const getSecurity = (policyOptions: SecurityOptions, appSecret: string): Security => {
+  if (!isNode()) {
+    throw new Error('getSecurity is only supported in nodejs');
+  }
 
   const validateRes = getValidator(SecurityParamsSchema)(policyOptions);
 
