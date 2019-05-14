@@ -351,7 +351,7 @@ export class Client {
    * client.upload(file, { onRetry }, { filename: 'foobar.jpg' }, token)
    *   .then(res => console.log(res));
    *
-   * client.upload({file, filename}, { onRetry }, { filename: 'foobar.jpg' }, token)
+   * client.upload({file, name}, { onRetry }, { filename: 'foobar.jpg' }, token)
    *   .then(res => console.log(res));
    *
    * token.pause();  // Pause flow
