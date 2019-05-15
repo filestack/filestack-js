@@ -27,7 +27,7 @@ describe('utils:index', () => {
     });
   });
 
-  describe.only('b64', () => {
+  describe('b64', () => {
     it('should return correct b65 value', () => {
       expect(utils.b64('testtext')).toEqual('dGVzdHRleHQ=');
     });

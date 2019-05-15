@@ -21,7 +21,7 @@ import { getValidator, PickerParamsSchema } from './';
 import * as jsdom from 'jsdom';
 const { JSDOM } = jsdom;
 
-describe.only('Picker Params Schema', () => {
+describe('Picker Params Schema', () => {
   const validator = getValidator(PickerParamsSchema);
 
   const validate = params => {
