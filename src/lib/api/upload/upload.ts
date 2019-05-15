@@ -159,7 +159,7 @@ export class Upload {
    */
   async upload(input: InputFile): Promise<any> {
 
-    const f = await getFile(input);
+    const f = await getFile(input, this.storeOptions.sanitizer);
     f.customName = this.overwriteFileName;
     this.uploader.addFile(f);
 
@@ -188,7 +188,7 @@ export class Upload {
         continue;
       }
 
-      const f = await getFile(input[i]);
+      const f = await getFile(input[i], this.storeOptions.sanitizer);
       f.customName = this.overwriteFileName;
       this.uploader.addFile(f);
     }

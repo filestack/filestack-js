@@ -15,6 +15,7 @@
  * limitations under the License.
  */
 import { md5, sanitizeName } from './../../utils';
+import { SanitizeOptions } from './../../utils/index';
 
 export interface FileInstance {
   buffer?: Buffer | ArrayBuffer;
@@ -69,7 +70,7 @@ export class File {
 
   public workflows: any[];
 
-  constructor(private readonly _file: FileInstance, private readonly sanitizeOptions?: any) {
+  constructor(private readonly _file: FileInstance, private readonly sanitizeOptions?: SanitizeOptions) {
     this._file.name = sanitizeName(this._file.name, this.sanitizeOptions);
   }
 

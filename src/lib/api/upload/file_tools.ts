@@ -17,7 +17,7 @@
 import { File as FsFile } from './file';
 import fileType from 'file-type';
 import * as isutf8 from 'isutf8';
-import { isNode } from './../../utils';
+import { isNode, SanitizeOptions } from './../../utils';
 import { FilestackError } from './../../../filestack_error';
 
 export type RawFile = Blob | Buffer | File | string;
@@ -200,7 +200,7 @@ const readFile = (file): Promise<any> => {
    * @param {*} fileOrString
    * @returns {Promise<File>}
    */
-const getFileBrowser = (input: InputFile): Promise<FsFile> => {
+const getFileBrowser = (input: InputFile, sanitizeOptions): Promise<FsFile> => {
   let filename;
   let file: Blob;
 
@@ -226,7 +226,7 @@ const getFileBrowser = (input: InputFile): Promise<FsFile> => {
       name: filename,
       size: buffer.byteLength,
       type: file.type || getMimetype(new Uint8Array(buffer)),
-    });
+    }, sanitizeOptions);
   });
 };
 
@@ -238,7 +238,7 @@ const getFileBrowser = (input: InputFile): Promise<FsFile> => {
  * @param {*} inputFile
  * @returns {Promise<File>}
  */
-const getFileNode = (input: InputFile): Promise<FsFile> => {
+const getFileNode = (input: InputFile, sanitizeOptions: SanitizeOptions): Promise<FsFile> => {
   let filename;
 
   if (isFileNamed(input)) {
@@ -260,7 +260,7 @@ const getFileNode = (input: InputFile): Promise<FsFile> => {
           name: filename || (require('path')).basename(path),
           size: buffer.byteLength,
           type: getMimetype(buffer),
-        }));
+        }, sanitizeOptions));
       });
     });
   }

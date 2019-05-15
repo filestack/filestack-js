@@ -133,6 +133,9 @@ export const b64 = (data: string): string => {
   return btoa(data);
 };
 
+/**
+ * Sanitizer Options
+ */
 export type SanitizeOptions = (boolean | {
   exclude: string[],
   replacement: string,
@@ -142,6 +145,9 @@ export type SanitizeOptions = (boolean | {
  * Sanitize file name
  *
  * @param name
+ * @param {bool} options  - enable,disable sanitizer, default enabled
+ * @param {string} options.replacement - replacement for sanitized chars
+ * @param {string[]} options.exclude - array with excluded chars
  */
 export const sanitizeName = (name: string, options: SanitizeOptions = true): string  => {
   if (typeof options === 'boolean' && !options) {
