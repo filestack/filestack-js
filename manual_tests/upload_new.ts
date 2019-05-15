@@ -42,19 +42,19 @@ const fs = new Client('AbHASoTdORfqk8APJB72Wz', {
 //   console.dir(res, { depth: null });
 // });
 
-try {
-  fs.upload(createFile(), {}, {
-    filename: 'HR-mary-oo',
-    sanitizer: {
-      exclude: ['mary'],
-      replacement: 'hrr',
-    },
-  }).then((res) => {
-    console.info('Upload done!', res);
-  });
-} catch (e) {
-  console.log(e.details);
-}
+// try {
+//   fs.upload(createFile(), {}, {
+//     filename: 'HR-mary-oo',
+//     sanitizer: {
+//       exclude: ['mary'],
+//       replacement: 'hrr',
+//     },
+//   }).then((res) => {
+//     console.info('Upload done!', res);
+//   });
+// } catch (e) {
+//   console.log(e.details);
+// }
 
 // (async () => {
 //   const file = await getFile(createFile());

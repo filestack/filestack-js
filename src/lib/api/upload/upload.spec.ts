@@ -73,6 +73,21 @@ describe('Api/Upload/upload', () => {
       expect(() => new Upload({ intelligent1: true })).toThrowError('Invalid upload params');
     });
 
+    it('should accept sanitizer settings', () => {
+      expect(() => new Upload({}, {
+        // @ts-ignore
+        sanitizer: false,
+      })).not.toThrowError('Invalid upload params');
+
+      expect(() => new Upload({}, {
+        // @ts-ignore
+        sanitizer: {
+          exclude: ['1'],
+          replacement: '-',
+        },
+      })).not.toThrowError('Invalid upload params');
+    });
+
     it('should throw error on wrong store options', () => {
       // @ts-ignore
       expect(() => new Upload({ intelligent: true }, { test: 123 })).toThrowError('Invalid store upload params');
