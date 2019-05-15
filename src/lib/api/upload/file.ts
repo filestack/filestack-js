@@ -69,8 +69,8 @@ export class File {
 
   public workflows: any[];
 
-  constructor(private readonly _file: FileInstance, private readonly sanitizeOptions?: SanitizeOptions) {
-    this._file.name = sanitizeName(this._file.name, this.sanitizeOptions);
+  constructor(private readonly _file: FileInstance, private readonly _sanitizeOptions?: SanitizeOptions) {
+    this._file.name = sanitizeName(this._file.name, this._sanitizeOptions);
   }
 
   /**
@@ -100,7 +100,7 @@ export class File {
    * @memberof File
    */
   public set name(val: string) {
-    this._file.name = sanitizeName(val, this.sanitizeOptions);
+    this._file.name = sanitizeName(val, this._sanitizeOptions);
   }
 
   /**

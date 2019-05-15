@@ -23,7 +23,9 @@ import { getFile } from '../src/lib/api/upload';
 
 const createFile = (size = 44320) => Buffer.alloc(size);
 
-// const fs = new Client('APEkwxKMZTsWNIP0XQsv2z');
+const fs = new Client('AbHASoTdORfqk8APJB72Wz', {
+  cname: 'rc.filepickerapp.com',
+});
 
 // fs.multiupload(
 //   [
@@ -40,20 +42,30 @@ const createFile = (size = 44320) => Buffer.alloc(size);
 //   console.dir(res, { depth: null });
 // });
 
-// up.multiupload([Path.resolve(__dirname, './upload.js'), Path.resolve(__dirname, './manual_10mb.mp4')]).then((res) => {
-//   console.info('Upload done!', res);
-// });
-console.log(this);
-(async () => {
-  const file = await getFile(createFile());
-  const u = new S3Uploader({});
-  u.setUrl('https://upload.rc.filepickerapp.com');
-  u.setApikey('AbHASoTdORfqk8APJB72Wz');
-  u.addFile(file);
-
-  const res = await u.execute().catch((e) => {
-    console.log('ERROR', e);
+try {
+  fs.upload(createFile(), {}, {
+    filename: 'HR-mary-oo',
+    sanitizer: {
+      exclude: ['mary'],
+      replacement: 'hrr',
+    },
+  }).then((res) => {
+    console.info('Upload done!', res);
   });
+} catch (e) {
+  console.log(e.details);
+}
 
-  console.log(res);
-})();
+// (async () => {
+//   const file = await getFile(createFile());
+//   const u = new S3Uploader({});
+//   u.setUrl('https://upload.rc.filepickerapp.com');
+//   u.setApikey('AbHASoTdORfqk8APJB72Wz');
+//   u.addFile(file);
+
+//   const res = await u.execute().catch((e) => {
+//     console.log('ERROR', e);
+//   });
+
+//   console.log(res);
+// })();
