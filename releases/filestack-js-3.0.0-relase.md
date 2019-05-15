@@ -1,13 +1,15 @@
 # Filestack-js@3.0.0 Releases notes
 
 ## Features
-- **[BREAKING]** add name sanitization (according to https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingMetadata.html) 
+- **[BREAKING]** add name sanitization
+  by default following characters: 
   ```
   ['\\', '{', '|', '%', '`', '"', "'", '~', '[', ']', '#', '|', '^', '<', '>']
   ```
-  will be replaced with '-'
-  
-  to disable sanitizer set storeUploadOption - sanitizer to false
+  will be replaced with '-'<br><br>
+  to disable sanitizer set storeUploadOption - sanitizer to false<br><br>
+  @see https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingMetadata.html
+
 - **[ENHANCEMENT]** storeUrl now use new base64 transform protocol by default
 - **[FEATURE]** add multiupload feature
   ```js
@@ -94,7 +96,6 @@
 ## Others:
 - Rewrite upload to objective typescript
 - move to new build system (webpack)
-- reduce bundle size to ~160kb (~50kb gzipped)
 - add codeconv service and setup pull requests to minimum tests coverage (99%)
 - add sri hashes to manifest.json
 - update outdated packages
