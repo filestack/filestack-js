@@ -111,13 +111,7 @@ describe('utils:index', () => {
 
   describe('sanitizeName', () => {
     it('should sanitize file name with extension', () => {
-      expect(sanitizeName('!@#te"\'.jpg')).toEqual('!@#te__.jpg');
-      expect(sanitizeName('!# test.jpg')).toEqual('!# test.jpg');
-      expect(sanitizeName('123qwe.png')).toEqual('123qwe.png');
-      expect(sanitizeName('\/?%*:|"\'.png')).toEqual('________.png');
-      expect(sanitizeName('name/names/Numero\\%20 ')).toEqual('name_names_Numero__20 ');
-
-      expect(sanitizeName('name/names/Numero\\%20 ', 'png')).toEqual('name_names_Numero__20 .png');
+      expect(sanitizeName('a\\{%`"~[]#|^<>1.jpg')).toEqual('a-------------1.jpg');
     });
 
     it('should sanitize file name without extension', () => {
@@ -126,6 +120,17 @@ describe('utils:index', () => {
 
     it('should return undefined on empty string', () => {
       expect(sanitizeName('')).toEqual('undefined');
+    });
+
+    it('should respect sanitize options as boolean', () => {
+      expect(sanitizeName('[]#|.jpg', false)).toEqual('[]#|.jpg');
+    });
+
+    it('should respect sanitize options with provided options', () => {
+      expect(sanitizeName('[]#|.jpg', {
+        exclude: ['[', ']'],
+        replacement: '_',
+      })).toEqual('__#|.jpg');
     });
   });
 

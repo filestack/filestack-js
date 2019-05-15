@@ -16,6 +16,7 @@
  */
 
 import { StoreBaseParams } from 'src/lib/filelink';
+import { SanitizeOptions } from './../../utils/index';
 
 export interface UploadOptions {
   /**
@@ -77,6 +78,21 @@ export type StoreUploadOptions = StoreBaseParams & {
    * Workflows ids to run after upload
    */
   workflows?: (string | WorkflowConfig)[];
+
+  /**
+   * Fielname sanitizer for cleanup  before upload
+   *
+   * @see https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingMetadata.html
+   * @default {
+   *   exclude: ['\\', '{', '|', '%', '`', '"', "'", '~', '[', ']', '#', '|', '^', '<', '>']
+   *   replacement: '-'
+   * }
+   * @type {((boolean | {
+   *     exclude: string[],
+   *     replacement: string,
+   *   }))}
+   */
+  sanitizer?: SanitizeOptions
 };
 
 export interface WorkflowConfig {

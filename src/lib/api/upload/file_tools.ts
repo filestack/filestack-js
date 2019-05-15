@@ -17,7 +17,7 @@
 import { File as FsFile } from './file';
 import fileType from 'file-type';
 import * as isutf8 from 'isutf8';
-import { isNode, sanitizeName } from './../../utils';
+import { isNode } from './../../utils';
 import { FilestackError } from './../../../filestack_error';
 
 export type RawFile = Blob | Buffer | File | string;
@@ -223,7 +223,7 @@ const getFileBrowser = (input: InputFile): Promise<FsFile> => {
   return readFile(file).then((buffer) => {
     return new FsFile({
       buffer,
-      name: sanitizeName(filename),
+      name: filename,
       size: buffer.byteLength,
       type: file.type || getMimetype(new Uint8Array(buffer)),
     });
@@ -257,7 +257,7 @@ const getFileNode = (input: InputFile): Promise<FsFile> => {
 
         return resolve(new FsFile({
           buffer,
-          name: sanitizeName(filename || (require('path')).basename(path)),
+          name: filename || (require('path')).basename(path),
           size: buffer.byteLength,
           type: getMimetype(buffer),
         }));

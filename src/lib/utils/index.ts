@@ -133,12 +133,26 @@ export const b64 = (data: string): string => {
   return btoa(data);
 };
 
+export type SanitizeOptions = (boolean | {
+  exclude: string[],
+  replacement: string,
+});
+
 /**
  * Sanitize file name
  *
  * @param name
  */
-export const sanitizeName = (name: string, ext: string = ''): string  => {
+export const sanitizeName = (name: string, options: SanitizeOptions = true): string  => {
+  if (typeof options === 'boolean' && !options) {
+    return name;
+  }
+
+  let ext;
+
+  const replacement = typeof options !== 'boolean' && options.replacement ? options.replacement :  '-';
+  const exclude = typeof options !== 'boolean' && options.exclude ? options.exclude : ['\\', '{', '|', '%', '`', '"', "'", '~', '[', ']', '#', '|', '^', '<', '>'];
+
   if (!name || name.length === 0) {
     return 'undefined';
   }
@@ -149,7 +163,7 @@ export const sanitizeName = (name: string, ext: string = ''): string  => {
     ext = fileParts.pop();
   }
 
-  return `${fileParts.join('_').replace(/[\\/\\?\%\*\:\|\"\'"]/gi, '_')}${ext ? `.${ext}` : '' }`;
+  return `${fileParts.join('_').split('').map((char) => exclude.indexOf(char) > -1 ? replacement : char).join('')}${ext ? '.' + ext : ''}`;
 };
 
 /**

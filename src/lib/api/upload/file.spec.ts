@@ -47,13 +47,13 @@ describe('Api/Upload/File', () => {
   it('should allow to set new name with with sanitization', () => {
     file.name = 'test123//.txt';
 
-    expect(file.name).toEqual('test123__.txt');
+    expect(file.name).toEqual('test123//.txt');
   });
 
   it('should set custom name by string and sanitize it', () => {
     file.customName = 'test123##.txt';
 
-    expect(file.name).toEqual('test123##.txt');
+    expect(file.name).toEqual('test123--.txt');
   });
 
   it('should set custom name by function and sanitize it', () => {
@@ -61,7 +61,7 @@ describe('Api/Upload/File', () => {
       return 'test123 ##.txt';
     };
 
-    expect(file.name).toEqual('test123 ##.txt');
+    expect(file.name).toEqual('test123 --.txt');
   });
 
   it('should throw an error when custom name function is not returning string', () => {

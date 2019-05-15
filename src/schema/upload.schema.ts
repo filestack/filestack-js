@@ -67,5 +67,24 @@ export const UploadParamsSchema = {
     onRetry: {
       format: 'callback',
     },
+    sanitizer: {
+      oneOf: [{
+        type: 'boolean',
+      }, {
+        type: 'object',
+        additionalProperties: false,
+        properties: {
+          exclude: {
+            type: 'array',
+            items: [{
+              type: 'string',
+            }],
+          },
+          replacement: {
+            type: 'string',
+          },
+        },
+      }],
+    },
   },
 };

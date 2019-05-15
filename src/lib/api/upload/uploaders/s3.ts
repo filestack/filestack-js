@@ -754,6 +754,7 @@ export class S3Uploader extends UploaderAbstract {
 
   /**
    * Set payload file state
+   *
    * @param id
    * @param status
    */
