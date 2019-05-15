@@ -1,7 +1,7 @@
 # Filestack-js@3.0.0 Releases notes
 
 ## Features
-- **[BREAKING]** add name sanitization
+- **[BREAKING]** add name sanitization<br>
   by default following characters: 
   ```
   ['\\', '{', '|', '%', '`', '"', "'", '~', '[', ']', '#', '|', '^', '<', '>']
