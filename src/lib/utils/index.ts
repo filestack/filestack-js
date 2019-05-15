@@ -137,8 +137,8 @@ export const b64 = (data: string): string => {
  * Sanitizer Options
  */
 export type SanitizeOptions = (boolean | {
-  exclude: string[],
-  replacement: string,
+  exclude?: string[],
+  replacement?: string,
 });
 
 /**
@@ -157,7 +157,7 @@ export const sanitizeName = (name: string, options: SanitizeOptions = true): str
   let ext;
 
   const replacement = typeof options !== 'boolean' && options.replacement ? options.replacement :  '-';
-  const exclude = typeof options !== 'boolean' && options.exclude ? options.exclude : ['\\', '{', '|', '%', '`', '"', "'", '~', '[', ']', '#', '|', '^', '<', '>'];
+  const exclude = typeof options !== 'boolean' && options.exclude ? options.exclude : ['\\', '{', '}','|', '%', '`', '"', "'", '~', '[', ']', '#', '|', '^', '<', '>'];
 
   if (!name || name.length === 0) {
     return 'undefined';

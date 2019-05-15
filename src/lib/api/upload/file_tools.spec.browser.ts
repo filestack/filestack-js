@@ -18,9 +18,14 @@ import { getFile } from './file_tools';
 
 const createFile = (size = 44320, name = 'test.png', type = 'image/png') => new File([new ArrayBuffer(size)], name , { type: type });
 
+const sanitizeOptions = jest.fn().mockName('sanitizeOptions');
+
 jest.mock('./../../utils', () => ({
   isNode: () => false,
-  sanitizeName: (val) => val,
+  sanitizeName: (val, opts) => {
+    sanitizeOptions(opts)
+    return val;
+  },
 }));
 
 const base64Svg = 'PHN2ZyBoZWlnaHQ9IjEwMCIgd2lkdGg9IjEwMCI+CiAgPGNpcmNsZSBjeD0iNTAiIGN5PSI1MCIgcj0iNDAiIHN0cm9rZT0iYmxhY2siIHN0cm9rZS13aWR0aD0iMyIgZmlsbD0icmVkIiAvPgogIFNvcnJ5LCB5b3VyIGJyb3dzZXIgZG9lcyBub3Qgc3VwcG9ydCBpbmxpbmUgU1ZHLiAgCjwvc3ZnPiA=';
@@ -44,6 +49,19 @@ describe('Api/Upload/FileTools', () => {
 
     it('Should handle base64 encoded string with b64 prefix (gif)', async () => {
       return expect((await getFile(`data:image/gif;base64,${base64Gif}`)).mimetype).toEqual('image/gif');
+    });
+
+    it('Should pass sanitize options to file instance', async () => {
+      const soptions = {
+        replacement: '=',
+      };
+
+      const fileRes = await getFile({
+        file: base64Png,
+        name: 'test<.jpg',
+      }, soptions);
+
+      expect(sanitizeOptions).toHaveBeenCalledWith(soptions);
     });
 
     it('Should throw error when random string is provided', () => {

@@ -14,8 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { md5, sanitizeName } from './../../utils';
-import { SanitizeOptions } from './../../utils/index';
+import { md5, sanitizeName, SanitizeOptions } from './../../utils';
 
 export interface FileInstance {
   buffer?: Buffer | ArrayBuffer;

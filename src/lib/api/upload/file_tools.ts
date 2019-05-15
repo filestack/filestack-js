@@ -200,7 +200,7 @@ const readFile = (file): Promise<any> => {
    * @param {*} fileOrString
    * @returns {Promise<File>}
    */
-const getFileBrowser = (input: InputFile, sanitizeOptions): Promise<FsFile> => {
+const getFileBrowser = (input: InputFile, sanitizeOptions?: SanitizeOptions): Promise<FsFile> => {
   let filename;
   let file: Blob;
 
@@ -238,7 +238,7 @@ const getFileBrowser = (input: InputFile, sanitizeOptions): Promise<FsFile> => {
  * @param {*} inputFile
  * @returns {Promise<File>}
  */
-const getFileNode = (input: InputFile, sanitizeOptions: SanitizeOptions): Promise<FsFile> => {
+const getFileNode = (input: InputFile, sanitizeOptions?: SanitizeOptions): Promise<FsFile> => {
   let filename;
 
   if (isFileNamed(input)) {
@@ -275,7 +275,7 @@ const getFileNode = (input: InputFile, sanitizeOptions: SanitizeOptions): Promis
       name: filename,
       size: input.byteLength,
       type: getMimetype(input),
-    }));
+    }, sanitizeOptions));
   }
 
   return Promise.reject(new FilestackError('Unsupported input file type'));

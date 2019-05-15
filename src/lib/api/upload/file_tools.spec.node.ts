@@ -17,6 +17,7 @@
  */
 import { getFile } from './file_tools';
 import * as fs from 'fs';
+import { File as FsFile } from './file';
 
 jest.mock('fs');
 
@@ -69,6 +70,28 @@ describe('Api/Upload/FileTools', () => {
 
     it('Should throw error when random string is provided', async () => {
       return expect(getFile('asdasdfasdf')).rejects.toEqual(new Error('Unsupported input file type'));
+    });
+
+    it('Should pass sanitize options to file instance (buffer)', async () => {
+      const fileRes = await getFile({
+        file: mockedTestFile,
+        name: 'test<.jpg',
+      }, {
+        replacement: '=',
+      });
+
+      expect(fileRes.name).toEqual('test=.jpg');
+    });
+
+    it('Should pass sanitize options to file instance path', async () => {
+      const fileRes = await getFile({
+        file: './package.json',
+        name: 'test<.jpg',
+      }, {
+        replacement: '=',
+      });
+
+      expect(fileRes.name).toEqual('test=.jpg');
     });
 
     it('Should handle named file input', async () => {

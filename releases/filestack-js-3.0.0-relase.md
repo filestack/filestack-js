@@ -4,7 +4,7 @@
 - **[BREAKING]** add name sanitization<br>
   by default following characters: 
   ```
-  ['\\', '{', '|', '%', '`', '"', "'", '~', '[', ']', '#', '|', '^', '<', '>']
+  ['\\', '{', '}', '|', '%', '`', '"', "'", '~', '[', ']', '#', '|', '^', '<', '>']
   ```
   will be replaced with '-'<br><br>
   to disable sanitizer set storeUploadOption - sanitizer to false<br><br>
