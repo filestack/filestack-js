@@ -16,7 +16,7 @@
  */
 
 import { loadModule, knownModuleIds } from 'filestack-loader';
-import { FilestackError } from './../filestack_error';
+import { FilestackError, FilestackErrorType } from './../filestack_error';
 import { Client } from './client';
 import { FSProgressEvent, UploadOptions, WorkflowConfig } from './api/upload/types';
 import { getValidator, PickerParamsSchema } from './../schema';
@@ -669,7 +669,7 @@ class PickerLoader {
   constructor(client: Client, options?: PickerOptions) {
     const validateRes = getValidator(PickerParamsSchema)(options);
     if (validateRes.errors.length) {
-      throw new FilestackError(`Invalid picker params`, validateRes.errors);
+      throw new FilestackError(`Invalid picker params`, validateRes.errors, FilestackErrorType.VALIDATION);
     }
 
     this._initialized = this.loadModule(client, options);

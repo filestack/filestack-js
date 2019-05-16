@@ -24,7 +24,7 @@ import { StoreUploadOptions } from './../types';
 import { postWithRetry, request, useRetryPolicy, shouldRetry } from './../../request';
 import { uniqueTime, uniqueId, filterObject } from './../../../utils';
 import { UploaderAbstract, UploadMode, INTELLIGENT_CHUNK_SIZE, MIN_CHUNK_SIZE, DEFAULT_STORE_LOCATION } from './abstract';
-import { FilestackError } from './../../../../filestack_error';
+import { FilestackError, FilestackErrorType } from './../../../../filestack_error';
 
 const debug = Debug('fs:upload:s3');
 
@@ -305,7 +305,7 @@ export class S3Uploader extends UploaderAbstract {
         if (!data || !data.location_url || !data.region || !data.upload_id || !data.uri) {
           debug(`[${id}] Incorrect start response: \n%O\n`, data);
           this.setPayloadStatus(id, FileState.FAILED);
-          return Promise.reject(new FilestackError('Incorrect start response', data, 'request'));
+          return Promise.reject(new FilestackError('Incorrect start response', data, FilestackErrorType.REQUEST));
         }
 
         debug(`[${id}] Assign payload data: \n%O\n`, data);
@@ -323,7 +323,7 @@ export class S3Uploader extends UploaderAbstract {
       .catch(err => {
         debug(`[${id}] Start request error %O`, err);
         this.setPayloadStatus(id, FileState.FAILED);
-        return Promise.reject(new FilestackError('Cannot upload file', err.data, 'request'));
+        return Promise.reject(new FilestackError('Cannot upload file', err.data, FilestackErrorType.REQUEST));
       });
   }
 
@@ -405,7 +405,7 @@ export class S3Uploader extends UploaderAbstract {
       this.retryConfig
     ).catch(err => {
       this.setPayloadStatus(id, FileState.FAILED);
-      return Promise.reject(new FilestackError('Cannot get part metadata', err.data, 'request'));
+      return Promise.reject(new FilestackError('Cannot get part metadata', err.data, FilestackErrorType.REQUEST));
     });
   }
 
@@ -462,7 +462,7 @@ export class S3Uploader extends UploaderAbstract {
           return this.startPart(id, partNumber);
         }
 
-        return Promise.reject(new FilestackError('Cannot upload file part', err.data, 'request'));
+        return Promise.reject(new FilestackError('Cannot upload file part', err.data, FilestackErrorType.REQUEST));
       });
   }
 
@@ -539,7 +539,7 @@ export class S3Uploader extends UploaderAbstract {
 
         if (nextChunkSize < MIN_CHUNK_SIZE) {
           debug(`[${id}] Minimal chunk size limit. Upload file failed!`);
-          return Promise.reject(new FilestackError('Min chunk size reached', err.data, 'request'));
+          return Promise.reject(new FilestackError('Min chunk size reached', err.data, FilestackErrorType.REQUEST));
         }
 
         if (shouldRetry(err)) {
@@ -547,7 +547,7 @@ export class S3Uploader extends UploaderAbstract {
           return this.uploadNextChunk(id, partNumber, nextChunkSize);
         }
 
-        return Promise.reject(new FilestackError('Cannot upload file part', err.data, 'request'));
+        return Promise.reject(new FilestackError('Cannot upload file part', err.data, FilestackErrorType.REQUEST));
       })
       .finally(() => {
         part = null;
@@ -660,7 +660,7 @@ export class S3Uploader extends UploaderAbstract {
       })
       .catch(err => {
         this.setPayloadStatus(id, FileState.FAILED);
-        return Promise.reject(new FilestackError('Cannot complete file', err.data, 'request'));
+        return Promise.reject(new FilestackError('Cannot complete file', err.data, FilestackErrorType.REQUEST));
       });
   }
 

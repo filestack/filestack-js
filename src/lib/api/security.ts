@@ -16,7 +16,7 @@
  */
 
 import { Security } from '../client';
-import { FilestackError } from './../../filestack_error';
+import { FilestackError, FilestackErrorType } from './../../filestack_error';
 import { getValidator, SecurityParamsSchema } from './../../schema';
 import { isNode, requireNode } from '../utils';
 
@@ -58,7 +58,7 @@ export const getSecurity = (policyOptions: SecurityOptions, appSecret: string): 
   const validateRes = getValidator(SecurityParamsSchema)(policyOptions);
 
   if (validateRes.errors.length) {
-    throw new FilestackError(`Invalid security params`, validateRes.errors);
+    throw new FilestackError(`Invalid security params`, validateRes.errors, FilestackErrorType.VALIDATION);
   }
 
   const policy = Buffer.from(JSON.stringify(policyOptions)).toString('base64');

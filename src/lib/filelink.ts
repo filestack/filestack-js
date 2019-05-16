@@ -19,7 +19,7 @@ import { config } from './../config';
 import { TransformSchema } from './../schema/transforms.schema';
 import { getValidator } from './../schema/validator';
 import { resolveHost, b64 } from './utils';
-import { FilestackError } from './../filestack_error';
+import { FilestackError, FilestackErrorType } from './../filestack_error';
 import Debug from 'debug';
 
 const debug = Debug('fs:filelink');
@@ -1308,7 +1308,7 @@ export class Filelink {
   private validateTasks(transformations: object[]): void {
     const res = Filelink.validator(this.arrayToObject(transformations, 'name', 'params'));
     if (res.errors.length) {
-      throw new FilestackError(`Params validation error`, res.errors);
+      throw new FilestackError(`Params validation error`, res.errors, FilestackErrorType.VALIDATION);
     }
 
     return;

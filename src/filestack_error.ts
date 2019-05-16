@@ -15,6 +15,12 @@
  * limitations under the License.
  */
 
+export enum FilestackErrorType {
+  VALIDATION = 'validation',
+  REQUEST = 'request',
+  OTHER = 'other',
+}
+
 export class FilestackError extends Error {
 
   /**
@@ -26,7 +32,7 @@ export class FilestackError extends Error {
   public readonly details: any;
   public readonly type: string;
 
-  constructor(message?: string, details?: any, type?: string) {
+  constructor(message?: string, details?: any, type?: FilestackErrorType) {
 
     /* istanbul ignore next */
     super(message);

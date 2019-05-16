@@ -18,7 +18,7 @@
 import { Security, Session } from '../client';
 import { removeEmpty } from '../utils';
 import { getValidator, PreviewParamsSchema } from './../../schema';
-import { FilestackError } from './../../filestack_error';
+import { FilestackError, FilestackErrorType } from './../../filestack_error';
 
 export interface PreviewOptions {
   /**
@@ -85,7 +85,7 @@ export const preview = (session: Session, handle?: string, opts?: PreviewOptions
   const validateRes = getValidator(PreviewParamsSchema)(opts);
 
   if (validateRes.errors.length) {
-    throw new FilestackError(`Invalid preview params`, validateRes.errors);
+    throw new FilestackError(`Invalid preview params`, validateRes.errors, FilestackErrorType.VALIDATION);
   }
 
   const options = removeEmpty(opts || {});

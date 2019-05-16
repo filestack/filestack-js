@@ -18,7 +18,7 @@
 import * as EventEmitter from 'eventemitter3';
 import { Session, Security } from '../../client';
 import { S3Uploader } from './uploaders/s3';
-import { FilestackError } from './../../../filestack_error';
+import { FilestackError, FilestackErrorType } from './../../../filestack_error';
 import { SanitizeOptions } from './../../utils';
 
 import { UploadOptions, StoreUploadOptions } from '../upload/types';
@@ -70,12 +70,12 @@ export class Upload extends EventEmitter {
     const validateRes = getValidator(UploadParamsSchema)(options);
 
     if (validateRes.errors.length) {
-      throw new FilestackError(`Invalid upload params`, validateRes.errors);
+      throw new FilestackError(`Invalid upload params`, validateRes.errors, FilestackErrorType.VALIDATION);
     }
 
     const storeValidateRes = getValidator(StoreParamsSchema)(storeOptions);
     if (storeValidateRes.errors.length) {
-      throw new FilestackError(`Invalid store upload params`, storeValidateRes.errors);
+      throw new FilestackError(`Invalid store upload params`, storeValidateRes.errors, FilestackErrorType.VALIDATION);
     }
 
     if (storeOptions.filename) {
