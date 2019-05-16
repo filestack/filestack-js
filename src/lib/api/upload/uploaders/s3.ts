@@ -124,8 +124,16 @@ export class S3Uploader extends UploaderAbstract {
 
           // cleanup payloads
           delete this.payloads[id];
-          this.cancelToken.cancel();
-          this.cancelToken = null;
+
+          // prevent cancel token memory leak
+          try {
+            this.cancelToken.cancel();
+          } catch (e) {
+            /* istanbul ignore next */
+            debug(`[${id}] Cannot cleanup cancel token %O`, e.message);
+          }
+
+          // this.cancelToken = null;
 
           resolve(file);
         })
