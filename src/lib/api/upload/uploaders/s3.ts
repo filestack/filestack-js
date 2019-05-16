@@ -125,21 +125,21 @@ export class S3Uploader extends UploaderAbstract {
           // cleanup payloads
           delete this.payloads[id];
 
-          // prevent cancel token memory leak
-          try {
-            this.cancelToken.cancel();
-          } catch (e) {
-            /* istanbul ignore next */
-            debug(`[${id}] Cannot cleanup cancel token %O`, e.message);
-          }
-
-          // this.cancelToken = null;
-
           resolve(file);
         })
     );
 
-    return Promise.all(tasks);
+    return Promise.all(tasks).then((res) => {
+      // prevent cancel token memory leak
+      try {
+        this.cancelToken.cancel();
+      } catch (e) {
+        /* istanbul ignore next */
+        debug(`Cannot cleanup cancel token %O`, e.message);
+      }
+
+      return res;
+    });
   }
 
   /**
