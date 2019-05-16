@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { resolveCdnUrl, resolveHost, removeEmpty, isMobile, uniqueTime, uniqueId, md5, sanitizeName, filterObject, b64 } from './index';
+import { resolveCdnUrl, resolveHost, removeEmpty, isMobile, uniqueTime, uniqueId, md5, sanitizeName, filterObject, b64, requireNode } from './index';
 import { config } from '../../config';
 
 describe('utils:index', () => {
@@ -131,6 +131,12 @@ describe('utils:index', () => {
         exclude: ['[', ']'],
         replacement: '_',
       })).toEqual('__#|.jpg');
+    });
+  });
+
+  describe('requireNode', () => {
+    it('should require node package', () => {
+      expect(requireNode('crypto')).toBeTruthy();
     });
   });
 

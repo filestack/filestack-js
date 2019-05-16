@@ -133,6 +133,11 @@ export const b64 = (data: string): string => {
   return btoa(data);
 };
 
+/**
+ * Hides require from buindling by weback to browser
+ *
+ * @param {string} name
+ */
 export const requireNode = (name: string): any => {
   if (!isNode()) {
     return false;
