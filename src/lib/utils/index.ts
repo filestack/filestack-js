@@ -143,7 +143,7 @@ export const requireNode = (name: string): any => {
     return false;
   }
 
-  return require(name);
+  return require && require(name);
 };
 
 /**
