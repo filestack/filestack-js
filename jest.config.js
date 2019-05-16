@@ -26,6 +26,7 @@ module.exports = {
     testMatch: ['<rootDir>/src/**/*.browser.spec.ts'],
     clearMocks: true,
     testEnvironment: 'jsdom',
+    setupFiles: ['jest-localstorage-mock'],
     testMatch: ['<rootDir>/src/**/*.spec.browser.ts'],
     moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
     transform: {

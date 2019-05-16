@@ -18,8 +18,12 @@
 import { Session } from '../client';
 import { Hosts } from './../../config';
 import * as SparkMD5 from 'spark-md5';
+import fileType from 'file-type';
+import * as isutf8 from 'isutf8';
 
 const mobileRegexp = /(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series[46]0|symbian|treo|up\.(browser|link)|vodafone|wap|windows (ce|phone)|xda|xiino|android|ipad|playbook|silk/i;
+const htmlCommentsRegexp = /<!--([\s\S]*?)-->/g;
+const svgRegexp = /^\s*(?:<\?xml[^>]*>\s*)?(?:<!doctype svg[^>]*\s*(?:\[?(?:\s*<![^>]*>\s*)*\]?)*[^>]*>\s*)?<svg[^>]*>[^]*<\/svg>\s*$/i;
 
 /**
  * Resolve cdn url based on handle type
@@ -119,6 +123,41 @@ export const md5 = (data: any): string => {
 
   /* istanbul ignore next */
   return btoa(SparkMD5.ArrayBuffer.hash(data, true));
+};
+
+/**
+ * Check if input is a svg
+ *
+ * @param input
+ */
+const isSvg = (input: Uint8Array | Buffer) => input && svgRegexp.test(String.fromCharCode.apply(null, input).replace(htmlCommentsRegexp, ''));
+
+/**
+ * Check if input is a svg
+ *
+ * @param {Uint8Array | Buffer} file
+ * @returns {string} - mimetype
+ */
+export const getMimetype = (file: Uint8Array | Buffer): string => {
+  let type = fileType(file);
+  if (type) {
+    return type.mime;
+  }
+
+  try {
+
+    if (isSvg(file)) {
+      return 'image/svg+xml';
+    }
+
+    if (isutf8(file)) {
+      return 'text/plain';
+    }
+  } catch (e) {
+    console.warn('Additional mimetype checks (text/plain) are currently not supported for browsers');
+  }
+
+  return 'application/octet-stream';
 };
 
 /**

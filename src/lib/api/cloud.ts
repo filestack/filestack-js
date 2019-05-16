@@ -38,6 +38,7 @@ export class CloudClient {
   constructor(session: Session, options?: ClientOptions) {
     this.session = session;
     this.cloudApiUrl = session.urls.cloudApiUrl;
+
     if (options && options.sessionCache) {
       this.cache = options.sessionCache;
     }
@@ -62,7 +63,9 @@ export class CloudClient {
     const params = {
       apikey: this.session.apikey,
     };
-    return requestWithSource().get(`${this.cloudApiUrl}/prefetch`, { params }).then((res) => res.data);
+    return requestWithSource()
+      .get(`${this.cloudApiUrl}/prefetch`, { params })
+      .then(res => res.data);
   }
 
   list(clouds: any, token?: any) {
@@ -88,13 +91,15 @@ export class CloudClient {
       options.cancelToken = source.token;
     }
 
-    return requestWithSource().post(`${this.cloudApiUrl}/folder/list`, payload, options).then((res) => {
-      if (res.data && res.data.token) {
-        this.token = res.data.token;
-      }
+    return requestWithSource()
+      .post(`${this.cloudApiUrl}/folder/list`, payload, options)
+      .then(res => {
+        if (res.data && res.data.token) {
+          this.token = res.data.token;
+        }
 
-      return res.data;
-    });
+        return res.data;
+      });
   }
 
   store(name: string, path: string, options: StoreParams = {}, customSource: any = {}, token?: any) {
@@ -136,17 +141,19 @@ export class CloudClient {
       requestOptions.cancelToken = source.token;
     }
 
-    return requestWithSource().post(`${this.cloudApiUrl}/store/`, payload, requestOptions).then((res) => {
-      if (res.data && res.data.token) {
-        this.token = res.data.token;
-      }
+    return requestWithSource()
+      .post(`${this.cloudApiUrl}/store/`, payload, requestOptions)
+      .then(res => {
+        if (res.data && res.data.token) {
+          this.token = res.data.token;
+        }
 
-      if (res.data && res.data[name]) {
-        return res.data[name];
-      }
+        if (res.data && res.data[name]) {
+          return res.data[name];
+        }
 
-      return res.data;
-    });
+        return res.data;
+      });
   }
 
   logout(name?: string) {
@@ -155,23 +162,22 @@ export class CloudClient {
       flow: 'web',
       token: this.token,
     };
+
     if (name) {
-      payload.clouds = {
-        [name]: {},
-      };
-    } else {
+      payload.clouds = { [name]: {} };
+    } else if (this.cache) {
       // No name means logout of ALL clouds. Clear local session.
-      if (this.cache) {
-        localStorage.removeItem(PICKER_KEY);
-      }
+      localStorage.removeItem(PICKER_KEY);
     }
 
-    return requestWithSource().post(`${this.cloudApiUrl}/auth/logout/`, payload).then((res) => {
-      if (res.data && res.data[name]) {
-        return res.data[name];
-      }
-      return res.data;
-    });
+    return requestWithSource()
+      .post(`${this.cloudApiUrl}/auth/logout/`, payload)
+      .then(res => {
+        if (res.data && res.data[name]) {
+          return res.data[name];
+        }
+        return res.data;
+      });
   }
 
   metadata(url: string) {
@@ -179,12 +185,15 @@ export class CloudClient {
       apikey: this.session.apikey,
       url,
     };
+
     if (this.session.policy && this.session.signature) {
       payload.policy = this.session.policy;
       payload.signature = this.session.signature;
     }
 
-    return requestWithSource().post(`${this.cloudApiUrl}/metadata/`, payload).then((res) => res.data);
+    return requestWithSource()
+      .post(`${this.cloudApiUrl}/metadata/`, payload)
+      .then(res => res.data);
   }
 
   // OpenTok API Endpoints
@@ -192,11 +201,13 @@ export class CloudClient {
     if (type !== 'video' && type !== 'audio') {
       throw new FilestackError('Type must be one of video or audio.');
     }
-    return requestWithSource().post(`${this.cloudApiUrl}/recording/${type}/init`).then((res) => {
-      return {
-        body: res.data,
-      };
-    });
+    return requestWithSource()
+      .post(`${this.cloudApiUrl}/recording/${type}/init`)
+      .then(res => {
+        return {
+          body: res.data,
+        };
+      });
   }
 
   tokStart(type: string, key: string, sessionId: string) {
@@ -208,11 +219,13 @@ export class CloudClient {
       session_id: sessionId,
     };
 
-    return requestWithSource().post(`${this.cloudApiUrl}/recording/${type}/start`, payload).then((res) => {
-      return {
-        body: res.data,
-      };
-    });
+    return requestWithSource()
+      .post(`${this.cloudApiUrl}/recording/${type}/start`, payload)
+      .then(res => {
+        return {
+          body: res.data,
+        };
+      });
   }
 
   tokStop(type: string, key: string, sessionId: string, archiveId: string) {
@@ -226,10 +239,12 @@ export class CloudClient {
       archive_id: archiveId,
     };
 
-    return requestWithSource().post(`${this.cloudApiUrl}/recording/${type}/stop`, payload).then((res) => {
-      return {
-        body: res.data,
-      };
-    });
+    return requestWithSource()
+      .post(`${this.cloudApiUrl}/recording/${type}/stop`, payload)
+      .then(res => {
+        return {
+          body: res.data,
+        };
+      });
   }
 }

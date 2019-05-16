@@ -15,24 +15,26 @@
  * limitations under the License.
  */
 import { getFile } from './file_tools';
+import * as utils from './../../utils';
 
 const createFile = (size = 44320, name = 'test.png', type = 'image/png') => new File([new ArrayBuffer(size)], name , { type: type });
 
 const sanitizeOptions = jest.fn().mockName('sanitizeOptions');
-
-jest.mock('./../../utils', () => ({
-  isNode: () => false,
-  sanitizeName: (val, opts) => {
-    sanitizeOptions(opts)
-    return val;
-  },
-}));
 
 const base64Svg = 'PHN2ZyBoZWlnaHQ9IjEwMCIgd2lkdGg9IjEwMCI+CiAgPGNpcmNsZSBjeD0iNTAiIGN5PSI1MCIgcj0iNDAiIHN0cm9rZT0iYmxhY2siIHN0cm9rZS13aWR0aD0iMyIgZmlsbD0icmVkIiAvPgogIFNvcnJ5LCB5b3VyIGJyb3dzZXIgZG9lcyBub3Qgc3VwcG9ydCBpbmxpbmUgU1ZHLiAgCjwvc3ZnPiA=';
 const base64Png = 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==';
 const base64Gif = 'R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==';
 
 describe('Api/Upload/FileTools', () => {
+  beforeAll(() => {
+    spyOn(utils, 'isNode').and.returnValue(false);
+
+    spyOn(utils, 'sanitizeName').and.callFake((val, opts) => {
+      sanitizeOptions(opts);
+      return val;
+    });
+  });
+
   describe('getFileBrowser', () => {
 
     it('Should handle base64 encoded string (svg)', async () => {

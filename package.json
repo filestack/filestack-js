@@ -76,6 +76,7 @@
     "gulp-replace": "^1.0.0",
     "gulp-typescript": "^5.0.1",
     "jest": "^24.8.0",
+    "jest-localstorage-mock": "^2.4.0",
     "jest-mock": "^24.8.0",
     "js-yaml": "^3.13.1",
     "jsdom": "^15.0.0",

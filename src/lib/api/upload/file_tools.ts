@@ -15,9 +15,7 @@
  * limitations under the License.
  */
 import { File as FsFile } from './file';
-import fileType from 'file-type';
-import * as isutf8 from 'isutf8';
-import { isNode, SanitizeOptions, requireNode } from './../../utils';
+import { isNode, SanitizeOptions, requireNode, getMimetype } from './../../utils';
 import { FilestackError } from './../../../filestack_error';
 
 export type RawFile = Blob | Buffer | File | string;
@@ -29,8 +27,6 @@ export type NamedInputFile = {
 export type InputFile = RawFile | NamedInputFile;
 
 const base64Regexp = /data:([a-zA-Z]*\/[a-zA-Z]*);base64,([^\"]*)/i;
-const htmlCommentsRegexp = /<!--([\s\S]*?)-->/g;
-const svgRegexp = /^\s*(?:<\?xml[^>]*>\s*)?(?:<!doctype svg[^>]*\s*(?:\[?(?:\s*<![^>]*>\s*)*\]?)*[^>]*>\s*)?<svg[^>]*>[^]*<\/svg>\s*$/i;
 
 /**
  * Check if file is buffer
@@ -98,42 +94,6 @@ const isFileNamed = (input: InputFile): input is NamedInputFile => input && inpu
  * @param input
  */
 const isFilePath = (input: InputFile): input is string => requireNode('fs').existsSync(input);
-
-/**
- * Check if input is a svg
- *
- * @node
- * @param input
- */
-const isSvg = (input: Uint8Array | Buffer) => input && svgRegexp.test(String.fromCharCode.apply(null, input).replace(htmlCommentsRegexp, ''));
-
-/**
- * Returns mimetype of input file
- *
- * @param file
- */
-const getMimetype = (file: Uint8Array | Buffer): string => {
-  let type = fileType(file);
-  if (type) {
-    return type.mime;
-  }
-
-  // @todo we can check it only for node currently, rewrite it for browser as well
-  try {
-
-    if (isSvg(file)) {
-      return 'image/svg+xml';
-    }
-
-    if (isutf8(file)) {
-      return 'text/plain';
-    }
-  } catch (e) {
-    console.warn('Additional mimetype checks (text/plain) are currently not supported for browsers');
-  }
-
-  return 'application/octet-stream';
-};
 
 /**
  * Convert encoded base64 string or dataURI to blob
@@ -281,4 +241,4 @@ const getFileNode = (input: InputFile, sanitizeOptions?: SanitizeOptions): Promi
   return Promise.reject(new FilestackError('Unsupported input file type'));
 };
 
-export const getFile = isNode() ? getFileNode : getFileBrowser;
+export const getFile = (input: InputFile, sanitizeOptions?: SanitizeOptions) => isNode() ? getFileNode(input, sanitizeOptions) : getFileBrowser(input, sanitizeOptions);
