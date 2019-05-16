@@ -24,14 +24,16 @@ export class FilestackError extends Error {
    * @memberof FilestackError
    */
   public readonly details: any;
+  public readonly type: string;
 
-  constructor(message?: string, details?: any) {
+  constructor(message?: string, details?: any, type?: string) {
 
     /* istanbul ignore next */
     super(message);
 
     Object.setPrototypeOf(this, FilestackError.prototype);
     this.details = details;
+    this.type = type;
   }
 
 }
