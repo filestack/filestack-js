@@ -17,7 +17,7 @@
 import { File as FsFile } from './file';
 import fileType from 'file-type';
 import * as isutf8 from 'isutf8';
-import { isNode, SanitizeOptions } from './../../utils';
+import { isNode, SanitizeOptions, requireNode } from './../../utils';
 import { FilestackError } from './../../../filestack_error';
 
 export type RawFile = Blob | Buffer | File | string;
@@ -97,7 +97,7 @@ const isFileNamed = (input: InputFile): input is NamedInputFile => input && inpu
  * @node
  * @param input
  */
-const isFilePath = (input: InputFile): input is string => require('fs').existsSync(input);
+const isFilePath = (input: InputFile): input is string => requireNode('fs').existsSync(input);
 
 /**
  * Check if input is a svg
@@ -250,14 +250,14 @@ const getFileNode = (input: InputFile, sanitizeOptions?: SanitizeOptions): Promi
     let path = input;
 
     return new Promise((resolve, reject) => {
-      require('fs').readFile(path, (err, buffer) => {
+      requireNode('fs').readFile(path, (err, buffer) => {
         if (err) {
           return reject(err);
         }
 
         return resolve(new FsFile({
           buffer,
-          name: filename || (require('path')).basename(path),
+          name: filename || (requireNode('path')).basename(path),
           size: buffer.byteLength,
           type: getMimetype(buffer),
         }, sanitizeOptions));

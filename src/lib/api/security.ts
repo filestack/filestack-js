@@ -15,11 +15,10 @@
  * limitations under the License.
  */
 
-import * as crypto from 'crypto';
 import { Security } from '../client';
 import { FilestackError } from './../../filestack_error';
 import { getValidator, SecurityParamsSchema } from './../../schema';
-import { isNode } from '../utils';
+import { isNode, requireNode } from '../utils';
 
 /**
  * Configures a security policy
@@ -63,7 +62,7 @@ export const getSecurity = (policyOptions: SecurityOptions, appSecret: string): 
   }
 
   const policy = Buffer.from(JSON.stringify(policyOptions)).toString('base64');
-  const signature = crypto.createHmac('sha256', appSecret)
+  const signature = requireNode('crypto').createHmac('sha256', appSecret)
                    .update(policy)
                    .digest('hex');
 

@@ -84,7 +84,7 @@ export type StoreUploadOptions = StoreBaseParams & {
    *
    * @see https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingMetadata.html
    * @default {
-   *   exclude: ['\\', '{', '|', '%', '`', '"', "'", '~', '[', ']', '#', '|', '^', '<', '>']
+   *   exclude: ['\\', '{', '}','|', '%', '`', '"', "'", '~', '[', ']', '#', '|', '^', '<', '>']
    *   replacement: '-'
    * }
    * @type {((boolean | {

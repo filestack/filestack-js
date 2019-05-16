@@ -59,7 +59,11 @@ export class Upload {
   private progressIntervalHandler;
 
   constructor(private readonly options: UploadOptions = {}, private storeOptions: StoreUploadOptions = {}) {
+    // do not delete filename from original options reference - copy it first
+    this.storeOptions = Object.assign({}, storeOptions);
+
     const validateRes = getValidator(UploadParamsSchema)(options);
+
     if (validateRes.errors.length) {
       throw new FilestackError(`Invalid upload params`, validateRes.errors);
     }
@@ -69,13 +73,16 @@ export class Upload {
       throw new FilestackError(`Invalid store upload params`, storeValidateRes.errors);
     }
 
-    this.uploader = new S3Uploader(storeOptions, options.concurrency);
-
     if (storeOptions.filename) {
-      this.storeOptions = Object.assign({}, storeOptions); // do not delete filename from original options reference - copy it first
       this.overwriteFileName = storeOptions.filename;
       delete this.storeOptions.filename;
     }
+
+    if (this.storeOptions.sanitizer) {
+      delete this.storeOptions.sanitizer;
+    }
+
+    this.uploader = new S3Uploader(this.storeOptions, options.concurrency);
 
     this.uploader.setRetryConfig({
       retry: options.retry || 10,
@@ -166,6 +173,8 @@ export class Upload {
     this.startProgressInterval();
     const res = (await this.uploader.execute()).shift();
     this.stopProgressInterval();
+
+    this.uploader.removeAllListeners();
 
     if (res.status === FileState.FAILED) {
       return Promise.reject(res);

@@ -114,7 +114,7 @@ export const uniqueId = (len: number = 10): string => {
  */
 export const md5 = (data: any): string => {
   if (isNode()) {
-    return (require('crypto')).createHash('md5').update(data).digest('base64');
+    return (requireNode('crypto')).createHash('md5').update(data).digest('base64');
   }
 
   /* istanbul ignore next */
@@ -133,6 +133,14 @@ export const b64 = (data: string): string => {
   return btoa(data);
 };
 
+export const requireNode = (name: string): any => {
+  if (!isNode()) {
+    return false;
+  }
+
+  return require(name);
+};
+
 /**
  * Sanitizer Options
  */
@@ -146,8 +154,8 @@ export type SanitizeOptions = (boolean | {
  *
  * @param name
  * @param {bool} options  - enable,disable sanitizer, default enabled
- * @param {string} options.replacement - replacement for sanitized chars
- * @param {string[]} options.exclude - array with excluded chars
+ * @param {string} options.replacement - replacement for sanitized chars defaults to "-"
+ * @param {string[]} options.exclude - array with excluded chars default - ['\', '{', '}','|', '%', '`', '"', "'", '~', '[', ']', '#', '|', '^', '<', '>']
  */
 export const sanitizeName = (name: string, options: SanitizeOptions = true): string  => {
   if (typeof options === 'boolean' && !options) {
