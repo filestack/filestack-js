@@ -15,9 +15,11 @@
  * limitations under the License.
  */
 
+import * as EventEmitter from 'eventemitter3';
 import { Session, Security } from '../../client';
 import { S3Uploader } from './uploaders/s3';
 import { FilestackError } from './../../../filestack_error';
+import { SanitizeOptions } from './../../utils';
 
 import { UploadOptions, StoreUploadOptions } from '../upload/types';
 import { getFile, InputFile } from './file_tools';
@@ -46,7 +48,7 @@ const normalizeProgress = (current, last) => {
  * @export
  * @class Upload
  */
-export class Upload {
+export class Upload extends EventEmitter {
   private uploader: S3Uploader;
 
   private overwriteFileName;
@@ -57,8 +59,11 @@ export class Upload {
   };
 
   private progressIntervalHandler;
+  private sanitizerOptions: SanitizeOptions;
 
   constructor(private readonly options: UploadOptions = {}, private storeOptions: StoreUploadOptions = {}) {
+    super();
+
     // do not delete filename from original options reference - copy it first
     this.storeOptions = Object.assign({}, storeOptions);
 
@@ -79,6 +84,7 @@ export class Upload {
     }
 
     if (this.storeOptions.sanitizer) {
+      this.sanitizerOptions = this.storeOptions.sanitizer;
       delete this.storeOptions.sanitizer;
     }
 
@@ -105,6 +111,7 @@ export class Upload {
       this.uploader.setUploadMode(options.intelligent === 'fallback' ? UploadMode.FALLBACK : UploadMode.INTELLIGENT);
     }
 
+    this.uploader.on('error', (e) => this.emit('error', e));
     this.uploader.on('progress', this.handleProgress.bind(this));
   }
 
@@ -166,7 +173,7 @@ export class Upload {
    */
   async upload(input: InputFile): Promise<any> {
 
-    const f = await getFile(input, this.storeOptions.sanitizer);
+    const f = await getFile(input, this.sanitizerOptions);
     f.customName = this.overwriteFileName;
     this.uploader.addFile(f);
 
@@ -197,7 +204,7 @@ export class Upload {
         continue;
       }
 
-      const f = await getFile(input[i], this.storeOptions.sanitizer);
+      const f = await getFile(input[i], this.sanitizerOptions);
       f.customName = this.overwriteFileName;
       this.uploader.addFile(f);
     }

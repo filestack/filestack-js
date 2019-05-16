@@ -114,6 +114,7 @@ export class S3Uploader extends UploaderAbstract {
             await this.completeRequest(id);
           } catch (e) {
             /* istanbul ignore next */
+            this.emit('error', e);
             debug(`[${id}] File upload failed. %O, \nDetails: %O `, e.message, e.details);
           }
 
@@ -690,7 +691,6 @@ export class S3Uploader extends UploaderAbstract {
     let filesProgress = {};
     for (let i in this.payloads) {
       const payload = this.payloads[i];
-
       // omit all failed files in progress event
       // this shouldn't happend because of promises rejection in execute. Left to be sure
       /* istanbul ignore next */

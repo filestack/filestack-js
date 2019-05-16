@@ -15,6 +15,7 @@
  * limitations under the License.
  */
 
+import * as EventEmitter from 'eventemitter3';
 import { config, Hosts } from '../config';
 import { metadata, MetadataOptions, remove, retrieve, RetrieveOptions } from './api/file';
 import { transform, TransformOptions } from './api/transform';
@@ -24,6 +25,7 @@ import { Upload, InputFile, UploadOptions, StoreUploadOptions } from './api/uplo
 import { preview, PreviewOptions } from './api/preview';
 import { CloudClient } from './api/cloud';
 import { StoreParams } from './filelink';
+
 import {
   picker,
   PickerInstance,
@@ -82,11 +84,13 @@ export interface ClientOptions {
  * const client = filestack.init('apikey');
  * ```
  */
-export class Client {
+export class Client extends EventEmitter {
   session: Session;
   private cloud: CloudClient;
 
   constructor(apikey: string, options?: ClientOptions) {
+    super();
+
     if (!apikey || typeof apikey !== 'string' || apikey.length === 0) {
       throw new Error('An apikey is required to initialize the Filestack client');
     }
@@ -378,6 +382,8 @@ export class Client {
       upload.setSecurity(security);
     }
 
+    upload.on('error', (e) => this.emit('uploadError', e));
+
     return upload.upload(file).finally(() => {
       upload = null;
     });
@@ -427,6 +433,8 @@ export class Client {
     if (security) {
       upload.setSecurity(security);
     }
+
+    upload.on('error', (e) => this.emit('uploadError', e));
 
     return upload.multiupload(file).finally(() => {
       upload = null;
