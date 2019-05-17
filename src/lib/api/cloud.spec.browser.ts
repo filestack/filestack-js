@@ -14,10 +14,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/* globals global */
 
 import { config } from './../../config';
-import { ClientOptions, Session } from '../client';
 import { CloudClient, PICKER_KEY } from './cloud';
 import * as nock from 'nock';
 
@@ -32,15 +30,13 @@ const testSecurity = {
   signature: 'exampleSignature',
 };
 
-let scope;
-
 const sessionURls = config.urls;
 const testSession = {
   apikey: testApiKey,
   urls: sessionURls,
 };
 
-scope = nock(sessionURls.cloudApiUrl);
+let scope = nock(sessionURls.cloudApiUrl);
 
 const mockTokInit = jest
   .fn()
@@ -70,7 +66,7 @@ const mockPrefetch = jest
 const mockList = jest
   .fn()
   .mockName('list')
-  .mockImplementation((data) => {
+  .mockImplementation(data => {
     if (data && data.clouds.token) {
       return { token: testCloudToken };
     }
@@ -94,7 +90,7 @@ const mockLogout = jest
 const mockStore = jest
   .fn()
   .mockName('store')
-  .mockImplementation((params) => {
+  .mockImplementation(params => {
     if (params && params.clouds && params.clouds.token) {
       return JSON.stringify({ token: testCloudToken });
     }
@@ -119,7 +115,7 @@ describe('cloud', () => {
       .reply(200, mockPrefetch);
 
     scope.post('/auth/logout/').reply(200, mockLogout);
-    scope.post('/folder/list').reply(200,  (_, data) => mockList(JSON.parse(data)));
+    scope.post('/folder/list').reply(200, (_, data) => mockList(JSON.parse(data)));
     scope.post('/store/').reply(200, (_, data) => mockStore(JSON.parse(data)));
     scope.post('/metadata/').reply(200, mockMetadata);
 
@@ -137,6 +133,7 @@ describe('cloud', () => {
   describe('prefetch', () => {
     it('should make correct request to api', async () => {
       const res = await new CloudClient(testSession).prefetch();
+
       expect(mockPrefetch).toHaveBeenCalledWith(expect.any(String), '');
       expect(res).toEqual('prefetch');
     });
@@ -212,7 +209,7 @@ describe('cloud', () => {
         apikey: testApiKey,
         flow: 'web',
         clouds: {
-          'google': {
+          google: {
             path: 'test',
             store: {
               filename: '1',
@@ -230,7 +227,7 @@ describe('cloud', () => {
         apikey: testApiKey,
         flow: 'web',
         clouds: {
-          'google': {
+          google: {
             path: 'test',
             store: {
               filename: '1',
@@ -252,7 +249,7 @@ describe('cloud', () => {
         apikey: testApiKey,
         flow: 'web',
         clouds: {
-          'token': {
+          token: {
             path: 'test',
             store: {
               filename: '1',
@@ -278,7 +275,7 @@ describe('cloud', () => {
         apikey: testApiKey,
         flow: 'web',
         clouds: {
-          'customsource': {
+          customsource: {
             ...customSource,
             path: 'test',
             store: {
@@ -293,19 +290,15 @@ describe('cloud', () => {
 
   describe('logout', () => {
     it('should make correct request to logout', async () => {
-      const res = await new CloudClient(testSession).logout();
-
-      expect(res).toEqual({ apikey: 'API_KEY', flow: 'web' });
+      expect(await new CloudClient(testSession).logout()).toEqual({ apikey: 'API_KEY', flow: 'web' });
     });
 
     it('should make correct request to logout with provided cloud', async () => {
-      const res = await new CloudClient(testSession).logout('google');
-      expect(res).toEqual({ apikey: 'API_KEY', flow: 'web', clouds: { google: {} } });
+      expect(await new CloudClient(testSession).logout('google')).toEqual({ apikey: 'API_KEY', flow: 'web', clouds: { google: {} } });
     });
 
     it('should make correct request to logout and return correct response when cloud name is returned', async () => {
-      const res = await new CloudClient(testSession).logout('token');
-      expect(res).toEqual('testCloudToken');
+      expect(await new CloudClient(testSession).logout('token')).toEqual('testCloudToken');
     });
 
     it('should make correct request to logout and clean session cache ', async () => {
@@ -401,14 +394,28 @@ describe('cloud', () => {
       it('should make correct request to api (audio)', async () => {
         const res = await new CloudClient(testSession).tokStop('audio', 'key', testTokSession, testTokArchiveId);
 
-        expect(mockTokStop).toHaveBeenCalledWith(expect.any(String), JSON.stringify({ apikey: 'key', session_id: testTokSession, archive_id: testTokArchiveId }));
+        expect(mockTokStop).toHaveBeenCalledWith(
+          expect.any(String),
+          JSON.stringify({
+            apikey: 'key',
+            session_id: testTokSession,
+            archive_id: testTokArchiveId,
+          })
+        );
         expect(res).toEqual({ body: 'stop' });
       });
 
       it('should make correct request to api (video)', async () => {
         const res = await new CloudClient(testSession).tokStop('video', 'key', testTokSession, testTokArchiveId);
 
-        expect(mockTokStop).toHaveBeenCalledWith(expect.any(String), JSON.stringify({ apikey: 'key', session_id: testTokSession, archive_id: testTokArchiveId }));
+        expect(mockTokStop).toHaveBeenCalledWith(
+          expect.any(String),
+          JSON.stringify({
+            apikey: 'key',
+            session_id: testTokSession,
+            archive_id: testTokArchiveId,
+          })
+        );
         expect(res).toEqual({ body: 'stop' });
       });
 
