@@ -34,6 +34,7 @@ export interface UploadPart extends FilePartMetadata {
   etag?: string;
   offset?: number;
   progress?: number;
+  isLast?: boolean;
 }
 
 export interface UploadPayload {
@@ -110,8 +111,7 @@ export class S3Uploader extends UploaderAbstract {
           try {
             await this.startRequest(id);
             await this.prepareParts(id);
-            await this.startPartsQueue(id);
-            await this.completeRequest(id);
+            await this.processUpload(id);
           } catch (e) {
             /* istanbul ignore next */
             this.emit('error', e);
@@ -265,6 +265,7 @@ export class S3Uploader extends UploaderAbstract {
       parts[i] = {
         ...file.getPartMetadata(i, this.partSize),
         offset: 0,
+        isLast: partsCount - 1 === i,
       };
     }
 
@@ -334,15 +335,25 @@ export class S3Uploader extends UploaderAbstract {
    * @returns
    * @memberof S3Uploader
    */
-  private async startPartsQueue(id: string): Promise<any> {
+  private async processUpload(id: string): Promise<any> {
     const payload = this.getPayloadById(id);
     const parts = payload.parts;
     const waitingLength = parts.length;
 
     debug(`[${id}] Create uploading queue from file. parts count - %d`, waitingLength);
+
+    // @todo run complete request after last part
     parts.forEach(part =>
       this.partsQueue
-        .add(() => this.startPart(id, part.partNumber))
+        .add(() => {
+          return this.startPart(id, part.partNumber).then((res) => {
+            if (part.isLast) {
+              return this.completeRequest(id);
+            }
+
+            return res;
+          });
+        })
         .catch(e => {
           this.setPayloadStatus(id, FileState.FAILED);
           debug(`[${id}] Failed to upload part %s`, e.message);
