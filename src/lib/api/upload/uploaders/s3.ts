@@ -497,9 +497,8 @@ export class S3Uploader extends UploaderAbstract {
     let chunk = payload.file.getChunkByMetadata(part, part.offset, chunkSize);
 
     debug(
-      `[${id}] PartNum: ${partNumber}, PartSize: ${part.size}, StartByte: ${part.startByte}, Offset: ${part.offset}, ChunkSize: ${chunk.size}, Left: ${part.size -
-        part.offset -
-        chunk.size}`
+      `[${id}] PartNum: ${partNumber}, PartSize: ${part.size}, StartByte: ${part.startByte}, Offset: ${part.offset}, ChunkSize: ${chunk.size},
+       Left: ${part.size - part.offset - chunk.size}`
     );
 
     // catch error for debug purposes

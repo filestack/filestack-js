@@ -14,6 +14,7 @@ const figureOutFileMimetype = (file) => {
   if (type !== false) {
     return type;
   }
+
   return 'application/octet-stream';
 };
 

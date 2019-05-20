@@ -700,7 +700,6 @@ export const TransformSchema = {
       properties: {
         files: {
           type: 'array',
-          additionalItems: false,
           minItems: 1,
           items: [{
             type: 'string',

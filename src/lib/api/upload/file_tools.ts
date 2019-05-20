@@ -122,8 +122,8 @@ const b64toBlob = (b64Data: string, sliceSize = 512): Blob => {
     for (let i = 0; i < slice.length; i += 1) {
       byteNumbers[i] = slice.charCodeAt(i);
     }
-    const byteArray = new Uint8Array(byteNumbers);
-    byteArrays.push(byteArray);
+
+    byteArrays.push(new Uint8Array(byteNumbers));
   }
 
   return new Blob(byteArrays, { type: contentType });
@@ -153,13 +153,13 @@ const readFile = (file): Promise<any> => {
 };
 
 // =================== BROWSER UTILS ===================
-  /**
-   * Accepts b64string or blob file
-   *
-   * @browser
-   * @param {*} fileOrString
-   * @returns {Promise<File>}
-   */
+/**
+ * Accepts b64string or blob file
+ *
+ * @browser
+ * @param {*} fileOrString
+ * @returns {Promise<File>}
+ */
 const getFileBrowser = (input: InputFile, sanitizeOptions?: SanitizeOptions): Promise<FsFile> => {
   let filename;
   let file: Blob;
@@ -180,14 +180,18 @@ const getFileBrowser = (input: InputFile, sanitizeOptions?: SanitizeOptions): Pr
     return Promise.reject(new FilestackError('Unsupported input file type'));
   }
 
-  return readFile(file).then((buffer) => {
-    return new FsFile({
-      buffer,
-      name: filename,
-      size: buffer.byteLength,
-      type: file.type || getMimetype(new Uint8Array(buffer)),
-    }, sanitizeOptions);
-  });
+  return readFile(file).then(
+    buffer =>
+      new FsFile(
+        {
+          buffer,
+          name: filename,
+          size: buffer.byteLength,
+          type: file.type || getMimetype(new Uint8Array(buffer)),
+        },
+        sanitizeOptions
+      )
+  );
 };
 
 // =================== NODE UTILS ===================
@@ -209,20 +213,25 @@ const getFileNode = (input: InputFile, sanitizeOptions?: SanitizeOptions): Promi
   if (isFilePath(input)) {
     let path = input;
 
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve, reject) =>
       requireNode('fs').readFile(path, (err, buffer) => {
         if (err) {
           return reject(err);
         }
 
-        return resolve(new FsFile({
-          buffer,
-          name: filename || (requireNode('path')).basename(path),
-          size: buffer.byteLength,
-          type: getMimetype(buffer),
-        }, sanitizeOptions));
-      });
-    });
+        return resolve(
+          new FsFile(
+            {
+              buffer,
+              name: filename || requireNode('path').basename(path),
+              size: buffer.byteLength,
+              type: getMimetype(buffer),
+            },
+            sanitizeOptions
+          )
+        );
+      })
+    );
   }
 
   if (isFileBase(input)) {
@@ -230,15 +239,20 @@ const getFileNode = (input: InputFile, sanitizeOptions?: SanitizeOptions): Promi
   }
 
   if (isFileBuffer(input)) {
-    return Promise.resolve(new FsFile({
-      buffer: input,
-      name: filename,
-      size: input.byteLength,
-      type: getMimetype(input),
-    }, sanitizeOptions));
+    return Promise.resolve(
+      new FsFile(
+        {
+          buffer: input,
+          name: filename,
+          size: input.byteLength,
+          type: getMimetype(input),
+        },
+        sanitizeOptions
+      )
+    );
   }
 
   return Promise.reject(new FilestackError('Unsupported input file type'));
 };
 
-export const getFile = (input: InputFile, sanitizeOptions?: SanitizeOptions) => isNode() ? getFileNode(input, sanitizeOptions) : getFileBrowser(input, sanitizeOptions);
+export const getFile = (input: InputFile, sanitizeOptions?: SanitizeOptions) => (isNode() ? getFileNode(input, sanitizeOptions) : getFileBrowser(input, sanitizeOptions));
