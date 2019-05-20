@@ -343,7 +343,6 @@ describe('Api/Upload/Uploaders/S3', () => {
   });
 
   describe('Upload modes', () => {
-
     describe('Intelligent ingession', () => {
       beforeEach(() => {
         mockStart.mockReturnValue({
@@ -852,8 +851,8 @@ describe('Api/Upload/Uploaders/S3', () => {
       u.addFile(getSmallTestFile());
 
       const res = await u.execute();
-      expect(res[0].status).toEqual('Failed');
 
+      expect(res[0].status).toEqual('Failed');
       expect(mockPut).not.toHaveBeenCalled();
       expect(mockUpload).not.toHaveBeenCalled();
       expect(mockCommit).not.toHaveBeenCalled();

@@ -429,7 +429,7 @@ export interface TransformOptions {
  * result => https://cdn.filestackcontent.com/partial_pixelate=objects:[[10,20,200,250],[275,91,500,557]]/testfile
  *
  * ```js
- * // snakeCase
+ * // snake_case
  * console.log(transform(session, {
  *    partial_pixelate: {
  *      objects: [[10, 20, 200, 250], [275, 91, 500, 557]],

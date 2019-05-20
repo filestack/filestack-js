@@ -136,9 +136,7 @@ describe('Request', () => {
         test: 1,
       };
 
-      await postWithRetry(`${testHost}/post`, fields, {
-        headers,
-      });
+      await postWithRetry(`${testHost}/post`, fields, { headers });
 
       expect(mockPost).toHaveBeenCalledWith(
         '/post',
@@ -241,7 +239,7 @@ describe('Request', () => {
       expect(onRetry).not.toHaveBeenCalled();
     });
 
-    it('should retry on netowrk errors like (ECONNRESET)', async () => {
+    it('should retry on network errors like (ECONNRESET)', async () => {
       const onRetry = jest.fn().mockName('onRetry');
       nock(testHost)
         .post('/fail3')
