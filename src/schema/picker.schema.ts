@@ -165,6 +165,10 @@ export const PickerParamsSchema = {
         },
       ],
     },
+    imageMinMaxBlock: {
+      type: 'boolean',
+      default: false,
+    },
     lang: {
       type: 'string',
       enum: ['ca', 'da', 'de', 'en', 'es', 'fr', 'he', 'it', 'ja', 'ko', 'nl', 'no', 'pl', 'pt', 'sv', 'ru', 'vi', 'zh', 'tr'],
