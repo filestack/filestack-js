@@ -103,10 +103,3 @@ export interface FSProgressEvent {
   totalPercent: number;
   totalBytes: number;
 }
-
-export interface FSRetryEvent {
-  // location: string;
-  // filename: string;
-  // attempt: number | undefined;
-  // chunkSize?: number;
-}
