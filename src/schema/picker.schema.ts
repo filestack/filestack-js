@@ -280,6 +280,9 @@ export const PickerParamsSchema = {
         rotate: {
           type: 'boolean',
         },
+        force: {
+          type: 'boolean',
+        },
         crop: {
           oneOf: [
             {
