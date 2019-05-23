@@ -363,9 +363,13 @@ describe('cloud', () => {
         expect(res).toEqual({ body: 'init' });
       });
 
-      it('should throw on wrong type', () => {
+      it('should throw on wrong type', async() => {
         expect(() => {
-          new CloudClient(testSession).tokInit('videoa');
+          new CloudClient(testSession).tokInit('videoa').then(() => {
+            console.log('init');
+          }).catch(() => {
+            console.log('err');
+          });
         }).toThrowError();
       });
     });
