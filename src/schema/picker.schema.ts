@@ -270,6 +270,10 @@ export const PickerParamsSchema = {
         },
       },
     },
+    viewType: {
+      type: 'string',
+      enum: ['grid', 'list'],
+    },
     transformations: {
       type: 'object',
       additionalProperties: false,

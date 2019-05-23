@@ -515,6 +515,11 @@ export interface PickerOptions {
    * Restrict selected files to a maximum number of bytes. (e.g. 10 \* 1024 \* 1024 for 10MB limit).
    */
   maxSize?: number;
+
+  /**
+   * Default view type option for file browser
+   */
+  viewType?: 'grid' | 'list';
   /**
    * Specify [width, height] in pixels of the desktop modal.
    */
@@ -654,6 +659,11 @@ export interface PickerTransformationOptions {
    * Enable image rotation. Defaults to `true`.
    */
   rotate?: boolean;
+
+  /**
+   * Global force crop option. Can be use ie with circle
+   */
+  force?: boolean;
 }
 
 /**
