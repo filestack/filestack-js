@@ -1398,7 +1398,7 @@ export class Filelink {
       return value;
     }
 
-    if (value.indexOf('/') > -1) {
+    if (value.indexOf('/') > -1 || value.indexOf(',') > -1) {
       return `"${value}"`;
     }
 
