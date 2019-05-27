@@ -11,6 +11,7 @@
   @see https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingMetadata.html
 
 - **[ENHANCEMENT]** storeUrl now use new base64 transform protocol by default
+- **[ENHANCEMENT]** Add escape params with ',' in storeUrl method
 - **[FEATURE]** add multiupload feature
   ```js
     client
@@ -100,3 +101,8 @@
 - add sri hashes to manifest.json
 - update outdated packages
 - cleanup unused packages
+
+## Picker
+- Add viewType option, now user can set default view type option
+- add transformations: { force: true } to allow force crop for ie circle transformation
+
