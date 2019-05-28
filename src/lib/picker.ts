@@ -345,6 +345,7 @@ export interface PickerCustomText {
   'File {displayName} is not an accepted file type. The accepted file types are {types}'?: string;
   'File {displayName} is too big. The accepted file size is less than {roundFileSize}'?: string;
   'Our file upload limit is {maxFiles} {filesText}'?: string;
+  'No search results found for "{search}"'?: string;
 }
 
 export interface PickerOptions {

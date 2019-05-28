@@ -103,6 +103,11 @@
 - cleanup unused packages
 
 ## Picker
-- Add viewType option, now user can set default view type option
-- add transformations: { force: true } to allow force crop for ie circle transformation
-
+- add viewType option, now user can set default view type option [#157]
+- add transformations: { force: true } to allow force crop for ie. circle transformation [#122]
+- fix problem with dropPane and cropFiles [#228]
+- fix problem with generating uploadId [#230]
+- fix problem with passing undefined options to picker [#95]
+- fix problem with disabling crop transformation [#148]
+- incrise messages duration to 8s
+- add new translation for notification in image search [#227]
