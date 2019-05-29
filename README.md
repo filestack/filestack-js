@@ -180,15 +180,15 @@ Please see our examples above to learn more about customizing the picker for you
 ## Promises
 
 This library requires an environment that implements the [`Promise`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise) object spec. 
-If you target IE11 or iOS before 8.0 you will need to add a `Promise` polyfill to your page or application.
+If you target IE11 or iOS before 8.0 you will need to add a `Promise` and `Symbol` polyfill to your page or application.
 
 Polyfills we recommend:**
 
 Module (for bundling):
-* https://github.com/taylorhakes/promise-polyfill
+* https://babeljs.io/docs/en/babel-polyfill
 
 Script (for script tag):
-* https://cdn.polyfill.io/v2/polyfill.min.js?features=Promise
+* https://polyfill.io/v3/polyfill.min.js?features=Promise%2CPromise.prototype.finally%2CSymbol
 
 ## Development
 
