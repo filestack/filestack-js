@@ -18,7 +18,7 @@
 import { Security } from '../client';
 import { FilestackError, FilestackErrorType } from './../../filestack_error';
 import { getValidator, SecurityParamsSchema } from './../../schema';
-import { isNode, requireNode, flattenObject } from '../utils';
+import { isNode, requireNode } from '../utils';
 
 /**
  * Configures a security policy
@@ -69,23 +69,27 @@ export const getSecurity = (policyOptions: SecurityOptions, appSecret: string): 
   return { policy, signature };
 };
 
-export const validateWebhookSignature = (secret: string, data: Object, toCompare: any) => {
+export interface WebhookValidatePayload {
+  timestamp: string;
+  signature: string;
+}
+
+/**
+ * Check webhook signature
+ *
+ * @param secret - app secred
+ * @param rawBody - unchanged raw webhook body
+ * @param toCompare - data from wh response headers
+ */
+export const validateWebhookSignature = (secret: string, rawBody: string, toCompare: WebhookValidatePayload) => {
   if (!isNode()) {
     throw new Error('validateWebhookSignature is only supported in nodejs');
   }
 
-  let flatten = flattenObject(data);
-  flatten = Object
-  .entries(flatten)
-  .sort()
-  .reduce((_sortedObj, [k,v]) => ({ ..._sortedObj, [k]: v }), {});
-
-  const toHash = `${toCompare.timestamp}.${JSON.stringify(flatten)}`.replace(/"([,:])/gm, '"$1 ');
-  console.log(toHash);
   const hash = requireNode('crypto')
                 .createHmac('sha256', secret)
-                .update(toHash)
+                .update(`${toCompare.timestamp}.${rawBody}`)
                 .digest('hex');
-  console.log(hash);
+
   return hash === toCompare.signature;
 };

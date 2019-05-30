@@ -47,48 +47,18 @@ describe('api:security', () => {
     });
   });
 
-  describe.only('validateWeebhookSignature', () => {
+  describe('validateWebhookSignature', () => {
     it('should pass validation on proper signature', () => {
-      const testData = {
-        id: 1000,
-        action: 'fs.workflow',
-        text: {
-          createdAt: '2020-04-26T10:53:02.936164785Z',
-          jobid: 'jobid-jobid-jobid-jobid-jobid',
-          results: {
-            border: {
-              mimetype: 'image/png',
-              url: 'https://cdn.filestackcontent.com/Aaaaaaaaaaaaaaaaaaaaaaz/wf://workflowid-workflowid-workflowid-workflowid/jobid-jobid-jobid-jobid-jobid/aaaaaaaaaaaaaaaaaaaa',
-            },
-            circle: {
-              mimetype: 'image/png',
-              url: 'https://cdn.filestackcontent.com/Aaaaaaaaaaaaaaaaaaaaaaz/wf://workflowid-workflowid-workflowid-workflowid/jobid-jobid-jobid-jobid-jobid/bbbbbbbbbbbbbbbbbbbb',
-            },
-            metadata: {
-              data: {
-                filename: 'filename.jpg',
-                mimetype: 'image/jpeg',
-                size: 64016,
-                uploaded: 1501181734097.6802,
-              },
-            },
-          },
-          sources: ['Handle1', 'Handle2'],
-          status: 'Finished',
-          updatedAt: '2020-04-26T10:53:06.524680403Z',
-          workflow: 'workflowid-workflowid-workflowid-workflowid',
-        },
-        timestamp: 1558123673,
-      };
+      const testRawData = '{"id": 6844, "action": "fp.upload", "timestamp": 1559199901, "text": {"url": "http://cdn.filestackapi.dev/xK88QArxRiyVvFzo4p33", "client": "Computer", "data": {"filename": "01 (1).png", "type": "image/png", "size": 881855}}}';
 
       const correctSignature = {
-        signature: 'd2d2d662fa2b9f85eb1fda5c5013d2ea142c96fdec0183927b3178fdf17623ae',
-        timestamp: '1559044473',
+        signature: '14495b54b246e1352bb69cd91c5c1bfe2221f2d0330414b3df8f5fb2903db730',
+        timestamp: '1559199901',
       };
 
-      const secret = 'SecretSecretSecretAA';
+      const secret = 'Y5cWb1rdRDSTSqEjF5pv';
 
-      expect(validateWebhookSignature(secret, testData, correctSignature)).toBeTruthy();
+      expect(validateWebhookSignature(secret, testRawData, correctSignature)).toBeTruthy();
     });
   });
 });

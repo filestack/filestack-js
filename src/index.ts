@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { SecurityOptions, getSecurity } from './lib/api/security';
+import { SecurityOptions, getSecurity, validateWebhookSignature, WebhookValidatePayload } from './lib/api/security';
 import { Client, ClientOptions } from './lib/client';
 import { TransformSchema } from './schema/transforms.schema';
 
@@ -42,4 +42,6 @@ export {
   TransformSchema,
   SecurityOptions,
   getSecurity,
+  validateWebhookSignature,
+  WebhookValidatePayload
 };

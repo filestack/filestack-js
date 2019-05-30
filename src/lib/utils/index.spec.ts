@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { flattenObject, resolveCdnUrl, resolveHost, removeEmpty, uniqueTime, uniqueId, md5, sanitizeName, filterObject, b64, requireNode } from './index';
+import { resolveCdnUrl, resolveHost, removeEmpty, uniqueTime, uniqueId, md5, sanitizeName, filterObject, b64, requireNode } from './index';
 import { config } from '../../config';
 
 describe('utils:index', () => {
@@ -162,32 +162,6 @@ describe('utils:index', () => {
         test2: 2,
         test3: 3,
       });
-    });
-  });
-
-  describe('flattenObject', () => {
-    it('should flattent onbject in correct way', () => {
-      const testObj = {
-        test: 123,
-        test2: {
-          test3: {
-            test4: ['array1', 'array2'],
-          },
-        },
-        testNull: null,
-        testUndefined: undefined,
-        testEmptyArray: [],
-        testEmptyObject: {},
-      };
-
-      const expected = {
-        test: 123,
-        'test2.test3.test4.0': 'array1',
-        'test2.test3.test4.1': 'array2',
-        testNull: null,
-      };
-
-      expect(flattenObject(testObj)).toEqual(expected);
     });
   });
 });
