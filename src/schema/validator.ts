@@ -15,15 +15,20 @@
  * limitations under the License.
  */
 import { Validator } from 'jsonschema';
+import { DefinitionsSchema } from './definitions.schema';
+
+const v = new Validator();
+
+Validator.prototype.customFormats.callback = (input) => typeof input === 'function';
+// check if element have HTML in to string method ie HTMLDivElement
+Validator.prototype.customFormats.HTMLContainer = (input) => typeof input === 'string' || (input.toString && input.toString().indexOf('HTML') > -1);
 
 /**
  * Returns validator instance
  */
 export const getValidator = (schema) => {
-  const v = new Validator();
-  // v.addSchema(schema);
   return (params) => {
+    v.addSchema(DefinitionsSchema);
     return v.validate(params, schema);
   };
-  // return validator().compile(schema);
 };

@@ -5,14 +5,50 @@
   <strong>Javascript SDK for the Filestack API and content management system.</strong>
 </p>
 <p align="center">
+  <a href="https://codecov.io/gh/filestack/filestack-js">
+    <img src="https://codecov.io/gh/filestack/filestack-js/branch/master/graph/badge.svg" />
+  </a>
+
+  <a href="https://travis-ci.org/filestack/filestack-js">
+    <img src="https://travis-ci.org/filestack/filestack-js.svg?branch=master" />
+  </a>
+</p>
+<p align="center">
   <a href="https://npmjs.com/package/filestack-js"><img src="https://img.shields.io/npm/v/filestack-js.svg" /></a>
-  <a href="https://static.filestackapi.com/filestack-js/2.x.x/filestack.min.js"><img src="https://img.badgesize.io/https://static.filestackapi.com/filestack-js/2.x.x/filestack.min.js?compression=gzip&color=green" /></a>
-  <a href="https://static.filestackapi.com/filestack-js/2.x.x/filestack.min.js"><img src="https://img.badgesize.io/https://static.filestackapi.com/filestack-js/2.x.x/filestack.min.js?color=green" /></a>
+  <a href="https://static.filestackapi.com/filestack-js/3.x.x/filestack.min.js"><img src="https://img.badgesize.io/https://static.filestackapi.com/filestack-js/3.x.x/filestack.min.js?compression=gzip&color=green" /></a>
+  <a href="https://static.filestackapi.com/filestack-js/3.x.x/filestack.min.js"><img src="https://img.badgesize.io/https://static.filestackapi.com/filestack-js/3.x.x/filestack.min.js?color=green" /></a>
   <img src="https://img.shields.io/badge/module%20formats-umd%2C%20esm%2C%20cjs-green.svg" />
   <br/>
   <img src="https://badges.herokuapp.com/browsers?labels=none&googlechrome=latest&firefox=latest&microsoftedge=latest&iexplore=11&safari=latest&iphone=latest" />
 </p>
 <hr/>
+
+**Table of Contents**
+
+<!-- toc -->
+- [What's in the box?](#whats-in-the-box)
+- [Installation](#installation)
+- [API Documentation](#api-documentation)
+- [Usage](#usage)
+  - [Browsers](#browsers)
+    - [ES module](#es-module)
+    - [UMD module](#umd-module)
+    - [GZIP support](#gzip-support)
+    - [SRI](#sri)
+  - [Node](#node)
+    - [CommonJS module](#commonjs-module)
+- [Module Overview](#module-overview)
+- [Releases Info](#releases-info)
+- [Live examples (JSFiddle)](#live-examples-jsfiddle)
+- [Picker Quick Start](#picker-quick-start)
+- [Promises](#promises)
+- [Development](#development)
+- [Debugging](#debugging)
+  - [Node](#node-1)
+  - [Browser](#browser)
+- [Versioning](#versioning)
+- [Contributing](#contributing)
+
 
 ## What's in the box?
 
@@ -20,55 +56,77 @@
 * An interface to the [Filestack Processing Engine](https://www.filestack.com/docs/image-transformations) for transforming assets via URLs.
 * The Filestack Picker - an upload widget for the web that integrates over a dozen cloud providers and provides pre-upload image editing. 
 
+
 ## Installation
 
 ```sh
 npm install filestack-js
 ```
+
+## API Documentation
+
+[https://filestack.github.io/filestack-js/](https://filestack.github.io/filestack-js/)
+
 ## Usage
 
 ### Browsers
 
-**ES module**:
+#### ES module
 ```js
 import * as filestack from 'filestack-js';
 const client = filestack.init('apikey');
 ```
 
-**UMD module**:
+#### UMD module
 ```HTML
-<script src="//static.filestackapi.com/filestack-js/{MAJOR_VERSION}.x.x/filestack.min.js"></script>
+<script src="//static.filestackapi.com/filestack-js/{MAJOR_VERSION}.x.x/filestack.min.js" crossorigin="anonymous"></script>
 <script>
   const client = filestack.init('apikey');
 </script>
 ```
 
-where VERSION is one of the MAJOR versions of the filestack-js ie: 
+where ```{MAJOR_VERSION}``` is one of the MAJOR versions of the filestack-js ie: 
 ```HTML
-<script src="//static.filestackapi.com/filestack-js/2.x.x/filestack.min.js"></script>
+<script src="//static.filestackapi.com/filestack-js/3.x.x/filestack.min.js" crossorigin="anonymous"></script>
 <script>
   const client = filestack.init('apikey');
 </script>
 ```
 
-**GZIP support**
+#### GZIP support
+To speed up library loading you can use gzipped file available after adding gz to file extension
 ```HTML
-To speed up library loading you can use gzipped file available after adding gz before the file extension
-
-<script src="//static.filestackapi.com/filestack-js/{MAJOR_VERSION}.x.x/filestack.min.gz.js"></script>
+<script src="//static.filestackapi.com/filestack-js/{MAJOR_VERSION}.x.x/filestack.min.js.gz" crossorigin="anonymous"></script>
 <script>
   const client = filestack.init('apikey');
 </script>
 ```
+
+#### SRI
+Subresource Integrity (SRI) is a security feature that enables browsers to verify that files they fetch (for example, from a CDN) are delivered without unexpected manipulation. It works by allowing you to provide a cryptographic hash that a fetched file must match
+
+To obtain sri hashes for filestack-js library check manifest.json file on CDN:
+
+```
+https://static.filestackapi.com/filestack-js/{LIBRARY_VERSION}/manifest.json
+```
+
+```HTML
+<script src="//static.filestackapi.com/filestack-js/{LIBRARY_VERSION}/filestack.min.js.gz" integrity="{FILE_HASH}" crossorigin="anonymous"></script>
+```
+
+Where ```{LIBRARY_VERSION}``` is currently used library version and ```{FILE_HASH}``` is one of the hashes from integrity field in manifest.json file
+
 
 ### Node
 
-**CommonJS module**:
+#### CommonJS module
 ```js
 const client = require('filestack-js').init('apikey');
 ```
 
-### Module Overview 
+
+## Module Overview 
 
 The `package.json` specifies two separate modules: 
 
@@ -79,8 +137,13 @@ Node projects which depend on filestack-js will follow the `main` field in `pack
 
 The pre-bundled browser module is also available in UMD format. This is useful if you are using script tags on a web page instead of bundling your application. It can be retrieved from both the Filestack CDN and the unpkg CDN:
 
-* [Filestack CDN](https://static.filestackapi.com/filestack-js/1.x.x/filestack.min.js)
-* [unpkg](https://unpkg.com/filestack-js@1.x.x)
+* [Filestack CDN](https://static.filestackapi.com/filestack-js/3.x.x/filestack.min.js)
+* [unpkg](https://unpkg.com/filestack-js@3.x.x)
+
+## Releases Info
+
+Major releases will bo listed (with detailed examples) in releases folder starting from version 3.0.0
+
 
 ## Live examples (JSFiddle)
 
@@ -114,29 +177,24 @@ The picker instance returned from `client.picker` can be controlled with a few m
 
 Please see our examples above to learn more about customizing the picker for your use case.
 
-## API Documentation
-
-[https://filestack.github.io/filestack-js/](https://filestack.github.io/filestack-js/)
-
-### Promises
+## Promises
 
 This library requires an environment that implements the [`Promise`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise) object spec. 
-If you target IE11 or iOS before 8.0 you will need to add a `Promise` polyfill to your page or application.
+If you target IE11 or iOS before 8.0 you will need to add a `Promise` and `Symbol` polyfill to your page or application.
 
-**Polyfills we recommend:**
+Polyfills we recommend:**
 
 Module (for bundling):
-* https://github.com/taylorhakes/promise-polyfill
+* https://babeljs.io/docs/en/babel-polyfill
 
 Script (for script tag):
-* https://cdn.polyfill.io/v2/polyfill.min.js?features=Promise
+* https://polyfill.io/v3/polyfill.min.js?features=Promise%2CPromise.prototype.finally%2CSymbol
 
 ## Development
 
-Most tests in this library are expected to interface with actual backend services. Because we like to run tests during development, these services are mocked 
-during unit testing.
+Most tests in this library are expected to interface with actual backend services. Because we like to run tests during development, these services are mocked during unit testing.
 
-All tests are using Mocha. Browser tests are run with Karma.
+All tests are using Jest. 
 
 To run units:
 
@@ -144,28 +202,27 @@ To run units:
 npm test
 ```
 
-To run integration tests:
+## Debugging
 
-```
-npm run test:integration
-```
+Filestack-js uses [`debug`](https://github.com/visionmedia/debug), so just run with environmental variable `DEBUG` set to `fs.*`.
 
-Integration tests require a `.env` file in the root of your project with the following fields:
-
-```
-BROWSERSTACK_USERNAME=
-BROWSERSTACK_ACCESS_KEY=
-TEST_APIKEY=
-TEST_CLOUD_APIKEY=
-TEST_INTELLIGENT_APIKEY=
-TEST_SECURE_APIKEY=
-TEST_SIGNATURE=
-TEST_POLICY=
-TEST_FILELINK=
-TEST_SECURE_FILELINK=
+### Node
+```js
+DEBUG=fs.* node example_upload.js
 ```
 
-You will need to acquire this data from a Filestack developer if you plan on running the integration suite.
+### Browser
+Debug's enable state is persisted by localStorage
+
+```js
+localStorage.debug = 'fs:*'
+```
+
+And then refresh the page.
+
+## Versioning
+
+We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags](https://github.com/filestack/filestack-js/tags) on this repository.
 
 ## Contributing
 

@@ -6,6 +6,7 @@ coverage
 *.log
 .env
 .nyc_output
+.stats.json
 .DS_Store
 
 # VS Code

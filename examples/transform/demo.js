@@ -9,7 +9,6 @@ window.addEventListener('DOMContentLoaded', function () {
       }
   );
 
-
   const img = document.createElement('img');
   img.src = src.toString();
 

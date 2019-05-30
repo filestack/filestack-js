@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 by Filestack.
+ * Copyright (c) 2019 by Filestack.
  * Some rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,5 +15,7 @@
  * limitations under the License.
  */
 
+export * from './file_tools';
 export * from './upload';
+export * from './file';
 export * from './types';

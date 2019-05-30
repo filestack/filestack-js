@@ -1,4 +1,3 @@
-import { Filelink } from './../filelink';
 /*
  * Copyright (c) 2018 by Filestack.
  * Some rights reserved.
@@ -17,8 +16,10 @@ import { Filelink } from './../filelink';
  */
 
 import { request } from './request';
-import { Security, StoreOptions } from '../client';
-import { transform } from './transform';
+import { Security, Session } from '../client';
+import { Filelink, StoreParams } from './../filelink';
+import { FilestackError } from './../../filestack_error';
+import { getValidator, StoreParamsSchema } from './../../schema';
 
 /**
  *
@@ -30,14 +31,20 @@ import { transform } from './transform';
  * @param security
  */
 export const storeURL = (
-  session: any,
+  session: Session,
   url?: string,
-  opts?: StoreOptions,
+  opts?: StoreParams,
   token?: any,
   security?: Security
-): Promise<{}> => {
+): Promise<any> => {
   if (!url || typeof url !== 'string') {
     throw new Error('url is required for storeURL');
+  }
+
+  const validateRes = getValidator(StoreParamsSchema)(opts);
+
+  if (validateRes.errors.length) {
+    throw new FilestackError(`Invalid store params`, validateRes.errors);
   }
 
   session.policy = security && security.policy || session.policy;
@@ -45,11 +52,7 @@ export const storeURL = (
 
   const baseURL = new Filelink(url, session.apikey);
   baseURL.setCname(session.cname);
-  // baseURL.setBase64(true); // Enable it after fix in mocks
-
-  if (session.urls.cdnUrl.indexOf('localhost') > -1 || session.urls.cdnUrl.indexOf('badurl') > -1) {
-    baseURL.setCustomDomain(session.urls.cdnUrl);
-  }
+  baseURL.setBase64(true);
 
   if (session.policy && session.signature) {
     baseURL.security({
@@ -59,30 +62,21 @@ export const storeURL = (
   }
 
   baseURL.store(opts);
+  let options: any = {};
 
-  // const baseURL = transform(session, url, {
-  //   store : opts || {},
-  // });
-  return new Promise((resolve, reject) => {
-    const req = request.get(baseURL.toString());
+  if (token) {
+    const CancelToken = request.CancelToken;
+    const source = CancelToken.source();
+    token.cancel = source.cancel;
 
-    if (token) {
-      token.cancel = () => {
-        req.abort();
-        reject(new Error('Upload cancelled'));
-      };
+    options.cancelToken = source.token;
+  }
+
+  return request.get(baseURL.toString(), options).then((res) => {
+    if (res.data && res.data.handle) {
+      return { ...res.data, mimetype: res.data.type };
     }
 
-    return req.then((res: any) => {
-      if (res.body && res.body.url) {
-        const handle = res.body.url.split('/').pop();
-        const response = { ...res.body, handle, mimetype: res.body.type };
-        return resolve(response);
-      }
-
-      return resolve(res.body);
-    }).catch((err) => {
-      reject(err);
-    });
+    throw new FilestackError(`Invalid store response ${JSON.stringify(res.data)}`);
   });
 };

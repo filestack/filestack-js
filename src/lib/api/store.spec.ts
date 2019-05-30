@@ -15,146 +15,108 @@
  * limitations under the License.
  */
 
-import * as assert from 'assert';
 import { storeURL } from './store';
+import { Session } from '../client';
+import { Filelink } from './../filelink';
+import * as nock from 'nock';
 
-declare var ENV: any;
-const session = ENV.session;
-const secureSession = ENV.secureSession;
+const testHost = 'https://test.com';
+const testUrl = 'testurl';
+const mockGet = jest.fn().mockName('mockGet');
+const mockHandle = 'mockHandle';
 
-describe('storeURL', function storeFunc() {
-  this.timeout(30000);
+jest.mock('./../filelink');
 
-  it('should throw an error if no url is set', () => {
-    assert.throws(() => storeURL(session));
+const mockedSession: Session = {
+  apikey: 'fakeApikey',
+  urls: {
+    cdnUrl: testHost,
+    fileApiUrl: 'fakeApiUrl',
+    uploadApiUrl: 'fakeUploadApiUrl',
+    cloudApiUrl: 'fakeCloudApiUrl',
+    pickerUrl: 'fakePickerUrl',
+  },
+};
+
+const responseObj = {
+  filename: 'testFilename',
+  handle: 'testHandle',
+  url: 'testUrl',
+  type: 'testMimetype',
+  mimetype: 'testMimetype',
+  size: 1,
+};
+
+describe('StoreURL', () => {
+  beforeAll(() => {
+    spyOn(Filelink.prototype, 'toString').and.returnValue(`${testHost}/${testUrl}`);
+    mockGet.mockReturnValue(responseObj);
+
+    nock(testHost)
+      .persist()
+      .get(`/${testUrl}`)
+      .reply(200, mockGet);
   });
 
-  it('should handle store without params', (done) => {
-    const options = {};
-    storeURL(session, ENV.urls.testImageUrl, options)
-      .then((res) => {
-        assert.ok(res);
-        done();
-      })
-      .catch((err) => {
-        done(err);
-      });
+  it('should call correct store method', async () => {
+    expect(await storeURL(mockedSession, 'http://test.com')).toEqual(responseObj);
   });
 
-  it('should support uppercase string options', (done) => {
-    const options = { location: 'S3' };
-    storeURL(session, ENV.urls.testImageUrl, options)
-      .then((res) => {
-        assert.ok(res);
-        done();
-      })
-      .catch((err) => {
-        done(err);
-      });
-  });
-
-  it('should replace ":" and "," with "_" in url', (done) => {
-    const options = { filename: 'test:t,est.jpg' };
-    storeURL(session, ENV.urls.testImageUrl, options)
-      .then((res) => {
-        assert.ok(res);
-        done();
-      })
-      .catch((err) => {
-        done(err);
-      });
-  });
-
-  it('should upload file correctly with "/" in path', (done) => {
-    const options = { filename: 'test.jpg' , path: 'test/path'};
-    storeURL(session, ENV.urls.testImageUrl, options)
-      .then((res) => {
-        assert.ok(res);
-        done();
-      })
-      .catch((err) => {
-        done(err);
-      });
-  });
-
-  it('should get an ok response with a valid url', (done) => {
-    storeURL(session, ENV.urls.testImageUrl)
-      .then((res) => {
-        assert.ok(res);
-        done();
-      })
-      .catch((err) => {
-        done(err);
-      });
-  });
-
-  it('should get an ok response with a valid url and security', (done) => {
-    storeURL(secureSession, ENV.urls.testImageUrl)
-      .then((res) => {
-        assert.ok(res);
-        done();
-      })
-      .catch((err) => {
-        done(err);
-      });
-  });
-
-  it('should return the handle and mimetype as part of the response', (done) => {
-    storeURL(session, ENV.urls.testImageUrl)
-      .then((res: any) => {
-        assert.ok(res.handle);
-        assert.equal(res.url.split('/').pop(), res.handle);
-        assert.equal(res.mimetype, res.type);
-        done();
-      })
-      .catch((err) => {
-        done(err);
-      });
-  });
-
-  it('should reject on request error', (done) => {
-    const sessionCopy = JSON.parse(JSON.stringify(session));
-    sessionCopy.urls.cdnUrl = 'http://www.somebadurl.com';
-
-    storeURL(sessionCopy, ENV.urls.testImageUrl)
-      .then(() => {
-        done(new Error('Success shouldnt be called'));
-      })
-      .catch((err) => {
-        assert.ok(err instanceof Error);
-        done();
-      });
-  });
-
-  it('should cancel request', (done) => {
-    const token = {
-      cancel: () => console.log('cancel not implemented'),
+  it('should respect passed security and policy', async () => {
+    const fakeSecurity = {
+      signature: 'fakeS',
+      policy: 'fakeP',
     };
 
-    setTimeout(() => {
-      storeURL(session, ENV.urls.testImageUrl, {}, token)
-      .then(() => {
-        done(new Error('Success shouldnt be called'));
-      })
-      .catch((err) => {
-        assert.ok(err instanceof Error);
-        done();
-      });
-    }, 10);
+    const res = await storeURL(mockedSession, mockHandle, {}, null, fakeSecurity);
 
-    setTimeout(() => token.cancel(), 12);
+    expect(Filelink.prototype.security).toBeCalledWith(fakeSecurity);
+    expect(res).toEqual(responseObj);
   });
 
-  it('should support workflows', (done) => {
-    const options = { workflows: ['test', { id: 'test' }] };
-    storeURL(session, ENV.urls.testImageUrl, options)
-      .then((res) => {
-        assert.ok(res);
-        done();
-      })
-      .catch((err) => {
-        done(err);
-      });
+  it('should throw error on wrong store params', () => {
+    expect(() => storeURL(mockedSession, mockHandle, {
+      // @ts-ignore
+      test: 123,
+    })).toThrowError('Invalid store params');
   });
 
+  it('should respect token cancel', () => {
+    const token = {
+      cancel: () => jest.fn(),
+    };
+
+    setImmediate(() => token.cancel());
+    return expect(storeURL(mockedSession, mockHandle, {}, token)).rejects.toEqual({});
+  });
+
+  it('should throw an error when missing url', async () => {
+    expect(() => storeURL(mockedSession)).toThrowError();
+  });
+
+  it('should rejects on request error', () => {
+    // @ts-ignore
+    Filelink.prototype.toString.and.returnValue(`${testHost}/${testUrl}/404`);
+
+    nock(testHost)
+      .get(`/${testUrl}/404`)
+      .reply(404);
+
+    return expect(storeURL(mockedSession, mockHandle, {})).rejects.toEqual(expect.any(Error));
+  });
+
+  it('should rejects on wrong body structure', async () => {
+    // @ts-ignore
+    Filelink.prototype.toString.and.returnValue(`${testHost}/${testUrl}/body`);
+
+    mockGet.mockReturnValue({
+      test: 123,
+    });
+
+    nock(testHost)
+      .get(`/${testUrl}/body`)
+      .reply(200, mockGet);
+
+    return expect(storeURL(mockedSession, mockHandle, {})).rejects.toEqual(expect.any(Error));
+  });
 });

@@ -1,8 +1,0 @@
-{
-  "requestUrl": "/api/file/KGLjo6kgTCvvblCZyjhm?key=AQd22RYRWQD2ykJyvg7Pbz&policy=eyJleHBpcnkiOjE1MDgxNDE1MDR9&signature=2908b220968450ebdc718c90fcb894524dc1f2821d0304638507cb604367269f",
-  "contentType": "text/html; charset=utf-8",
-  "method": "DELETE",
-  "statusCode": 200,
-  "data": "success",
-  "isBase64": false
-}

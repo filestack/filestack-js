@@ -1,9 +1,6 @@
 /*
- * Copyright (c) 2018 by Filestack.
+ * Copyright (c) 2019 by Filestack.
  * Some rights reserved.
- *
- * Original implementation of throat by Forbes Lindesay
- * https://github.com/ForbesLindesay/throat
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,58 +14,154 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { resolveCdnUrl, resolveHost, removeEmpty, uniqueTime, uniqueId, md5, sanitizeName, filterObject, b64, requireNode } from './index';
+import { config } from '../../config';
 
-import * as assert from 'assert';
-import * as t from 'tcomb-validation';
-import { checkOptions, removeEmpty, resolveCdnUrl } from './index';
-declare var ENV: any;
+describe('utils:index', () => {
+  describe('resolveCdnUrl', () => {
 
-const session = ENV.session;
-
-describe('resolveCdnUrl', () => {
-
-  it('should throw exception when using http or src handle and there is no apiKey', () => {
-    const sessionClone = JSON.parse(JSON.stringify(session));
-    delete sessionClone.apikey;
-
-    assert.throws(() => resolveCdnUrl(sessionClone, 'http://test.com'));
-    assert.throws(() => resolveCdnUrl(sessionClone, 'src://test.com'));
-  });
-});
-
-describe('checkOptions', () => {
-  it('should throw exception when wrong option is provided', () => {
-    const allowed = [
-      { name: 'test', type: t.Boolean },
-    ];
-
-    const options = {
-      notAllowed: 123,
+    const session = {
+      apikey: 'TEST_API_KEY',
+      cname: 'example.com',
+      urls: config.urls,
     };
 
-    assert.throws(() => checkOptions('retrieveOptions', allowed, options));
+    it('should properly resolve cdn url with hashed handle', () => {
+      const handle = '5aYkEQJSQCmYShsoCnZN';
+      const result = resolveCdnUrl(session, handle);
+      expect(result).toEqual('https://cdn.filestackcontent.com');
+    });
+
+    it('should properly resolve cdn url with src handle', () => {
+      const handle = 'src://test123/test.jpg';
+      const result = resolveCdnUrl(session, handle);
+      expect(result).toEqual('https://cdn.filestackcontent.com/TEST_API_KEY');
+    });
+
+    it('should properly resolve cdn url with hashed handle', () => {
+      const handle = 'https://static1.squarespace.com/static/544eb3cce4b0ef091773611f/t/59ba7ce1bd10f00dcdc80a5f/1505394087367/DSC_0527.jpg';
+      const result = resolveCdnUrl(session, handle);
+      expect(result).toEqual('https://cdn.filestackcontent.com/TEST_API_KEY');
+    });
+
+    it('should throw an error when using src handle or url without apikey', () => {
+      const handle = 'src://test123/test.jpg';
+      session.apikey = '';
+      expect(() => { resolveCdnUrl(session, handle); }).toThrow('Api key is required when storage alias is provided');
+    });
   });
 
-  it('should throw exception when wrong option value is provided', () => {
-    const allowed = [
-      { name: 'test', type: t.Boolean },
-    ];
+  describe('resolveHost', () => {
+    const hosts = config.urls;
 
-    const options = {
-      test: 123,
+    const checkHosts = (hosts, expected) => {
+      Object.keys(hosts).forEach((k) => {
+        expect(hosts[k].indexOf(expected) > -1).toBeTruthy();
+      });
     };
 
-    assert.throws(() => checkOptions('retrieveOptions', allowed, options));
+    it('should return proper host', () => {
+      const cname = 'example.com';
+      const result = resolveHost(hosts, cname);
+      checkHosts(result, cname);
+    });
+
+    it('should return hosts when cname is an empty string', () => {
+      const cname = '';
+      const result = resolveHost(hosts, cname);
+      checkHosts(result, cname);
+    });
   });
-});
 
-describe('removeEmpty', () => {
-  it('should remove empty values from object', () => {
-    const testObj = {
-      test: 123,
-      empty: null,
-    };
+  describe('removeEmpty', () => {
+    it('should remove empty options from an object', () => {
+      const testOb = { test1: true, test2: undefined, test3: false };
+      expect(removeEmpty(testOb)).toEqual({ test1: true, test3: false });
+    });
+  });
 
-    assert.equal(JSON.stringify(removeEmpty(testObj)), JSON.stringify({ test: 123, }));
+  describe('uniqueTime', () => {
+    it('should return unique times', () => {
+      expect(uniqueTime()).not.toEqual(uniqueTime());
+    });
+  });
+
+  describe('uniqueId', () => {
+    it('should get different ids each time', () => {
+      expect(uniqueId()).not.toEqual(uniqueId());
+    });
+
+    it('should return id with given length', () => {
+      expect(uniqueId(12).length).toEqual(12);
+      expect(uniqueId(4).length).toEqual(4);
+    });
+  });
+
+  describe('md5', () => {
+    it('should return correct md5 value', () => {
+      expect(md5(Buffer.from('test'))).toEqual('CY9rzUYh03PK3k6DJie09g==');
+    });
+  });
+
+  describe('b64', () => {
+    it('should return correct b65 value', () => {
+      expect(b64('testtext')).toEqual('dGVzdHRleHQ=');
+    });
+  });
+
+  describe('sanitizeName', () => {
+    it('should sanitize file name with extension', () => {
+      expect(sanitizeName('a\\{%`"~[]#|^<>1.jpg')).toEqual('a-------------1.jpg');
+    });
+
+    it('should sanitize file name without extension', () => {
+      expect(sanitizeName('123qwe')).toEqual('123qwe');
+    });
+
+    it('should return undefined on empty string', () => {
+      expect(sanitizeName('')).toEqual('undefined');
+    });
+
+    it('should respect sanitize options as boolean', () => {
+      expect(sanitizeName('[]#|.jpg', false)).toEqual('[]#|.jpg');
+    });
+
+    it('should respect sanitize options with provided options', () => {
+      expect(sanitizeName('[]#|.jpg', {
+        exclude: ['[', ']'],
+        replacement: '_',
+      })).toEqual('__#|.jpg');
+    });
+  });
+
+  describe('requireNode', () => {
+    it('should require node package', () => {
+      expect(requireNode('crypto')).toBeTruthy();
+    });
+  });
+
+  describe('filterObject', () => {
+    it('should filter object', () => {
+      expect(filterObject({
+        test: 1,
+        test2: 2,
+        test3: 3,
+      }, ['test', 'test2'])).toEqual({
+        test: 1,
+        test2: 2,
+      });
+    });
+
+    it('should result the same object on empty requirements', () => {
+      expect(filterObject({
+        test: 1,
+        test2: 2,
+        test3: 3,
+      }, [])).toEqual({
+        test: 1,
+        test2: 2,
+        test3: 3,
+      });
+    });
   });
 });

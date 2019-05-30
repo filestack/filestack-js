@@ -429,7 +429,7 @@ export interface TransformOptions {
  * result => https://cdn.filestackcontent.com/partial_pixelate=objects:[[10,20,200,250],[275,91,500,557]]/testfile
  *
  * ```js
- * // snakeCase
+ * // snake_case
  * console.log(transform(session, {
  *    partial_pixelate: {
  *      objects: [[10, 20, 200, 250], [275, 91, 500, 557]],
@@ -458,10 +458,6 @@ export const transform = (session: Session, url: string | string[], options: Tra
   const filelink = new Filelink(url, session.apikey);
   filelink.setCname(session.cname);
   filelink.setBase64(b64);
-
-  if (session.urls.cdnUrl.indexOf('localhost') > -1) {
-    filelink.setCustomDomain(session.urls.cdnUrl);
-  }
 
   Object.keys(options).forEach((key: keyof TransformOptions) => {
     if (typeof options[key] === 'boolean' && !options[key] && key !== 'cache') {

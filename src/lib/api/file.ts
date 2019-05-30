@@ -15,10 +15,11 @@
  * limitations under the License.
  */
 
-import * as t from 'tcomb-validation';
 import { Security, Session } from '../client';
 import { request } from './request';
-import { checkOptions, removeEmpty } from '../utils';
+import { removeEmpty } from '../utils';
+import { FilestackError } from './../../filestack_error';
+import { getValidator, MetadataParamsSchema, RetrieveParamsSchema } from './../../schema';
 
 /**
  * Remove given file
@@ -30,11 +31,11 @@ import { checkOptions, removeEmpty } from '../utils';
  */
 export const remove = (session: Session, handle?: string, skipStorage?: boolean, security?: Security): Promise<any> => {
   if (!handle || typeof handle !== 'string') {
-    throw new Error('A valid Filestack handle is required for remove');
+    throw new FilestackError('A valid Filestack handle is required for remove');
   }
 
   if (!(session.policy && session.signature) && (!security || !(security.policy && security.signature))) {
-    throw new Error('Security policy and signature are required for remove');
+    throw new FilestackError('Security policy and signature are required for remove');
   }
 
   const fileApiUrl = session.urls.fileApiUrl;
@@ -49,17 +50,8 @@ export const remove = (session: Session, handle?: string, skipStorage?: boolean,
     options.skip_storage = true;
   }
 
-  return new Promise((resolve, reject) => {
-    request
-      .delete(baseURL)
-      .query(options)
-      .end((err: any, res: any) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(res);
-        }
-      });
+  return request.delete(baseURL, {
+    params: removeEmpty(options),
   });
 };
 
@@ -96,32 +88,14 @@ export interface MetadataOptions {
  */
 export const metadata = (session: Session, handle?: string, opts?: MetadataOptions, security?: Security): Promise<any> => {
   if (!handle || typeof handle !== 'string') {
-    throw new Error('A valid Filestack handle is required for metadata');
+    throw new FilestackError('A valid Filestack handle is required for metadata');
   }
 
-  const allowed = [
-    { name: 'size',       type: t.Boolean },
-    { name: 'mimetype',   type: t.Boolean },
-    { name: 'filename',   type: t.Boolean },
-    { name: 'width',      type: t.Boolean },
-    { name: 'height',     type: t.Boolean },
-    { name: 'uploaded',   type: t.Boolean },
-    { name: 'writeable',  type: t.Boolean },
-    { name: 'cloud',      type: t.Boolean },
-    { name: 'sourceUrl',  type: t.Boolean },
-    { name: 'md5',        type: t.Boolean },
-    { name: 'sha1',       type: t.Boolean },
-    { name: 'sha224',     type: t.Boolean },
-    { name: 'sha256',     type: t.Boolean },
-    { name: 'sha384',     type: t.Boolean },
-    { name: 'sha512',     type: t.Boolean },
-    { name: 'location',   type: t.Boolean },
-    { name: 'path',       type: t.Boolean },
-    { name: 'container',  type: t.Boolean },
-    { name: 'exif',       type: t.Boolean },
-  ];
+  const validateRes = getValidator(MetadataParamsSchema)(opts);
 
-  checkOptions('metadata', allowed, opts);
+  if (validateRes.errors.length) {
+    throw new FilestackError(`Invalid metadata params`, validateRes.errors);
+  }
 
   const options: any = { ...opts };
   options.source_url = options.sourceUrl; // source_url is snake_case
@@ -131,18 +105,9 @@ export const metadata = (session: Session, handle?: string, opts?: MetadataOptio
   const baseURL = `${session.urls.fileApiUrl}/${handle}/metadata`;
   return new Promise((resolve, reject) => {
     request
-      .get(baseURL)
-      .query(removeEmpty(options))
-      .end((err: Error, res: any) => {
-        if (err) {
-          return reject(err);
-        }
-
-        resolve({
-          ...res.body,
-          handle,
-        });
-      });
+      .get(baseURL, { params: removeEmpty(options) })
+      .then(res => resolve({ ...res.data, handle }))
+      .catch(reject);
   });
 };
 
@@ -179,38 +144,26 @@ export interface RetrieveOptions {
  * @param options
  * @param security
  */
-export const retrieve = (session: Session,
-  handle: string,
-  options: RetrieveOptions = {},
-  security?: Security): Promise<Object | Blob> => {
-  if (!handle
-    || handle.length === 0
-    || typeof handle !== 'string') {
-
-    throw new Error('File handle is required');
+export const retrieve = (session: Session, handle: string, options: RetrieveOptions = {}, security?: Security): Promise<Object | Blob> => {
+  if (!handle || handle.length === 0 || typeof handle !== 'string') {
+    throw new FilestackError('File handle is required');
   }
 
-  const allowed = [
-    { name: 'metadata', type: t.Boolean },
-    { name: 'head', type: t.Boolean },
-    { name: 'dl', type: t.Boolean },
-    { name: 'cache', type: t.Boolean },
-    { name: 'extension', type: t.String },
-  ];
+  const validateRes = getValidator(RetrieveParamsSchema)(options);
 
-  checkOptions('retrieveOptions', allowed, options);
+  if (validateRes.errors.length) {
+    throw new FilestackError(`Invalid retrieve params`, validateRes.errors);
+  }
 
   const requestOptions: any = { ...options };
   requestOptions.key = session.apikey;
-  requestOptions.policy = security && security.policy || session.policy;
-  requestOptions.signature = security && security.signature || session.signature;
+  requestOptions.policy = (security && security.policy) || session.policy;
+  requestOptions.signature = (security && security.signature) || session.signature;
 
   let method: ERequestMethod = ERequestMethod.get;
-  let responseType = EResponseType.blob;
 
   if (requestOptions.head) {
     method = ERequestMethod.head;
-    responseType = EResponseType.json;
     delete requestOptions.head;
   }
 
@@ -224,10 +177,9 @@ export const retrieve = (session: Session,
   let metadata;
   if (requestOptions.metadata) {
     if (method === ERequestMethod.head) {
-      throw new Error('Head and metadata options cannot be used together');
+      throw new FilestackError('Head and metadata options cannot be used together');
     }
 
-    responseType = EResponseType.json;
     metadata = requestOptions.metadata;
     delete requestOptions.metadata;
   }
@@ -235,19 +187,12 @@ export const retrieve = (session: Session,
   const baseURL = `${session.urls.fileApiUrl}/${handle}` + (extension ? `+${extension}` : '') + (metadata ? '/metadata' : '');
 
   return new Promise((resolve, reject) => {
-    request[method](baseURL)
-      .query(requestOptions)
-      .responseType(responseType)
-      .end((err: Error, res: any) => {
-        if (err) {
-          return reject(err);
-        }
-
-        if (method === ERequestMethod.head) {
-          return resolve(res.headers);
-        }
-
-        resolve(res.body);
-      });
+    request({
+      url: baseURL,
+      method,
+      params: removeEmpty(requestOptions),
+    })
+      .then(res => resolve(method === ERequestMethod.head ? res.headers : res.data))
+      .catch(reject);
   });
 };

@@ -18,9 +18,11 @@
 import { config } from './../config';
 import { TransformSchema } from './../schema/transforms.schema';
 import { getValidator } from './../schema/validator';
-import { resolveHost } from './utils';
-import { FilestackError } from './../FilestackError';
+import { resolveHost, b64 } from './utils';
+import { FilestackError, FilestackErrorType } from './../filestack_error';
+import Debug from 'debug';
 
+const debug = Debug('fs:filelink');
 /**
  * Align enum
  */
@@ -163,21 +165,24 @@ export enum VideoAccessMode {
   crop = 'crop',
 }
 
+export interface StoreBaseParams {
+  location?: string;
+  path?: string;
+  container?: string;
+  region?: string;
+  access?: string;
+}
+
 /**
  * Available options for store transformations
  *
  * @export
  * @interface StoreParams
  */
-export interface StoreParams {
+export type StoreParams = StoreBaseParams & {
   filename?: string;
-  localion?: string;
-  path?: string;
-  container?: string;
-  region?: string;
-  access?: string;
   base64decode?: boolean;
-}
+};
 
 export interface ResizeParams {
   width?: number;
@@ -422,7 +427,7 @@ export interface PdfConvertParams {
 
 export interface FallbackParams {
   handle: string;
-  cache: number;
+  cache?: number;
 }
 
 export interface MinifyCssParams {
@@ -540,6 +545,8 @@ export class Filelink {
     this.source = source;
     const isExternal = this.isSourceExternal();
 
+    debug(`Source ${source} - isExternal? ${isExternal}`);
+
     if (isExternal && !apikey) {
       throw new FilestackError('External sources requires apikey to handle transforms');
     }
@@ -646,13 +653,14 @@ export class Filelink {
 
     if (this.b64) {
       if (this.transforms.length > 0) {
-        transformsString = `b64/${btoa(JSON.stringify(this.transforms))}`;
+        transformsString = `b64/${b64(JSON.stringify(this.transforms))}`;
       }
 
       if (Array.isArray(source)) {
         source = this.arrayToString(source);
       }
-      source = `b64://${btoa(source)}`;
+
+      source = `b64://${b64(source)}`;
     } else {
       if (Array.isArray(source)) {
         source = this.arrayToString(source);
@@ -678,6 +686,8 @@ export class Filelink {
    * @memberof Filelink
    */
   addTask(name: string, params?) {
+    Debug(`Add task  ${name} with params %O`, params);
+
     if (name !== 'cache' && typeof params === 'boolean') {
       if (!params) {
         return this;
@@ -1274,6 +1284,7 @@ export class Filelink {
 
     let toTest = Array.isArray(this.source) ? this.source : [this.source];
     for (let i in toTest) {
+      /* istanbul ignore next */
       if (!toTest.hasOwnProperty(i)) {
         continue;
       }
@@ -1295,11 +1306,11 @@ export class Filelink {
    * @memberof Filelink
    */
   private validateTasks(transformations: object[]): void {
-    const transformationsObj = this.arrayToObject(transformations, 'name', 'params');
-    const res = Filelink.validator(transformationsObj);
+    const res = Filelink.validator(this.arrayToObject(transformations, 'name', 'params'));
     if (res.errors.length) {
-      throw new FilestackError(`Params validation error: ${JSON.stringify(transformations)}`, res.errors);
+      throw new FilestackError(`Params validation error`, res.errors, FilestackErrorType.VALIDATION);
     }
+
     return;
   }
 
@@ -1353,17 +1364,10 @@ export class Filelink {
       return key;
     }
 
-    if (typeof values === 'object' && !Object.keys(values).length) {
-      return key;
-    }
-
     // if we just want to enable feature
     if (typeof values === 'boolean') {
-      if (!values) {
-        if (key === 'cache') {
-          return 'cache=false';
-        }
-        return '';
+      if (!values && key === 'cache') {
+        return 'cache=false';
       }
 
       return key;
@@ -1394,7 +1398,7 @@ export class Filelink {
       return value;
     }
 
-    if (value.indexOf('/') > -1) {
+    if (value.indexOf('/') > -1 || value.indexOf(',') > -1) {
       return `"${value}"`;
     }
 

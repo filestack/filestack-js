@@ -15,12 +15,15 @@
  * limitations under the License.
  */
 
-import throatImpl from './throat';
-import * as t from 'tcomb-validation';
 import { Session } from '../client';
 import { Hosts } from './../../config';
+import * as SparkMD5 from 'spark-md5';
+import fileType from 'file-type';
+import * as isutf8 from 'isutf8';
 
-export const throat = throatImpl;
+const mobileRegexp = /(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series[46]0|symbian|treo|up\.(browser|link)|vodafone|wap|windows (ce|phone)|xda|xiino|android|ipad|playbook|silk/i;
+const htmlCommentsRegexp = /<!--([\s\S]*?)-->/g;
+const svgRegexp = /^\s*(?:<\?xml[^>]*>\s*)?(?:<!doctype svg[^>]*\s*(?:\[?(?:\s*<![^>]*>\s*)*\]?)*[^>]*>\s*)?<svg[^>]*>[^]*<\/svg>\s*$/i;
 
 /**
  * Resolve cdn url based on handle type
@@ -44,53 +47,25 @@ export const resolveCdnUrl = (session: Session, handle: string): string => {
   return cdnURL;
 };
 
-export const resolveHost = (hosts: Hosts, cname: string): Hosts => {
-  let result = hosts;
-
-  if (cname) {
-    const hosts = /filestackapi.com|filestackcontent.com/i;
-
-    Object.keys(hosts).forEach((key) => {
-      result[key] = hosts[key].replace(hosts, cname);
-    });
-  }
-
-  return result;
-};
-
 /**
- * Check config options
+ * Resolve all urls with provided cnames
  *
  * @private
- * @param name
- * @param allowed
- * @param options
+ * @param urls
+ * @param cname
  */
-export const checkOptions = (name: string, allowed: any, options: any = {}): {} => {
-  const keys = Object.keys(options);
-  const allowedNames = allowed.map((a: any) => a.name);
-  const namesFormatted = allowedNames.join(', ');
-  keys.forEach((key) => {
-    if (allowedNames.indexOf(key) < 0) {
-      throw new Error(`${key} is not a valid option for ${name}. Valid options are: ${namesFormatted}`);
-    }
+export const resolveHost = (urls: Hosts, cname: string): Hosts => {
+  if (!cname) {
+    return urls;
+  }
+
+  const hosts = /filestackapi.com|filestackcontent.com/i;
+
+  Object.keys(urls).forEach(key => {
+    urls[key] = urls[key].replace(hosts, cname);
   });
-  allowed.forEach((obj: any) => {
-    let value = options[obj.name];
-    if (obj.name === 'location' && typeof value === 'string') {
-      value = value.toLowerCase();
-    }
-    if (value !== undefined) {
-      const result = t.validate(value, obj.type);
-      if (!result.isValid()) {
-        const error = result.firstError();
-        if (error && error.message) {
-          throw new Error(error.message);
-        }
-      }
-    }
-  });
-  return keys;
+
+  return urls;
 };
 
 /**
@@ -101,51 +76,164 @@ export const checkOptions = (name: string, allowed: any, options: any = {}): {} 
  */
 export const removeEmpty = (obj: any) => {
   const newObj = { ...obj };
-  Object.keys(newObj).forEach(k => (!newObj[k] && newObj[k] !== undefined) && delete newObj[k]);
+  Object.keys(newObj).forEach(k => !newObj[k] && typeof newObj[k] !== 'boolean' && delete newObj[k]);
   return newObj;
 };
 
 /**
- *
- * @private
- * @param fn
- * @param interval
- * @param callFirst
+ * Returns information about current env (browser|nodejs)
  */
-export const throttle = function throttle(fn: any, interval: number, callFirst?: boolean) {
-  let wait = false;
-  let callNow = false;
-  /* istanbul ignore next */
-  return function (this: any, ...args: any[]) {
-    callNow = !!callFirst && !wait;
-    const context = this;
-    if (!wait) {
-      wait = true;
-      setTimeout(function () {
-        wait = false;
-        if (!callFirst) {
-          return fn.apply(context, args);
-        }
-      }, interval);
-    }
-    if (callNow) {
-      callNow = false;
-      return fn.apply(this, arguments);
-    }
-  };
+export const isNode = () => typeof process !== 'undefined' && process.versions && process.versions.node;
+
+/**
+ * Returns if browser is a mobile device (if node env always return false)
+ */
+/* istanbul ignore next */
+export const isMobile = () => !isNode() && navigator && navigator.userAgent && mobileRegexp.test(navigator.userAgent);
+
+/**
+ * Returns unique time
+ */
+let last;
+export const uniqueTime = () => {
+  const time = Date.now();
+  last = time === last ? time + 1 : time;
+  return last;
 };
 
 /**
+ * Generates random string with provided length
  *
- * @private
- * @param start
- * @param stop
- * @param step
+ * @param len
  */
-export const range = (start: number, stop: number, step: number = 1) => {
-  const toReturn: any[] = [];
-  for (; start < stop; start += step) {
-    toReturn.push(start);
+export const uniqueId = (len: number = 10): string => {
+  return new Array(len).join().replace(/(.|$)/g, () => ((Math.random() * 36) | 0).toString(36)[Math.random() < 0.5 ? 'toString' : 'toUpperCase']());
+};
+
+/**
+ * Calculates a MD5 checksum for passed buffer
+ * @private
+ * @param data  Data to be hashed
+ * @returns     base64 encoded MD5 hash
+ */
+export const md5 = (data: any): string => {
+  if (isNode()) {
+    return (requireNode('crypto')).createHash('md5').update(data).digest('base64');
   }
-  return toReturn;
+
+  /* istanbul ignore next */
+  return btoa(SparkMD5.ArrayBuffer.hash(data, true));
+};
+
+/**
+ * Check if input is a svg
+ *
+ * @param input
+ */
+const isSvg = (input: Uint8Array | Buffer) => input && svgRegexp.test(String.fromCharCode.apply(null, input).replace(htmlCommentsRegexp, ''));
+
+/**
+ * Check if input is a svg
+ *
+ * @param {Uint8Array | Buffer} file
+ * @returns {string} - mimetype
+ */
+export const getMimetype = (file: Uint8Array | Buffer): string => {
+  let type = fileType(file);
+  if (type) {
+    return type.mime;
+  }
+
+  try {
+
+    if (isSvg(file)) {
+      return 'image/svg+xml';
+    }
+
+    if (isutf8(file)) {
+      return 'text/plain';
+    }
+  } catch (e) {
+    console.warn('Additional mimetype checks (text/plain) are currently not supported for browsers');
+  }
+
+  return 'application/octet-stream';
+};
+
+/**
+ * return based string
+ * @param data
+ */
+export const b64 = (data: string): string => {
+  if (isNode()) {
+    return Buffer.from(data).toString('base64');
+  }
+
+  return btoa(data);
+};
+
+/**
+ * Hides require from buindling by weback to browser
+ *
+ * @param {string} name
+ */
+export const requireNode = (name: string): any => {
+  if (!isNode()) {
+    return false;
+  }
+
+  return require && require(name);
+};
+
+/**
+ * Sanitizer Options
+ */
+export type SanitizeOptions = (boolean | {
+  exclude?: string[],
+  replacement?: string,
+});
+
+/**
+ * Sanitize file name
+ *
+ * @param name
+ * @param {bool} options  - enable,disable sanitizer, default enabled
+ * @param {string} options.replacement - replacement for sanitized chars defaults to "-"
+ * @param {string[]} options.exclude - array with excluded chars default - ['\', '{', '}','|', '%', '`', '"', "'", '~', '[', ']', '#', '|', '^', '<', '>']
+ */
+export const sanitizeName = (name: string, options: SanitizeOptions = true): string  => {
+  if (typeof options === 'boolean' && !options) {
+    return name;
+  }
+
+  let ext;
+
+  const replacement = typeof options !== 'boolean' && options.replacement ? options.replacement :  '-';
+  const exclude = typeof options !== 'boolean' && options.exclude ? options.exclude : ['\\', '{', '}','|', '%', '`', '"', "'", '~', '[', ']', '#', '|', '^', '<', '>'];
+
+  if (!name || name.length === 0) {
+    return 'undefined';
+  }
+
+  const fileParts = name.split('.');
+
+  if (fileParts.length > 1) {
+    ext = fileParts.pop();
+  }
+
+  return `${fileParts.join('_').split('').map((char) => exclude.indexOf(char) > -1 ? replacement : char).join('')}${ext ? '.' + ext : ''}`;
+};
+
+/**
+ * Filter object to given fields
+ *
+ * @param toFilter
+ * @param requiredFields
+ */
+export const filterObject = (toFilter, requiredFields: string[]) => {
+  if (!requiredFields || requiredFields.length === 0) {
+    return toFilter;
+  }
+
+  return Object.keys(toFilter).filter(f => requiredFields.indexOf(f) > -1).reduce((obj, key) => ({ ...obj, [key]: toFilter[key] }), {});
 };

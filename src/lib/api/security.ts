@@ -15,10 +15,10 @@
  * limitations under the License.
  */
 
-import * as crypto from 'crypto';
 import { Security } from '../client';
-import { checkOptions } from '../utils';
-import * as t from 'tcomb-validation';
+import { FilestackError, FilestackErrorType } from './../../filestack_error';
+import { getValidator, SecurityParamsSchema } from './../../schema';
+import { isNode, requireNode } from '../utils';
 
 /**
  * Configures a security policy
@@ -26,7 +26,7 @@ import * as t from 'tcomb-validation';
  * @see https://www.filestack.com/docs/concepts/security
  */
 export interface SecurityOptions {
-  expiry?: number;
+  expiry: number;
   call?: any[];
   handle?: string;
   url?: string;
@@ -51,21 +51,18 @@ export interface SecurityOptions {
  * @param appSecret
  */
 export const getSecurity = (policyOptions: SecurityOptions, appSecret: string): Security => {
-  const allowed = [
-    { name: 'expiry', type: t.Integer },
-    { name: 'call', type: t.list(t.enums.of('pick read stat write writeUrl store convert remove exif')) },
-    { name: 'handle', type: t.String },
-    { name: 'url', type: t.String },
-    { name: 'maxSize', type: t.Integer },
-    { name: 'minSize', type: t.Integer },
-    { name: 'path', type: t.String },
-    { name: 'container', type: t.String },
-  ];
+  if (!isNode()) {
+    throw new Error('getSecurity is only supported in nodejs');
+  }
 
-  checkOptions('Policy options', allowed, policyOptions);
+  const validateRes = getValidator(SecurityParamsSchema)(policyOptions);
 
-  const policy = new Buffer(JSON.stringify(policyOptions)).toString('base64');
-  const signature = crypto.createHmac('sha256', appSecret)
+  if (validateRes.errors.length) {
+    throw new FilestackError(`Invalid security params`, validateRes.errors, FilestackErrorType.VALIDATION);
+  }
+
+  const policy = Buffer.from(JSON.stringify(policyOptions)).toString('base64');
+  const signature = requireNode('crypto').createHmac('sha256', appSecret)
                    .update(policy)
                    .digest('hex');
 

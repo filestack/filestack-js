@@ -14,229 +14,255 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+/*
+ * Copyright (c) 2018 by Filestack.
+ * Some rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
-import * as assert from 'assert';
-import {
-  metadata,
-  remove,
-  retrieve,
-} from './file';
-import { storeURL } from './store';
+import { retrieve, remove, metadata } from './file';
+import * as axios from 'axios';
+import { Session } from '../client';
 
-declare var ENV: any;
+jest.mock('axios');
+jest.mock('./../filelink');
 
-const session = ENV.session;
-const secureSession = ENV.secureSession;
-const filelink = ENV.filelink;
-const secureFilelink = ENV.secureFilelink;
+const mockedSession: Session = {
+  apikey: 'fakeApikey',
+  urls: {
+    cdnUrl: 'fakeUrl',
+    fileApiUrl: 'fakeApiUrl',
+    uploadApiUrl: 'fakeUploadApiUrl',
+    cloudApiUrl: 'fakeCloudApiUrl',
+    pickerUrl: 'fakePickerUrl',
+  },
+};
 
-describe('metadata', function metadataFunc() {
-  this.timeout(60000);
+describe('FileAPI', () => {
+  describe('Metadata', () => {
+    it('should call correct metadata without options', async () => {
+      const methodMocked = jest.fn(() => Promise.resolve({ data: {} }));
+      // @ts-ignore
+      axios.get.mockImplementation(methodMocked);
+      const resp = await metadata(mockedSession, 'fakeHandle');
 
-  it('should throw an error if no handle is set', () => {
-    assert.throws(() => metadata(session));
+      expect(resp).toEqual({ handle: 'fakeHandle' });
+      expect(methodMocked).toHaveBeenLastCalledWith('fakeApiUrl/fakeHandle/metadata', { params: {} });
+    });
+
+    it('should call correct metadata with options', async () => {
+      const methodMocked = jest.fn(() => Promise.resolve({ data: {} }));
+      // @ts-ignore
+      axios.get.mockImplementation(methodMocked);
+      const resp = await metadata(mockedSession, 'fakeHandle', { size: true });
+
+      expect(resp).toEqual({ handle: 'fakeHandle' });
+      expect(methodMocked).toHaveBeenLastCalledWith('fakeApiUrl/fakeHandle/metadata', { params: { size: true } });
+    });
+
+    it('should throw on wrong option', async () => {
+      // @ts-ignore
+      return expect(() => metadata(mockedSession, 'fakekey', { bla: 123 })).toThrowError('Invalid metadata params');
+    });
+
+    it('should throw an error on empty handle', () => {
+      return expect(() => metadata(mockedSession)).toThrowError();
+    });
+
+    it('should respect provided security options', async () => {
+      const fakeSecurity = {
+        signature: 'fakeS',
+        policy: 'fakeP',
+      };
+
+      // @ts-ignore
+      axios.get.mockImplementation(() => Promise.resolve({ data: {} }));
+      const resp = await metadata(mockedSession, 'fakeHandle', {}, fakeSecurity);
+
+      expect(resp).toEqual({ handle: 'fakeHandle' });
+    });
   });
 
-  it('should get an ok response with a valid handle', (done) => {
-    metadata(session, filelink)
-      .then((result) => {
-        assert.ok(result);
-        done();
-      })
-      .catch((err) => {
-        done(err);
+  describe('Remove', () => {
+    it('should call remove', async () => {
+      const deleteMocked = jest.fn(() => Promise.resolve({ data: {} }));
+
+      // @ts-ignore
+      axios.delete.mockImplementation(deleteMocked);
+      const resp = await remove(
+        Object.assign({}, mockedSession, {
+          signature: 'fakeS',
+          policy: 'fakeP',
+        }),
+        'fakeHandle'
+      );
+
+      expect(resp).toEqual({ data: {} });
+      expect(deleteMocked).toHaveBeenCalledWith('fakeApiUrl/fakeHandle', { params: { key: 'fakeApikey', policy: 'fakeP', signature: 'fakeS' } });
+    });
+
+    it('should respect skip storage option', async () => {
+      const methodMocked = jest.fn(() => Promise.resolve({ data: {} }));
+
+      // @ts-ignore
+      axios.delete.mockImplementation(methodMocked);
+      const resp = await remove(
+        Object.assign({}, mockedSession, {
+          signature: 'fakeS',
+          policy: 'fakeP',
+        }),
+        'fakeHandle',
+        true
+      );
+
+      expect(resp).toEqual({ data: {} });
+      expect(methodMocked).toHaveBeenCalledWith('fakeApiUrl/fakeHandle', { params: { key: 'fakeApikey', policy: 'fakeP', signature: 'fakeS', skip_storage: true } });
+    });
+
+    it('should throw on empty handle', () => {
+      expect(() => remove(mockedSession)).toThrowError();
+    });
+
+    it('should call remove with provided session', async () => {
+      const fakeSecurity = {
+        signature: 'fakeS',
+        policy: 'fakeP',
+      };
+
+      // @ts-ignore
+      axios.delete.mockImplementation(() => Promise.resolve({ data: {} }));
+      const resp = await remove(mockedSession, 'fakeHandle', false, fakeSecurity);
+
+      expect(resp).toEqual({ data: {} });
+    });
+
+    it('should throw on empty signature', async () => {
+      const fakeSecurity = {
+        signature: null,
+        policy: 'fakeP',
+      };
+
+      expect(() => remove(mockedSession, 'fakeHandle', false, fakeSecurity)).toThrowError();
+    });
+
+    it('should throw on empty policy', async () => {
+      const fakeSecurity = {
+        signature: 'fakeS',
+        policy: null,
+      };
+
+      expect(() => remove(mockedSession, 'fakeHandle', false, fakeSecurity)).toThrowError();
+    });
+
+    it('should throw on empty policy on session', async () => {
+      return expect(() => remove(mockedSession, 'fakeHandle')).toThrowError();
+    });
+  });
+
+  describe('Retrieve', () => {
+    it('should make correct retrieve request (GET)', async () => {
+      const methodMocked = jest.fn(() => Promise.resolve({ data: {} }));
+
+      // @ts-ignore
+      axios.mockImplementation(methodMocked);
+      const resp = await retrieve(mockedSession, 'fakeHandle');
+
+      expect(resp).toEqual({});
+      expect(methodMocked).toHaveBeenCalledWith({ method: 'get', params: { key: 'fakeApikey' }, url: 'fakeApiUrl/fakeHandle' });
+    });
+
+    it('should make correct retrieve request (HEAD)', async () => {
+      const methodMocked = jest.fn(() => Promise.resolve({ data: {}, headers: { type: 'test' } }));
+
+      // @ts-ignore
+      axios.mockImplementation(methodMocked);
+      const resp = await retrieve(mockedSession, 'fakeHandle', {
+        head: true,
       });
-  });
 
-  it('should get an ok response with a valid handle and options', (done) => {
-    metadata(session, filelink, { md5: true, sourceUrl: true })
-      .then((result) => {
-        assert.ok(result);
-        done();
-      })
-      .catch((err) => {
-        done(err);
+      expect(resp).toEqual({ type: 'test' });
+      expect(methodMocked).toHaveBeenCalledWith({ method: 'head', params: { key: 'fakeApikey' }, url: 'fakeApiUrl/fakeHandle' });
+    });
+
+    it('should make correct retrieve request with provided security', async () => {
+      const methodMocked = jest.fn(() => Promise.resolve({ data: {} }));
+
+      const fakeSecurity = {
+        signature: 'fakeS',
+        policy: 'fakeP',
+      };
+
+      // @ts-ignore
+      axios.mockImplementation(methodMocked);
+      const resp = await retrieve(mockedSession, 'fakeHandle', {}, fakeSecurity);
+
+      expect(resp).toEqual({});
+      expect(methodMocked).toHaveBeenCalledWith({
+        method: 'get',
+        params: { key: 'fakeApikey', policy: 'fakeP', signature: 'fakeS' },
+        url: 'fakeApiUrl/fakeHandle',
       });
-  });
+    });
 
-  it('should get an ok response with a valid secure handle and options', (done) => {
-    metadata(secureSession, secureFilelink)
-      .then((result) => {
-        assert.ok(result);
-        done();
-      })
-      .catch((err) => {
-        done(err);
+    it('should make correct retrieve request with extension', async () => {
+      const methodMocked = jest.fn(() => Promise.resolve({ data: {} }));
+
+      // @ts-ignore
+      axios.mockImplementation(methodMocked);
+      const resp = await retrieve(mockedSession, 'fakeHandle', {
+        extension: 'txt',
       });
-  });
 
-  it('should call promise catch with error', (done) => {
-    const sessionClone = JSON.parse(JSON.stringify(session));
-    sessionClone.urls.fileApiUrl = 'http://www.somebadurl.com';
+      expect(resp).toEqual({});
+      expect(methodMocked).toHaveBeenCalledWith({ method: 'get', params: { key: 'fakeApikey' }, url: 'fakeApiUrl/fakeHandle+txt' });
+    });
 
-    metadata(sessionClone, filelink)
-      .then(() => {
-        done(new Error('Request passed'));
-      })
-      .catch((err) => {
-        assert.ok(err instanceof Error);
-        done();
+    it('should make correct retrieve request with metadata', async () => {
+      const methodMocked = jest.fn(() => Promise.resolve({ data: {} }));
+
+      // @ts-ignore
+      axios.mockImplementation(methodMocked);
+      const resp = await retrieve(mockedSession, 'fakeHandle', {
+        metadata: true,
       });
-  });
-});
 
-describe('retrieve', function metadataFunc() {
-  this.timeout(60000);
+      expect(resp).toEqual({});
+      expect(methodMocked).toHaveBeenCalledWith({ method: 'get', params: { key: 'fakeApikey' }, url: 'fakeApiUrl/fakeHandle/metadata' });
+    });
 
-  it('should throw an error if no handle is set', () => {
-    assert.throws(() => retrieve(session, ''));
-  });
+    it('should throw an error on empty handle', () => {
+      return expect(() => retrieve(mockedSession, '')).toThrowError();
+    });
 
-  it('should throw an error metadata and head options are provided', () => {
-    assert.throws(() => retrieve(session, filelink, {
-      metadata: true,
-      head: true,
-    }));
-  });
+    it('should throw an error worng options provided', () => {
+      return expect(() => retrieve(mockedSession, 'fakeHandle', {
+        // @ts-ignore
+        test: 123,
+      })).toThrowError('Invalid retrieve params');
+    });
 
-  it('should get an ok response with a valid handle', (done) => {
-    retrieve(session, filelink)
-      .then((result) => {
-        assert.ok(result);
-        done();
-      })
-      .catch((err) => {
-        done(err);
-      });
-  });
+    it('should not throw an error worng options provided', () => {
+      return expect(() => retrieve(mockedSession, 'fakeHandle', {
+        metadata: true,
+      })).not.toThrowError('Invalid retrieve params');
+    });
 
-  it('should get an ok response with a valid handle and options', (done) => {
-    retrieve(session, filelink, { metadata: true })
-      .then((result) => {
-        assert.ok(result);
-        done();
-      })
-      .catch((err) => {
-        done(err);
-      });
-  });
-
-  it('should get an ok response with a valid secure handle and options', (done) => {
-    retrieve(secureSession, secureFilelink, { metadata: true })
-      .then((result) => {
-        assert.ok(result);
-        done();
-      })
-      .catch((err) => {
-        done(err);
-      });
-  });
-
-  it('should get an ok response with a head option', (done) => {
-    retrieve(session, filelink, { head: true })
-      .then((result) => {
-        assert.ok(result);
-        done();
-      })
-      .catch((err) => {
-        done(err);
-      });
-  });
-
-  it('should get an ok response with a extension option', (done) => {
-    retrieve(session, filelink, { extension: 'someextension.txt' })
-      .then((result) => {
-        assert.ok(result);
-        done();
-      })
-      .catch((err) => {
-        done(err);
-      });
-  });
-
-  it('should call promise catch with error', (done) => {
-    const sessionClone = JSON.parse(JSON.stringify(session));
-    sessionClone.urls.fileApiUrl = 'somebadurl';
-
-    retrieve(sessionClone, filelink, { extension: 'someextension.txt' })
-      .then(() => {
-        done(new Error('Request passed'));
-      })
-      .catch((err) => {
-        assert.ok(err instanceof Error);
-        done();
-      });
-  });
-});
-
-describe('remove', function removeFunc() {
-  this.timeout(60000);
-
-  it('should throw an error if no handle is set', () => {
-    assert.throws(() => remove(secureSession));
-  });
-
-  it('should throw an error if client is not secured', () => {
-    assert.throws(() => remove(session, 'fakehandle'));
-  });
-
-  it('should get an ok response with a valid handle', (done) => {
-    // have to create a file before we can test deleting it
-    storeURL(secureSession, ENV.urls.testImageUrl)
-      .then((res: any) => {
-        const handle = res.handle;
-        remove(secureSession, handle)
-          .then((result: any) => {
-            assert.equal(result.statusCode, 200);
-            done();
-          })
-          .catch((err) => {
-            done(err);
-          });
-      })
-      .catch((err) => {
-        done(err);
-      });
-  });
-
-  it('should get an ok response when skip_storage is true', (done) => {
-    // have to create a file before we can test deleting it
-    storeURL(secureSession, ENV.urls.testImageUrl)
-      .then((res: any) => {
-        const handle = res.handle;
-        remove(secureSession, handle, true)
-          .then((result: any) => {
-            assert.equal(result.statusCode, 200);
-            done();
-          })
-          .catch((err) => {
-            done(err);
-          });
-      })
-      .catch((err) => {
-        done(err);
-      });
-  });
-
-  it('should call promise catch with error', (done) => {
-    const sessionClone = JSON.parse(JSON.stringify(secureSession));
-    sessionClone.urls.fileApiUrl = 'somebadurl';
-
-    storeURL(secureSession, ENV.urls.testImageUrl)
-      .then((res: any) => {
-        const handle = res.handle;
-
-        remove(sessionClone, handle)
-        .then(() => {
-          done(new Error('Request passed'));
-        })
-        .catch((err) => {
-          assert.ok(err instanceof Error);
-          done();
-        });
-      })
-      .catch((err) => {
-        done(err);
-      });
+    it('should throw an error when metadata and head is provided', () => {
+      return expect(() => retrieve(mockedSession, 'fakeHandle', {
+        metadata: true,
+        head: true,
+      })).toThrowError();
+    });
   });
 });

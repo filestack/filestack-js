@@ -15,9 +15,11 @@
  * limitations under the License.
  */
 
-import { ClientOptions, Session, StoreOptions } from '../client';
 import { removeEmpty } from '../utils';
-import { requestWithSource as request } from '../api/request';
+import { StoreParams } from '../filelink';
+import { ClientOptions, Session } from '../client';
+import { requestWithSource, request } from '../api/request';
+import { FilestackError } from './../../filestack_error';
 
 /**
  * @private
@@ -36,6 +38,7 @@ export class CloudClient {
   constructor(session: Session, options?: ClientOptions) {
     this.session = session;
     this.cloudApiUrl = session.urls.cloudApiUrl;
+
     if (options && options.sessionCache) {
       this.cache = options.sessionCache;
     }
@@ -60,44 +63,46 @@ export class CloudClient {
     const params = {
       apikey: this.session.apikey,
     };
-    return request('get', `${this.cloudApiUrl}/prefetch`)
-      .query(params)
-      .then((res: any) => res.body);
+    return requestWithSource()
+      .get(`${this.cloudApiUrl}/prefetch`, { params })
+      .then(res => res.data);
   }
 
-  list(clouds: any, token: any = {}) {
+  list(clouds: any, token?: any) {
     const payload: any = {
       apikey: this.session.apikey,
       clouds,
       flow: 'web',
       token: this.token,
     };
+
     if (this.session.policy && this.session.signature) {
       payload.policy = this.session.policy;
       payload.signature = this.session.signature;
     }
-    return new Promise((resolve, reject) => {
-      const req = request('post', `${this.cloudApiUrl}/folder/list`)
-        .send(payload)
-        .end((err: Error, response: any) => {
-          if (err) {
-            reject(err);
-          } else {
-            if (response.body && response.body.token) {
-              this.token = response.body.token;
-            }
-            resolve(response.body);
-          }
-        });
-      token.cancel = () => {
-        req.abort();
-        reject(new Error('Cancelled'));
-      };
-    });
+
+    let options: any = {};
+
+    if (token) {
+      const CancelToken = request.CancelToken;
+      const source = CancelToken.source();
+      token.cancel = source.cancel;
+
+      options.cancelToken = source.token;
+    }
+
+    return requestWithSource()
+      .post(`${this.cloudApiUrl}/folder/list`, payload, options)
+      .then(res => {
+        if (res.data && res.data.token) {
+          this.token = res.data.token;
+        }
+
+        return res.data;
+      });
   }
 
-  store(name: string, path: string, options: StoreOptions = {}, customSource: any = {}, token: any = {}) {
-
+  store(name: string, path: string, options: StoreParams = {}, customSource: any = {}, token?: any) {
     // Default to S3
     if (options.location === undefined) options.location = 's3';
 
@@ -126,77 +131,29 @@ export class CloudClient {
       payload.signature = this.session.signature;
     }
 
-    return new Promise((resolve, reject) => {
-      const req = request('post', `${this.cloudApiUrl}/store/`)
-        .send(payload)
-        .end((err: Error, response: any) => {
-          if (err) {
-            reject(err);
-          } else {
-            if (response.body && response.body.token) {
-              this.token = response.body.token;
-            }
-            if (response.body && response.body[name]) {
-              resolve(response.body[name]);
-            } else {
-              resolve(response.body);
-            }
-          }
-        });
+    let requestOptions: any = {};
 
-      token.cancel = () => {
-        req.abort();
-        reject(new Error('Cancelled'));
-      };
-    });
-  }
+    if (token) {
+      const CancelToken = request.CancelToken;
+      const source = CancelToken.source();
+      token.cancel = source.cancel;
 
-  link(name: string, path: string, customSource: any = {}, token: any = {}) {
-    const payload: any = {
-      apikey: this.session.apikey,
-      token: this.token,
-      flow: 'web',
-      clouds: {
-        [name]: {
-          path,
-        },
-      },
-    };
-
-    if (name === 'customsource' && customSource.customSourcePath) {
-      payload.clouds.customsource.customSourcePath = customSource.customSourcePath;
+      requestOptions.cancelToken = source.token;
     }
 
-    if (name === 'customsource' && customSource.customSourceContainer) {
-      payload.clouds.customsource.customSourceContainer = customSource.customSourceContainer;
-    }
+    return requestWithSource()
+      .post(`${this.cloudApiUrl}/store/`, payload, requestOptions)
+      .then(res => {
+        if (res.data && res.data.token) {
+          this.token = res.data.token;
+        }
 
-    if (this.session.policy && this.session.signature) {
-      payload.policy = this.session.policy;
-      payload.signature = this.session.signature;
-    }
-    return new Promise((resolve, reject) => {
-      const req = request('post', `${this.cloudApiUrl}/link/`)
-        .send(payload)
-        .end((err: Error, response: any) => {
-          if (err) {
-            reject(err);
-          } else {
-            if (response.body && response.body.token) {
-              this.token = response.body.token;
-            }
-            if (response.body[name]) {
-              resolve(response.body[name]);
-            } else {
-              resolve(response.body);
-            }
-          }
-        });
-      token.cancel = () => {
-        req.abort();
-        reject(new Error('Cancelled'));
-      };
-    });
+        if (res.data && res.data[name]) {
+          return res.data[name];
+        }
+
+        return res.data;
+      });
   }
 
   logout(name?: string) {
@@ -205,30 +162,22 @@ export class CloudClient {
       flow: 'web',
       token: this.token,
     };
+
     if (name) {
-      payload.clouds = {
-        [name]: {},
-      };
-    } else {
+      payload.clouds = { [name]: {} };
+    } else if (this.cache) {
       // No name means logout of ALL clouds. Clear local session.
-      if (this.cache) {
-        localStorage.removeItem(PICKER_KEY);
-      }
+      localStorage.removeItem(PICKER_KEY);
     }
-    return new Promise((resolve, reject) => {
-      request('post', `${this.cloudApiUrl}/auth/logout/`)
-        .send(payload)
-        .end((err: Error, response: any) => {
-          if (err) {
-            reject(err);
-          } else {
-            if (response.body && response.body.token) {
-              this.token = response.body.token;
-            }
-            resolve(response.body);
-          }
-        });
-    });
+
+    return requestWithSource()
+      .post(`${this.cloudApiUrl}/auth/logout/`, payload)
+      .then(res => {
+        if (res.data && res.data[name]) {
+          return res.data[name];
+        }
+        return res.data;
+      });
   }
 
   metadata(url: string) {
@@ -236,80 +185,66 @@ export class CloudClient {
       apikey: this.session.apikey,
       url,
     };
+
     if (this.session.policy && this.session.signature) {
       payload.policy = this.session.policy;
       payload.signature = this.session.signature;
     }
-    return new Promise((resolve, reject) => {
-      request('post', `${this.cloudApiUrl}/metadata`)
-        .send(payload)
-        .end((err: Error, response: any) => {
-          if (err) {
-            reject(err);
-          } else {
-            resolve(response.body);
-          }
-        });
-    });
+
+    return requestWithSource()
+      .post(`${this.cloudApiUrl}/metadata/`, payload)
+      .then(res => res.data);
   }
 
   // OpenTok API Endpoints
   tokInit(type: string) {
     if (type !== 'video' && type !== 'audio') {
-      throw new Error('Type must be one of video or audio.');
+      throw new FilestackError('Type must be one of video or audio.');
     }
-    return new Promise((resolve, reject) => {
-      return request('post', `${this.cloudApiUrl}/recording/${type}/init`)
-        .end((err: Error, response: any) => {
-          if (err) {
-            reject(err);
-          } else {
-            resolve(response);
-          }
-        });
-    });
+    return requestWithSource()
+      .post(`${this.cloudApiUrl}/recording/${type}/init`)
+      .then(res => {
+        return {
+          body: res.data,
+        };
+      });
   }
 
   tokStart(type: string, key: string, sessionId: string) {
     if (type !== 'video' && type !== 'audio') {
-      throw new Error('Type must be one of video or audio.');
+      throw new FilestackError('Type must be one of video or audio.');
     }
     const payload = {
       apikey: key,
       session_id: sessionId,
     };
-    return new Promise((resolve, reject) => {
-      return request('post', `${this.cloudApiUrl}/recording/${type}/start`)
-        .send(payload)
-        .end((err: Error, response: any) => {
-          if (err) {
-            reject(err);
-          } else {
-            resolve(response);
-          }
-        });
-    });
+
+    return requestWithSource()
+      .post(`${this.cloudApiUrl}/recording/${type}/start`, payload)
+      .then(res => {
+        return {
+          body: res.data,
+        };
+      });
   }
 
   tokStop(type: string, key: string, sessionId: string, archiveId: string) {
     if (type !== 'video' && type !== 'audio') {
-      throw new Error('Type must be one of video or audio.');
+      throw new FilestackError('Type must be one of video or audio.');
     }
+
     const payload = {
       apikey: key,
       session_id: sessionId,
       archive_id: archiveId,
     };
-    return new Promise((resolve, reject) => {
-      return request('post', `${this.cloudApiUrl}/recording/${type}/stop`)
-        .send(payload)
-        .end((err: Error, response: any) => {
-          if (err) {
-            reject(err);
-          } else {
-            resolve(response);
-          }
-        });
-    });
+
+    return requestWithSource()
+      .post(`${this.cloudApiUrl}/recording/${type}/stop`, payload)
+      .then(res => {
+        return {
+          body: res.data,
+        };
+      });
   }
 }

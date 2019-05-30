@@ -14,6 +14,7 @@ const figureOutFileMimetype = (file) => {
   if (type !== false) {
     return type;
   }
+
   return 'application/octet-stream';
 };
 
@@ -100,7 +101,7 @@ if (args.indexOf('--current') > -1) {
 }
 
 if (args.indexOf('--pre') > -1) {
-  console.log(`publishing to prerelase version ${version}-pre`);
+  console.log(`publishing to prerelease version ${version}-pre`);
   versionsToPublish.push({
     bucket,
     folder: `filestack-js/${version}-pre`,

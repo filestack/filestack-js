@@ -10,18 +10,16 @@
     "inlineSourceMap": true,
     "listFiles": false,
     "traceResolution": false,
+    "skipLibCheck": true,
     "pretty": true,
     "lib" : [
       "es6",
       "dom"
     ],
-    "types" : [
-      "node",
-      "mocha"
-    ],
     "baseUrl": ".",
     "typeRoots": [
       "@types",
+      "./node_modules/@types",
       "./src/types"
     ]
   },
@@ -29,7 +27,8 @@
     "src/**/*.ts"
   ],
   "exclude": [
-    "node_modules/**"
+    "node_modules/**",
+    "src/**/*.spec.ts"
   ],
   "compileOnSave": false,
 
