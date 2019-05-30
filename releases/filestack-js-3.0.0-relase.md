@@ -66,7 +66,7 @@
           height: 480,
         }
       );
-    }.catch(e: FilestackError => {
+    }.catch(e: FilestackError) {
       console.log(e.message);
       console.log(e.details); // detailed validation errors
     })
@@ -80,7 +80,7 @@
           wrongPickerOption: true
         })
         .open();
-     }.catch(e: FilestackError => {
+     }.catch(e: FilestackError) {
       console.log(e.message);
       console.log(e.details); // detailed validation errors
     })
