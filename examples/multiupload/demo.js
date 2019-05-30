@@ -8,6 +8,7 @@ window.addEventListener('DOMContentLoaded', function () {
 
   document.querySelector('input').addEventListener('change', (event) => {
     const files = event.target.files;
+    const file = files.item(0);
     const token = {};
     const cancel = document.getElementById('cancel');
     const pause = document.getElementById('pause');
@@ -20,7 +21,7 @@ window.addEventListener('DOMContentLoaded', function () {
       });
     });
 
-    client.upload(files, { onProgress }, {}, token)
+    client.upload(file, { onProgress }, {}, token)
       .then(res => {
         console.log('success: ', res)
       })

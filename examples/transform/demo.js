@@ -1,6 +1,6 @@
 window.addEventListener('DOMContentLoaded', function () {
   const apikey = 'YOUR_APIKEY';
-  const src = new filestack.Filelink('7m1aL2WEQg2Dkh1Cxgpi', apikey)
+  const src = new filestack.Filelink('FILESTACK_HANDLE', apikey)
   src.blur({amount: 15})
       .border()
       .resize({
