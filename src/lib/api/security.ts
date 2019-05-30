@@ -18,7 +18,7 @@
 import { Security } from '../client';
 import { FilestackError, FilestackErrorType } from './../../filestack_error';
 import { getValidator, SecurityParamsSchema } from './../../schema';
-import { isNode, requireNode } from '../utils';
+import { isNode, requireNode, flattenObject } from '../utils';
 
 /**
  * Configures a security policy
@@ -67,4 +67,25 @@ export const getSecurity = (policyOptions: SecurityOptions, appSecret: string): 
                    .digest('hex');
 
   return { policy, signature };
+};
+
+export const validateWebhookSignature = (secret: string, data: Object, toCompare: any) => {
+  if (!isNode()) {
+    throw new Error('validateWebhookSignature is only supported in nodejs');
+  }
+
+  let flatten = flattenObject(data);
+  flatten = Object
+  .entries(flatten)
+  .sort()
+  .reduce((_sortedObj, [k,v]) => ({ ..._sortedObj, [k]: v }), {});
+
+  const toHash = `${toCompare.timestamp}.${JSON.stringify(flatten)}`.replace(/"([,:])/gm, '"$1 ');
+  console.log(toHash);
+  const hash = requireNode('crypto')
+                .createHmac('sha256', secret)
+                .update(toHash)
+                .digest('hex');
+  console.log(hash);
+  return hash === toCompare.signature;
 };
