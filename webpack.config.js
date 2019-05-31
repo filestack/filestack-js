@@ -4,7 +4,7 @@ const path = require('path');
 const fs = require('fs');
 const EsmWebpackPlugin = require('@purtuga/esm-webpack-plugin');
 const merge = require('lodash.merge');
-const CleanWebpackPlugin = require('clean-webpack-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const WebpackAssetsManifest = require('webpack-assets-manifest');
 const banner = fs.readFileSync('./LICENSE', 'utf8').replace('{year}', new Date().getFullYear());
 

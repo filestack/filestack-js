@@ -362,7 +362,7 @@ export class Client extends EventEmitter {
    * token.resume(); // Resume flow
    * token.cancel(); // Cancel flow (rejects)
    * ```
-   * @param file           Must be a valid [File | Blob | Buffer | string]
+   * @param {InputFile}    file           Must be a valid [File | Blob | Buffer | string]
    * @param uploadOptions  Uploader options.
    * @param storeOptions   Storage options.
    * @param token          A control token that can be used to call cancel(), pause(), and resume().
@@ -413,7 +413,7 @@ export class Client extends EventEmitter {
    * token.resume(); // Resume flow
    * token.cancel(); // Cancel flow (rejects)
    * ```
-   * @param file           Must be a valid [File | Blob | Buffer | string (base64)]
+   * @param {InputFile[]}  file           Must be a valid [File | Blob | Buffer | string (base64)]
    * @param uploadOptions  Upload options.
    * @param storeOptions   Storage options.
    * @param token          A control token that can be used to call cancel(), pause(), and resume().
