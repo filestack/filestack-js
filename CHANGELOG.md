@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.1.0](https://github.com/filestack/filestack-js/compare/v3.0.0...v3.1.0) (2019-05-31)
+
+
+### Features
+
+* **validation:** add all supported regions to validation ([#233](https://github.com/filestack/filestack-js/issues/233)) ([4cf82e7](https://github.com/filestack/filestack-js/commit/4cf82e7))
+
+
+
 ## [3.0.0](https://github.com/filestack/filestack-js/compare/v2.1.0...v3.0.0) (2019-05-30)
 
 
