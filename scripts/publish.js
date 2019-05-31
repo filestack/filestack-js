@@ -111,4 +111,5 @@ if (args.indexOf('--pre') > -1) {
 
 versionsToPublish.forEach((version) => {
   upload({ cwd: './build/browser', matching: 'filestack*' }, version);
+  upload({ cwd: './build/browser', matching: 'manifest*' }, version);
 });

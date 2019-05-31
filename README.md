@@ -148,6 +148,7 @@ Major releases will bo listed (with detailed examples) in releases folder starti
 ## Live examples (JSFiddle)
 
 [Upload image](https://jsfiddle.net/gh/get/library/pure/filestack/filestack-js/tree/master/examples/upload)  
+[Multiupload](https://jsfiddle.net/gh/get/library/pure/filestack/filestack-js/tree/master/examples/multiupload)  
 [Open picker](https://jsfiddle.net/gh/get/library/pure/filestack/filestack-js/tree/master/examples/picker)  
 [Open picker in inline mode](https://jsfiddle.net/gh/get/library/pure/filestack/filestack-js/tree/master/examples/picker-inline)  
 [Crop images](https://jsfiddle.net/gh/get/library/pure/filestack/filestack-js/tree/master/examples/crop)  

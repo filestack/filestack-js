@@ -23,7 +23,7 @@ import { getFile } from '../src/lib/api/upload';
 
 const createFile = (size = 44320) => Buffer.alloc(size);
 
-const fs = new Client('AbHASoTdORfqk8APJB72Wz', {
+const fs = new Client('API_KEY', {
   cname: 'rc.filepickerapp.com',
 });
 
@@ -48,8 +48,7 @@ try {
     sanitizer: {
       exclude: ['m'],
       replacement: 'hrr',
-    },
-    workflows: ['9887b80c-962e-42e0-aa98-11706957df96']
+    }
   }).then((res) => {
     console.info('Upload done!', res);
   });

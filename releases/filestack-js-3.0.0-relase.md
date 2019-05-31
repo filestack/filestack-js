@@ -88,7 +88,7 @@
   ```
 - **[ENHANCEMENT]** rewrite all tests (now tests are splitted to integrations and units)
 - **[ENHANCEMENT]** change request library to axios (better error handling)
-- **[FEATURE]** add missing transformations uglifyJs and uglifyCss
+- **[FEATURE]** add missing transformations minifyJs and minifyCss
 - minor fixes
 
 ## Deprecation: 
