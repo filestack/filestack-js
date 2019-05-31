@@ -360,6 +360,10 @@ export const PickerParamsSchema = {
         },
       },
     },
+    errorsTimeout: {
+      type: 'number',
+      minimum: 0,
+    },
     customAuthText: {
       type: 'object',
       patternProperties: {
@@ -382,10 +386,6 @@ export const PickerParamsSchema = {
       type: 'object',
       additionalProperties: false,
       properties: UploadParamsSchema.properties,// manual import upload definitions
-    },
-    errorsTimeout: {
-      type: 'number',
-      minimum: 0,
-    },
+    }
   },
 };
