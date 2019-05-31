@@ -384,5 +384,9 @@ export const PickerParamsSchema = {
       additionalProperties: false,
       properties: UploadParamsSchema.properties,// manual import upload definitions
     },
+    errorsTimeout: {
+      type: 'number',
+      minimum: 0,
+    },
   },
 };
