@@ -521,6 +521,11 @@ export interface PickerOptions {
    * Default view type option for file browser
    */
   viewType?: 'grid' | 'list';
+
+  /**
+   * Timeout for error messages
+   */
+  errorsTimeout?: number;
   /**
    * Specify [width, height] in pixels of the desktop modal.
    */

@@ -186,7 +186,6 @@ export const PickerParamsSchema = {
     maxSize: {
       type: 'integer',
       minimum: 1,
-      maximum: 1000000,
     },
     modalSize: {
       type: 'array',
@@ -383,6 +382,10 @@ export const PickerParamsSchema = {
       type: 'object',
       additionalProperties: false,
       properties: UploadParamsSchema.properties,// manual import upload definitions
+    },
+    errorsTimeout: {
+      type: 'number',
+      minimum: 0,
     },
   },
 };
