@@ -186,7 +186,6 @@ export const PickerParamsSchema = {
     maxSize: {
       type: 'integer',
       minimum: 1,
-      maximum: 1000000,
     },
     modalSize: {
       type: 'array',
