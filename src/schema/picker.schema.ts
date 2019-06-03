@@ -89,6 +89,9 @@ export const PickerParamsSchema = {
             keepOrientation: {
               type: 'boolean',
             },
+            keepICCandAPP: {
+              type: 'boolean',
+            },
           },
         },
       ],

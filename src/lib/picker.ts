@@ -264,6 +264,7 @@ export interface PickerStoreOptions {
 export interface PickerCustomText {
   // Actions
   Upload?: string;
+  'Upload more'?: string;
   'Deselect All'?: string;
   'View/Edit Selected'?: string;
   'Sign Out'?: string;
@@ -285,11 +286,15 @@ export interface PickerCustomText {
   'more files'?: string;
 
   // Cloud
-  Connect?: string;
-  'Select Files from'?: string;
-  'You need to authenticate with '?: string;
+  'Connect {providerName}'?: string;
+  'Select Files from {providerName}'?: string;
+  'You need to authenticate with {providerName}.'?: string;
   'A new page will open to connect your account.'?: string;
   'We only extract images and never modify or delete them.'?: string;
+  'To disconnect from {providerName} click "Sign out" button in the menu.'?: string;
+  'Sign in with Google'?: string;
+  'Go back'?: string;
+  'This folder is empty.'?: string;
 
   // Summary
   Files?: string;
@@ -325,6 +330,7 @@ export interface PickerCustomText {
   'Try now'?: string;
 
   // Local File Source
+  'Drag and Drop, Copy and Paste Files'?: string;
   'or Drag and Drop, Copy and Paste Files'?: string;
   'Select Files to Upload'?: string;
   'Select From'?: string;
@@ -346,6 +352,7 @@ export interface PickerCustomText {
   'File {displayName} is too big. The accepted file size is less than {roundFileSize}'?: string;
   'Our file upload limit is {maxFiles} {filesText}'?: string;
   'No search results found for "{search}"'?: string;
+  'An error occurred. Please try again.'?: string;
 }
 
 export interface PickerOptions {
@@ -392,10 +399,11 @@ export interface PickerOptions {
   container?: string | Node;
 
   /**
-   * Turn on cleaning JPEG image exif. Method can keep image orientation
+   * Turn on cleaning JPEG image exif. Method can keep image orientation or color profiles
    */
   cleanupImageExif?: boolean | {
-    keepOrientation: boolean
+    keepOrientation?: boolean,
+    keepICCandAPP?: boolean
   };
   /**
    * Customize the text on the cloud authentication screen in Picker.
