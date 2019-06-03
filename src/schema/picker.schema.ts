@@ -389,6 +389,6 @@ export const PickerParamsSchema = {
       type: 'object',
       additionalProperties: false,
       properties: UploadParamsSchema.properties,// manual import upload definitions
-    }
+    },
   },
 };
