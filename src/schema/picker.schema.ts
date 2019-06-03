@@ -89,6 +89,9 @@ export const PickerParamsSchema = {
             keepOrientation: {
               type: 'boolean',
             },
+            keepICCandAPP: {
+              type: 'boolean',
+            },
           },
         },
       ],
@@ -386,6 +389,6 @@ export const PickerParamsSchema = {
       type: 'object',
       additionalProperties: false,
       properties: UploadParamsSchema.properties,// manual import upload definitions
-    }
+    },
   },
 };
