@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.2.0](https://github.com/filestack/filestack-js/compare/v3.1.1...v3.2.0) (2019-06-03)
+
+
+### Bug Fixes
+
+* **types:** Fix path in types file ([793b8f1](https://github.com/filestack/filestack-js/commit/793b8f1))
+
+
+### Features
+
+* **picker:** update picker version ([037bbed](https://github.com/filestack/filestack-js/commit/037bbed))
+* **picker:** Update pickerOptions interface ([#236](https://github.com/filestack/filestack-js/issues/236)) ([2d6b533](https://github.com/filestack/filestack-js/commit/2d6b533))
+
+
+
 ### [3.1.1](https://github.com/filestack/filestack-js/compare/v3.1.0...v3.1.1) (2019-05-31)
 
 
