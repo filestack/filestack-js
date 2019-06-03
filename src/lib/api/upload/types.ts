@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { StoreBaseParams } from 'src/lib/filelink';
+import { StoreBaseParams } from './../../filelink';
 import { SanitizeOptions } from './../../utils/index';
 
 export interface UploadOptions {
