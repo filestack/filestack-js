@@ -25,7 +25,7 @@
     "test": "npm run lint && jest",
     "test:watch": "npm t -- --watch",
     "test:codecov": "npx codecov",
-    "docs": "trash build/docs && typedoc src && opn build/docs/index.html",
+    "docs": "trash build/docs && typedoc src",
     "docs:publish": "npm run docs && gh-pages -d build/docs",
     "release": "standard-version",
     "prepare": "npm run build",
