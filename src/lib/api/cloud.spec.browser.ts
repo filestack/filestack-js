@@ -114,10 +114,10 @@ describe('cloud', () => {
       .query({ apikey: testApiKey })
       .reply(200, mockPrefetch);
 
-    scope.post('/auth/logout/').reply(200, mockLogout);
+    scope.post('/auth/logout').reply(200, mockLogout);
     scope.post('/folder/list').reply(200, (_, data) => mockList(JSON.parse(data)));
-    scope.post('/store/').reply(200, (_, data) => mockStore(JSON.parse(data)));
-    scope.post('/metadata/').reply(200, mockMetadata);
+    scope.post('/store').reply(200, (_, data) => mockStore(JSON.parse(data)));
+    scope.post('/metadata').reply(200, mockMetadata);
 
     scope.post(/\/recording\/(audio|video)\/init/).reply(200, mockTokInit);
     scope.post(/\/recording\/(audio|video)\/start/).reply(200, mockTokStart);
