@@ -400,6 +400,12 @@ export interface PickerOptions {
 
   /**
    * Turn on cleaning JPEG image exif. Method can keep image orientation or color profiles
+   * ```javascript
+   * cleanupImageExif: {
+   *   keepOrientation: true
+   *   keepICCandAPP: true
+   * }
+   * ```
    */
   cleanupImageExif?: boolean | {
     keepOrientation?: boolean,
