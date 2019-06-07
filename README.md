@@ -41,7 +41,7 @@
 - [Releases Info](#releases-info)
 - [Live examples (JSFiddle)](#live-examples-jsfiddle)
 - [Picker Quick Start](#picker-quick-start)
-- [Polyfils](#polyfils)
+- [Polyfills](#polyfills)
 - [Development](#development)
 - [Debugging](#debugging)
   - [Node](#node-1)
@@ -178,7 +178,7 @@ The picker instance returned from `client.picker` can be controlled with a few m
 
 Please see our examples above to learn more about customizing the picker for your use case.
 
-## Polyfils
+## Polyfills
 
 If you target IE11 or iOS before 8.0 you will need to add a `Promise` and `Symbol` polyfill to your page or application.
 
