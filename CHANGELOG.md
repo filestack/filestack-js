@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.3.0](https://github.com/filestack/filestack-js/compare/v3.2.0...v3.3.0) (2019-06-07)
+
+
+### Bug Fixes
+
+* **cloud:** fix cloud urls ([#239](https://github.com/filestack/filestack-js/issues/239)) ([7c0ce47](https://github.com/filestack/filestack-js/commit/7c0ce47))
+
+
+### Features
+
+* **picker:** Bump picker version ([fbd35ba](https://github.com/filestack/filestack-js/commit/fbd35ba))
+* **webhookValidator:** Add wh signature validator ([a4975aa](https://github.com/filestack/filestack-js/commit/a4975aa))
+
+
+
 ## [3.2.0](https://github.com/filestack/filestack-js/compare/v3.1.1...v3.2.0) (2019-06-03)
 
 
