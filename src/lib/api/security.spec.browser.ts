@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { getSecurity } from './security';
+import { getSecurity, validateWebhookSignature } from './security';
 import * as utils from './../utils';
 
 describe('api/security', () => {
@@ -33,6 +33,21 @@ describe('api/security', () => {
       const appSecret = 'testAppSecret';
 
       expect(() => getSecurity(policy, appSecret)).toThrowError('getSecurity is only supported in nodejs');
+    });
+  });
+
+  describe('validateWebhookSignature', () => {
+    it('should throw not supported error', () => {
+      const testRawData = '{"id": 6844, "action": "fp.upload", "timestamp": 1559199901, "text": {"url": "http://cdn.filestackapi.dev/xK88QArxRiyVvFzo4p33", "client": "Computer", "data": {"filename": "01 (1).png", "type": "image/png", "size": 881855}}}';
+
+      const correctSignature = {
+        signature: '14495b54b246e1352bb69cd91c5c1bfe2221f2d0330414b3df8f5fb2903db730',
+        timestamp: '1559199901',
+      };
+
+      const secret = 'Y5cWb1rdRDSTSqEjF5pv';
+
+      expect(() => validateWebhookSignature(secret, testRawData, correctSignature)).toThrowError('validateWebhookSignature is only supported in nodejs');
     });
   });
 });

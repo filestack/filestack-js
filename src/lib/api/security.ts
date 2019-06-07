@@ -68,3 +68,28 @@ export const getSecurity = (policyOptions: SecurityOptions, appSecret: string): 
 
   return { policy, signature };
 };
+
+export interface WebhookValidatePayload {
+  timestamp: string;
+  signature: string;
+}
+
+/**
+ * Check webhook signature
+ *
+ * @param secret - app secred
+ * @param rawBody - unchanged raw webhook body
+ * @param toCompare - data from wh response headers
+ */
+export const validateWebhookSignature = (secret: string, rawBody: string, toCompare: WebhookValidatePayload) => {
+  if (!isNode()) {
+    throw new Error('validateWebhookSignature is only supported in nodejs');
+  }
+
+  const hash = requireNode('crypto')
+                .createHmac('sha256', secret)
+                .update(`${toCompare.timestamp}.${rawBody}`)
+                .digest('hex');
+
+  return hash === toCompare.signature;
+};

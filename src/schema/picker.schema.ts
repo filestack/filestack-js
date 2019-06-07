@@ -140,7 +140,6 @@ export const PickerParamsSchema = {
         {
           type: 'integer',
           minimum: 1,
-          maximum: 1000000,
         },
       ],
     },
@@ -152,7 +151,6 @@ export const PickerParamsSchema = {
         {
           type: 'integer',
           minimum: 1,
-          maximum: 1000000,
         },
       ],
     },
@@ -164,7 +162,6 @@ export const PickerParamsSchema = {
         {
           type: 'integer',
           minimum: 1,
-          maximum: 1000000,
         },
       ],
     },
