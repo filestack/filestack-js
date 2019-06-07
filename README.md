@@ -180,7 +180,7 @@ Please see our examples above to learn more about customizing the picker for you
 
 ## Polyfills
 
-If you target IE11 or iOS before 8.0 you will need to add a `Promise` and `Symbol` polyfill to your page or application.
+If you target IE11 or iOS before 8.0 you will need to add additional polyfills to your page or application.
 
 Polyfills we recommend:**
 
@@ -188,7 +188,7 @@ Module (for bundling):
 * https://babeljs.io/docs/en/babel-polyfill
 
 Script (for script tag):
-* https://polyfill.io/v3/polyfill.min.js?features=Promise%2CSymbol
+* "https://polyfill.io/v3/polyfill.min.js?features=Promise%2CSymbol%2CSymbol.iterator%2CArray.from%2CObject.assign%2CNumber.isFinite"
 
 ## Development
 
