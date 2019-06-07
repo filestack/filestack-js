@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.3.2](https://github.com/filestack/filestack-js/compare/v3.3.1...v3.3.2) (2019-06-07)
+
+
+### Bug Fixes
+
+* **cloud/store:** bring back "/" at the end of url ([14ba091](https://github.com/filestack/filestack-js/commit/14ba091))
+* **README:** fix typo ([ec33eb5](https://github.com/filestack/filestack-js/commit/ec33eb5))
+
+
+
 ### [3.3.1](https://github.com/filestack/filestack-js/compare/v3.3.0...v3.3.1) (2019-06-07)
 
 
