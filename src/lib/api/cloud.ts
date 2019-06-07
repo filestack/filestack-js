@@ -142,7 +142,7 @@ export class CloudClient {
     }
 
     return requestWithSource()
-      .post(`${this.cloudApiUrl}/store/`, payload, requestOptions)
+      .post(`${this.cloudApiUrl}/store`, payload, requestOptions)
       .then(res => {
         if (res.data && res.data.token) {
           this.token = res.data.token;
@@ -171,7 +171,7 @@ export class CloudClient {
     }
 
     return requestWithSource()
-      .post(`${this.cloudApiUrl}/auth/logout/`, payload)
+      .post(`${this.cloudApiUrl}/auth/logout`, payload)
       .then(res => {
         if (res.data && res.data[name]) {
           return res.data[name];
@@ -192,7 +192,7 @@ export class CloudClient {
     }
 
     return requestWithSource()
-      .post(`${this.cloudApiUrl}/metadata/`, payload)
+      .post(`${this.cloudApiUrl}/metadata`, payload)
       .then(res => res.data);
   }
 
