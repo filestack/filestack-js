@@ -116,7 +116,7 @@ describe('cloud', () => {
 
     scope.post('/auth/logout').reply(200, mockLogout);
     scope.post('/folder/list').reply(200, (_, data) => mockList(JSON.parse(data)));
-    scope.post('/store').reply(200, (_, data) => mockStore(JSON.parse(data)));
+    scope.post('/store/').reply(200, (_, data) => mockStore(JSON.parse(data)));
     scope.post('/metadata').reply(200, mockMetadata);
 
     scope.post(/\/recording\/(audio|video)\/init/).reply(200, mockTokInit);

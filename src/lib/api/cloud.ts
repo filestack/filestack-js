@@ -142,7 +142,7 @@ export class CloudClient {
     }
 
     return requestWithSource()
-      .post(`${this.cloudApiUrl}/store`, payload, requestOptions)
+      .post(`${this.cloudApiUrl}/store/`, payload, requestOptions)
       .then(res => {
         if (res.data && res.data.token) {
           this.token = res.data.token;
