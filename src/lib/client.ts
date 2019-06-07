@@ -384,9 +384,7 @@ export class Client extends EventEmitter {
 
     upload.on('error', (e) => this.emit('uploadError', e));
 
-    return upload.upload(file).finally(() => {
-      upload = null;
-    });
+    return upload.upload(file);
   }
 
   /**
@@ -436,8 +434,6 @@ export class Client extends EventEmitter {
 
     upload.on('error', (e) => this.emit('uploadError', e));
 
-    return upload.multiupload(file).finally(() => {
-      upload = null;
-    });
+    return upload.multiupload(file);
   }
 }

@@ -530,6 +530,9 @@ export class S3Uploader extends UploaderAbstract {
         }
 
         return this.uploadNextChunk(id, partNumber, chunkSize);
+
+        part = null;
+        chunk = null;
       })
       .catch(err => {
         // reset progress on failed upload
@@ -547,8 +550,7 @@ export class S3Uploader extends UploaderAbstract {
         }
 
         return Promise.reject(new FilestackError('Cannot upload file part', err.data, FilestackErrorType.REQUEST));
-      })
-      .finally(() => {
+
         part = null;
         chunk = null;
       });
@@ -758,7 +760,16 @@ export class S3Uploader extends UploaderAbstract {
    */
   private setPartData(id: string, partNumber: number, key: string, value: any) {
     debug(`[${id}] Set ${key} = ${value} for part ${partNumber}`);
-    this.getPayloadById(id).parts[partNumber][key] = value;
+
+    const payload = this.getPayloadById(id);
+
+    /* istanbul ignore next */
+    if (!payload) {
+      debug(`[${id}] Cannot set ${key} = ${value} for part ${partNumber}`);
+      return;
+    }
+
+    payload.parts[partNumber][key] = value;
   }
 
   /**

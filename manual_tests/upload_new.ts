@@ -23,9 +23,7 @@ import { getFile } from '../src/lib/api/upload';
 
 const createFile = (size = 44320) => Buffer.alloc(size);
 
-const fs = new Client('API_KEY', {
-  cname: 'rc.filepickerapp.com',
-});
+const fs = new Client('APEkwxKMZTsWNIP0XQsv2z');
 
 // fs.multiupload(
 //   [
@@ -45,10 +43,6 @@ const fs = new Client('API_KEY', {
 try {
   fs.upload(createFile(), {}, {
     filename: 'HR-mary-oo',
-    sanitizer: {
-      exclude: ['m'],
-      replacement: 'hrr',
-    }
   }).then((res) => {
     console.info('Upload done!', res);
   });
