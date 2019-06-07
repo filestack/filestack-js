@@ -41,7 +41,7 @@
 - [Releases Info](#releases-info)
 - [Live examples (JSFiddle)](#live-examples-jsfiddle)
 - [Picker Quick Start](#picker-quick-start)
-- [Promises](#promises)
+- [Polyfils](#polyfils)
 - [Development](#development)
 - [Debugging](#debugging)
   - [Node](#node-1)
@@ -178,9 +178,8 @@ The picker instance returned from `client.picker` can be controlled with a few m
 
 Please see our examples above to learn more about customizing the picker for your use case.
 
-## Promises
+## Polyfils
 
-This library requires an environment that implements the [`Promise`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise) object spec. 
 If you target IE11 or iOS before 8.0 you will need to add a `Promise` and `Symbol` polyfill to your page or application.
 
 Polyfills we recommend:**
@@ -189,7 +188,7 @@ Module (for bundling):
 * https://babeljs.io/docs/en/babel-polyfill
 
 Script (for script tag):
-* https://polyfill.io/v3/polyfill.min.js?features=Promise%2CPromise.prototype.finally%2CSymbol
+* https://polyfill.io/v3/polyfill.min.js?features=Promise%2CSymbol
 
 ## Development
 
