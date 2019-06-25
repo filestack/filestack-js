@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.3.4](https://github.com/filestack/filestack-js/compare/v3.3.3...v3.3.4) (2019-06-25)
+
+
+### Bug Fixes
+
+* **picker:** Fix opentok integration ([#249](https://github.com/filestack/filestack-js/issues/249)) ([80029db](https://github.com/filestack/filestack-js/commit/80029db))
+
+
+
 ### [3.3.3](https://github.com/filestack/filestack-js/compare/v3.3.2...v3.3.3) (2019-06-11)
 
 
