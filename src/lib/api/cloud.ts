@@ -202,12 +202,7 @@ export class CloudClient {
       throw new FilestackError('Type must be one of video or audio.');
     }
     return requestWithSource()
-      .post(`${this.cloudApiUrl}/recording/${type}/init`)
-      .then(res => {
-        return {
-          body: res.data,
-        };
-      });
+      .post(`${this.cloudApiUrl}/recording/${type}/init`).then(res => res.data);
   }
 
   tokStart(type: string, key: string, sessionId: string) {
@@ -221,11 +216,7 @@ export class CloudClient {
 
     return requestWithSource()
       .post(`${this.cloudApiUrl}/recording/${type}/start`, payload)
-      .then(res => {
-        return {
-          body: res.data,
-        };
-      });
+      .then(res => res.data);
   }
 
   tokStop(type: string, key: string, sessionId: string, archiveId: string) {
@@ -241,10 +232,6 @@ export class CloudClient {
 
     return requestWithSource()
       .post(`${this.cloudApiUrl}/recording/${type}/stop`, payload)
-      .then(res => {
-        return {
-          body: res.data,
-        };
-      });
+      .then(res => res.data);
   }
 }
