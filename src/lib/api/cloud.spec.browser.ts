@@ -353,14 +353,14 @@ describe('cloud', () => {
         const res = await new CloudClient(testSession).tokInit('audio');
 
         expect(mockTokInit).toHaveBeenCalledWith(expect.any(String), '');
-        expect(res).toEqual({ body: 'init' });
+        expect(res).toEqual('init');
       });
 
       it('should make correct request to api (video)', async () => {
         const res = await new CloudClient(testSession).tokInit('audio');
 
         expect(mockTokInit).toHaveBeenCalledWith(expect.any(String), '');
-        expect(res).toEqual({ body: 'init' });
+        expect(res).toEqual('init');
       });
 
       it('should throw on wrong type', async() => {
@@ -379,14 +379,14 @@ describe('cloud', () => {
         const res = await new CloudClient(testSession).tokStart('audio', 'key', testTokSession);
 
         expect(mockTokStart).toHaveBeenCalledWith(expect.any(String), JSON.stringify({ apikey: 'key', session_id: testTokSession }));
-        expect(res).toEqual({ body: 'start' });
+        expect(res).toEqual('start');
       });
 
       it('should make correct request to api (video)', async () => {
         const res = await new CloudClient(testSession).tokStart('video', 'key', testTokSession);
 
         expect(mockTokStart).toHaveBeenCalledWith(expect.any(String), JSON.stringify({ apikey: 'key', session_id: testTokSession }));
-        expect(res).toEqual({ body: 'start' });
+        expect(res).toEqual('start');
       });
 
       it('should throw on wrong type', () => {
@@ -406,7 +406,7 @@ describe('cloud', () => {
             archive_id: testTokArchiveId,
           })
         );
-        expect(res).toEqual({ body: 'stop' });
+        expect(res).toEqual('stop');
       });
 
       it('should make correct request to api (video)', async () => {
@@ -420,7 +420,7 @@ describe('cloud', () => {
             archive_id: testTokArchiveId,
           })
         );
-        expect(res).toEqual({ body: 'stop' });
+        expect(res).toEqual('stop');
       });
 
       it('should throw on wrong type', () => {
