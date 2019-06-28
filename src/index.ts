@@ -16,8 +16,15 @@
  */
 
 import { SecurityOptions, getSecurity, validateWebhookSignature, WebhookValidatePayload } from './lib/api/security';
-import { Client, ClientOptions } from './lib/client';
+import { Client, ClientOptions, Security } from './lib/client';
+import { PickerOptions, PickerInstance, PickerUploadDoneCallback, PickerFileMetadata, PickerResponse } from './lib/picker';
 import { TransformSchema } from './schema/transforms.schema';
+import { TransformOptions } from './lib/api/transform';
+import { RetrieveOptions, MetadataOptions } from './lib/api/file';
+import { InputFile } from './lib/api/upload/file_tools';
+import { UploadOptions } from './lib/api/upload/types';
+import { StoreUploadOptions } from './lib/api/upload';
+import { PreviewOptions } from './lib/api/preview';
 
 /**
  * Initialize client with given config
@@ -43,5 +50,19 @@ export {
   SecurityOptions,
   getSecurity,
   validateWebhookSignature,
-  WebhookValidatePayload
+  WebhookValidatePayload,
+  ClientOptions,
+  PickerOptions,
+  PickerInstance,
+  Security,
+  TransformOptions,
+  RetrieveOptions,
+  InputFile,
+  UploadOptions,
+  StoreUploadOptions,
+  MetadataOptions,
+  PreviewOptions,
+  PickerUploadDoneCallback,
+  PickerFileMetadata,
+  PickerResponse
 };
