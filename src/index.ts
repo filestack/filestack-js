@@ -25,6 +25,7 @@ import { InputFile } from './lib/api/upload/file_tools';
 import { UploadOptions } from './lib/api/upload/types';
 import { StoreUploadOptions } from './lib/api/upload';
 import { PreviewOptions } from './lib/api/preview';
+import { FilestackError } from './filestack_error';
 
 /**
  * Initialize client with given config
@@ -64,5 +65,7 @@ export {
   PreviewOptions,
   PickerUploadDoneCallback,
   PickerFileMetadata,
-  PickerResponse
+  PickerResponse,
+  Client,
+  FilestackError
 };
