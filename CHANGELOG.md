@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.3.5](https://github.com/filestack/filestack-js/compare/v3.3.4...v3.3.5) (2019-07-03)
+
+
+### Bug Fixes
+
+* **base64:** Fix b64 url safe creation in filelink ([#253](https://github.com/filestack/filestack-js/issues/253)) ([80fa3a7](https://github.com/filestack/filestack-js/commit/80fa3a7))
+
+
+
 ### [3.3.4](https://github.com/filestack/filestack-js/compare/v3.3.3...v3.3.4) (2019-06-25)
 
 
