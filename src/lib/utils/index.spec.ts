@@ -107,6 +107,14 @@ describe('utils:index', () => {
     it('should return correct b65 value', () => {
       expect(b64('testtext')).toEqual('dGVzdHRleHQ=');
     });
+
+    it('should escape chars to make b64 url safe string - char "/"', () => {
+      expect(b64('*0eijATh#"I$PR)s<uTa}{t>E"LC:L', true)).toEqual('KjBlaWpBVGgjIkkkUFIpczx1VGF9e3Q-RSJMQzpM');
+    });
+
+    it('should escape chars to make b64 url safe string - char ""', () => {
+      expect(b64('W{wpB@ckYD0O@&?!||9PS)7^+F*H8N', true)).toEqual('V3t3cEJAY2tZRDBPQCY_IXx8OVBTKTdeK0YqSDhO');
+    });
   });
 
   describe('sanitizeName', () => {

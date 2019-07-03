@@ -653,14 +653,14 @@ export class Filelink {
 
     if (this.b64) {
       if (this.transforms.length > 0) {
-        transformsString = `b64/${b64(JSON.stringify(this.transforms))}`;
+        transformsString = `b64/${b64(JSON.stringify(this.transforms), true)}`;
       }
 
       if (Array.isArray(source)) {
         source = this.arrayToString(source);
       }
 
-      source = `b64://${b64(source)}`;
+      source = `b64://${b64(source, true)}`;
     } else {
       if (Array.isArray(source)) {
         source = this.arrayToString(source);

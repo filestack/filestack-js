@@ -164,12 +164,20 @@ export const getMimetype = (file: Uint8Array | Buffer): string => {
  * return based string
  * @param data
  */
-export const b64 = (data: string): string => {
+export const b64 = (data: string, safeUrl: boolean = false): string => {
+  let b64;
+
   if (isNode()) {
-    return Buffer.from(data).toString('base64');
+    b64 = Buffer.from(data).toString('base64');
+  } else {
+    b64 = btoa(data);
   }
 
-  return btoa(data);
+  if (safeUrl) {
+    return b64.replace(/\//g, '_').replace(/\+/g, '-');
+  }
+
+  return b64;
 };
 
 /**
