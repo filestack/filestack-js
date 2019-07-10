@@ -17,7 +17,7 @@
  */
 
 import { Client } from './../src/lib/client';
-import * as Path from 'path';
+import * as Path from 'path';;
 // import { S3Uploader } from './../src/lib/api/upload/uploaders/s3';
 // import { getFile } from '../src/lib/api/upload';
 

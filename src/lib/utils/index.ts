@@ -194,6 +194,17 @@ export const requireNode = (name: string): any => {
 };
 
 /**
+ * Return currently used filestack-js sdk version
+ */
+export const getVersion = () => {
+  if (isNode()) {
+    return `JS-${requireNode('./../../../package.json').version}`;
+  }
+
+  return 'JS-@{VERSION}';
+};
+
+/**
  * Sanitizer Options
  */
 export type SanitizeOptions = (boolean | {

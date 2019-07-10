@@ -21,6 +21,12 @@ describe('utils:index', () => {
     spyOn(utils, 'isNode').and.returnValue(false);
   });
 
+  describe('getVersion', () => {
+    it('should return version string to replace', () => {
+      expect(utils.getVersion()).toEqual(`JS-@{VERSION}`);
+    });
+  });
+
   describe('md5', () => {
     it('should return correct md5 value', () => {
       expect(utils.md5(Buffer.from('test'))).toEqual('CY9rzUYh03PK3k6DJie09g==');

@@ -51,7 +51,8 @@ const config =  {
     new CompressionPlugin(),
     new webpack.BannerPlugin({ banner }),
     new webpack.DefinePlugin({
-      'process.env.NODE_ENV': '"production"',
+      'process.env.NODE_ENV': 'production',
+      '@{VERSION}' : `${require("./package.json").version}1`,
     }),
   ],
   devtool: 'source-map',

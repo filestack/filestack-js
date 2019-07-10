@@ -16,7 +16,7 @@
  */
 import Debug from 'debug';
 import axios, { AxiosError, AxiosInstance, AxiosResponse, AxiosRequestConfig } from 'axios';
-import { uniqueId } from '../utils';
+import { uniqueId, getVersion } from '../utils';
 
 const debug = Debug('fs:request');
 
@@ -38,7 +38,7 @@ export interface RetryConfig {
 export const requestWithSource = (retryConfig?: RetryConfig): AxiosInstance => {
   const axiosInstance = axios.create({
     headers: {
-      'filestack-source': 'JS-@{VERSION}',
+      'filestack-source': getVersion(),
       'filestack-trace-id': `${Math.floor(Date.now() / 1000)}-${uniqueId()}`,
       'filestack-trace-span': `jssdk-${uniqueId()}`,
     },
@@ -60,7 +60,7 @@ export const postWithRetry = (url: string, fields: Object, config: AxiosRequestC
   }
 
   config.headers = Object.assign({}, config.headers, {
-    'filestack-source': 'JS-@{VERSION}',
+    'filestack-source': getVersion(),
     'filestack-trace-id': `${Math.floor(Date.now() / 1000)}-${uniqueId()}`,
     'filestack-trace-span': `jssdk-${uniqueId()}`,
   });
