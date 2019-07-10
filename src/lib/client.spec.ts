@@ -1,3 +1,4 @@
+import { FilestackError } from './../filestack_error';
 /*
  * Copyright (c) 2018 by Filestack.
  * Some rights reserved.
@@ -200,6 +201,25 @@ describe('client', () => {
     expect(Upload.prototype.upload).toHaveBeenCalledWith(file);
   });
 
+  it('should emit error', async () => {
+    const client = new Client(defaultApikey);
+    const file = 'anyFile';
+    const uploadOptions = {};
+    const storeOptions = {};
+    const token = {};
+    const mockOnError = jest.fn().mockName('mockOnError');
+
+    const test = new FilestackError('test');
+
+    client.on('upload.error', mockOnError);
+
+    jest.spyOn(Upload.prototype, 'on').mockImplementation((name, cb, ctx): any => cb(test));
+
+    await client.upload(file, uploadOptions, storeOptions, token, defaultSecurity);
+
+    expect(mockOnError).toHaveBeenCalledWith(test);
+  });
+
   it('should be able to multiupload file', async () => {
     const client = new Client(defaultApikey);
     const files = ['anyFile'];
@@ -219,5 +239,27 @@ describe('client', () => {
     expect(Upload.prototype.setToken).toHaveBeenCalledWith(token);
     expect(Upload.prototype.setSecurity).toHaveBeenCalledWith(defaultSecurity);
     expect(Upload.prototype.multiupload).toHaveBeenCalledWith(files);
+  });
+
+  it('should emit error for multiupload', async () => {
+    const client = new Client(defaultApikey);
+    const files = ['anyFile'];
+    const uploadOptions = {};
+    const storeOptions = {};
+    const token = {};
+
+    spyOn(Upload.prototype, 'multiupload').and.returnValue(Promise.resolve());
+
+    const mockOnError = jest.fn().mockName('mockOnError');
+
+    const test = new FilestackError('test');
+
+    client.on('upload.error', mockOnError);
+
+    jest.spyOn(Upload.prototype, 'on').mockImplementation((name, cb, ctx): any => cb(test));
+
+    await client.multiupload(files, uploadOptions, storeOptions, token, defaultSecurity);
+
+    expect(mockOnError).toHaveBeenCalledWith(test);
   });
 });
