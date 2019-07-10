@@ -209,8 +209,8 @@ describe('Request', () => {
           {},
           {
             retry: 1,
-            retryFactor: 2,
-            retryMaxTime: 1000,
+            retryFactor: 1,
+            retryMaxTime: 100,
           }
         )
       ).rejects.toEqual(expect.any(Error));
