@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.4.1](https://github.com/filestack/filestack-js/compare/v3.4.0...v3.4.1) (2019-07-11)
+
+
+### Bug Fixes
+
+* **p-queue:** revert version ([737baff](https://github.com/filestack/filestack-js/commit/737baff))
+
+
+### Build System
+
+* **aws-sdk:** revert aws-sdk in dev-deps ([c020a0a](https://github.com/filestack/filestack-js/commit/c020a0a))
+
+
+
 ## [3.4.0](https://github.com/filestack/filestack-js/compare/v3.3.5...v3.4.0) (2019-07-11)
 
 
