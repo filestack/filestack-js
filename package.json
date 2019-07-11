@@ -37,6 +37,7 @@
     "node": ">=8"
   },
   "dependencies": {
+    "@sentry/minimal": "^5.5.0",
     "abab": "^2.0.0",
     "axios": "0.18.1",
     "debug": "^4.1.1",
@@ -77,10 +78,10 @@
     "jest-mock": "^24.8.0",
     "js-yaml": "^3.13.1",
     "jsdom": "^15.1.1",
+    "lodash.merge": "^4.6.2",
     "nock": "^10.0.6",
     "opn-cli": "^5.0.0",
     "prettier": "^1.18.2",
-    "lodash.merge": "^4.6.2",
     "prettier-tslint": "^0.4.2",
     "standard-version": "^6.0.1",
     "trash-cli": "^3.0.0",

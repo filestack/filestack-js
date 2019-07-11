@@ -26,28 +26,30 @@
 **Table of Contents**
 
 <!-- toc -->
-- [What's in the box?](#whats-in-the-box)
-- [Installation](#installation)
-- [API Documentation](#api-documentation)
-- [Usage](#usage)
-  - [Browsers](#browsers)
-    - [ES module](#es-module)
-    - [UMD module](#umd-module)
-    - [GZIP support](#gzip-support)
-    - [SRI](#sri)
-  - [Node](#node)
-    - [CommonJS module](#commonjs-module)
-- [Module Overview](#module-overview)
-- [Releases Info](#releases-info)
-- [Live examples (JSFiddle)](#live-examples-jsfiddle)
-- [Picker Quick Start](#picker-quick-start)
-- [Polyfills](#polyfills)
-- [Development](#development)
-- [Debugging](#debugging)
-  - [Node](#node-1)
-  - [Browser](#browser)
-- [Versioning](#versioning)
-- [Contributing](#contributing)
+- [What's in the box?](#Whats-in-the-box)
+- [Installation](#Installation)
+- [API Documentation](#API-Documentation)
+- [Usage](#Usage)
+  - [Browsers](#Browsers)
+    - [ES module](#ES-module)
+    - [UMD module](#UMD-module)
+    - [GZIP support](#GZIP-support)
+    - [SRI](#SRI)
+  - [Node](#Node)
+    - [CommonJS module](#CommonJS-module)
+- [Module Overview](#Module-Overview)
+- [Releases Info](#Releases-Info)
+- [Live examples (JSFiddle)](#Live-examples-JSFiddle)
+- [Picker Quick Start](#Picker-Quick-Start)
+- [Polyfills](#Polyfills)
+- [Development](#Development)
+- [Debugging](#Debugging)
+  - [Node](#Node-1)
+  - [Browser](#Browser)
+  - [Error event](#Error-event)
+- [Sentry Integration](#Sentry-Integration)
+- [Versioning](#Versioning)
+- [Contributing](#Contributing)
 
 
 ## What's in the box?
@@ -219,6 +221,22 @@ localStorage.debug = 'fs:*'
 ```
 
 And then refresh the page.
+
+### Error event
+The ```upload.error``` event was added to sdk. To obtain every upload request error just add callback to it. 
+Error contains details field with responseBody, responseHeaders, code (only when error type is FilestackErrorType.REQUEST)
+
+```js
+<script>
+  const client = filestack.init('apikey');
+  client.on('upload.error', (filestackError) => {
+    console.log(filestackError);
+  });
+</script>
+```
+
+## Sentry Integration
+filestack-js now using [@sentry/minimal](https://www.npmjs.com/package/@sentry/minimal) package.
 
 ## Versioning
 

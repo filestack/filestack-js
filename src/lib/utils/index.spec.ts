@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { resolveCdnUrl, resolveHost, removeEmpty, uniqueTime, uniqueId, md5, sanitizeName, filterObject, b64, requireNode } from './index';
+import { resolveCdnUrl, resolveHost, removeEmpty, uniqueTime, uniqueId, md5, sanitizeName, filterObject, b64, requireNode, getVersion } from './index';
 import { config } from '../../config';
 
 describe('utils:index', () => {
@@ -100,6 +100,13 @@ describe('utils:index', () => {
   describe('md5', () => {
     it('should return correct md5 value', () => {
       expect(md5(Buffer.from('test'))).toEqual('CY9rzUYh03PK3k6DJie09g==');
+    });
+  });
+
+  describe('getVersion', () => {
+    it('should return correct version from package json', () => {
+      const v = require('../../../package.json').version;
+      expect(getVersion()).toEqual(`JS-${v}`);
     });
   });
 

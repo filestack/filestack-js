@@ -16,12 +16,13 @@
  */
 
 import { EventEmitter } from 'eventemitter3';
+import * as Sentry from '@sentry/minimal';
 import { config, Hosts } from '../config';
 import { FilestackError } from './../filestack_error';
 import { metadata, MetadataOptions, remove, retrieve, RetrieveOptions } from './api/file';
 import { transform, TransformOptions } from './api/transform';
 import { storeURL } from './api/store';
-import { resolveHost } from './utils';
+import { resolveHost, getVersion } from './utils';
 import { Upload, InputFile, UploadOptions, StoreUploadOptions } from './api/upload';
 import { preview, PreviewOptions } from './api/preview';
 import { CloudClient } from './api/cloud';
@@ -32,6 +33,9 @@ import {
   PickerInstance,
   PickerOptions,
 } from './picker';
+
+/* istanbul ignore next */
+Sentry.addBreadcrumb({ category: 'sdk', message: 'filestack-js-sdk scope' });
 
 export interface Session {
   apikey: string;
@@ -91,6 +95,13 @@ export class Client extends EventEmitter {
 
   constructor(apikey: string, options?: ClientOptions) {
     super();
+
+    /* istanbul ignore next */
+    Sentry.configureScope(scope => {
+      scope.setExtra('apikey', apikey);
+      scope.setExtra('clientOptions', options);
+      scope.setTag('version', getVersion());
+    });
 
     if (!apikey || typeof apikey !== 'string' || apikey.length === 0) {
       throw new Error('An apikey is required to initialize the Filestack client');
@@ -383,7 +394,15 @@ export class Client extends EventEmitter {
       upload.setSecurity(security);
     }
 
-    upload.on('error', (e) => this.emit('upload.error', e));
+    /* istanbul ignore next */
+    upload.on('error', (e) => {
+      Sentry.withScope(scope => {
+        scope.setExtras(e.details);
+        scope.setExtras({ uploadOptions: options, storeOptions });
+        Sentry.captureException(e);
+      });
+      this.emit('upload.error', e);
+    });
 
     return upload.upload(file);
   }
@@ -433,7 +452,16 @@ export class Client extends EventEmitter {
       upload.setSecurity(security);
     }
 
-    upload.on('error', (e) => this.emit('upload.error', e));
+    /* istanbul ignore next */
+    upload.on('error', (e) => {
+      Sentry.withScope(scope => {
+        scope.setExtras(e.details);
+        scope.setExtras({ uploadOptions: options, storeOptions });
+        Sentry.captureException(e);
+      });
+
+      this.emit('upload.error', e);
+    });
 
     return upload.multiupload(file);
   }

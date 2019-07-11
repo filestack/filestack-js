@@ -19,6 +19,8 @@ import axios from 'axios';
 import { requestWithSource, postWithRetry } from './request';
 import * as nock from 'nock';
 
+const v = require('../../../package.json').version;
+
 const testHost = 'https://test.com';
 
 const mockPost = jest.fn().mockName('mockPut');
@@ -62,7 +64,7 @@ describe('Request', () => {
         '/post',
         {},
         expect.objectContaining({
-          'filestack-source': 'JS-@{VERSION}',
+          'filestack-source': `JS-${v}`,
           'filestack-trace-span': expect.any(String),
           'filestack-trace-id': expect.any(String),
         })
@@ -143,7 +145,7 @@ describe('Request', () => {
         fields,
         expect.objectContaining({
           ...headers,
-          'filestack-source': 'JS-@{VERSION}',
+          'filestack-source': `JS-${v}`,
           'filestack-trace-span': expect.any(String),
           'filestack-trace-id': expect.any(String),
         })
@@ -161,7 +163,7 @@ describe('Request', () => {
         '/post',
         fields,
         expect.objectContaining({
-          'filestack-source': 'JS-@{VERSION}',
+          'filestack-source': `JS-${v}`,
           'filestack-trace-span': expect.any(String),
           'filestack-trace-id': expect.any(String),
         })
@@ -191,7 +193,7 @@ describe('Request', () => {
         '/fail2',
         fields,
         expect.objectContaining({
-          'filestack-source': 'JS-@{VERSION}',
+          'filestack-source': `JS-${v}`,
           'filestack-trace-span': expect.any(String),
           'filestack-trace-id': expect.any(String),
         })
