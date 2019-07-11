@@ -18,12 +18,15 @@
 
 import { Client } from './../src/lib/client';
 import * as Path from 'path';
-import { S3Uploader } from './../src/lib/api/upload/uploaders/s3';
-import { getFile } from '../src/lib/api/upload';
+// import { S3Uploader } from './../src/lib/api/upload/uploaders/s3';
+// import { getFile } from '../src/lib/api/upload';
 
 const createFile = (size = 44320) => Buffer.alloc(size);
 
-const fs = new Client('APEkwxKMZTsWNIP0XQsv2z');
+const fs = new Client('APEkwxKMZTsWNIP0XQsv2zz');
+fs.on('upload.error', (e) => {
+  console.log('uploadError', e);
+});
 
 // fs.multiupload(
 //   [

@@ -15,8 +15,9 @@
  * limitations under the License.
  */
 
-import * as EventEmitter from 'eventemitter3';
+import { EventEmitter } from 'eventemitter3';
 import { config, Hosts } from '../config';
+import { FilestackError } from './../filestack_error';
 import { metadata, MetadataOptions, remove, retrieve, RetrieveOptions } from './api/file';
 import { transform, TransformOptions } from './api/transform';
 import { storeURL } from './api/store';
@@ -115,7 +116,7 @@ export class Client extends EventEmitter {
    */
   setSecurity(security: Security) {
     if (security && !(security.policy && security.signature)) {
-      throw new Error('Both policy and signature are required for client security');
+      throw new FilestackError('Both policy and signature are required for client security');
     }
 
     if (security && security.policy && security.signature) {
@@ -382,7 +383,7 @@ export class Client extends EventEmitter {
       upload.setSecurity(security);
     }
 
-    upload.on('error', (e) => this.emit('uploadError', e));
+    upload.on('error', (e) => this.emit('upload.error', e));
 
     return upload.upload(file);
   }
@@ -432,7 +433,7 @@ export class Client extends EventEmitter {
       upload.setSecurity(security);
     }
 
-    upload.on('error', (e) => this.emit('uploadError', e));
+    upload.on('error', (e) => this.emit('upload.error', e));
 
     return upload.multiupload(file);
   }

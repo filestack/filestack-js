@@ -34,7 +34,7 @@ describe('Request', () => {
 
     nock(testHost)
       .post('/fail2')
-      .twice()
+      .times(2)
       .reply(501, {
         code: 'SERVER_ERROR',
         message: 'Internal Server Error',
@@ -201,8 +201,10 @@ describe('Request', () => {
       expect(res).toEqual(expect.objectContaining({ status: 200 }));
     });
 
-    it('should reject on max retry count', () => {
-      return expect(
+    it('should reject on max retry count', async () => {
+      expect.assertions(1);
+
+      await expect(
         postWithRetry(
           `${testHost}/fail2`,
           {},

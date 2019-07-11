@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import * as EventEmitter from 'eventemitter3';
+import { EventEmitter } from 'eventemitter3';
 import { Session, Security } from '../../client';
 import { S3Uploader } from './uploaders/s3';
 import { FilestackError, FilestackErrorType } from './../../../filestack_error';
