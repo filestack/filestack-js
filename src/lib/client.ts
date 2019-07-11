@@ -97,7 +97,7 @@ export class Client extends EventEmitter {
 
     Sentry.configureScope(scope => {
       scope.setExtra('apikey', apikey);
-      scope.setTag('enviroment', process.env.NODE_ENV);
+      scope.setExtra('clientOptions', options);
       scope.setTag('version', getVersion());
     });
 
@@ -395,6 +395,7 @@ export class Client extends EventEmitter {
     upload.on('error', (e) => {
       Sentry.withScope(scope => {
         scope.setExtras(e.details);
+        scope.setExtras({ uploadOptions: options, storeOptions });
         Sentry.captureException(e);
       });
       this.emit('upload.error', e);
@@ -451,6 +452,7 @@ export class Client extends EventEmitter {
     upload.on('error', (e) => {
       Sentry.withScope(scope => {
         scope.setExtras(e.details);
+        scope.setExtras({ uploadOptions: options, storeOptions });
         Sentry.captureException(e);
       });
 

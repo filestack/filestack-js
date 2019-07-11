@@ -17,11 +17,14 @@
  */
 
 import { Client } from './../src/lib/client';
-import * as Path from 'path';;
+import * as Path from 'path';
+import * as Sentry from '@sentry/node';
+
 // import { S3Uploader } from './../src/lib/api/upload/uploaders/s3';
 // import { getFile } from '../src/lib/api/upload';
 
 const createFile = (size = 44320) => Buffer.alloc(size);
+Sentry.init({ dsn: 'https://2ff7cfad202f431eb03930e4cc9e5696@sentry.io/210196' });
 
 const fs = new Client('APEkwxKMZTsWNIP0XQsv2zz');
 fs.on('upload.error', (e) => {
