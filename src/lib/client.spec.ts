@@ -1,4 +1,3 @@
-import { FilestackError } from './../filestack_error';
 /*
  * Copyright (c) 2018 by Filestack.
  * Some rights reserved.
@@ -15,6 +14,7 @@ import { FilestackError } from './../filestack_error';
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { FilestackError } from './../filestack_error';
 import { config } from './../config';
 import { Client } from './client';
 import { CloudClient } from './api/cloud';
