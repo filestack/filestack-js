@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { FilestackError } from './../filestack_error';
 import { config } from './../config';
 import { Client } from './client';
 import { CloudClient } from './api/cloud';
@@ -200,6 +201,25 @@ describe('client', () => {
     expect(Upload.prototype.upload).toHaveBeenCalledWith(file);
   });
 
+  it('should emit error', async () => {
+    const client = new Client(defaultApikey);
+    const file = 'anyFile';
+    const uploadOptions = {};
+    const storeOptions = {};
+    const token = {};
+    const mockOnError = jest.fn().mockName('mockOnError');
+
+    const test = new FilestackError('test');
+
+    client.on('upload.error', mockOnError);
+
+    jest.spyOn(Upload.prototype, 'on').mockImplementation((name, cb, ctx): any => cb(test));
+
+    await client.upload(file, uploadOptions, storeOptions, token, defaultSecurity);
+
+    expect(mockOnError).toHaveBeenCalledWith(test);
+  });
+
   it('should be able to multiupload file', async () => {
     const client = new Client(defaultApikey);
     const files = ['anyFile'];
@@ -219,5 +239,27 @@ describe('client', () => {
     expect(Upload.prototype.setToken).toHaveBeenCalledWith(token);
     expect(Upload.prototype.setSecurity).toHaveBeenCalledWith(defaultSecurity);
     expect(Upload.prototype.multiupload).toHaveBeenCalledWith(files);
+  });
+
+  it('should emit error for multiupload', async () => {
+    const client = new Client(defaultApikey);
+    const files = ['anyFile'];
+    const uploadOptions = {};
+    const storeOptions = {};
+    const token = {};
+
+    spyOn(Upload.prototype, 'multiupload').and.returnValue(Promise.resolve());
+
+    const mockOnError = jest.fn().mockName('mockOnError');
+
+    const test = new FilestackError('test');
+
+    client.on('upload.error', mockOnError);
+
+    jest.spyOn(Upload.prototype, 'on').mockImplementation((name, cb, ctx): any => cb(test));
+
+    await client.multiupload(files, uploadOptions, storeOptions, token, defaultSecurity);
+
+    expect(mockOnError).toHaveBeenCalledWith(test);
   });
 });
