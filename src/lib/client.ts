@@ -34,6 +34,7 @@ import {
   PickerOptions,
 } from './picker';
 
+/* istanbul ignore next */
 Sentry.addBreadcrumb({ category: 'sdk', message: 'filestack-js-sdk scope' });
 
 export interface Session {
@@ -95,6 +96,7 @@ export class Client extends EventEmitter {
   constructor(apikey: string, options?: ClientOptions) {
     super();
 
+    /* istanbul ignore next */
     Sentry.configureScope(scope => {
       scope.setExtra('apikey', apikey);
       scope.setExtra('clientOptions', options);
@@ -392,6 +394,7 @@ export class Client extends EventEmitter {
       upload.setSecurity(security);
     }
 
+    /* istanbul ignore next */
     upload.on('error', (e) => {
       Sentry.withScope(scope => {
         scope.setExtras(e.details);
@@ -449,6 +452,7 @@ export class Client extends EventEmitter {
       upload.setSecurity(security);
     }
 
+    /* istanbul ignore next */
     upload.on('error', (e) => {
       Sentry.withScope(scope => {
         scope.setExtras(e.details);
