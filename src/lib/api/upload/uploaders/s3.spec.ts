@@ -33,9 +33,16 @@ let interceptorCommit;
 let interceptorUpload;
 let interceptorComplete;
 
+const noop = () => {
+  return undefined;
+};
+
 const getTestFile = () =>
   new File({
-    buffer: testBuff,
+    release: noop,
+    slice: (start, end) => {
+      return testBuff.slice(start, end);
+    },
     type: 'text/plain',
     // @ts-ignore
     size: testBuff.length,
@@ -44,7 +51,10 @@ const getTestFile = () =>
 
 const getSmallTestFile = () =>
   new File({
-    buffer: smallTestBuff,
+    release: noop,
+    slice: (start, end) => {
+      return smallTestBuff.slice(start, end);
+    },
     type: 'text/plain',
     // @ts-ignore
     size: smallTestBuff.length,
@@ -271,9 +281,13 @@ describe('Api/Upload/Uploaders/S3', () => {
       expect(res[0].status).toEqual('test_status');
 
       const testFile = getSmallTestFile();
+
+      const firstPartMetadata = testFile.getPartMetadata(0, DEFAULT_PART_SIZE);
+      const firstPartChunk = await testFile.getPartByMetadata(firstPartMetadata);
+
       expect(mockUpload).toHaveBeenCalledWith(
         {
-          md5: testFile.md5,
+          md5: firstPartChunk.md5,
           size: testFile.size,
           apikey: testApikey,
           region: mockRegion,
@@ -381,7 +395,7 @@ describe('Api/Upload/Uploaders/S3', () => {
 
         const firstPartOffset = 0;
         const firstPartMetadata = testFile.getPartMetadata(0, INTELLIGENT_CHUNK_SIZE);
-        const firstPartChunk = testFile.getChunkByMetadata(firstPartMetadata, firstPartOffset, chunkSize);
+        const firstPartChunk = await testFile.getChunkByMetadata(firstPartMetadata, firstPartOffset, chunkSize);
 
         expect(mockUpload).toHaveBeenCalledWith({
           md5: firstPartChunk.md5,
@@ -401,7 +415,7 @@ describe('Api/Upload/Uploaders/S3', () => {
         expect(mockPut).toHaveBeenCalledWith('/fakes3', expect.any(Object));
 
         const secondPartOffset = chunkSize;
-        const firstPartSecondChunk = testFile.getChunkByMetadata(firstPartMetadata, secondPartOffset, chunkSize);
+        const firstPartSecondChunk = await testFile.getChunkByMetadata(firstPartMetadata, secondPartOffset, chunkSize);
 
         expect(mockUpload).toHaveBeenCalledWith({
           md5: firstPartSecondChunk.md5,
@@ -480,7 +494,7 @@ describe('Api/Upload/Uploaders/S3', () => {
 
         const testFile = getSmallTestFile();
         const firstPartMetadata = testFile.getPartMetadata(0, INTELLIGENT_CHUNK_SIZE);
-        const firstPartChunk = testFile.getChunkByMetadata(firstPartMetadata, 0, INTELLIGENT_CHUNK_SIZE);
+        const firstPartChunk = await testFile.getChunkByMetadata(firstPartMetadata, 0, INTELLIGENT_CHUNK_SIZE);
 
         // this request will be aborted but called on mock upload
         expect(mockUpload).toHaveBeenNthCalledWith(1, {
@@ -500,7 +514,7 @@ describe('Api/Upload/Uploaders/S3', () => {
 
         // split part size by a half and retry request (thats give us 2 chunks so 2 upload requests needed)
         const chunkSize = Math.min(INTELLIGENT_CHUNK_SIZE, testFile.size) / 2;
-        const chunk1 = testFile.getChunkByMetadata(firstPartMetadata, 0, chunkSize);
+        const chunk1 = await testFile.getChunkByMetadata(firstPartMetadata, 0, chunkSize);
 
         expect(mockUpload).toHaveBeenNthCalledWith(2, {
           md5: chunk1.md5,
@@ -517,7 +531,7 @@ describe('Api/Upload/Uploaders/S3', () => {
           part: 1,
         });
 
-        const chunk2 = testFile.getChunkByMetadata(firstPartMetadata, chunkSize / 2, chunkSize);
+        const chunk2 = await testFile.getChunkByMetadata(firstPartMetadata, chunkSize / 2, chunkSize);
 
         expect(mockUpload).toHaveBeenNthCalledWith(3, {
           md5: chunk2.md5,
@@ -635,7 +649,7 @@ describe('Api/Upload/Uploaders/S3', () => {
 
         const testFile = getSmallTestFile();
         const firstPartMeta = testFile.getPartMetadata(0, DEFAULT_PART_SIZE);
-        const firstPart = testFile.getPartByMetadata(firstPartMeta);
+        const firstPart = await testFile.getPartByMetadata(firstPartMeta);
 
         expect(mockUpload).toHaveBeenNthCalledWith(1, {
           md5: firstPart.md5,
@@ -732,7 +746,7 @@ describe('Api/Upload/Uploaders/S3', () => {
       });
 
       const firstPartMeta = testFile.getPartMetadata(0, partSize);
-      const firstPart = testFile.getPartByMetadata(firstPartMeta);
+      const firstPart = await testFile.getPartByMetadata(firstPartMeta);
 
       expect(mockUpload).toHaveBeenNthCalledWith(1, {
         md5: firstPart.md5,
@@ -748,7 +762,7 @@ describe('Api/Upload/Uploaders/S3', () => {
       });
 
       const secondPartMeta = testFile.getPartMetadata(1, partSize);
-      const secondPart = testFile.getPartByMetadata(secondPartMeta);
+      const secondPart = await testFile.getPartByMetadata(secondPartMeta);
 
       expect(mockUpload).toHaveBeenNthCalledWith(2, {
         md5: secondPart.md5,

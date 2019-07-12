@@ -285,7 +285,6 @@ export class S3Uploader extends UploaderAbstract {
     const payload = this.getPayloadById(id);
 
     debug(`[${id}] Make start request`);
-
     return postWithRetry(
       `${this.getUrl()}/multipart/start`,
       {
@@ -428,7 +427,7 @@ export class S3Uploader extends UploaderAbstract {
   private async uploadRegular(id: string, partNumber: number): Promise<any> {
     let payload = this.getPayloadById(id);
     const partMetadata = payload.parts[partNumber];
-    let part = payload.file.getPartByMetadata(partMetadata);
+    let part = await payload.file.getPartByMetadata(partMetadata);
 
     const { data, headers } = await this.getS3PartMetadata(id, part);
     debug(`[${id}] Received part ${partNumber} info body: \n%O\n headers: \n%O\n`, data, headers);
@@ -506,7 +505,7 @@ export class S3Uploader extends UploaderAbstract {
     let part = payload.parts[partNumber];
     chunkSize = Math.min(chunkSize, part.size - part.offset);
 
-    let chunk = payload.file.getChunkByMetadata(part, part.offset, chunkSize);
+    let chunk = await payload.file.getChunkByMetadata(part, part.offset, chunkSize);
 
     debug(
       `[${id}] PartNum: ${partNumber}, PartSize: ${part.size}, StartByte: ${part.startByte}, Offset: ${part.offset}, ChunkSize: ${chunk.size},

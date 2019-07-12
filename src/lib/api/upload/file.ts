@@ -17,10 +17,11 @@
 import { md5, sanitizeName, SanitizeOptions } from './../../utils';
 
 export interface FileInstance {
-  buffer?: Buffer | ArrayBuffer;
   name: string;
   type: string;
   size: number;
+  slice: (start: number, end: number) => ArrayBuffer;
+  release: () => void;
 }
 
 export const enum FileState {
@@ -54,8 +55,6 @@ export interface FileChunk extends FilePart {
  * @class File
  */
 export class File {
-
-  private _md5: string;
 
   public status: FileState;
 
@@ -149,16 +148,6 @@ export class File {
   }
 
   /**
-   * Returns file buffer
-   *
-   * @returns {(Buffer | ArrayBuffer)}
-   * @memberof File
-   */
-  public get buffer(): Buffer | ArrayBuffer {
-    return this._file.buffer;
-  }
-
-  /**
    * Returns file size
    *
    * @returns {number}
@@ -169,21 +158,6 @@ export class File {
   }
 
   /**
-   * Returns file md5 checksum
-   *
-   * @returns {string}
-   * @memberof File
-   */
-  public get md5(): string {
-    if (!this._md5) {
-      // cache md5 file value
-      this._md5 = md5(this._file.buffer);
-    }
-
-    return this._md5;
-  }
-
-  /**
    * Returns number of parts according to part size
    *
    * @param {number} size - part size in bytes
@@ -191,7 +165,7 @@ export class File {
    * @memberof File
    */
   public getPartsCount (size: number): number {
-    return Math.ceil(this._file.buffer.byteLength / size);
+    return Math.ceil(this._file.size / size);
   }
 
   /**
@@ -205,11 +179,11 @@ export class File {
   public getPartMetadata (partNum: number, size): FilePartMetadata {
     const startByte = size * partNum;
 
-    if (startByte > this._file.buffer.byteLength) {
+    if (startByte > this._file.size) {
       throw new Error(`Start byte of the part is higher than buffer size`);
     }
 
-    const endByte = Math.min(startByte + size, this._file.buffer.byteLength);
+    const endByte = Math.min(startByte + size, this._file.size);
 
     return {
       partNumber: partNum,
@@ -226,14 +200,14 @@ export class File {
    * @returns {FilePart}
    * @memberof File
    */
-  public getPartByMetadata(meta: FilePartMetadata): FilePart {
-    let slice = this._file.buffer.slice(meta.startByte, meta.endByte);
+  public async getPartByMetadata(meta: FilePartMetadata): Promise<FilePart> {
+    let slice = await this._file.slice(meta.startByte, meta.endByte);
 
-    return {
+    return Promise.resolve({
       ...meta,
       buffer: slice,
       md5: md5(slice),
-    };
+    });
   }
 
   /**
@@ -245,13 +219,13 @@ export class File {
    * @returns {FilePart}
    * @memberof File
    */
-  public getChunkByMetadata(meta: FilePartMetadata, offset: number, chunkSize: number): FileChunk {
+  public async getChunkByMetadata(meta: FilePartMetadata, offset: number, chunkSize: number): Promise<FileChunk> {
     const startByte = meta.startByte + offset;
     const endByte = Math.min(startByte + chunkSize, meta.endByte);
 
-    let slice = this._file.buffer.slice(startByte, endByte);
+    let slice = await this._file.slice(startByte, endByte);
 
-    return {
+    return Promise.resolve({
       ...meta,
       buffer: slice,
       md5: md5(slice),
@@ -259,7 +233,7 @@ export class File {
       startByte,
       endByte,
       offset,
-    };
+    });
   }
   /**
    * Cleanup file buffer to release memory
@@ -267,7 +241,7 @@ export class File {
    * @memberof File
    */
   public release() {
-    delete this._file.buffer;
+    this._file.release();
   }
 
   public toJSON() {

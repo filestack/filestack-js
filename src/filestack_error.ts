@@ -39,8 +39,6 @@ export class FilestackError extends Error {
     Object.setPrototypeOf(this, FilestackError.prototype);
     this.details = details;
     this.type = type;
-
-    Error.captureStackTrace(this, this.constructor);
   }
 
 }

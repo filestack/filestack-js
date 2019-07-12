@@ -145,7 +145,7 @@ export const getMimetype = (file: Uint8Array | Buffer): string => {
   }
 
   try {
-
+    console.log(isSvg(file), '=======');
     if (isSvg(file)) {
       return 'image/svg+xml';
     }
