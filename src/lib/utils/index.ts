@@ -17,13 +17,12 @@
 
 import { Session } from '../client';
 import { Hosts } from './../../config';
+import { Map } from './extensions';
 import * as SparkMD5 from 'spark-md5';
 import fileType from 'file-type';
 import * as isutf8 from 'isutf8';
 
 const mobileRegexp = /(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series[46]0|symbian|treo|up\.(browser|link)|vodafone|wap|windows (ce|phone)|xda|xiino|android|ipad|playbook|silk/i;
-const htmlCommentsRegexp = /<!--([\s\S]*?)-->/g;
-const svgRegexp = /^\s*(?:<\?xml[^>]*>\s*)?(?:<!doctype svg[^>]*\s*(?:\[?(?:\s*<![^>]*>\s*)*\]?)*[^>]*>\s*)?<svg[^>]*>[^]*<\/svg>\s*$/i;
 
 /**
  * Resolve cdn url based on handle type
@@ -118,7 +117,10 @@ export const uniqueId = (len: number = 10): string => {
  */
 export const md5 = (data: any): string => {
   if (isNode()) {
-    return (requireNode('crypto')).createHash('md5').update(data).digest('base64');
+    return requireNode('crypto')
+      .createHash('md5')
+      .update(data)
+      .digest('base64');
   }
 
   /* istanbul ignore next */
@@ -128,35 +130,39 @@ export const md5 = (data: any): string => {
 /**
  * Check if input is a svg
  *
- * @param input
- */
-const isSvg = (input: Uint8Array | Buffer) => input && svgRegexp.test(String.fromCharCode.apply(null, input).replace(htmlCommentsRegexp, ''));
-
-/**
- * Check if input is a svg
- *
  * @param {Uint8Array | Buffer} file
  * @returns {string} - mimetype
  */
-export const getMimetype = (file: Uint8Array | Buffer): string => {
+export const getMimetype = (file: Uint8Array | Buffer, name?: string): string => {
   let type = fileType(file);
-  if (type) {
+
+  // check x-ms by extension
+  if (type && type.mime !== 'application/x-ms') {
     return type.mime;
   }
 
-  try {
+  if (name && name.indexOf('.') > -1) {
+    const ext = name.split('.').pop();
+    const keys = Object.keys(Map);
+    const mapLen = keys.length;
 
-    if (isSvg(file)) {
-      return 'image/svg+xml';
+    for (let i = 0; i < mapLen; i++) {
+      if (Map[keys[i]].indexOf(ext) > -1) {
+        return keys[i];
+      }
     }
+  }
 
+  try {
     if (isutf8(file)) {
       return 'text/plain';
     }
   } catch (e) {
+    /* istanbul ignore next */
     console.warn('Additional mimetype checks (text/plain) are currently not supported for browsers');
   }
-
+  // this is only fallback, omit it in coverage
+  /* istanbul ignore next */
   return 'application/octet-stream';
 };
 
@@ -198,7 +204,11 @@ export const requireNode = (name: string): any => {
  */
 export const getVersion = () => {
   if (isNode()) {
-    return `JS-${requireNode('./../../../package.json').version}`;
+    const rootArr = __dirname.split('/');
+    const fsIndex = rootArr.findIndex((e) => e === 'filestack-js');
+    const rootDir = rootArr.splice(0, fsIndex + 1).join('/');
+
+    return `JS-${requireNode(`${rootDir}/package.json`).version}`;
   }
 
   return 'JS-@{VERSION}';
@@ -207,10 +217,12 @@ export const getVersion = () => {
 /**
  * Sanitizer Options
  */
-export type SanitizeOptions = (boolean | {
-  exclude?: string[],
-  replacement?: string,
-});
+export type SanitizeOptions =
+  | boolean
+  | {
+    exclude?: string[];
+    replacement?: string;
+  };
 
 /**
  * Sanitize file name
@@ -220,15 +232,15 @@ export type SanitizeOptions = (boolean | {
  * @param {string} options.replacement - replacement for sanitized chars defaults to "-"
  * @param {string[]} options.exclude - array with excluded chars default - ['\', '{', '}','|', '%', '`', '"', "'", '~', '[', ']', '#', '|', '^', '<', '>']
  */
-export const sanitizeName = (name: string, options: SanitizeOptions = true): string  => {
+export const sanitizeName = (name: string, options: SanitizeOptions = true): string => {
   if (typeof options === 'boolean' && !options) {
     return name;
   }
 
   let ext;
 
-  const replacement = typeof options !== 'boolean' && options.replacement ? options.replacement :  '-';
-  const exclude = typeof options !== 'boolean' && options.exclude ? options.exclude : ['\\', '{', '}','|', '%', '`', '"', "'", '~', '[', ']', '#', '|', '^', '<', '>'];
+  const replacement = typeof options !== 'boolean' && options.replacement ? options.replacement : '-';
+  const exclude = typeof options !== 'boolean' && options.exclude ? options.exclude : ['\\', '{', '}', '|', '%', '`', '"', "'", '~', '[', ']', '#', '|', '^', '<', '>'];
 
   if (!name || name.length === 0) {
     return 'undefined';
@@ -240,7 +252,11 @@ export const sanitizeName = (name: string, options: SanitizeOptions = true): str
     ext = fileParts.pop();
   }
 
-  return `${fileParts.join('_').split('').map((char) => exclude.indexOf(char) > -1 ? replacement : char).join('')}${ext ? '.' + ext : ''}`;
+  return `${fileParts
+    .join('_')
+    .split('')
+    .map(char => (exclude.indexOf(char) > -1 ? replacement : char))
+    .join('')}${ext ? '.' + ext : ''}`;
 };
 
 /**
@@ -254,5 +270,7 @@ export const filterObject = (toFilter, requiredFields: string[]) => {
     return toFilter;
   }
 
-  return Object.keys(toFilter).filter(f => requiredFields.indexOf(f) > -1).reduce((obj, key) => ({ ...obj, [key]: toFilter[key] }), {});
+  return Object.keys(toFilter)
+    .filter(f => requiredFields.indexOf(f) > -1)
+    .reduce((obj, key) => ({ ...obj, [key]: toFilter[key] }), {});
 };
