@@ -33,16 +33,9 @@ let interceptorCommit;
 let interceptorUpload;
 let interceptorComplete;
 
-const noop = () => {
-  return undefined;
-};
-
 const getTestFile = () =>
   new File({
-    release: noop,
-    slice: (start, end) => {
-      return testBuff.slice(start, end);
-    },
+    slice: (start, end) => Promise.resolve(testBuff.slice(start, end)),
     type: 'text/plain',
     // @ts-ignore
     size: testBuff.length,
@@ -51,10 +44,7 @@ const getTestFile = () =>
 
 const getSmallTestFile = () =>
   new File({
-    release: noop,
-    slice: (start, end) => {
-      return smallTestBuff.slice(start, end);
-    },
+    slice: (start, end) => Promise.resolve(testBuff.slice(start, end)),
     type: 'text/plain',
     // @ts-ignore
     size: smallTestBuff.length,

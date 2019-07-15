@@ -25,12 +25,7 @@ describe('Api/Upload/File', () => {
     name: fileName,
     type,
     size: testBuff.byteLength,
-    slice: (start, end) => {
-      return testBuff.slice(start, end);
-    },
-    release: () => {
-      return undefined;
-    },
+    slice: (start, end) => Promise.resolve(testBuff.slice(start, end)),
   };
 
   let file;
