@@ -20,8 +20,8 @@ export interface FileInstance {
   name: string;
   type: string;
   size: number;
-  slice: (start: number, end: number) => ArrayBuffer;
-  release: () => void;
+  slice: (start: number, end: number) => Promise<ArrayBuffer>;
+  release?: () => void;
 }
 
 export const enum FileState {
@@ -241,7 +241,9 @@ export class File {
    * @memberof File
    */
   public release() {
-    this._file.release();
+    if (this._file.release) {
+      this._file.release();
+    }
   }
 
   public toJSON() {

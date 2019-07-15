@@ -240,7 +240,7 @@ const getFileNode = (input: InputFile, sanitizeOptions?: SanitizeOptions): Promi
 
   if (isFilePath(input)) {
     let path = input;
-    // @todo improve slicer open file and read if py by part
+    // @todo improve slicer open file and read it py by part
     return new Promise((resolve, reject) =>
       requireNode('fs').readFile(path, (err, buffer) => {
         if (err) {
@@ -257,8 +257,7 @@ const getFileNode = (input: InputFile, sanitizeOptions?: SanitizeOptions): Promi
               name: filename,
               size: buffer.byteLength,
               type: getMimetype(buffer, filename),
-              slice: buffer.slice.bind(buffer),
-              release: () => {},
+              slice: (start, end) => Promise.resolve(buffer.slice(start, end)),
             },
             sanitizeOptions
           )
@@ -278,10 +277,8 @@ const getFileNode = (input: InputFile, sanitizeOptions?: SanitizeOptions): Promi
           name: filename,
           size: input.byteLength,
           type: getMimetype(input, filename),
-          slice: input.slice.bind(input),
-          release: () => {
-            input = null;
-          },
+          // @ts-ignore
+          slice: (start, end) => Promise.resolve(input.slice(start, end)),
         },
         sanitizeOptions
       )

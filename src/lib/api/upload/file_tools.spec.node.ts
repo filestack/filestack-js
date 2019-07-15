@@ -37,6 +37,11 @@ describe('Api/Upload/FileTools', () => {
       expect(file.name).toEqual('testfile.txt');
       expect(file.mimetype).toEqual('text/plain');
       expect(file.size).toEqual(9);
+
+      const meta = file.getPartMetadata(0, 2);
+      const slice = await file.getPartByMetadata(meta);
+
+      expect(slice.size).toEqual(2);
     });
 
     it('Should reject if provided file cannot be read', () => {
@@ -57,7 +62,6 @@ describe('Api/Upload/FileTools', () => {
 
     it('Should return correct file instance from buffer', async () => {
       const file = await getFile(mockedTestFile);
-
       expect(file.size).toEqual(9);
       expect(file.mimetype).toEqual('text/plain');
     });
@@ -67,6 +71,7 @@ describe('Api/Upload/FileTools', () => {
         name: 'test.svg',
         file: base64Svg,
       });
+
       expect(file.mimetype).toEqual('image/svg+xml');
     });
 
@@ -76,6 +81,15 @@ describe('Api/Upload/FileTools', () => {
         file: base64Svg,
       });
       expect(file.mimetype).toEqual('text/plain');
+    });
+
+    it('Should get part of the buffer after slice', async () => {
+      const file = await getFile(mockedTestFile);
+
+      const meta = file.getPartMetadata(0, 2);
+      const slice = await file.getPartByMetadata(meta);
+
+      expect(slice.size).toEqual(2);
     });
 
     it('Should handle base64 encoded string', async () => {
