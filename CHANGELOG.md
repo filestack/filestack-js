@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.4.2](https://github.com/filestack/filestack-js/compare/v3.4.1...v3.4.2) (2019-07-15)
+
+
+### Bug Fixes
+
+* **file_tools:** Fix problems with uploading large files  ([f2c1ab9](https://github.com/filestack/filestack-js/commit/f2c1ab9))
+
+
+
 ### [3.4.1](https://github.com/filestack/filestack-js/compare/v3.4.0...v3.4.1) (2019-07-11)
 
 
