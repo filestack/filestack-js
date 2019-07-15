@@ -17,7 +17,6 @@
  */
 import { getFile } from './file_tools';
 import * as fs from 'fs';
-import { File as FsFile } from './file';
 
 jest.mock('fs');
 
@@ -53,7 +52,7 @@ describe('Api/Upload/FileTools', () => {
       jest.unmock('fs');
 
       const file = await getFile('./package.json');
-      expect(file.mimetype).toEqual('text/plain');
+      expect(file.mimetype).toEqual('application/json');
     });
 
     it('Should return correct file instance from buffer', async () => {
@@ -64,8 +63,27 @@ describe('Api/Upload/FileTools', () => {
     });
 
     it('Should handle base64 encoded string', async () => {
-      const file = await getFile(base64Svg);
+      const file = await getFile({
+        name: 'test.svg',
+        file: base64Svg,
+      });
       expect(file.mimetype).toEqual('image/svg+xml');
+    });
+
+    it('Should detect text/plain mimetype', async () => {
+      const file = await getFile({
+        name: 'test.undefined',
+        file: base64Svg,
+      });
+      expect(file.mimetype).toEqual('text/plain');
+    });
+
+    it('Should handle base64 encoded string', async () => {
+      const file = await getFile({
+        name: 'test.undefined',
+        file: Buffer.of(12),
+      });
+      expect(file.mimetype).toEqual('text/plain');
     });
 
     it('Should throw error when random string is provided', async () => {
@@ -102,7 +120,7 @@ describe('Api/Upload/FileTools', () => {
 
       expect(file.name).toEqual('123.jpg');
       expect(file.size).toEqual(9);
-      expect(file.mimetype).toEqual('text/plain');
+      expect(file.mimetype).toEqual('image/jpeg');
     });
 
     it('Should reject on unsupported input file type', () => {

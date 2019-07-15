@@ -139,6 +139,7 @@ const b64toBlob = (b64Data: string, sliceSize = 512): Blob => {
  * @returns {Boolean}
  */
 const readFile = async (file): Promise<any> => {
+  /* istanbul ignore next */
   if (!File || !FileReader || !Blob) {
     return Promise.reject(new FilestackError('The File APIs are not fully supported by your browser'));
   }
@@ -202,13 +203,16 @@ const getFileBrowser = (input: InputFile, sanitizeOptions?: SanitizeOptions): Pr
 
   return readFile(file).then(
     async res => {
-      const slice = await res.slice(0, fileType.minimumBytes);
+      let mime = file.type;
+      if (!file.type) {
+        mime = getMimetype(await res.slice(0, fileType.minimumBytes), filename);
+      }
 
       return new FsFile(
         {
           name: filename,
           size: file.size,
-          type: file.type || getMimetype(slice),
+          type: mime,
           slice: res.slice,
           release: res.release,
         },
@@ -243,13 +247,17 @@ const getFileNode = (input: InputFile, sanitizeOptions?: SanitizeOptions): Promi
           return reject(err);
         }
 
+        if (!filename) {
+          filename = requireNode('path').basename(path);
+        }
+
         return resolve(
           new FsFile(
             {
-              name: filename || requireNode('path').basename(path),
+              name: filename,
               size: buffer.byteLength,
-              type: getMimetype(buffer),
-              slice: buffer.slice,
+              type: getMimetype(buffer, filename),
+              slice: buffer.slice.bind(buffer),
               release: () => {},
             },
             sanitizeOptions
@@ -269,8 +277,8 @@ const getFileNode = (input: InputFile, sanitizeOptions?: SanitizeOptions): Promi
         {
           name: filename,
           size: input.byteLength,
-          type: getMimetype(input),
-          slice: input.slice,
+          type: getMimetype(input, filename),
+          slice: input.slice.bind(input),
           release: () => {
             input = null;
           },
