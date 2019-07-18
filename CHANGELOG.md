@@ -2,6 +2,47 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.4.2](https://github.com/filestack/filestack-js/compare/v3.4.1...v3.4.2) (2019-07-15)
+
+
+### Bug Fixes
+
+* **file_tools:** Fix problems with uploading large files  ([f2c1ab9](https://github.com/filestack/filestack-js/commit/f2c1ab9))
+
+
+
+### [3.4.1](https://github.com/filestack/filestack-js/compare/v3.4.0...v3.4.1) (2019-07-11)
+
+
+### Bug Fixes
+
+* **p-queue:** revert version ([737baff](https://github.com/filestack/filestack-js/commit/737baff))
+
+
+### Build System
+
+* **aws-sdk:** revert aws-sdk in dev-deps ([c020a0a](https://github.com/filestack/filestack-js/commit/c020a0a))
+
+
+
+## [3.4.0](https://github.com/filestack/filestack-js/compare/v3.3.5...v3.4.0) (2019-07-11)
+
+
+### Features
+
+* **errors:** Update error event, update libs ([#254](https://github.com/filestack/filestack-js/issues/254)) ([983084c](https://github.com/filestack/filestack-js/commit/983084c))
+
+
+
+### [3.3.5](https://github.com/filestack/filestack-js/compare/v3.3.4...v3.3.5) (2019-07-03)
+
+
+### Bug Fixes
+
+* **base64:** Fix b64 url safe creation in filelink ([#253](https://github.com/filestack/filestack-js/issues/253)) ([80fa3a7](https://github.com/filestack/filestack-js/commit/80fa3a7))
+
+
+
 ### [3.3.4](https://github.com/filestack/filestack-js/compare/v3.3.3...v3.3.4) (2019-06-25)
 
 

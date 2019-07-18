@@ -285,7 +285,6 @@ export class S3Uploader extends UploaderAbstract {
     const payload = this.getPayloadById(id);
 
     debug(`[${id}] Make start request`);
-
     return postWithRetry(
       `${this.getUrl()}/multipart/start`,
       {
@@ -323,7 +322,11 @@ export class S3Uploader extends UploaderAbstract {
       .catch(err => {
         debug(`[${id}] Start request error %O`, err);
         this.setPayloadStatus(id, FileState.FAILED);
-        return Promise.reject(new FilestackError('Cannot upload file', err.data, FilestackErrorType.REQUEST));
+        return Promise.reject(new FilestackError('Cannot upload file', {
+          code: err.response.status,
+          data: err.response.data,
+          headers: err.response.headers,
+        }, FilestackErrorType.REQUEST));
       });
   }
 
@@ -405,7 +408,11 @@ export class S3Uploader extends UploaderAbstract {
       this.retryConfig
     ).catch(err => {
       this.setPayloadStatus(id, FileState.FAILED);
-      return Promise.reject(new FilestackError('Cannot get part metadata', err.data, FilestackErrorType.REQUEST));
+      return Promise.reject(new FilestackError('Cannot get part metadata', {
+        code: err.response.status,
+        data: err.response.data,
+        headers: err.response.headers,
+      }, FilestackErrorType.REQUEST));
     });
   }
 
@@ -420,7 +427,7 @@ export class S3Uploader extends UploaderAbstract {
   private async uploadRegular(id: string, partNumber: number): Promise<any> {
     let payload = this.getPayloadById(id);
     const partMetadata = payload.parts[partNumber];
-    let part = payload.file.getPartByMetadata(partMetadata);
+    let part = await payload.file.getPartByMetadata(partMetadata);
 
     const { data, headers } = await this.getS3PartMetadata(id, part);
     debug(`[${id}] Received part ${partNumber} info body: \n%O\n headers: \n%O\n`, data, headers);
@@ -462,7 +469,11 @@ export class S3Uploader extends UploaderAbstract {
           return this.startPart(id, partNumber);
         }
 
-        return Promise.reject(new FilestackError('Cannot upload file part', err.data, FilestackErrorType.REQUEST));
+        return Promise.reject(new FilestackError('Cannot upload file part', {
+          code: err.response.status,
+          data: err.response.data,
+          headers: err.response.headers,
+        }, FilestackErrorType.REQUEST));
       });
   }
 
@@ -494,7 +505,7 @@ export class S3Uploader extends UploaderAbstract {
     let part = payload.parts[partNumber];
     chunkSize = Math.min(chunkSize, part.size - part.offset);
 
-    let chunk = payload.file.getChunkByMetadata(part, part.offset, chunkSize);
+    let chunk = await payload.file.getChunkByMetadata(part, part.offset, chunkSize);
 
     debug(
       `[${id}] PartNum: ${partNumber}, PartSize: ${part.size}, StartByte: ${part.startByte}, Offset: ${part.offset}, ChunkSize: ${chunk.size},
@@ -529,10 +540,9 @@ export class S3Uploader extends UploaderAbstract {
           return Promise.resolve(res);
         }
 
-        return this.uploadNextChunk(id, partNumber, chunkSize);
-
         part = null;
         chunk = null;
+        return this.uploadNextChunk(id, partNumber, chunkSize);
       })
       .catch(err => {
         // reset progress on failed upload
@@ -549,10 +559,14 @@ export class S3Uploader extends UploaderAbstract {
           return this.uploadNextChunk(id, partNumber, nextChunkSize);
         }
 
-        return Promise.reject(new FilestackError('Cannot upload file part', err.data, FilestackErrorType.REQUEST));
-
         part = null;
         chunk = null;
+
+        return Promise.reject(new FilestackError('Cannot upload file part', {
+          code: err.response.status,
+          data: err.response.data,
+          headers: err.response.headers,
+        }, FilestackErrorType.REQUEST));
       });
   }
 
@@ -586,6 +600,12 @@ export class S3Uploader extends UploaderAbstract {
       debug(`[${id}] Commit Part number ${part.partNumber}. Response: %O`, res.data);
 
       return res;
+    }).catch((err) => {
+      return Promise.reject(new FilestackError('Cannot upload file part', {
+        code: err.response.status,
+        data: err.response.data,
+        headers: err.response.headers,
+      }, FilestackErrorType.REQUEST));
     });
   }
 
@@ -650,6 +670,7 @@ export class S3Uploader extends UploaderAbstract {
 
         // update file object
         let file = this.getPayloadById(id).file;
+
         file.handle = res.data.handle;
         file.url = res.data.url;
         file.container = res.data.container;
@@ -661,7 +682,11 @@ export class S3Uploader extends UploaderAbstract {
       })
       .catch(err => {
         this.setPayloadStatus(id, FileState.FAILED);
-        return Promise.reject(new FilestackError('Cannot complete file', err.data, FilestackErrorType.REQUEST));
+        return Promise.reject(new FilestackError('Cannot complete file', {
+          code: err.response.status,
+          data: err.response.data,
+          headers: err.response.headers,
+        }, FilestackErrorType.REQUEST));
       });
   }
 

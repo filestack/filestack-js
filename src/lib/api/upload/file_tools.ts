@@ -17,6 +17,7 @@
 import { File as FsFile } from './file';
 import { isNode, SanitizeOptions, requireNode, getMimetype } from './../../utils';
 import { FilestackError } from './../../../filestack_error';
+import fileType from 'file-type';
 
 export type RawFile = Blob | Buffer | File | string;
 export type NamedInputFile = {
@@ -137,18 +138,38 @@ const b64toBlob = (b64Data: string, sliceSize = 512): Blob => {
  * @param blob
  * @returns {Boolean}
  */
-const readFile = (file): Promise<any> => {
+const readFile = async (file): Promise<any> => {
+  /* istanbul ignore next */
+  if (!File || !FileReader || !Blob) {
+    return Promise.reject(new FilestackError('The File APIs are not fully supported by your browser'));
+  }
+
+  return Promise.resolve({
+    slice: function(start: number, end: number) {
+      return readPart(start, end, file);
+    },
+    release: () => {
+      file = null;
+    },
+  });
+};
+
+/**
+ * Read file par instead of whole file to avoid browser crashing
+ *
+ * @param start - star byte
+ * @param end  - end byte
+ * @param file - file to slice
+ */
+const readPart = (start: number, end: number, file): Promise<any> => {
+
   return new Promise((resolve, reject) => {
-    /* istanbul ignore next */
-    if (!File || !FileReader || !Blob) {
-      return reject(new FilestackError('The File APIs are not fully supported by your browser'));
-    }
+    const r = new FileReader();
 
-    const reader = new FileReader();
-
-    reader.onloadend = () => resolve(reader.result);
-    reader.onerror = reject;
-    reader.readAsArrayBuffer(file);
+    const blob = file.slice(start, end);
+    r.onload = () => resolve(r.result);
+    r.onerror = reject;
+    r.readAsArrayBuffer(blob);
   });
 };
 
@@ -181,16 +202,23 @@ const getFileBrowser = (input: InputFile, sanitizeOptions?: SanitizeOptions): Pr
   }
 
   return readFile(file).then(
-    buffer =>
-      new FsFile(
+    async res => {
+      let mime = file.type;
+      if (!file.type) {
+        mime = getMimetype(await res.slice(0, fileType.minimumBytes), filename);
+      }
+
+      return new FsFile(
         {
-          buffer,
           name: filename,
-          size: buffer.byteLength,
-          type: file.type || getMimetype(new Uint8Array(buffer)),
+          size: file.size,
+          type: mime,
+          slice: res.slice,
+          release: res.release,
         },
         sanitizeOptions
-      )
+      );
+    }
   );
 };
 
@@ -212,20 +240,24 @@ const getFileNode = (input: InputFile, sanitizeOptions?: SanitizeOptions): Promi
 
   if (isFilePath(input)) {
     let path = input;
-
+    // @todo improve slicer open file and read it py by part
     return new Promise((resolve, reject) =>
       requireNode('fs').readFile(path, (err, buffer) => {
         if (err) {
           return reject(err);
         }
 
+        if (!filename) {
+          filename = requireNode('path').basename(path);
+        }
+
         return resolve(
           new FsFile(
             {
-              buffer,
-              name: filename || requireNode('path').basename(path),
+              name: filename,
               size: buffer.byteLength,
-              type: getMimetype(buffer),
+              type: getMimetype(buffer, filename),
+              slice: (start, end) => Promise.resolve(buffer.slice(start, end)),
             },
             sanitizeOptions
           )
@@ -242,10 +274,11 @@ const getFileNode = (input: InputFile, sanitizeOptions?: SanitizeOptions): Promi
     return Promise.resolve(
       new FsFile(
         {
-          buffer: input,
           name: filename,
           size: input.byteLength,
-          type: getMimetype(input),
+          type: getMimetype(input, filename),
+          // @ts-ignore
+          slice: (start, end) => Promise.resolve(input.slice(start, end)),
         },
         sanitizeOptions
       )

@@ -25,7 +25,7 @@ describe('Api/Upload/File', () => {
     name: fileName,
     type,
     size: testBuff.byteLength,
-    buffer: testBuff,
+    slice: (start, end) => Promise.resolve(testBuff.slice(start, end)),
   };
 
   let file;
@@ -72,10 +72,6 @@ describe('Api/Upload/File', () => {
     }).toThrow();
   });
 
-  it('should return file md5', () => {
-    expect(file.md5).toEqual('CY9rzUYh03PK3k6DJie09g==');
-  });
-
   it('should return correct parts count for given size', () => {
     expect(file.getPartsCount(1)).toEqual(file.size);
   });
@@ -93,17 +89,17 @@ describe('Api/Upload/File', () => {
     }).toThrow();
   });
 
-  it('should return part by part metadata', () => {
+  it('should return part by part metadata', async () => {
     const meta = file.getPartMetadata(0, 2);
-    const part = file.getPartByMetadata(meta);
+    const part = await file.getPartByMetadata(meta);
 
-    expect(part.buffer.byteLength).toEqual(2);
+    expect(part.size).toEqual(2);
     expect(part.md5).toEqual('Vp73JkK+D63XEdakaNaO4Q==');
   });
 
-  it('should return chunk by part metadata and offset', () => {
+  it('should return chunk by part metadata and offset', async () => {
     const meta = file.getPartMetadata(0, 4);
-    const chunk = file.getChunkByMetadata(meta, 1, 2);
+    const chunk = await file.getChunkByMetadata(meta, 1, 2);
 
     expect(chunk.size).toEqual(2);
     expect(chunk.md5).toEqual('EkcP5AbUQBfZbqs33WX8FA==');

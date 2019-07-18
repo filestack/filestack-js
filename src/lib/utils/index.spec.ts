@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { resolveCdnUrl, resolveHost, removeEmpty, uniqueTime, uniqueId, md5, sanitizeName, filterObject, b64, requireNode } from './index';
+import { resolveCdnUrl, resolveHost, removeEmpty, uniqueTime, uniqueId, md5, sanitizeName, filterObject, b64, requireNode, getVersion } from './index';
 import { config } from '../../config';
 
 describe('utils:index', () => {
@@ -103,9 +103,24 @@ describe('utils:index', () => {
     });
   });
 
+  describe('getVersion', () => {
+    it('should return correct version from package json', () => {
+      const v = require('../../../package.json').version;
+      expect(getVersion()).toEqual(`JS-${v}`);
+    });
+  });
+
   describe('b64', () => {
     it('should return correct b65 value', () => {
       expect(b64('testtext')).toEqual('dGVzdHRleHQ=');
+    });
+
+    it('should escape chars to make b64 url safe string - char "/"', () => {
+      expect(b64('*0eijATh#"I$PR)s<uTa}{t>E"LC:L', true)).toEqual('KjBlaWpBVGgjIkkkUFIpczx1VGF9e3Q-RSJMQzpM');
+    });
+
+    it('should escape chars to make b64 url safe string - char ""', () => {
+      expect(b64('W{wpB@ckYD0O@&?!||9PS)7^+F*H8N', true)).toEqual('V3t3cEJAY2tZRDBPQCY_IXx8OVBTKTdeK0YqSDhO');
     });
   });
 
