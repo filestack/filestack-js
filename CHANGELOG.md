@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.5.0](https://github.com/filestack/filestack-js/compare/v3.4.2...v3.5.0) (2019-07-25)
+
+
+### Features
+
+* **picker:** Add onFileCropped callback ([#264](https://github.com/filestack/filestack-js/issues/264)) ([a598ea6](https://github.com/filestack/filestack-js/commit/a598ea6))
+
+
+
 ### [3.4.2](https://github.com/filestack/filestack-js/compare/v3.4.1...v3.4.2) (2019-07-15)
 
 
