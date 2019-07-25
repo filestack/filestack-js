@@ -98,9 +98,9 @@ export class Client extends EventEmitter {
 
     /* istanbul ignore next */
     Sentry.configureScope(scope => {
-      scope.setExtra('apikey', apikey);
+      scope.setTag('apikey', apikey);
+      scope.setTag('sdk-version', getVersion());
       scope.setExtra('clientOptions', options);
-      scope.setTag('version', getVersion());
     });
 
     if (!apikey || typeof apikey !== 'string' || apikey.length === 0) {

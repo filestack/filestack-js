@@ -611,6 +611,10 @@ export interface PickerOptions {
    */
   onFileUploadProgress?: PickerFileProgressCallback;
   /**
+   * Called when file is cropped in picker
+   */
+  onFileCropped?: PickerFileCallback;
+  /**
    * Called when uploading starts (user initiates uploading).
    */
   onUploadStarted?: PickerUploadStartedCallback;

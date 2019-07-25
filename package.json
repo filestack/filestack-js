@@ -54,6 +54,7 @@
     "@babel/core": "^7.5.4",
     "@babel/preset-env": "^7.5.4",
     "@purtuga/esm-webpack-plugin": "^1.1.1",
+    "@sentry/cli": "^1.46.0",
     "@types/jest": "^24.0.15",
     "@types/mime": "^2.0.1",
     "@types/node": "^12.6.2",

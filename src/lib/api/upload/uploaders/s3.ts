@@ -322,7 +322,7 @@ export class S3Uploader extends UploaderAbstract {
       .catch(err => {
         debug(`[${id}] Start request error %O`, err);
         this.setPayloadStatus(id, FileState.FAILED);
-        return Promise.reject(new FilestackError('Cannot upload file', {
+        return Promise.reject(new FilestackError('Cannot upload file. Start request failed', {
           code: err.response.status,
           data: err.response.data,
           headers: err.response.headers,
@@ -562,7 +562,7 @@ export class S3Uploader extends UploaderAbstract {
         part = null;
         chunk = null;
 
-        return Promise.reject(new FilestackError('Cannot upload file part', {
+        return Promise.reject(new FilestackError('Cannot upload file part (FII)', {
           code: err.response.status,
           data: err.response.data,
           headers: err.response.headers,
@@ -601,7 +601,7 @@ export class S3Uploader extends UploaderAbstract {
 
       return res;
     }).catch((err) => {
-      return Promise.reject(new FilestackError('Cannot upload file part', {
+      return Promise.reject(new FilestackError('Cannot commit file part metadata', {
         code: err.response.status,
         data: err.response.data,
         headers: err.response.headers,
