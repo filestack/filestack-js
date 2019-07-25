@@ -16,7 +16,7 @@
  */
 import { SecurityOptions, getSecurity, validateWebhookSignature, WebhookValidatePayload } from './lib/api/security';
 import { Client, ClientOptions, Security } from './lib/client';
-import { PickerOptions, PickerInstance, PickerUploadDoneCallback, PickerFileMetadata, PickerResponse } from './lib/picker';
+import { PickerOptions, PickerInstance, PickerUploadDoneCallback, PickerFileMetadata, PickerResponse, PickerDisplayMode } from './lib/picker';
 import { TransformSchema } from './schema/transforms.schema';
 import { TransformOptions } from './lib/api/transform';
 import { RetrieveOptions, MetadataOptions } from './lib/api/file';
@@ -66,5 +66,6 @@ export {
   PickerFileMetadata,
   PickerResponse,
   Client,
-  FilestackError
+  FilestackError,
+  PickerDisplayMode
 };
