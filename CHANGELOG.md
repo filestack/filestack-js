@@ -8,6 +8,7 @@ All notable changes to this project will be documented in this file. See [standa
 ### Features
 
 * **picker:** Add onFileCropped callback ([#264](https://github.com/filestack/filestack-js/issues/264)) ([a598ea6](https://github.com/filestack/filestack-js/commit/a598ea6))
+* **sdk:** Export additional interface ([#262](https://github.com/filestack/filestack-js/commit/968555e7822df1bbafc5db7f2cfe01c853dd30aa))
 
 
 
