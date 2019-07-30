@@ -202,7 +202,7 @@ describe('Api/Upload/Uploaders/S3', () => {
       u.setApikey(testApikey);
       u.addFile(getSmallTestFile());
 
-      const res = await u.execute();
+      await u.execute();
 
       const testFile = getSmallTestFile();
       expect(mockStart).toHaveBeenCalledWith({
@@ -245,6 +245,30 @@ describe('Api/Upload/Uploaders/S3', () => {
       expect(res[0].status).toEqual('test_status');
 
       expect(mockPut).toHaveBeenCalled();
+    });
+
+    it('should throw error on wrong etag field', async (done) => {
+      mockStart.mockReturnValue({
+        uri: mockedUri,
+        region: mockRegion,
+        upload_id: mockUploadId,
+        location_url: testHost.replace('https://', ''),
+      });
+
+      interceptorS3.once().reply(200, s3Callback, {});
+
+      const u = new S3Uploader({});
+
+      u.setUrl(testHost);
+      u.setApikey(testApikey);
+      u.addFile(getSmallTestFile());
+
+      u.on('error', (err) => {
+        expect(err.message).toEqual('Cannot upload file, check S3 bucket settings');
+        done();
+      });
+
+      await u.execute();
     });
 
     it('should add Filestack-Upload-Region header on location_region param', async () => {
