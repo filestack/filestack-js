@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.6.0](https://github.com/filestack/filestack-js/compare/v3.5.0...v3.6.0) (2019-08-07)
+
+
+### Features
+
+* **filelink:** add set soruce method ([#270](https://github.com/filestack/filestack-js/issues/270)) ([4480d5e](https://github.com/filestack/filestack-js/commit/4480d5e))
+* **picker:** Change picker version ([#272](https://github.com/filestack/filestack-js/issues/272)) ([813de22](https://github.com/filestack/filestack-js/commit/813de22))
+
+
+
 ## [3.5.0](https://github.com/filestack/filestack-js/compare/v3.4.2...v3.5.0) (2019-07-25)
 
 
