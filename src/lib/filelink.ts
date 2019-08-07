@@ -542,20 +542,8 @@ export class Filelink {
    * @memberof Filelink
    */
   constructor(source: string | string[], apikey?: string) {
-    this.source = source;
-    const isExternal = this.isSourceExternal();
-
-    debug(`Source ${source} - isExternal? ${isExternal}`);
-
-    if (isExternal && !apikey) {
-      throw new FilestackError('External sources requires apikey to handle transforms');
-    }
-
-    if (!isExternal && typeof this.source === 'string' && !handleRegexp.test(this.source)) {
-      throw new FilestackError('Invalid filestack source provided');
-    }
-
     this.apikey = apikey;
+    this.setSource(source);
   }
 
   /**
@@ -604,6 +592,22 @@ export class Filelink {
   setCustomDomain(domain: string) {
     this.customDomain = domain;
     return this;
+  }
+
+  setSource(source: string | string[]) {
+    this.source = source;
+
+    const isExternal = this.isSourceExternal();
+
+    debug(`Source ${source} - isExternal? ${isExternal}`);
+
+    if (isExternal && !this.apikey) {
+      throw new FilestackError('External sources requires apikey to handle transforms');
+    }
+
+    if (!isExternal && typeof this.source === 'string' && (!handleRegexp.test(this.source) && this.source.indexOf('filestackcontent') === -1)) {
+      throw new FilestackError('Invalid filestack source provided');
+    }
   }
 
   /**
@@ -1289,7 +1293,7 @@ export class Filelink {
         continue;
       }
 
-      if (toTest[i].indexOf('src:') === 0 || toTest[i].indexOf('http') === 0) {
+      if (toTest[i].indexOf('src:') === 0 || (toTest[i].indexOf('http') === 0 && toTest[i].indexOf('filestackcontent') === -1)) {
         return true;
       }
     }

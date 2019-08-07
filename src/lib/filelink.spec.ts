@@ -128,6 +128,12 @@ describe('filelink', () => {
     expect(result).toEqual(TransformSchema);
   });
 
+  it('should not require apikay on filestack external url', () => {
+    const filelink = new Filelink('https://cdn.filestackcontent.com/5aYkEQJSQCmYShsoCnZN');
+    filelink.shadow(false).upscale();
+    expect(filelink.toString()).toBe('https://cdn.filestackcontent.com/upscale/\"https://cdn.filestackcontent.com/5aYkEQJSQCmYShsoCnZN\"');
+  });
+
   it('should be able to disable selected task', () => {
     const filelink = new Filelink(defaultSource);
     filelink.shadow(false).upscale();
