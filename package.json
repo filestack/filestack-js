@@ -92,6 +92,7 @@
     "tslint-config-semistandard": "^8.0.1",
     "typedoc": "^0.14.2",
     "typescript": "^3.5.3",
+    "unmock-node": "^0.1.10",
     "validate-commit-msg": "^2.14.0",
     "webpack": "^4.35.3",
     "webpack-assets-manifest": "^3.1.1",

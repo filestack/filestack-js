@@ -1,0 +1,211 @@
+openapi: 3.0.0
+info:
+  title: Filestack API
+  version: "1.0"
+
+servers:
+- url: https://cloud.filestackapi.com
+
+paths:
+  /prefetch:
+    options:
+      responses:
+        204:
+          $ref: "#/components/responses/Options"
+    get:
+      summary: Prefetch
+      parameters:
+        - name: apikey
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Prefetch get
+          content:
+            text/plain:
+              schema:
+                type: string
+  /folder/list:
+    post:
+      requestBody:
+        description: "Request body"
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ListRequestBody"
+      responses:
+        200:
+          description: "Post response"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    default: ""
+    options:
+      responses:
+        204:
+          $ref: "#/components/responses/Options"
+  /store/:
+    options:
+      responses:
+        204:
+          $ref: "#/components/responses/Options"
+    post:
+      requestBody:
+        description: "Store post request body"
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/StoreRequestBody"
+      responses:
+        200:
+          description: "Store post response"
+          type: object
+          parameters:
+            token:
+              type: string
+              default: ""
+  /auth/logout:
+    options:
+      responses:
+        204:
+          $ref: "#/components/responses/Options"
+    post:
+      requestBody:
+        description: "Logout post request body"
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LogoutRequestBody"
+      responses:
+        200:
+          description: "Logout post response"
+          type: object
+  /metadata:
+    options:
+      responses:
+        204:
+          $ref: "#/components/responses/Options"
+    post:
+      requestBody:
+        description: "Metadata post request body"
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MetadataRequestBody"
+      responses:
+        200:
+          description: "Metadata post response"
+          type: object
+  /recording/{media}/init:
+    options:
+      parameters:
+      - in: path
+        name: media
+        required: true
+        schema:
+          type: string
+        enum: [audio, video]
+      responses:
+        204:
+          $ref: "#/components/responses/Options"
+    post:
+      parameters:
+      - in: path
+        name: media
+        required: true
+        schema:
+          type: string
+        enum: [audio, video]
+      responses:
+        200:
+          description: "Recording init response"
+          type: object
+  /recording/{media}/start:
+    options:
+      parameters:
+      - in: path
+        name: media
+        required: true
+        schema:
+          type: string
+        enum: [audio, video]
+      responses:
+        204:
+          $ref: "#/components/responses/Options"
+    post:
+      parameters:
+      - in: path
+        name: media
+        required: true
+        schema:
+          type: string
+        enum: [audio, video]
+      responses:
+        200:
+          description: "Recording init response"
+          type: object
+  /recording/{media}/stop:
+    options:
+      parameters:
+      - in: path
+        name: media
+        required: true
+        schema:
+          type: string
+        enum: [audio, video]
+      responses:
+        204:
+          $ref: "#/components/responses/Options"
+    post:
+      parameters:
+      - in: path
+        name: media
+        required: true
+        schema:
+          type: string
+        enum: [audio, video]
+      responses:
+        200:
+          description: "Recording stop response"
+          type: object
+components:
+  schemas:
+    MetadataRequestBody:
+      type: object
+    LogoutRequestBody:
+      type: object
+    StoreRequestBody:
+      type: object
+    ListRequestBody:
+      type: object
+  responses:
+    Options:
+      description: Options
+      headers:
+        access-control-allow-headers:
+          schema:
+            type: array
+            items:
+              type: string
+            default:
+              - filestack-source
+              - filestack-trace-id
+              - filestack-trace-span
+        access-control-allow-methods:
+          schema:
+            type: string
+            default: "*"
+        access-control-allow-origin:
+          schema:
+            type: string
+            default: "*"
+      content:
+        text/plain:
+          schema:
+            type: string
