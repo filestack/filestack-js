@@ -190,7 +190,7 @@ Module (for bundling):
 * https://babeljs.io/docs/en/babel-polyfill
 
 Script (for script tag):
-* https://polyfill.io/v3/polyfill.min.js?features=Promise%2CSymbol%2CSymbol.iterator%2CArray.from%2CObject.assign%2CNumber.isFinite
+* https://polyfill.io/v3/polyfill.min.js?features=Promise%2CSymbol%2CSymbol.iterator%2CArray.from%2CObject.assign%2CNumber.isFinite%2CString.prototype.includes
 
 ## Development
 
