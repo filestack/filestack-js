@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { Filelink, ShapeType, VideoAccessMode } from './filelink';
+import { Filelink, ShapeType, VideoAccessMode, AnimationParams, FitOptions, Align } from './filelink';
 import { TransformSchema } from './../schema/transforms.schema';
 import * as validator from '../schema';
 
@@ -255,6 +255,21 @@ describe('filelink', () => {
       };
       filelink.cache(cacheParams);
       expect(filelink.toString()).toBe('https://customDomain.com/DEFAULT_API_KEY/cache=expiry:666/5aYkEQJSQCmYShsoCnZN');
+    });
+
+    it('should be able add animation transform', () => {
+      const params: AnimationParams = {
+        loop: 1,
+        delay: 10,
+        width: 10,
+        height: 10,
+        fit: FitOptions.scale,
+        background: 'transparent',
+        align: [Align.top, Align.center],
+      };
+
+      filelink.animate(params);
+      expect(filelink.toString()).toBe('https://customDomain.com/DEFAULT_API_KEY/animate=loop:1,delay:10,width:10,height:10,fit:scale,background:transparent,align:[top,center]/5aYkEQJSQCmYShsoCnZN');
     });
 
     it('should be able to resize', () => {

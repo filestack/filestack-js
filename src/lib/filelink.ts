@@ -23,28 +23,21 @@ import { FilestackError, FilestackErrorType } from './../filestack_error';
 import Debug from 'debug';
 
 const debug = Debug('fs:filelink');
-/**
- * Align enum
- */
-export enum AlignOptions {
-  left = 'left',
-  right = 'right',
-  center = 'center',
-  bottom = 'bottom',
-  top = 'top',
-}
 
-/**
- * Align enum with faces option
- */
-export enum AlignFacesOptions {
+export enum Align {
   left = 'left',
   right = 'right',
   center = 'center',
   bottom = 'bottom',
   top = 'top',
   faces = 'faces',
+  middle = 'middle',
 }
+
+/**
+ * Align
+ */
+export type AlignOptions = Align | [Align.top | Align.middle | Align.bottom, Align.left | Align.center | Align.right];
 
 /**
  * Fit enum
@@ -184,11 +177,21 @@ export type StoreParams = StoreBaseParams & {
   base64decode?: boolean;
 };
 
+export interface AnimationParams {
+  delay?: number;
+  loop?: number;
+  width?: number;
+  height?: number;
+  fit?: FitOptions;
+  align?: AlignOptions;
+  background?: string;
+}
+
 export interface ResizeParams {
   width?: number;
   height?: number;
   fit?: FitOptions;
-  align?: AlignFacesOptions;
+  align?: AlignOptions;
 }
 
 export interface CropParams {
@@ -807,6 +810,18 @@ export class Filelink {
    */
   sfw() {
     return this.addTask('sfw', true);
+  }
+
+  /**
+   * Add animate transformation
+   *
+   * @see https://www.filestack.com/docs/api/processing/#animate-images-to-gif
+   * @param params
+   * @returns this
+   * @memberof Filelink
+   */
+  animate(params: AnimationParams) {
+    return this.addTask('animate', params);
   }
 
   /**
