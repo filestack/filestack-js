@@ -198,6 +198,12 @@ describe('filelink', () => {
       expect(filelink.toString()).toBe('https://customDomain.com/DEFAULT_API_KEY/5aYkEQJSQCmYShsoCnZN');
     });
 
+    it('should be able to autoImage transformation', () => {
+      filelink.autoImage();
+      expect(filelink.toString()).toBe('https://customDomain.com/DEFAULT_API_KEY/auto_image/5aYkEQJSQCmYShsoCnZN');
+    });
+
+
     it('should be able to add flip', () => {
       filelink.flip();
       expect(filelink.toString()).toBe('https://customDomain.com/DEFAULT_API_KEY/flip/5aYkEQJSQCmYShsoCnZN');

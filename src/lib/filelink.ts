@@ -722,6 +722,17 @@ export class Filelink {
    */
 
   /**
+   * Add autoimage transformation
+   *
+   * @see https://www.filestack.com/docs/api/processing/#auto-image-conversion
+   * @returns this
+   * @memberof Filelink
+   */
+  autoImage() {
+    return this.addTask('auto_image', true);
+  }
+
+  /**
    * Adds flip transformation
    *
    * @see https://www.filestack.com/docs/api/processing/#flip
