@@ -48,8 +48,19 @@ export const TransformSchema = {
       additionalProperties: false,
     },
     enhance: {
-      type: 'boolean',
-      additionalProperties: false,
+      default: true,
+      oneOf: [{
+        type: 'boolean',
+      }, {
+        type: 'object',
+        additionalProperties: false,
+        properties: {
+          preset: {
+            type: 'string',
+            enum: ['auto', 'vivid', 'beautify', 'beautify_plus', 'fix_dark', 'fix_noise', 'fix_tint', 'outdoor', 'fireworks'],
+          },
+        },
+      }],
     },
     redeye: {
       type: 'boolean',
