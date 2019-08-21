@@ -82,7 +82,7 @@ export const TransformSchema = {
           type: 'integer',
           minimum: 0,
           maximum: 10000,
-          default: 1000,
+          default: 100,
         },
         loop: {
           type: 'integer',
@@ -92,12 +92,12 @@ export const TransformSchema = {
         },
         width: {
           type: 'integer',
-          minimum: 0,
+          minimum: 1,
           maximum: 1800,
         },
         height: {
           type: 'integer',
-          minimum: 0,
+          minimum: 1,
           maximum: 1800,
         },
         fit: {
