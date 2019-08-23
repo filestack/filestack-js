@@ -86,13 +86,53 @@ export const TransformSchema = {
       type: 'boolean',
       additionalProperties: false,
     },
+    animate: {
+      type: 'object',
+      properties: {
+        delay: {
+          type: 'integer',
+          minimum: 0,
+          maximum: 10000,
+          default: 100,
+        },
+        loop: {
+          type: 'integer',
+          minimum: 0,
+          maximum: 1000,
+          default: 0,
+        },
+        width: {
+          type: 'integer',
+          minimum: 1,
+          maximum: 1800,
+        },
+        height: {
+          type: 'integer',
+          minimum: 1,
+          maximum: 1800,
+        },
+        fit: {
+          type: 'string',
+          default: 'clip',
+          enum: ['clip', 'scale', 'crop'],
+        },
+        background: {
+          '$ref': 'colorDef',
+          default: 'transparent',
+        },
+        align: {
+          '$ref': 'positionDef',
+          default: 'center',
+        },
+      },
+    },
     metadata: {
       type: 'object',
       params: {
         type: 'array',
         items: {
           type: 'string',
-          'enum': [
+          enum: [
             'filename',
             'mimetype',
             'size',
