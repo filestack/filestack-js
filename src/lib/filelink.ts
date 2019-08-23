@@ -415,6 +415,21 @@ export interface URLScreenshotParams {
   device?: string;
 }
 
+export enum EnhancePreset {
+  auto = 'auto',
+  vivid = 'vivid',
+  beautify = 'beautify',
+  beautifyPlus = 'beautify_plus',
+  fixDark = 'fix_dark',
+  fixNoise = 'fix_noise',
+  fixTint = 'fix_tint',
+  outdor = 'outdoor',
+  fireworks = 'fireworks',
+}
+export interface EnhanceParams {
+  preset?: EnhancePreset;
+}
+
 export interface PdfInfoParams {
   colorinfo?: boolean;
 }
@@ -750,8 +765,8 @@ export class Filelink {
    * @returns this
    * @memberof Filelink
    */
-  enhance() {
-    return this.addTask('enhance', true);
+  enhance(params?: EnhanceParams) {
+    return this.addTask('enhance', params || true);
   }
 
   /**
