@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.7.0](https://github.com/filestack/filestack-js/compare/v3.6.0...v3.7.0) (2019-08-23)
+
+
+### Bug Fixes
+
+* **picker:** fix onFileSelected problem ([#278](https://github.com/filestack/filestack-js/issues/278)) ([22454fd](https://github.com/filestack/filestack-js/commit/22454fd))
+* **README:** Add String.prototype.includes to polyfill ([#277](https://github.com/filestack/filestack-js/issues/277)) ([460d585](https://github.com/filestack/filestack-js/commit/460d585))
+
+
+### Features
+
+* **transforms:** Add animate transformation ([#274](https://github.com/filestack/filestack-js/issues/274)) ([3a82f02](https://github.com/filestack/filestack-js/commit/3a82f02))
+* **transforms:** Add autoImage transformation ([#276](https://github.com/filestack/filestack-js/issues/276)) ([d371552](https://github.com/filestack/filestack-js/commit/d371552))
+* **transforms:** Update enhance preset definition ([#275](https://github.com/filestack/filestack-js/issues/275)) ([32afd54](https://github.com/filestack/filestack-js/commit/32afd54))
+* **uploader/s3:** Regular upload - display error when there is missing etag field in s3 response ([#267](https://github.com/filestack/filestack-js/issues/267)) ([747e3b1](https://github.com/filestack/filestack-js/commit/747e3b1))
+
+
+
 ## [3.6.0](https://github.com/filestack/filestack-js/compare/v3.5.0...v3.6.0) (2019-08-07)
 
 
