@@ -18,7 +18,7 @@
 /**
  * @private
  */
-const PICKER_VERSION = '1.9.1';
+const PICKER_VERSION = '1.9.2';
 
 /**
  * @private
