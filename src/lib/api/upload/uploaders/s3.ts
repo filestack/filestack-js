@@ -343,19 +343,26 @@ export class S3Uploader extends UploaderAbstract {
     const waitingLength = parts.length;
 
     debug(`[${id}] Create uploading queue from file. parts count - %d`, waitingLength);
-    parts.forEach(part =>
-      this.partsQueue
-        .add(() => this.startPart(id, part.partNumber))
-        .catch(e => {
-          this.setPayloadStatus(id, FileState.FAILED);
-          debug(`[${id}] Failed to upload part %s`, e.message);
-        })
-    );
 
-    debug(`[${id}] All tasks for %s enqueued. Start processing main upload queue`, id);
-    this.partsQueue.start();
+    return new Promise(async (resolve, reject) => {
+      parts.forEach(part =>
+        this.partsQueue
+          .add(() => this.startPart(id, part.partNumber))
+          .catch(e => {
+            this.setPayloadStatus(id, FileState.FAILED);
+            debug(`[${id}] Failed to upload part %s`, e.message);
 
-    return this.partsQueue.onIdle();
+            this.partsQueue.pause();
+            this.partsQueue.clear();
+            return reject(e);
+          })
+      );
+
+      debug(`[${id}] All tasks for %s enqueued. Start processing main upload queue`, id);
+      this.partsQueue.start();
+
+      resolve(await this.partsQueue.onIdle());
+    });
   }
 
   /**
@@ -449,6 +456,8 @@ export class S3Uploader extends UploaderAbstract {
       .then(res => {
         if (res.headers.etag) {
           this.setPartETag(id, partNumber, res.headers.etag);
+        } else {
+          throw new FilestackError('Cannot upload file, check S3 bucket settings', 'Etag header is not exposed in CORS settings', FilestackErrorType.REQUEST);
         }
 
         debug(`[${id}] S3 Upload response headers for ${partNumber}: \n%O\n`, res.headers);
@@ -458,6 +467,9 @@ export class S3Uploader extends UploaderAbstract {
         return res;
       })
       .catch(err => {
+        if (err instanceof FilestackError) {
+          return Promise.reject(err);
+        }
         // reset upload progress on failed part
         this.onProgressUpdate(id, partNumber, 0);
 
@@ -619,10 +631,6 @@ export class S3Uploader extends UploaderAbstract {
   private completeRequest(id: string): Promise<any> {
     const payload = this.getPayloadById(id);
     let parts = [];
-
-    if (payload.file.status === FileState.FAILED) {
-      return Promise.resolve();
-    }
 
     debug(`[${id}] Run complete request`);
 
