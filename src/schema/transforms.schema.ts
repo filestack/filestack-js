@@ -25,6 +25,10 @@ export const TransformSchema = {
       type: 'boolean',
       additionalProperties: false,
     },
+    auto_image: {
+      type: 'boolean',
+      additionalProperties: false,
+    },
     no_metadata: {
       type: 'boolean',
       additionalProperties: false,

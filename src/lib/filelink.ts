@@ -21,6 +21,7 @@ import { getValidator } from './../schema/validator';
 import { resolveHost, b64 } from './utils';
 import { FilestackError, FilestackErrorType } from './../filestack_error';
 import Debug from 'debug';
+import { booleanLiteral } from '@babel/types';
 
 const debug = Debug('fs:filelink');
 
@@ -278,6 +279,10 @@ export interface BorderParams {
   width?: number;
   color?: string;
   background?: string;
+}
+
+export interface CompressParams {
+  metadata?: boolean;
 }
 
 export interface SharpenParams {
@@ -740,6 +745,17 @@ export class Filelink {
    */
 
   /**
+   * Add autoimage transformation
+   *
+   * @see https://www.filestack.com/docs/api/processing/#auto-image-conversion
+   * @returns this
+   * @memberof Filelink
+   */
+  autoImage() {
+    return this.addTask('auto_image', true);
+  }
+
+  /**
    * Adds flip transformation
    *
    * @see https://www.filestack.com/docs/api/processing/#flip
@@ -792,6 +808,17 @@ export class Filelink {
    */
   monochrome() {
     return this.addTask('monochrome', true);
+  }
+
+  /**
+   * Add compress transformation
+   *
+   * @see https://www.filestack.com/docs/api/processing/#compress
+   * @returns this
+   * @memberof Filelink
+   */
+  compress(params?: CompressParams) {
+    return this.addTask('compress', params || true);
   }
 
   /**
