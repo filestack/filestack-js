@@ -659,7 +659,7 @@ export interface PickerOptions {
   videoResolution?: string;
   /**
    * Use Sentry Breadcrumbs mechanism to log information about occured errors.
-   * It can override global objects like console, error etc.
+   * It can override global objects like console, error etc. Defaults to `true`.
    */
   useSentryBreadcrumbs?: boolean;
 }
