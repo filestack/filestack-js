@@ -657,6 +657,11 @@ export interface PickerOptions {
    * Sets the resolution of recorded video. One of "320x240", "640x480" or "1280x720". Default is `"640x480"`.
    */
   videoResolution?: string;
+  /**
+   * Use Sentry Breadcrumbs mechanism to log information about occured errors.
+   * It can override global objects like console, error etc.
+   */
+  useSentryBreadcrumbs?: boolean;
 }
 
 export interface PickerCropOptions {
