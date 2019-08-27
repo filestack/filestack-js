@@ -136,8 +136,8 @@ export const md5 = (data: any): string => {
 export const getMimetype = (file: Uint8Array | Buffer, name?: string): string => {
   let type = fileType(file);
 
-  // check x-ms by extension
-  if (type && type.mime !== 'application/x-ms') {
+  // check x-ms and x-msi by extension
+  if (type && (type.mime !== 'application/x-ms' && type.mime !== 'application/x-msi')) {
     return type.mime;
   }
 
