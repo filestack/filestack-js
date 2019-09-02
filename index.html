@@ -1,0 +1,54 @@
+<html>
+ 
+<head>
+</head>
+ 
+<body>
+ <input type="file" multiple/>
+ <div class="controls">
+   <button id="cancel">Cancel</button>
+   <button id="pause">Pause</button>
+   <button id="resume">Resume</button>
+ </div>
+ <div>Progress: <span id="progress"></span></div>
+ <script src="./../../build/browser/filestack.umd.js"></script>
+ <script>
+   window.addEventListener('DOMContentLoaded', function () {
+     const apikey = 'A0NTRSxHcR66kmTku9Gcsz';
+     const client = filestack.init(apikey);
+ 
+     const onProgress = (evt) => {
+       document.getElementById('progress').innerHTML = `${evt.totalPercent}%`;
+     };
+ 
+     document.querySelector('input').addEventListener('change', (event) => {
+       const files = event.target.files;
+       const file = files.item(0);
+       const token = {};
+       const cancel = document.getElementById('cancel');
+       const pause = document.getElementById('pause');
+       const resume = document.getElementById('resume');
+ 
+       [cancel, resume, pause].forEach((btn) => {
+         const id = btn.id;
+         btn.addEventListener('click', () => {
+           token[id]();
+         });
+       });
+ 
+       console.log('###token', token)
+ 
+       client.multiupload([files.item(0), files.item(1)], { onProgress }, {}, token)
+         .then(res => {
+           console.log('success: ', res)
+         })
+         .catch(err => {
+           console.log(err)
+         });
+     });
+   });
+ </script>
+</body>
+ 
+</html>
+

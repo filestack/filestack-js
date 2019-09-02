@@ -18,6 +18,7 @@
 import PQueue from 'p-queue';
 import Debug from 'debug';
 import { CancelTokenSource, AxiosResponse } from 'axios';
+import CancelToken from './cancelToken';
 
 import { File, FilePart, FilePartMetadata, FileState } from './../file';
 import { StoreUploadOptions } from './../types';
@@ -62,8 +63,9 @@ export class S3Uploader extends UploaderAbstract {
     });
 
     // setup cancel token
-    const CancelToken = request.CancelToken;
-    this.cancelToken = CancelToken.source();
+    // const cancelToken = request.CancelToken;
+    const cancelToken = CancelToken;
+    this.cancelToken = cancelToken.source();
   }
 
   /**
@@ -152,7 +154,7 @@ export class S3Uploader extends UploaderAbstract {
    */
   public addFile(file: File): string {
     debug('Add file to queue: \n %o', file);
-
+    console.log('### addFile');
     const id = `${uniqueId(15)}_${uniqueTime()}`;
 
     file.status = FileState.INIT;
@@ -162,7 +164,7 @@ export class S3Uploader extends UploaderAbstract {
       file,
       parts: [],
     };
-
+    console.log('### payload', this.payloads);
     return id;
   }
 
@@ -338,6 +340,7 @@ export class S3Uploader extends UploaderAbstract {
    * @memberof S3Uploader
    */
   private async startPartsQueue(id: string): Promise<any> {
+    console.log('### startPartsQueue', id);
     const payload = this.getPayloadById(id);
     const parts = payload.parts;
     const waitingLength = parts.length;
