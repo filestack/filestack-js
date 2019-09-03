@@ -7,6 +7,7 @@
  <input type="file" multiple/>
  <div class="controls">
    <button id="cancel">Cancel</button>
+   <button id="cancel50">Cancel 50</button>
    <button id="pause">Pause</button>
    <button id="resume">Resume</button>
  </div>
@@ -24,21 +25,31 @@
      document.querySelector('input').addEventListener('change', (event) => {
        const files = event.target.files;
        const file = files.item(0);
-       const token = {};
+       let token = {};
        const cancel = document.getElementById('cancel');
+       const cancel50 = document.getElementById('cancel50');
        const pause = document.getElementById('pause');
        const resume = document.getElementById('resume');
- 
-       [cancel, resume, pause].forEach((btn) => {
+
+    //    const entries = Object.entries(event.target.files);
+    //    for (const [key, value] of entries) {
+    //        token[value.name] = {};
+    //    }
+
+       [resume, pause, cancel].forEach((btn) => {
          const id = btn.id;
          btn.addEventListener('click', () => {
            token[id]();
          });
        });
+
+       cancel50.addEventListener('click', () => {
+            token['50M.txt'].cancel();
+       });
  
        console.log('###token', token)
  
-       client.multiupload([files.item(0), files.item(1)], { onProgress }, {}, token)
+       client.multiupload([files.item(0), files.item(1)], { onProgress, cancelTokenPerFile: false }, {}, token)
          .then(res => {
            console.log('success: ', res)
          })

@@ -72,6 +72,7 @@ export const postWithRetry = (url: string, fields: Object, config: AxiosRequestC
   }
 
   useDebugInterceptor(axiosInstance);
+  // console.log('### AXIOS POST CONFIG2', fields);
   return axiosInstance.post(url, fields, config);
 };
 

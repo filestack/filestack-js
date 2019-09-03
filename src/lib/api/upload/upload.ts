@@ -88,7 +88,7 @@ export class Upload extends EventEmitter {
       delete this.storeOptions.sanitizer;
     }
 
-    this.uploader = new S3Uploader(this.storeOptions, options.concurrency);
+    this.uploader = new S3Uploader(this.storeOptions, options.concurrency, options.cancelTokenPerFile);
 
     this.uploader.setRetryConfig({
       retry: options.retry || 10,
@@ -149,7 +149,20 @@ export class Upload extends EventEmitter {
 
     token.pause = () => this.uploader.pause();
     token.resume = () => this.uploader.resume();
-    token.cancel = () => this.uploader.abort();
+
+    let tokenPerFile = false;
+
+    for (const [fileName, value] of Object.entries(token)) {
+      // Check if token for a file
+      if (typeof value === 'object') {
+        tokenPerFile = true;
+        token[fileName].cancel = () => this.uploader.abort(fileName);
+      }
+    }
+
+    if (!tokenPerFile) {
+      token.cancel = () => this.uploader.abort();
+    }
 
     return token;
   }

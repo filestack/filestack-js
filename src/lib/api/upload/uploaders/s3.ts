@@ -18,7 +18,8 @@
 import PQueue from 'p-queue';
 import Debug from 'debug';
 import { CancelTokenSource, AxiosResponse } from 'axios';
-import CancelToken from './cancelToken';
+// import CancelToken from './cancelToken';
+import cancelToken from './cancelToken';
 
 import { File, FilePart, FilePartMetadata, FileState } from './../file';
 import { StoreUploadOptions } from './../types';
@@ -50,22 +51,23 @@ export interface UploadPayload {
 
 export class S3Uploader extends UploaderAbstract {
   private partsQueue;
-  private cancelToken: CancelTokenSource; // global cancel token for all requests
-
+  private cancelToken: any; // global cancel token for all requests
+  private tokenPerFile: boolean;
   private payloads: { [key: string]: UploadPayload } = {};
 
-  constructor(storeOptions: StoreUploadOptions, concurrency?) {
+  constructor(storeOptions: StoreUploadOptions, concurrency?, tokenPerFile?: boolean) {
     super(storeOptions, concurrency);
+
+    console.log('###7', tokenPerFile);
 
     this.partsQueue = new PQueue({
       autoStart: false,
       concurrency: this.concurrency,
     });
 
-    // setup cancel token
-    // const cancelToken = request.CancelToken;
-    const cancelToken = CancelToken;
-    this.cancelToken = cancelToken.source();
+    this.cancelToken = tokenPerFile ? {} : cancelToken();
+    this.tokenPerFile = tokenPerFile;
+    console.log('###8', cancelToken());
   }
 
   /**
@@ -94,8 +96,8 @@ export class S3Uploader extends UploaderAbstract {
    *
    * @memberof S3Uploader
    */
-  public abort(msg?: string): void {
-    this.cancelToken.cancel(msg || 'Aborted by user');
+  public abort(fileName?: string): void {
+    this.cancelToken.cancel('Aborted by user', fileName);
     this.partsQueue.clear();
   }
 
@@ -154,8 +156,11 @@ export class S3Uploader extends UploaderAbstract {
    */
   public addFile(file: File): string {
     debug('Add file to queue: \n %o', file);
-    console.log('### addFile');
     const id = `${uniqueId(15)}_${uniqueTime()}`;
+
+    if (this.tokenPerFile) {
+      this.cancelToken[file.name] = cancelToken();
+    }
 
     file.status = FileState.INIT;
 
@@ -164,7 +169,6 @@ export class S3Uploader extends UploaderAbstract {
       file,
       parts: [],
     };
-    console.log('### payload', this.payloads);
     return id;
   }
 
@@ -340,7 +344,6 @@ export class S3Uploader extends UploaderAbstract {
    * @memberof S3Uploader
    */
   private async startPartsQueue(id: string): Promise<any> {
-    console.log('### startPartsQueue', id);
     const payload = this.getPayloadById(id);
     const parts = payload.parts;
     const waitingLength = parts.length;
@@ -397,6 +400,7 @@ export class S3Uploader extends UploaderAbstract {
    */
   private getS3PartMetadata(id: string, part: FilePart, offset?: number): Promise<any> {
     const url = this.getUploadUrl(id);
+    const fileName = this.getPayloadById(id).file.filename;
 
     debug(`[${id}] Get data for part ${part.partNumber}, url ${url}, Md5: ${part.md5}, Size: ${part.size}`);
 
@@ -412,7 +416,7 @@ export class S3Uploader extends UploaderAbstract {
       },
       {
         headers: this.getDefaultHeaders(id),
-        cancelToken: this.cancelToken.token,
+        cancelToken: this.tokenPerFile ? this.cancelToken[fileName].token : this.cancelToken.token,
         timeout: this.timeout,
       },
       this.retryConfig
@@ -438,7 +442,7 @@ export class S3Uploader extends UploaderAbstract {
     let payload = this.getPayloadById(id);
     const partMetadata = payload.parts[partNumber];
     let part = await payload.file.getPartByMetadata(partMetadata);
-
+    const fileName = this.getPayloadById(id).file.filename;
     const { data, headers } = await this.getS3PartMetadata(id, part);
     debug(`[${id}] Received part ${partNumber} info body: \n%O\n headers: \n%O\n`, data, headers);
 
@@ -449,7 +453,7 @@ export class S3Uploader extends UploaderAbstract {
 
     return request
       .put(data.url, part.buffer, {
-        cancelToken: this.cancelToken.token,
+        cancelToken: this.tokenPerFile ? this.cancelToken[fileName].token : this.cancelToken.token,
         timeout: this.timeout,
         headers: data.headers,
         // for now we cant test progress callback from upload
@@ -517,6 +521,7 @@ export class S3Uploader extends UploaderAbstract {
    */
   private async uploadNextChunk(id: string, partNumber: number, chunkSize: number = this.intelligentChunkSize) {
     const payload = this.getPayloadById(id);
+    const fileName = this.getPayloadById(id).file.filename;
     let part = payload.parts[partNumber];
     chunkSize = Math.min(chunkSize, part.size - part.offset);
 
@@ -535,7 +540,7 @@ export class S3Uploader extends UploaderAbstract {
 
     return request
       .put(data.url, chunk.buffer, {
-        cancelToken: this.cancelToken.token,
+        cancelToken: this.tokenPerFile ? this.cancelToken[fileName].token : this.cancelToken.token,
         timeout: this.timeout,
         headers: data.headers,
         // for now we cant test progress callback from upload
@@ -596,6 +601,7 @@ export class S3Uploader extends UploaderAbstract {
    */
   private commitPart(id: string, partNumber: number) {
     const payload = this.getPayloadById(id);
+    const fileName = payload.file.filename;
     const part = payload.parts[partNumber];
 
     return postWithRetry(
@@ -606,7 +612,7 @@ export class S3Uploader extends UploaderAbstract {
         part: part.partNumber + 1,
       },
       {
-        cancelToken: this.cancelToken.token,
+        cancelToken: this.tokenPerFile ? this.cancelToken[fileName].token : this.cancelToken.token,
         timeout: this.timeout,
         headers: this.getDefaultHeaders(id),
       },
@@ -633,6 +639,7 @@ export class S3Uploader extends UploaderAbstract {
    */
   private completeRequest(id: string): Promise<any> {
     const payload = this.getPayloadById(id);
+    const fileName = this.getPayloadById(id).file.filename;
     let parts = [];
 
     debug(`[${id}] Run complete request`);
@@ -660,7 +667,7 @@ export class S3Uploader extends UploaderAbstract {
       },
       {
         timeout: this.timeout,
-        cancelToken: this.cancelToken.token,
+        cancelToken: this.tokenPerFile ? this.cancelToken[fileName].token : this.cancelToken.token,
         headers: this.getDefaultHeaders(id),
       },
       this.retryConfig

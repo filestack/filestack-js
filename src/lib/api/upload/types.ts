@@ -66,6 +66,7 @@ export interface UploadOptions {
    * Set the default intiial chunk size for Intelligent Ingestion. Defaults to 8MB on desktop and 1MB on mobile.
    */
   intelligentChunkSize?: number;
+  cancelTokenPerFile?: boolean;
 }
 
 export type StoreUploadOptions = StoreBaseParams & {
