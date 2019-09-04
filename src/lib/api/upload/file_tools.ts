@@ -21,7 +21,7 @@ import fileType from 'file-type';
 
 export type RawFile = Blob | Buffer | File | string;
 export type NamedInputFile = {
-  name: string;
+  name?: string;
   file: RawFile;
 };
 

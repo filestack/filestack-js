@@ -18,8 +18,6 @@
 import PQueue from 'p-queue';
 import Debug from 'debug';
 import { CancelTokenSource, AxiosResponse } from 'axios';
-// import CancelToken from './cancelToken';
-import cancelToken from './cancelToken';
 
 import { File, FilePart, FilePartMetadata, FileState } from './../file';
 import { StoreUploadOptions } from './../types';
@@ -51,23 +49,26 @@ export interface UploadPayload {
 
 export class S3Uploader extends UploaderAbstract {
   private partsQueue;
-  private cancelToken: any; // global cancel token for all requests
+  private cancelToken: any;
   private tokenPerFile: boolean;
   private payloads: { [key: string]: UploadPayload } = {};
 
   constructor(storeOptions: StoreUploadOptions, concurrency?, tokenPerFile?: boolean) {
     super(storeOptions, concurrency);
 
-    // console.log('###7', tokenPerFile);
-
     this.partsQueue = new PQueue({
       autoStart: false,
       concurrency: this.concurrency,
     });
 
-    this.cancelToken = tokenPerFile ? {} : cancelToken();
+    const CancelToken = request.CancelToken;
     this.tokenPerFile = tokenPerFile;
-    // console.log('###8', cancelToken());
+    this.cancelToken = tokenPerFile ? {} : this.generateCancelToken();
+  }
+
+  private generateCancelToken(): CancelTokenSource {
+    const CancelToken = request.CancelToken;
+    return CancelToken.source();
   }
 
   /**
@@ -97,13 +98,12 @@ export class S3Uploader extends UploaderAbstract {
    * @memberof S3Uploader
    */
   public abort(fileName?: string): void {
-    // console.log('###', this.partsQueue);
     if (fileName) {
       this.cancelToken[fileName].cancel('Aborted by user');
     } else {
       this.cancelToken.cancel('Aborted by user');
+      this.partsQueue.clear();
     }
-    // this.partsQueue.clear();
   }
 
   /**
@@ -123,7 +123,6 @@ export class S3Uploader extends UploaderAbstract {
             await this.completeRequest(id);
           } catch (e) {
             /* istanbul ignore next */
-            console.log('###1 final catch', id, this.payloads[id]);
             this.setPayloadStatus(id, FileState.FAILED);
             this.emit('error', e);
             debug(`[${id}] File upload failed. %O, \nDetails: %O `, e.message, e.details);
@@ -135,10 +134,8 @@ export class S3Uploader extends UploaderAbstract {
           file.release();
 
           // cleanup payloads
-          // console.log('$$$ CLEANUP', id);
           delete this.payloads[id];
 
-          console.log('### ExEcute resolve - powinnien byc canceled', file);
           resolve(file);
         })
     );
@@ -168,7 +165,7 @@ export class S3Uploader extends UploaderAbstract {
     const id = `${uniqueId(15)}_${uniqueTime()}`;
 
     if (this.tokenPerFile) {
-      this.cancelToken[file.name] = cancelToken();
+      this.cancelToken[file.name] = this.generateCancelToken();
     }
 
     file.status = FileState.INIT;
@@ -286,8 +283,6 @@ export class S3Uploader extends UploaderAbstract {
     // split file into parts and set it as waiting
     this.payloads[id].parts = parts;
 
-    // console.log('### prepareParts', this.payloads);
-
     return Promise.resolve();
   }
 
@@ -337,7 +332,6 @@ export class S3Uploader extends UploaderAbstract {
         return data;
       })
       .catch(err => {
-        // console.log('### catch1', err);
         debug(`[${id}] Start request error %O`, err);
         this.setPayloadStatus(id, FileState.FAILED);
         return Promise.reject(new FilestackError('Cannot upload file. Start request failed', {
@@ -367,7 +361,6 @@ export class S3Uploader extends UploaderAbstract {
         this.partsQueue
           .add(() => this.startPart(id, part.partNumber))
           .catch(e => {
-            // console.log('### catch2', id, e);
             if (this.payloads.id) {
               this.setPayloadStatus(id, FileState.FAILED);
             }
@@ -438,7 +431,6 @@ export class S3Uploader extends UploaderAbstract {
       },
       this.retryConfig
     ).catch(err => {
-      // console.log('### catch3', err);
       this.setPayloadStatus(id, FileState.FAILED);
       return Promise.reject(new FilestackError('Cannot get part metadata', {
         code: err.response.status || 499,
@@ -492,15 +484,6 @@ export class S3Uploader extends UploaderAbstract {
         return res;
       })
       .catch(err => {
-        // console.log('### catch4', err);
-        if (err && err.message === 'Aborted by user') {
-          this.setPayloadStatus(id, FileState.FAILED);
-          // console.log('### CAAAATCH', id);
-          // FileState.FAILED CANCELED
-          // err.response.status = 499;
-          // err.response.data = 'Aborted by user';
-          // err.response.headers = {};
-        }
         if (err instanceof FilestackError) {
           return Promise.reject(err);
         }
@@ -561,7 +544,6 @@ export class S3Uploader extends UploaderAbstract {
 
     // catch error for debug purposes
     const { data } = await this.getS3PartMetadata(id, chunk, part.offset).catch(err => {
-      // console.log('### catch5', err);
       debug(`[${id}] Getting chunk data for ii failed %O, Chunk size: ${chunkSize}, offset ${part.offset}, part ${partNumber}`, err);
       return Promise.reject(err);
     });
@@ -593,7 +575,6 @@ export class S3Uploader extends UploaderAbstract {
         return this.uploadNextChunk(id, partNumber, chunkSize);
       })
       .catch(err => {
-        // console.log('### catch6', err);
         // reset progress on failed upload
         this.onProgressUpdate(id, partNumber, part.offset);
         const nextChunkSize = chunkSize / 2;
@@ -651,7 +632,6 @@ export class S3Uploader extends UploaderAbstract {
 
       return res;
     }).catch((err) => {
-      // console.log('### catch7', err);
       return Promise.reject(new FilestackError('Cannot commit file part metadata', {
         code: err.response.status,
         data: err.response.data,
@@ -729,7 +709,6 @@ export class S3Uploader extends UploaderAbstract {
         return file;
       })
       .catch(err => {
-        console.log('### catch8', err);
         this.setPayloadStatus(id, FileState.FAILED);
         return Promise.reject(new FilestackError('Cannot complete file', {
           code: err.response.status,
