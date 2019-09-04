@@ -181,8 +181,6 @@ export class Upload extends EventEmitter {
    */
   async upload(input: InputFile): Promise<any> {
 
-    console.log('### uploader addFile', input);
-
     const f = await getFile(input, this.sanitizerOptions);
     f.customName = this.overwriteFileName;
     this.uploader.addFile(f);

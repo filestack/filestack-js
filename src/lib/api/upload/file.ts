@@ -30,6 +30,7 @@ export const enum FileState {
   STORED = 'Stored',
   INTRANSIT = 'InTransit',
   FAILED = 'Failed',
+  CANCELED = 'Canceled',
 }
 
 export interface FilePartMetadata {
