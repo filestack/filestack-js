@@ -142,7 +142,7 @@ export class Upload extends EventEmitter {
    * @returns
    * @memberof Upload
    */
-  public setToken(token: any) {
+  public setToken(token: any, fileNames?: string[]) {
     if (!token || token !== Object(token)) {
       throw new Error('Incorrect upload token. Must be instance of object');
     }
@@ -150,17 +150,12 @@ export class Upload extends EventEmitter {
     token.pause = () => this.uploader.pause();
     token.resume = () => this.uploader.resume();
 
-    let tokenPerFile = false;
-
-    for (const [fileName, value] of Object.entries(token)) {
-      // Check if token for a file
-      if (typeof value === 'object') {
-        tokenPerFile = true;
-        token[fileName].cancel = () => this.uploader.abort(fileName);
-      }
-    }
-
-    if (!tokenPerFile) {
+    if (fileNames && fileNames.length > 0) {
+      fileNames.forEach(fileName => {
+        token[fileName.replace(/\s/g, '_')] = {};
+        token[fileName.replace(/\s/g, '_')].cancel = () => this.uploader.abort(fileName);
+      });
+    } else {
       token.cancel = () => this.uploader.abort();
     }
 
@@ -185,6 +180,8 @@ export class Upload extends EventEmitter {
    * @memberof Upload
    */
   async upload(input: InputFile): Promise<any> {
+
+    console.log('### uploader addFile', input);
 
     const f = await getFile(input, this.sanitizerOptions);
     f.customName = this.overwriteFileName;

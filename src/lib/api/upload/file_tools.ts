@@ -21,11 +21,15 @@ import fileType from 'file-type';
 
 export type RawFile = Blob | Buffer | File | string;
 export type NamedInputFile = {
-  name?: string;
+  name: string;
   file: RawFile;
 };
 
 export type InputFile = RawFile | NamedInputFile;
+
+export function isInputFileWithName(input: InputFile): input is NamedInputFile {
+  return (input as NamedInputFile).name !== undefined;
+}
 
 const base64Regexp = /data:([a-zA-Z]*\/[a-zA-Z]*);base64,([^\"]*)/i;
 

@@ -27,6 +27,7 @@ import { Upload, InputFile, UploadOptions, StoreUploadOptions } from './api/uplo
 import { preview, PreviewOptions } from './api/preview';
 import { CloudClient } from './api/cloud';
 import { StoreParams } from './filelink';
+import { isInputFileWithName } from './api/upload/file_tools';
 
 import {
   picker,
@@ -444,8 +445,20 @@ export class Client extends EventEmitter {
 
     upload.setSession(this.session);
 
+    console.log('### multiUpload, inputFile', file);
     if (token) {
-      upload.setToken(token);
+      if (options.cancelTokenPerFile) {
+        let fileNames = [];
+        file.forEach(singleFile => {
+          if (isInputFileWithName(singleFile)) {
+            fileNames.push(singleFile.name);
+          }
+        });
+        console.log('###', fileNames);
+        upload.setToken(token, fileNames);
+      } else {
+        upload.setToken(token);
+      }
     }
 
     if (security) {

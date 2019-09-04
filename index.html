@@ -7,7 +7,8 @@
  <input type="file" multiple/>
  <div class="controls">
    <button id="cancel">Cancel</button>
-   <button id="cancel50">Cancel 50</button>
+   <!-- <button id="cancel25">Cancel 25</button>
+   <button id="cancel50">Cancel 50</button> -->
    <button id="pause">Pause</button>
    <button id="resume">Resume</button>
  </div>
@@ -24,17 +25,23 @@
  
      document.querySelector('input').addEventListener('change', (event) => {
        const files = event.target.files;
-       const file = files.item(0);
        let token = {};
        const cancel = document.getElementById('cancel');
-       const cancel50 = document.getElementById('cancel50');
        const pause = document.getElementById('pause');
        const resume = document.getElementById('resume');
 
-    //    const entries = Object.entries(event.target.files);
-    //    for (const [key, value] of entries) {
-    //        token[value.name] = {};
-    //    }
+       const entries = Object.entries(event.target.files);
+       for (const [key, file] of entries) {
+         const fileName = file.name.replace(/\s/g, "_");
+        let cancelBtn = document.createElement('button');
+        cancelBtn.id = fileName;
+        cancelBtn.innerText = `Cancel ${fileName}`;
+        cancelBtn.addEventListener('click', () => {
+          token[fileName].cancel();
+        });
+        document.querySelector('body').appendChild(cancelBtn);
+
+       }
 
        [resume, pause, cancel].forEach((btn) => {
          const id = btn.id;
@@ -42,14 +49,10 @@
            token[id]();
          });
        });
-
-       cancel50.addEventListener('click', () => {
-            token['50M.txt'].cancel();
-       });
  
        console.log('###token', token)
  
-       client.multiupload([files.item(0), files.item(1)], { onProgress, cancelTokenPerFile: false }, {}, token)
+       client.multiupload([files.item(0), files.item(1)], { onProgress, cancelTokenPerFile: true }, {}, token)
          .then(res => {
            console.log('success: ', res)
          })
