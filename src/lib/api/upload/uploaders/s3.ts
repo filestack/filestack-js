@@ -61,11 +61,13 @@ export class S3Uploader extends UploaderAbstract {
       concurrency: this.concurrency,
     });
 
-    const CancelToken = request.CancelToken;
     this.tokenPerFile = tokenPerFile;
     this.cancelToken = tokenPerFile ? {} : this.generateCancelToken();
   }
 
+  /**
+   * Generate cancel token using axios
+   */
   private generateCancelToken(): CancelTokenSource {
     const CancelToken = request.CancelToken;
     return CancelToken.source();
@@ -162,6 +164,7 @@ export class S3Uploader extends UploaderAbstract {
    */
   public addFile(file: File): string {
     debug('Add file to queue: \n %o', file);
+
     const id = `${uniqueId(15)}_${uniqueTime()}`;
 
     if (this.tokenPerFile) {
@@ -175,6 +178,7 @@ export class S3Uploader extends UploaderAbstract {
       file,
       parts: [],
     };
+
     return id;
   }
 
@@ -361,9 +365,6 @@ export class S3Uploader extends UploaderAbstract {
         this.partsQueue
           .add(() => this.startPart(id, part.partNumber))
           .catch(e => {
-            if (this.payloads.id) {
-              this.setPayloadStatus(id, FileState.FAILED);
-            }
             debug(`[${id}] Failed to upload part %s`, e.message);
 
             if (!this.tokenPerFile) {
@@ -433,7 +434,7 @@ export class S3Uploader extends UploaderAbstract {
     ).catch(err => {
       this.setPayloadStatus(id, FileState.FAILED);
       return Promise.reject(new FilestackError('Cannot get part metadata', {
-        code: err.response.status || 499,
+        code: err.response.status,
         data: err.response.data,
         headers: err.response.headers,
       }, FilestackErrorType.REQUEST));

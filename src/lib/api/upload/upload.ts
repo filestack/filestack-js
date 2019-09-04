@@ -152,8 +152,9 @@ export class Upload extends EventEmitter {
 
     if (fileNames && fileNames.length > 0) {
       fileNames.forEach(fileName => {
-        token[fileName] = {};
-        token[fileName].cancel = () => this.uploader.abort(fileName);
+        token[fileName] = {
+          cancel: () => this.uploader.abort(fileName),
+        };
       });
     } else {
       token.cancel = () => this.uploader.abort();

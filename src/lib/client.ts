@@ -445,7 +445,6 @@ export class Client extends EventEmitter {
 
     upload.setSession(this.session);
 
-    console.log('### multiUpload, inputFile', file);
     if (token) {
       if (options.cancelTokenPerFile) {
         let fileNames = [];
@@ -454,7 +453,6 @@ export class Client extends EventEmitter {
             fileNames.push(singleFile.name);
           }
         });
-        console.log('###', fileNames);
         upload.setToken(token, fileNames);
       } else {
         upload.setToken(token);
