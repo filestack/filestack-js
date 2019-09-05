@@ -110,7 +110,7 @@ describe('Api/Upload/upload', () => {
       };
 
       const u = new Upload({}, storeOptions);
-      expect(S3Uploader.prototype.constructor).toHaveBeenCalledWith(storeOptions, undefined);
+      expect(S3Uploader.prototype.constructor).toHaveBeenCalledWith(storeOptions, undefined, undefined);
     });
 
     it('should respect concurrency param in upload options', () => {
@@ -119,7 +119,7 @@ describe('Api/Upload/upload', () => {
       };
 
       const u = new Upload(uploadOptions);
-      expect(S3Uploader.prototype.constructor).toHaveBeenCalledWith({}, 4);
+      expect(S3Uploader.prototype.constructor).toHaveBeenCalledWith({}, 4, undefined);
     });
 
     it('should set correct security to uploader', () => {
