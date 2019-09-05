@@ -22,6 +22,9 @@
 
       document.querySelector('input').addEventListener('change', (event) => {
         const files = event.target.files;
+        const arrOfFiles = Object.keys(files).map(function(key) {
+          return files[key];
+        });
         let token = {};
         const cancel = document.getElementById('cancel');
         const pause = document.getElementById('pause');
@@ -45,7 +48,7 @@
           });
         });
 
-        client.multiupload([files.item(0), files.item(1)], { onProgress, cancelTokenPerFile: true }, {}, token)
+        client.multiupload(arrOfFiles, { onProgress, cancelTokenPerFile: true }, {}, token)
           .then(res => {
             console.log('success: ', res)
           })
