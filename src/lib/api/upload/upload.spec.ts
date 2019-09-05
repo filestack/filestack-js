@@ -122,6 +122,15 @@ describe('Api/Upload/upload', () => {
       expect(S3Uploader.prototype.constructor).toHaveBeenCalledWith({}, 4, undefined);
     });
 
+    it('should respect cancelTokenPerFile param in upload options', () => {
+      const uploadOptions = {
+        cancelTokenPerFile: true,
+      };
+
+      const u = new Upload(uploadOptions);
+      expect(S3Uploader.prototype.constructor).toHaveBeenCalledWith({}, undefined, true);
+    });
+
     it('should set correct security to uploader', () => {
       const security = {
         policy: 'p',
