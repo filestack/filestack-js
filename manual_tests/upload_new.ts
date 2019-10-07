@@ -26,7 +26,7 @@ import * as Path from 'path';
 const createFile = (size = 44320) => Buffer.alloc(size);
 // Sentry.init({ dsn: 'DSN' });
 
-const fs = new Client('APEkwxKMZTsWNIP0XQsv2z');
+const fs = new Client(process.env.API_KEY);
 fs.on('upload.error', (e) => {
   console.log('uploadError', e);
 });
