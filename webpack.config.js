@@ -1,5 +1,4 @@
 const webpack = require('webpack');
-const CompressionPlugin = require('compression-webpack-plugin');
 const path = require('path');
 const fs = require('fs');
 const EsmWebpackPlugin = require('@purtuga/esm-webpack-plugin');
@@ -48,7 +47,6 @@ const config =  {
   ],
   plugins: [
     new CleanWebpackPlugin(),
-    new CompressionPlugin(),
     new webpack.BannerPlugin({ banner }),
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': 'production',

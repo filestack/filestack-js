@@ -26,30 +26,29 @@
 **Table of Contents**
 
 <!-- toc -->
-- [What's in the box?](#Whats-in-the-box)
-- [Installation](#Installation)
-- [API Documentation](#API-Documentation)
-- [Usage](#Usage)
-  - [Browsers](#Browsers)
-    - [ES module](#ES-module)
-    - [UMD module](#UMD-module)
-    - [GZIP support](#GZIP-support)
-    - [SRI](#SRI)
-  - [Node](#Node)
-    - [CommonJS module](#CommonJS-module)
-- [Module Overview](#Module-Overview)
-- [Releases Info](#Releases-Info)
-- [Live examples (JSFiddle)](#Live-examples-JSFiddle)
-- [Picker Quick Start](#Picker-Quick-Start)
-- [Polyfills](#Polyfills)
-- [Development](#Development)
-- [Debugging](#Debugging)
-  - [Node](#Node-1)
-  - [Browser](#Browser)
-  - [Error event](#Error-event)
-- [Sentry Integration](#Sentry-Integration)
-- [Versioning](#Versioning)
-- [Contributing](#Contributing)
+- [What's in the box?](#whats-in-the-box)
+- [Installation](#installation)
+- [API Documentation](#api-documentation)
+- [Usage](#usage)
+  - [Browsers](#browsers)
+    - [ES module](#es-module)
+    - [UMD module](#umd-module)
+    - [SRI](#sri)
+  - [Node](#node)
+    - [CommonJS module](#commonjs-module)
+- [Module Overview](#module-overview)
+- [Releases Info](#releases-info)
+- [Live examples (JSFiddle)](#live-examples-jsfiddle)
+- [Picker Quick Start](#picker-quick-start)
+- [Polyfills](#polyfills)
+- [Development](#development)
+- [Debugging](#debugging)
+  - [Node](#node-1)
+  - [Browser](#browser)
+  - [Error event](#error-event)
+- [Sentry Integration](#sentry-integration)
+- [Versioning](#versioning)
+- [Contributing](#contributing)
 
 
 ## What's in the box?
@@ -95,14 +94,6 @@ where ```{MAJOR_VERSION}``` is one of the MAJOR versions of the filestack-js ie:
 </script>
 ```
 
-#### GZIP support
-To speed up library loading you can use gzipped file available after adding gz to file extension
-```HTML
-<script src="//static.filestackapi.com/filestack-js/{MAJOR_VERSION}.x.x/filestack.min.js.gz" crossorigin="anonymous"></script>
-<script>
-  const client = filestack.init('apikey');
-</script>
-```
 
 #### SRI
 Subresource Integrity (SRI) is a security feature that enables browsers to verify that files they fetch (for example, from a CDN) are delivered without unexpected manipulation. It works by allowing you to provide a cryptographic hash that a fetched file must match
