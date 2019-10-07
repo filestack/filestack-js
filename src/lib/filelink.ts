@@ -165,6 +165,7 @@ export interface StoreBaseParams {
   container?: string;
   region?: string;
   access?: string;
+  disableStorageKey?: boolean;
 }
 
 /**

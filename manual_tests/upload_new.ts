@@ -26,7 +26,7 @@ import * as Path from 'path';
 const createFile = (size = 44320) => Buffer.alloc(size);
 // Sentry.init({ dsn: 'DSN' });
 
-const fs = new Client('APIKEY');
+const fs = new Client('APEkwxKMZTsWNIP0XQsv2z');
 fs.on('upload.error', (e) => {
   console.log('uploadError', e);
 });
@@ -47,9 +47,7 @@ fs.on('upload.error', (e) => {
 // });
 
 try {
-  fs.upload(createFile(), {}, {
-    filename: 'HR-mary-oo',
-  }).then((res) => {
+  fs.upload('./upload.js').then((res) => {
     console.info('Upload done!', res);
   });
 } catch (e) {
