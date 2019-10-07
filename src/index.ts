@@ -25,6 +25,7 @@ import { UploadOptions } from './lib/api/upload/types';
 import { StoreUploadOptions } from './lib/api/upload';
 import { PreviewOptions } from './lib/api/preview';
 import { FilestackError } from './filestack_error';
+import { getMimetype } from './lib/utils/index';
 
 /**
  * Initialize client with given config
@@ -67,5 +68,6 @@ export {
   PickerResponse,
   Client,
   FilestackError,
-  PickerDisplayMode
+  PickerDisplayMode,
+  getMimetype
 };
