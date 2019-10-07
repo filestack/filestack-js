@@ -185,11 +185,25 @@ export class S3Uploader extends UploaderAbstract {
    * @returns
    * @memberof S3Uploader
    */
-  private getStoreOptions() {
-    return {
+  private getStoreOptions(id: string): StoreUploadOptions {
+    let options = {
       location: DEFAULT_STORE_LOCATION, // this parameter is required, if not set use default one
       ...this.storeOptions,
     };
+
+    if (this.storeOptions.disableStorageKey) {
+      const payload = this.getPayloadById(id);
+
+      if (options.path && options.path.substr(-1) !== '/') {
+        options.path = `${options.path}/`;
+      }
+
+      options.path = `${options.path ? options.path : '/'}${payload.file.name}`;
+
+      delete options.disableStorageKey;
+    }
+
+    return options;
   }
 
   /**
@@ -217,7 +231,7 @@ export class S3Uploader extends UploaderAbstract {
 
     return {
       ...filterObject(fields, requiredFields),
-      store: this.getStoreOptions(),
+      store: this.getStoreOptions(id),
     };
   }
 

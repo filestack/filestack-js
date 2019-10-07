@@ -368,6 +368,83 @@ describe('Api/Upload/Uploaders/S3', () => {
       expect(mockComplete).toHaveBeenCalledWith(expect.objectContaining(testSecurity));
 
     });
+
+    it('should respect disableStorageKey option', async () => {
+      const u = new S3Uploader({
+        disableStorageKey: true,
+        path: '/test/',
+      });
+
+      u.setUrl(testHost);
+      u.setApikey(testApikey);
+      u.addFile(getSmallTestFile());
+
+      const res = await u.execute();
+      expect(res[0].status).toEqual('test_status');
+
+      const storageKeyExpect = {
+        store: {
+          location: 's3',
+          path: '/test/test.txt',
+        },
+      };
+
+      expect(mockStart).toHaveBeenCalledWith(expect.objectContaining(storageKeyExpect));
+      expect(mockUpload).toHaveBeenCalledWith(expect.objectContaining(storageKeyExpect));
+      expect(mockComplete).toHaveBeenCalledWith(expect.objectContaining(storageKeyExpect));
+
+    });
+
+    it('should respect disableStorageKey option when path is missing', async () => {
+      const u = new S3Uploader({
+        disableStorageKey: true,
+      });
+
+      u.setUrl(testHost);
+      u.setApikey(testApikey);
+      u.addFile(getSmallTestFile());
+
+      const res = await u.execute();
+      expect(res[0].status).toEqual('test_status');
+
+      const storageKeyExpect = {
+        store: {
+          location: 's3',
+          path: '/test.txt',
+        },
+      };
+
+      expect(mockStart).toHaveBeenCalledWith(expect.objectContaining(storageKeyExpect));
+      expect(mockUpload).toHaveBeenCalledWith(expect.objectContaining(storageKeyExpect));
+      expect(mockComplete).toHaveBeenCalledWith(expect.objectContaining(storageKeyExpect));
+
+    });
+
+    it('should respect disableStorageKey option when path has missing /', async () => {
+      const u = new S3Uploader({
+        disableStorageKey: true,
+        path: '/test',
+      });
+
+      u.setUrl(testHost);
+      u.setApikey(testApikey);
+      u.addFile(getSmallTestFile());
+
+      const res = await u.execute();
+      expect(res[0].status).toEqual('test_status');
+
+      const storageKeyExpect = {
+        store: {
+          location: 's3',
+          path: '/test/test.txt',
+        },
+      };
+
+      expect(mockStart).toHaveBeenCalledWith(expect.objectContaining(storageKeyExpect));
+      expect(mockUpload).toHaveBeenCalledWith(expect.objectContaining(storageKeyExpect));
+      expect(mockComplete).toHaveBeenCalledWith(expect.objectContaining(storageKeyExpect));
+    });
+
   });
 
   describe('Upload modes', () => {
