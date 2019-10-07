@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.8.0](https://github.com/filestack/filestack-js/compare/v3.7.0...v3.8.0) (2019-10-07)
+
+
+### Bug Fixes
+
+* **getMimetype:** Check x-msi by an extension ([#280](https://github.com/filestack/filestack-js/issues/280)) ([3e4c35b](https://github.com/filestack/filestack-js/commit/3e4c35b))
+* **picker:** Fix Spanish translation ([a9fa2f7](https://github.com/filestack/filestack-js/commit/a9fa2f7))
+* 🐛 Update old sdk references ([#281](https://github.com/filestack/filestack-js/issues/281)) ([494d774](https://github.com/filestack/filestack-js/commit/494d774))
+
+
+### Build System
+
+* **gzip:** Remove gzip script, use cdn in-fly gzip feature ([#282](https://github.com/filestack/filestack-js/issues/282)) ([35cca80](https://github.com/filestack/filestack-js/commit/35cca80))
+
+
+### Features
+
+* **s3:** add disablele storage key to uplaoder ([#291](https://github.com/filestack/filestack-js/issues/291)) ([2cf27fd](https://github.com/filestack/filestack-js/commit/2cf27fd))
+
+
+
 ## [3.7.0](https://github.com/filestack/filestack-js/compare/v3.6.0...v3.7.0) (2019-08-23)
 
 
