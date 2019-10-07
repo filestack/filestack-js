@@ -85,7 +85,7 @@ export interface ClientOptions {
  *
  * ```js
  * // UMD module in browser
- * <script src="https://static.filestackapi.com/filestack-js/1.x.x/filestack.min.js"></script>
+ * <script src="https://static.filestackapi.com/filestack-js/3.x.x/filestack.min.js"></script>
  * const client = filestack.init('apikey');
  * ```
  */

@@ -4,7 +4,7 @@ window.addEventListener('DOMContentLoaded', function () {
   requirejs.config({
     baseUrl: "js",
     paths: {
-      "filestack": "//static.filestackapi.com/filestack-js/1.x.x/filestack"
+      "filestack": "//static.filestackapi.com/filestack-js/3.x.x/filestack"
     },
   });
 
