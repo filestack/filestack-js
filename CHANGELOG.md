@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.9.0](https://github.com/filestack/filestack-js/compare/v3.8.0...v3.9.0) (2019-10-29)
+
+
+### Features
+
+* **upload:** add posibility to disable s3 integrity check (md5 gener… ([#299](https://github.com/filestack/filestack-js/issues/299)) ([207e4c7](https://github.com/filestack/filestack-js/commit/207e4c7))
+
+
+
 ## [3.8.0](https://github.com/filestack/filestack-js/compare/v3.7.0...v3.8.0) (2019-10-07)
 
 
