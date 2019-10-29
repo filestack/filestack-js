@@ -105,9 +105,6 @@ export const PickerParamsSchema = {
       minimum: 1,
       maximum: 20,
     },
-    disableIntegrityCheck: {
-      type: 'boolean',
-    },
     customSourceContainer: {
       type: 'string',
     },

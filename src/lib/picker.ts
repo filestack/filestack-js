@@ -497,12 +497,6 @@ export interface PickerOptions {
   hideModalWhenUploading?: boolean;
 
   /**
-   * Disable checking integrity of uploaded files.
-   * On slower devices it can boost upload performance (disable counting md5 from file parts)
-   */
-  disableIntegrityCheck?: boolean;
-
-  /**
    * Specify image dimensions. e.g. [800, 600]. Only for JPEG, PNG, and BMP files.
    * Local and cropped images will be resized (upscaled or downscaled) to the specified dimensions before uploading.
    * The original height to width ratio is maintained. To resize all images based on the width, set [width, null], e.g. [800, null].
