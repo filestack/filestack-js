@@ -67,6 +67,7 @@ export abstract class UploaderAbstract extends EventEmitter {
 
   protected isModeLocked: boolean = false; // if account does not support ii in fallback mode we should abort
   protected retryConfig: RetryConfig;
+  protected integrityCheck: boolean = true;
 
   constructor(protected readonly storeOptions: StoreUploadOptions, protected readonly concurrency: number = 3) {
     super();
@@ -93,6 +94,14 @@ export abstract class UploaderAbstract extends EventEmitter {
 
   public setUrl(url: string): void {
     this.url = url;
+  }
+
+  /**
+   * Set state of checking file integrity
+   * @param state
+   */
+  public setIntegrityCheck(state) {
+    this.integrityCheck = state;
   }
 
   /**

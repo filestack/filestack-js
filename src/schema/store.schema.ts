@@ -51,6 +51,9 @@ export const StoreParamsSchema = {
     workflows: {
       '$ref': 'workflowsDef',
     },
+    disableStorageKey: {
+      type: 'boolean',
+    },
     sanitizer: {
       oneOf: [{
         type: 'boolean',

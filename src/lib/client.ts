@@ -401,6 +401,7 @@ export class Client extends EventEmitter {
         scope.setExtras({ uploadOptions: options, storeOptions });
         Sentry.captureException(e);
       });
+
       this.emit('upload.error', e);
     });
 

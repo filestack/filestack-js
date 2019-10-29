@@ -107,6 +107,10 @@ export class Upload extends EventEmitter {
       this.uploader.setIntelligentChunkSize(options.intelligentChunkSize);
     }
 
+    if (options.disableIntegrityCheck) {
+      this.uploader.setIntegrityCheck(false);
+    }
+
     if (options.intelligent) {
       this.uploader.setUploadMode(options.intelligent === 'fallback' ? UploadMode.FALLBACK : UploadMode.INTELLIGENT);
     }

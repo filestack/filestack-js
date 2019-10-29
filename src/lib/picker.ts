@@ -495,6 +495,7 @@ export interface PickerOptions {
    * Hide the picker modal UI once uploading begins. Defaults to `false`.
    */
   hideModalWhenUploading?: boolean;
+
   /**
    * Specify image dimensions. e.g. [800, 600]. Only for JPEG, PNG, and BMP files.
    * Local and cropped images will be resized (upscaled or downscaled) to the specified dimensions before uploading.

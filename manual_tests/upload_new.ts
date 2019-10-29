@@ -20,16 +20,16 @@ import { Client } from './../src/lib/client';
 import * as Path from 'path';
 // import * as Sentry from '@sentry/node';
 
-// import { S3Uploader } from './../src/lib/api/upload/uploaders/s3';
-// import { getFile } from '../src/lib/api/upload';
+import { S3Uploader } from './../src/lib/api/upload/uploaders/s3';
+import { getFile } from '../src/lib/api/upload';
 
 const createFile = (size = 44320) => Buffer.alloc(size);
 // Sentry.init({ dsn: 'DSN' });
 
-const fs = new Client(process.env.API_KEY);
-fs.on('upload.error', (e) => {
-  console.log('uploadError', e);
-});
+// const fs = new Client(process.env.API_KEY);
+// fs.on('upload.error', (e) => {
+//   console.log('uploadError', e);
+// });
 
 // fs.multiupload(
 //   [
@@ -46,24 +46,27 @@ fs.on('upload.error', (e) => {
 //   console.dir(res, { depth: null });
 // });
 
-try {
-  fs.upload('./upload.js').then((res) => {
-    console.info('Upload done!', res);
-  });
-} catch (e) {
-  console.log(e.details);
-}
-
-// (async () => {
-//   const file = await getFile(createFile());
-//   const u = new S3Uploader({});
-//   u.setUrl('https://upload.rc.filepickerapp.com');
-//   u.setApikey('AbHASoTdORfqk8APJB72Wz');
-//   u.addFile(file);
-
-//   const res = await u.execute().catch((e) => {
-//     console.log('ERROR', e);
+// try {
+//   fs.upload('./upload.js').then((res) => {
+//     console.info('Upload done!', res);
 //   });
+// } catch (e) {
+//   console.log(e.details);
+// }
 
-//   console.log(res);
-// })();
+(async () => {
+  const file = await getFile(createFile());
+  file.name = 'test.txt';
+
+  const u = new S3Uploader({});
+  u.setUrl('https://upload.filestackapi.com');
+  u.setApikey('AHvhedybhQMqZOqRvZquez');
+  u.setIntegrityCheck(false);
+  u.addFile(file);
+
+  const res = await u.execute().catch((e) => {
+    console.log('ERROR', e);
+  });
+
+  console.log(res);
+})();

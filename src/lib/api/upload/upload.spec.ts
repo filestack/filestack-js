@@ -98,6 +98,11 @@ describe('Api/Upload/upload', () => {
       expect(S3Uploader.prototype.setUploadMode).toHaveBeenCalledWith(UploadMode.INTELLIGENT);
     });
 
+    it('should set respect disableIntegrityCheck param', () => {
+      const u = new Upload({ disableIntegrityCheck: true });
+      expect(S3Uploader.prototype.setIntegrityCheck).toHaveBeenCalledWith(false);
+    });
+
     it('should fallback upload mode', () => {
       const u = new Upload({ intelligent: 'fallback' });
 
