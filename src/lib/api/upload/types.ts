@@ -66,6 +66,12 @@ export interface UploadOptions {
    * Set the default intiial chunk size for Intelligent Ingestion. Defaults to 8MB on desktop and 1MB on mobile.
    */
   intelligentChunkSize?: number;
+
+  /**
+   * Disable checking integrity of uploaded files.
+   * On slower devices it can boost upload performance (disable counting md5 from file parts)
+   */
+  disableIntegrityCheck?: boolean;
 }
 
 export type StoreUploadOptions = StoreBaseParams & {

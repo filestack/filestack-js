@@ -97,12 +97,30 @@ describe('Api/Upload/File', () => {
     expect(part.md5).toEqual('Vp73JkK+D63XEdakaNaO4Q==');
   });
 
+  it('should not calc chunk md5 on disable param', async () => {
+    const meta = file.getPartMetadata(0, 2);
+    const part = await file.getPartByMetadata(meta, false);
+
+    expect(part.size).toEqual(2);
+    expect(part.md5).toEqual(undefined);
+  });
+
   it('should return chunk by part metadata and offset', async () => {
     const meta = file.getPartMetadata(0, 4);
     const chunk = await file.getChunkByMetadata(meta, 1, 2);
 
     expect(chunk.size).toEqual(2);
     expect(chunk.md5).toEqual('EkcP5AbUQBfZbqs33WX8FA==');
+    expect(chunk.startByte).toEqual(1);
+    expect(chunk.endByte).toEqual(3);
+  });
+
+  it('should not calc chunk md5 on disable param', async () => {
+    const meta = file.getPartMetadata(0, 4);
+    const chunk = await file.getChunkByMetadata(meta, 1, 2, false);
+
+    expect(chunk.size).toEqual(2);
+    expect(chunk.md5).toEqual(undefined);
     expect(chunk.startByte).toEqual(1);
     expect(chunk.endByte).toEqual(3);
   });

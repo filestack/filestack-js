@@ -887,6 +887,79 @@ describe('Api/Upload/Uploaders/S3', () => {
       expect(res[0].status).toEqual('test_status');
     });
 
+    it('should upload file with disable integrity check enabled', async () => {
+      const partSize = 1024 * 1024 * 7;
+
+      const u = new S3Uploader({});
+      u.setUrl(testHost);
+      u.setApikey(testApikey);
+      u.setPartSize(partSize);
+      u.addFile(getTestFile());
+      u.setIntegrityCheck(false);
+
+      const res = await u.execute();
+
+      const testFile = getTestFile();
+
+      expect(mockStart).toHaveBeenCalledWith({
+        filename: testFile.name,
+        mimetype: testFile.mimetype,
+        size: testFile.size,
+        store: {
+          location: DEFAULT_STORE_LOCATION,
+        },
+        apikey: testApikey,
+      });
+
+      const firstPartMeta = testFile.getPartMetadata(0, partSize);
+      const firstPart = await testFile.getPartByMetadata(firstPartMeta);
+
+      expect(mockUpload).toHaveBeenNthCalledWith(1, {
+        size: firstPart.size,
+        apikey: testApikey,
+        region: mockRegion,
+        store: {
+          location: DEFAULT_STORE_LOCATION,
+        },
+        uri: mockedUri,
+        upload_id: mockUploadId,
+        part: 1,
+      });
+
+      const secondPartMeta = testFile.getPartMetadata(1, partSize);
+      const secondPart = await testFile.getPartByMetadata(secondPartMeta);
+
+      expect(mockUpload).toHaveBeenNthCalledWith(2, {
+        size: secondPart.size,
+        apikey: testApikey,
+        region: mockRegion,
+        store: {
+          location: DEFAULT_STORE_LOCATION,
+        },
+        uri: mockedUri,
+        upload_id: mockUploadId,
+        part: 2,
+      });
+
+      expect(mockPut).toHaveBeenCalledWith('/fakes3', expect.any(Object));
+      expect(mockComplete).toHaveBeenCalledWith({
+        apikey: testApikey,
+        filename: testFile.name,
+        mimetype: testFile.mimetype,
+        size: testFile.size,
+        parts: [{ part_number: 1, etag: 'test' }, { part_number: 2, etag: 'test' }],
+        region: mockRegion,
+        upload_id: mockUploadId,
+        store: {
+          location: DEFAULT_STORE_LOCATION,
+        },
+        uri: mockedUri,
+      });
+
+      expect(res[0].handle).toEqual('test_handle');
+      expect(res[0].status).toEqual('test_status');
+    });
+
     it('should not process upload on multipart/upload network error', async () => {
       interceptorUpload.reply(400, {
         message: 'something awful happened',

@@ -411,16 +411,21 @@ export class S3Uploader extends UploaderAbstract {
 
     debug(`[${id}] Get data for part ${part.partNumber}, url ${url}, Md5: ${part.md5}, Size: ${part.size}`);
 
+    const data = {
+      ...this.getDefaultFields(id, ['apikey', 'uri', 'region', 'signature', 'policy', 'upload_id', 'fii']),
+      // method specific keys
+      part: part.partNumber + 1,
+      size: part.size,
+      offset,
+    };
+
+    if (this.integrityCheck && part.md5) {
+      data.md5 = part.md5;
+    }
+
     return postWithRetry(
       `${url}/multipart/upload`,
-      {
-        ...this.getDefaultFields(id, ['apikey', 'uri', 'region', 'signature', 'policy', 'upload_id', 'fii']),
-        // method specific keys
-        part: part.partNumber + 1,
-        md5: part.md5,
-        size: part.size,
-        offset,
-      },
+      data,
       {
         headers: this.getDefaultHeaders(id),
         cancelToken: this.cancelToken.token,
@@ -448,7 +453,7 @@ export class S3Uploader extends UploaderAbstract {
   private async uploadRegular(id: string, partNumber: number): Promise<any> {
     let payload = this.getPayloadById(id);
     const partMetadata = payload.parts[partNumber];
-    let part = await payload.file.getPartByMetadata(partMetadata);
+    let part = await payload.file.getPartByMetadata(partMetadata, this.integrityCheck);
 
     const { data, headers } = await this.getS3PartMetadata(id, part);
     debug(`[${id}] Received part ${partNumber} info body: \n%O\n headers: \n%O\n`, data, headers);
@@ -531,7 +536,7 @@ export class S3Uploader extends UploaderAbstract {
     let part = payload.parts[partNumber];
     chunkSize = Math.min(chunkSize, part.size - part.offset);
 
-    let chunk = await payload.file.getChunkByMetadata(part, part.offset, chunkSize);
+    let chunk = await payload.file.getChunkByMetadata(part, part.offset, chunkSize, this.integrityCheck);
 
     debug(
       `[${id}] PartNum: ${partNumber}, PartSize: ${part.size}, StartByte: ${part.startByte}, Offset: ${part.offset}, ChunkSize: ${chunk.size},

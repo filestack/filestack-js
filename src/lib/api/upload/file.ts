@@ -41,7 +41,7 @@ export interface FilePartMetadata {
 
 export interface FilePart extends FilePartMetadata {
   buffer: Buffer | ArrayBuffer;
-  md5: string;
+  md5?: string;
 }
 
 export interface FileChunk extends FilePart {
@@ -176,7 +176,7 @@ export class File {
    * @returns {FilePartMetadata}
    * @memberof File
    */
-  public getPartMetadata (partNum: number, size): FilePartMetadata {
+  public getPartMetadata (partNum: number, size: number): FilePartMetadata {
     const startByte = size * partNum;
 
     if (startByte > this._file.size) {
@@ -200,13 +200,13 @@ export class File {
    * @returns {FilePart}
    * @memberof File
    */
-  public async getPartByMetadata(meta: FilePartMetadata): Promise<FilePart> {
+  public async getPartByMetadata(meta: FilePartMetadata, md5Enabled: boolean = true): Promise<FilePart> {
     let slice = await this._file.slice(meta.startByte, meta.endByte);
 
     return Promise.resolve({
       ...meta,
       buffer: slice,
-      md5: md5(slice),
+      md5: md5Enabled ? md5(slice) : undefined,
     });
   }
 
@@ -219,7 +219,7 @@ export class File {
    * @returns {FilePart}
    * @memberof File
    */
-  public async getChunkByMetadata(meta: FilePartMetadata, offset: number, chunkSize: number): Promise<FileChunk> {
+  public async getChunkByMetadata(meta: FilePartMetadata, offset: number, chunkSize: number, md5Enabled: boolean = true): Promise<FileChunk> {
     const startByte = meta.startByte + offset;
     const endByte = Math.min(startByte + chunkSize, meta.endByte);
 
@@ -228,7 +228,7 @@ export class File {
     return Promise.resolve({
       ...meta,
       buffer: slice,
-      md5: md5(slice),
+      md5: md5Enabled ? md5(slice) : undefined,
       size: slice.byteLength,
       startByte,
       endByte,

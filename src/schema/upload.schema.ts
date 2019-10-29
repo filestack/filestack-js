@@ -67,5 +67,8 @@ export const UploadParamsSchema = {
     onRetry: {
       format: 'callback',
     },
+    disableIntegrityCheck: {
+      type: 'boolean',
+    },
   },
 };
