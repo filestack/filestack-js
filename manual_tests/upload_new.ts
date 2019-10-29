@@ -56,8 +56,10 @@ const createFile = (size = 44320) => Buffer.alloc(size);
 
 (async () => {
   const file = await getFile(createFile());
+  file.name = 'test.txt';
+
   const u = new S3Uploader({});
-  u.setUrl('https://upload.rc.filepickerapp.com');
+  u.setUrl('https://upload.filestackapi.com');
   u.setApikey('AHvhedybhQMqZOqRvZquez');
   u.setIntegrityCheck(false);
   u.addFile(file);
