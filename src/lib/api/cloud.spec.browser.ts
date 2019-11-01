@@ -17,7 +17,7 @@
 
 import { config } from './../../config';
 import { CloudClient, PICKER_KEY } from './cloud';
-import * as nock from 'nock';
+import unmock, { States } from 'unmock-node';
 
 const testApiKey = 'API_KEY';
 const testTokSession = 'TOK_SESSION';
@@ -36,178 +36,129 @@ const testSession = {
   urls: sessionURls,
 };
 
-let scope = nock(sessionURls.cloudApiUrl);
-
-const mockTokInit = jest
-  .fn()
-  .mockName('tokInit')
-  .mockReturnValue('init');
-
-const mockTokStart = jest
-  .fn()
-  .mockName('tokStart')
-  .mockReturnValue('start');
-
-const mockTokStop = jest
-  .fn()
-  .mockName('tokStop')
-  .mockReturnValue('stop');
-
-const mockMetadata = jest
-  .fn()
-  .mockName('metadata')
-  .mockReturnValue('metadata');
-
-const mockPrefetch = jest
-  .fn()
-  .mockName('prefetch')
-  .mockReturnValue('prefetch');
-
-const mockList = jest
-  .fn()
-  .mockName('list')
-  .mockImplementation(data => {
-    if (data && data.clouds.token) {
-      return { token: testCloudToken };
-    }
-
-    return data;
-  });
-
-const mockLogout = jest
-  .fn()
-  .mockName('logout')
-  .mockImplementation((url, data) => {
-    const params = data ? JSON.parse(data) : {};
-
-    if (data && params.clouds && params.clouds.token) {
-      return { token: testCloudToken };
-    }
-
-    return data;
-  });
-
-const mockStore = jest
-  .fn()
-  .mockName('store')
-  .mockImplementation(params => {
-    if (params && params.clouds && params.clouds.token) {
-      return JSON.stringify({ token: testCloudToken });
-    }
-
-    return JSON.stringify(params);
-  });
-
 describe('cloud', () => {
+  let states: States;
+  beforeAll(() => {
+    states = unmock.on();
+  });
   beforeEach(() => {
-    scope
-      .persist()
-      .options(/.*/)
-      .reply(204, '', {
-        'access-control-allow-headers': 'filestack-source,filestack-trace-id,filestack-trace-span',
-        'access-control-allow-methods': '*',
-        'access-control-allow-origin': '*',
-      });
-
-    scope
-      .get('/prefetch')
-      .query({ apikey: testApiKey })
-      .reply(200, mockPrefetch);
-
-    scope.post('/auth/logout').reply(200, mockLogout);
-    scope.post('/folder/list').reply(200, (_, data) => mockList(JSON.parse(data)));
-    scope.post('/store/').reply(200, (_, data) => mockStore(JSON.parse(data)));
-    scope.post('/metadata').reply(200, mockMetadata);
-
-    scope.post(/\/recording\/(audio|video)\/init/).reply(200, mockTokInit);
-    scope.post(/\/recording\/(audio|video)\/start/).reply(200, mockTokStart);
-    scope.post(/\/recording\/(audio|video)\/stop/).reply(200, mockTokStop);
+    states.reset();
   });
 
   afterEach(() => {
-    nock.cleanAll();
     jest.clearAllMocks();
     localStorage.clear();
   });
 
+  afterAll(() => {
+    unmock.off();
+  });
+
   describe('prefetch', () => {
     it('should make correct request to api', async () => {
+      const expectedPrefetchResponse = 'prefetch';
+      const mockPrefetchGet = jest.fn().mockImplementationOnce(() => expectedPrefetchResponse);
+      states.filestackApi.get('/prefetch', mockPrefetchGet);
+
       const res = await new CloudClient(testSession).prefetch();
 
-      expect(mockPrefetch).toHaveBeenCalledWith(expect.any(String), '');
-      expect(res).toEqual('prefetch');
+      const expectedRequest = { body: undefined, method: 'GET' };
+      expect(mockPrefetchGet)
+        .toHaveBeenCalledWith(
+          expect.objectContaining(expectedRequest),
+          expect.anything()
+        );
+      expect(res).toEqual(expectedPrefetchResponse);
     });
   });
 
   describe('list', () => {
+    const expectedRequestBase = { apikey: testApiKey, clouds: { test: true }, flow: 'web' };
+    beforeEach(() => states.reset());
     it('should make correct list request', async () => {
       const clouds = { test: true };
-
-      const res = await new CloudClient(testSession).list({ ...clouds });
-
-      expect(res).toEqual({
-        apikey: testApiKey,
-        flow: 'web',
-        clouds,
+      const mockFolderListPost = jest.fn().mockImplementationOnce(_ => {
+        return { token: testCloudToken };
       });
+      states.filestackApi.post('/folder/list', mockFolderListPost);
+      await new CloudClient(testSession).list({ ...clouds });
+
+      expect(mockFolderListPost)
+        .toHaveBeenCalledWith(
+          expect.objectContaining({ body: expectedRequestBase }), expect.anything()
+        );
     });
 
     it('should make correct list request with session cache', async () => {
       const clouds = { test: true };
       localStorage.setItem(PICKER_KEY, testCloudToken);
 
-      const res = await new CloudClient(testSession, {
+      const mockFolderListPost = jest.fn().mockImplementationOnce(() => {
+        return { token: testCloudToken };
+      });
+      states.filestackApi.post('/folder/list', mockFolderListPost);
+
+      await new CloudClient(testSession, {
         sessionCache: true,
       }).list({ ...clouds });
 
-      expect(res).toEqual({
-        apikey: testApiKey,
-        flow: 'web',
-        token: testCloudToken,
-        clouds,
-      });
+      expect(mockFolderListPost)
+        .toHaveBeenCalledWith(
+          expect.objectContaining(
+            { body: { ...expectedRequestBase, token: testCloudToken } }
+          ),
+          expect.anything()
+        );
     });
 
     it('should set token on api token response', async () => {
       const clouds = { token: true };
+      states.filestackApi.post('/folder/list', { token: testCloudToken });
       const res = await new CloudClient(testSession).list({ ...clouds });
 
-      expect(res).toEqual({ token: testCloudToken });
+      expect(res).toHaveProperty('token', testCloudToken);
     });
 
     it('should cache session token to local storage', async () => {
       const clouds = { token: true };
-
-      const res = await new CloudClient(testSession, { sessionCache: true }).list({ ...clouds });
+      states.filestackApi.post('/folder/list', { token: testCloudToken });
+      await new CloudClient(testSession, { sessionCache: true }).list({ ...clouds });
 
       expect(localStorage.setItem).toHaveBeenCalledWith(PICKER_KEY, testCloudToken);
-      expect(res).toEqual({ token: testCloudToken });
     });
 
     it('should make correct list request with security', async () => {
       const clouds = { test: true };
 
-      const res = await new CloudClient({
+      const mockFolderListPost = jest.fn().mockImplementationOnce(() => {
+        return { token: testCloudToken };
+      });
+      states.filestackApi.post('/folder/list', mockFolderListPost);
+
+      await new CloudClient({
         ...testSession,
         ...testSecurity,
       }).list({ ...clouds });
 
-      expect(res).toEqual({
-        apikey: testApiKey,
-        flow: 'web',
-        clouds,
-        ...testSecurity,
-      });
+      const expectedRequestBody = { ...expectedRequestBase, ...testSecurity };
+
+      expect(mockFolderListPost)
+        .toHaveBeenCalledWith(
+          expect.objectContaining({ body: expectedRequestBody }),
+          expect.anything()
+        );
     });
   });
 
   describe('store', () => {
-    it('should make correct basic request', async () => {
-      const res = await new CloudClient(testSession).store('google', 'test', { filename: '1' });
+    const expectedRequestBase = { apikey: testApiKey, flow: 'web' };
+    it('store should make correct basic request', async () => {
+      const mockStorePost = jest.fn().mockImplementationOnce(() => ({ message: 'Boo' }));
+      states.filestackApi.post('/store/', mockStorePost);
+      await new CloudClient(testSession).store('google', 'test', { filename: '1' });
 
-      expect(res).toEqual({
-        apikey: testApiKey,
-        flow: 'web',
+      const expectedRequest = {
+        ...expectedRequestBase,
         clouds: {
           google: {
             path: 'test',
@@ -217,15 +168,22 @@ describe('cloud', () => {
             },
           },
         },
-      });
+      };
+
+      expect(mockStorePost)
+        .toHaveBeenCalledWith(
+          expect.objectContaining({ body: expectedRequest }), expect.anything()
+        );
     });
 
     it('should respect store location param', async () => {
-      const res = await new CloudClient(testSession).store('google', 'test', { filename: '1', location: 'gcs' });
+      const mockStorePost = jest.fn().mockImplementationOnce(() => ({ message: 'Boo' }));
+      states.filestackApi.post('/store/', mockStorePost);
 
-      expect(res).toEqual({
-        apikey: testApiKey,
-        flow: 'web',
+      await new CloudClient(testSession).store('google', 'test', { filename: '1', location: 'gcs' });
+
+      const expectedRequest = {
+        ...expectedRequestBase,
         clouds: {
           google: {
             path: 'test',
@@ -235,19 +193,25 @@ describe('cloud', () => {
             },
           },
         },
-      });
+      };
+
+      expect(mockStorePost)
+        .toHaveBeenCalledWith(
+          expect.objectContaining({ body: expectedRequest }), expect.anything()
+        );
     });
 
-    it('should make correct basic with security', async () => {
-      const res = await new CloudClient({
+    it('should make correct basic request with security', async () => {
+      const mockStorePost = jest.fn().mockImplementationOnce(() => ({ message: 'Boo' }));
+      states.filestackApi.post('/store/', mockStorePost);
+
+      await new CloudClient({
         ...testSession,
         ...testSecurity,
       }).store('token', 'test', { filename: '1' });
 
-      const excepted = {
-        ...testSecurity,
-        apikey: testApiKey,
-        flow: 'web',
+      const expectedRequest = {
+        ...expectedRequestBase,
         clouds: {
           token: {
             path: 'test',
@@ -257,23 +221,27 @@ describe('cloud', () => {
             },
           },
         },
+        ...testSecurity,
       };
 
-      expect(mockStore).toHaveBeenCalledWith(excepted);
-      expect(res).toEqual(testCloudToken);
+      expect(mockStorePost)
+        .toHaveBeenCalledWith(
+          expect.objectContaining({ body: expectedRequest }), expect.anything());
     });
 
     it('should handle custom source', async () => {
+      const mockStorePost = jest.fn().mockImplementationOnce(() => ({ message: 'Boo' }));
+      states.filestackApi.post('/store/', mockStorePost);
+
       const customSource = {
         customSourcePath: 'cs_path',
         customSourceContainer: 'cs_container',
       };
 
-      const res = await new CloudClient(testSession).store('customsource', 'test', { filename: '1' }, customSource);
+      await new CloudClient(testSession).store('customsource', 'test', { filename: '1' }, customSource);
 
-      expect(res).toEqual({
-        apikey: testApiKey,
-        flow: 'web',
+      const expectedRequest = {
+        ...expectedRequestBase,
         clouds: {
           customsource: {
             ...customSource,
@@ -284,147 +252,207 @@ describe('cloud', () => {
             },
           },
         },
-      });
+      };
+      expect(mockStorePost)
+        .toHaveBeenCalledWith(
+          expect.objectContaining({ body: expectedRequest }), expect.anything()
+        );
     });
   });
 
   describe('logout', () => {
+    const expectedRequestBase = { apikey: testApiKey, flow: 'web' };
     it('should make correct request to logout', async () => {
-      expect(await new CloudClient(testSession).logout()).toEqual({ apikey: 'API_KEY', flow: 'web' });
+      const mockLogoutPost = jest.fn();
+      states.filestackApi.post('/auth/logout', mockLogoutPost);
+      await new CloudClient(testSession).logout();
+      expect(mockLogoutPost)
+        .toHaveBeenCalledWith(
+          expect.objectContaining({ body: expectedRequestBase }),
+          expect.anything()
+        );
     });
 
     it('should make correct request to logout with provided cloud', async () => {
-      expect(await new CloudClient(testSession).logout('google')).toEqual({ apikey: 'API_KEY', flow: 'web', clouds: { google: {} } });
+      const mockLogoutPost = jest.fn();
+      states.filestackApi.post('/auth/logout', mockLogoutPost);
+      await new CloudClient(testSession).logout('google');
+      expect(mockLogoutPost)
+        .toHaveBeenCalledWith(
+          expect.objectContaining({ body: { ...expectedRequestBase, clouds: { google: {} } } }),
+          expect.anything()
+        );
     });
 
     it('should make correct request to logout and return correct response when cloud name is returned', async () => {
-      expect(await new CloudClient(testSession).logout('token')).toEqual('testCloudToken');
+      const mockLogoutPost = jest.fn().mockImplementationOnce(() => ({ token: testCloudToken }));
+      states.filestackApi.post('/auth/logout', mockLogoutPost);
+      const res = await new CloudClient(testSession).logout('token');
+      expect(res).toEqual(testCloudToken);
     });
 
     it('should make correct request to logout and clean session cache ', async () => {
       localStorage.setItem(PICKER_KEY, testCloudToken);
 
-      const res = await new CloudClient(testSession, { sessionCache: true }).logout();
+      const mockLogoutPost = jest.fn();
+      states.filestackApi.post('/auth/logout', mockLogoutPost);
+
+      await new CloudClient(testSession, { sessionCache: true }).logout();
 
       expect(localStorage.removeItem).toHaveBeenCalledWith(PICKER_KEY);
-      expect(res).toEqual({ apikey: 'API_KEY', flow: 'web', token: testCloudToken });
+      expect(mockLogoutPost)
+        .toHaveBeenCalledWith(
+          expect.objectContaining({
+            body: { ...expectedRequestBase, token: testCloudToken },
+          }),
+          expect.anything()
+        );
     });
   });
 
   describe('metadata', () => {
+    const testUrl = 'http://test.com';
+    const expectedRequestBase = { apikey: testApiKey, url: testUrl };
     it('should make correct request', async () => {
-      const testUrl = 'http://test.com';
-
+      const mockMetadataPost = jest.fn().mockImplementationOnce(() => 'metadata');
+      states.filestackApi.post('/metadata', mockMetadataPost);
       const res = await new CloudClient(testSession).metadata(testUrl);
 
-      expect(mockMetadata).toHaveBeenCalledWith(
-        expect.any(String),
-        JSON.stringify({
-          apikey: testApiKey,
-          url: testUrl,
-        })
-      );
-      expect(res).toEqual('metadata');
+      expect(mockMetadataPost)
+        .toHaveBeenCalledWith(
+          expect.objectContaining({
+            body: expectedRequestBase,
+          }),
+          expect.anything()
+        );
+      expect(res).toBe('metadata');
     });
 
     it('should make correct request with security', async () => {
-      const testUrl = 'http://test.com';
 
-      const res = await new CloudClient({
+      const mockMetadataPost = jest.fn().mockImplementationOnce(() => 'metadata');
+      states.filestackApi.post('/metadata', mockMetadataPost);
+
+      await new CloudClient({
         ...testSession,
         ...testSecurity,
       }).metadata(testUrl);
 
-      expect(mockMetadata).toHaveBeenCalledWith(
-        expect.any(String),
-        JSON.stringify({
-          apikey: testApiKey,
-          url: testUrl,
-          ...testSecurity,
-        })
-      );
-      expect(res).toEqual('metadata');
+      expect(mockMetadataPost)
+        .toHaveBeenCalledWith(
+          expect.objectContaining({
+            body: { ...expectedRequestBase, ...testSecurity },
+          }),
+          expect.anything()
+     );
     });
   });
 
   describe('OpenTok', () => {
     describe('tokInit', () => {
-      it('should make correct request to api (audio)', async () => {
+      it('should make correct request to api audio', async () => {
+        const mockTokInit = jest.fn().mockImplementationOnce(() => 'init');
+        states.filestackApi.post('/recording/audio/init', mockTokInit);
         const res = await new CloudClient(testSession).tokInit('audio');
 
-        expect(mockTokInit).toHaveBeenCalledWith(expect.any(String), '');
+        expect(mockTokInit)
+          .toHaveBeenCalledWith(
+            expect.objectContaining({
+              body: undefined,
+            }),
+            expect.anything()
+          );
         expect(res).toEqual('init');
       });
 
-      it('should make correct request to api (video)', async () => {
-        const res = await new CloudClient(testSession).tokInit('audio');
+      it('should make correct request to api video', async () => {
+        const mockTokInit = jest.fn();
+        states.filestackApi.post('/recording/video/init', mockTokInit);
 
-        expect(mockTokInit).toHaveBeenCalledWith(expect.any(String), '');
-        expect(res).toEqual('init');
+        await new CloudClient(testSession).tokInit('video');
+
+        expect(mockTokInit)
+          .toHaveBeenCalledWith(
+            expect.objectContaining({
+              body: undefined,
+            }),
+            expect.anything()
+          );
       });
 
-      it('should throw on wrong type', async() => {
-        expect(() => {
-          new CloudClient(testSession).tokInit('videoa').then(() => {
-            console.log('init');
-          }).catch(() => {
-            console.log('err');
-          });
-        }).toThrowError();
+      it('tokInit should throw on wrong type', async () => {
+        expect(() =>
+          new CloudClient(testSession)
+            .tokInit('videoa')
+        ).toThrowError('Type must be');
       });
     });
 
     describe('tokStart', () => {
-      it('should make correct request to api (audio)', async () => {
-        const res = await new CloudClient(testSession).tokStart('audio', 'key', testTokSession);
-
-        expect(mockTokStart).toHaveBeenCalledWith(expect.any(String), JSON.stringify({ apikey: 'key', session_id: testTokSession }));
+      const expectedRequest = { apikey: testApiKey, session_id: testTokSession };
+      it('should make correct request to api audio', async () => {
+        const mockTokStart = jest.fn().mockImplementationOnce(() => 'start');
+        states.filestackApi.post('/recording/audio/start', mockTokStart);
+        const res = await new CloudClient(testSession).tokStart('audio', testApiKey, testTokSession);
+        expect(mockTokStart)
+          .toHaveBeenCalledWith(
+            expect.objectContaining({
+              body: expectedRequest,
+            }),
+            expect.anything());
         expect(res).toEqual('start');
       });
 
-      it('should make correct request to api (video)', async () => {
-        const res = await new CloudClient(testSession).tokStart('video', 'key', testTokSession);
+      it('should make correct request to api video', async () => {
+        const mockTokStart = jest.fn();
+        states.filestackApi.post('/recording/video/start', mockTokStart);
+        await new CloudClient(testSession).tokStart('video', testApiKey, testTokSession);
 
-        expect(mockTokStart).toHaveBeenCalledWith(expect.any(String), JSON.stringify({ apikey: 'key', session_id: testTokSession }));
-        expect(res).toEqual('start');
+        expect(mockTokStart)
+          .toHaveBeenCalledWith(
+            expect.objectContaining({
+              body: expectedRequest,
+            }),
+            expect.anything());
       });
 
       it('should throw on wrong type', () => {
-        expect(() => new CloudClient(testSession).tokStart('videoa', 'key', testTokSession)).toThrowError();
+        expect(() => new CloudClient(testSession).tokStart('videoa', testApiKey, testTokSession)).toThrowError('Type must be');
       });
     });
 
     describe('tokStop', () => {
-      it('should make correct request to api (audio)', async () => {
-        const res = await new CloudClient(testSession).tokStop('audio', 'key', testTokSession, testTokArchiveId);
+      const expectedRequest = { apikey: testApiKey, session_id: testTokSession, archive_id: testTokArchiveId };
+      it('should make correct request to api audio', async () => {
+        const mockTokStop = jest.fn().mockImplementationOnce(() => 'stop');
+        states.filestackApi.post('/recording/audio/stop', mockTokStop);
+        const res = await new CloudClient(testSession).tokStop('audio', testApiKey, testTokSession, testTokArchiveId);
 
-        expect(mockTokStop).toHaveBeenCalledWith(
-          expect.any(String),
-          JSON.stringify({
-            apikey: 'key',
-            session_id: testTokSession,
-            archive_id: testTokArchiveId,
-          })
-        );
+        expect(mockTokStop)
+          .toHaveBeenCalledWith(
+            expect.objectContaining({
+              body: expectedRequest,
+            }),
+            expect.anything());
         expect(res).toEqual('stop');
       });
 
-      it('should make correct request to api (video)', async () => {
-        const res = await new CloudClient(testSession).tokStop('video', 'key', testTokSession, testTokArchiveId);
+      it('should make correct request to api video', async () => {
+        const mockTokStop = jest.fn();
+        states.filestackApi.post('/recording/video/stop', mockTokStop);
+        await new CloudClient(testSession).tokStop('video', testApiKey, testTokSession, testTokArchiveId);
 
-        expect(mockTokStop).toHaveBeenCalledWith(
-          expect.any(String),
-          JSON.stringify({
-            apikey: 'key',
-            session_id: testTokSession,
-            archive_id: testTokArchiveId,
-          })
-        );
-        expect(res).toEqual('stop');
+        expect(mockTokStop)
+          .toHaveBeenCalledWith(
+            expect.objectContaining({
+              body: expectedRequest,
+            }),
+            expect.anything()
+          );
       });
 
       it('should throw on wrong type', () => {
-        expect(() => new CloudClient(testSession).tokStop('videoa', 'key', testTokSession, testTokArchiveId)).toThrowError();
+        expect(() => new CloudClient(testSession).tokStop('videoa', 'key', testTokSession, testTokArchiveId)).toThrowError('Type must be');
       });
     });
   });
