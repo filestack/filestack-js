@@ -192,7 +192,9 @@ export const b64 = (data: string, safeUrl: boolean = false): string => {
  * @param {string} name
  */
 export const requireNode = (name: string): any => {
-  if (!isNode()) {
+  /* istanbul ignore next */
+  // @ts-ignore
+  if (process.browser) {
     return false;
   }
 

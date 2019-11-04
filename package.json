@@ -29,7 +29,7 @@
     "docs:publish": "npm run docs && gh-pages -d build/docs",
     "release": "standard-version",
     "prepare": "npm run build",
-    "publish:pre": "npm run build && node scripts/publish.js --pre",
+    "publish:beta": "npm run build && node scripts/publish.js --beta",
     "publish": "npm run docs:publish && node scripts/publish.js --current --latest",
     "examples": "npm run build && node ./examples/examples.js"
   },
@@ -40,6 +40,7 @@
     "@sentry/minimal": "^5.5.0",
     "abab": "^2.0.0",
     "axios": "0.18.1",
+    "cross-fetch": "^3.0.4",
     "debug": "^4.1.1",
     "eventemitter3": "^4.0.0",
     "file-type": "^10.0.0",
@@ -47,6 +48,7 @@
     "isutf8": "^2.0.4",
     "jsonschema": "^1.2.4",
     "p-queue": "^4.0.0",
+    "r2": "^2.0.1",
     "spark-md5": "^3.0.0",
     "tslib": "^1.10.0"
   },
@@ -70,6 +72,7 @@
     "envify": "^4.1.0",
     "fs-jetpack": "^2.2.2",
     "gh-pages": "^2.0.1",
+    "git-state": "^4.1.0",
     "gulp": "^4.0.2",
     "gulp-gzip": "^1.4.2",
     "gulp-rename": "^1.4.0",
