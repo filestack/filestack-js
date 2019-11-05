@@ -49,14 +49,16 @@ export class CloudClient {
       const token = localStorage.getItem(PICKER_KEY);
       if (token) return token;
     }
-    return this._token;
+
+    return sessionStorage.getItem(PICKER_KEY) || undefined;
   }
 
   set token(key) {
     if (this.cache) {
       localStorage.setItem(PICKER_KEY, key);
     }
-    this._token = key;
+
+    sessionStorage.setItem(PICKER_KEY, key);
   }
 
   prefetch() {

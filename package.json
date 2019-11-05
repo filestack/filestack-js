@@ -29,7 +29,7 @@
     "docs:publish": "npm run docs && gh-pages -d build/docs",
     "release": "standard-version",
     "prepare": "npm run build",
-    "publish:pre": "npm run build && node scripts/publish.js --pre",
+    "publish:beta": "npm run build && node scripts/publish.js --beta",
     "publish": "npm run docs:publish && node scripts/publish.js --current --latest",
     "examples": "npm run build && node ./examples/examples.js"
   },
@@ -40,6 +40,7 @@
     "@sentry/minimal": "^5.5.0",
     "abab": "^2.0.0",
     "axios": "0.18.1",
+    "git-state": "^4.1.0",
     "debug": "^4.1.1",
     "eventemitter3": "^4.0.0",
     "file-type": "^10.0.0",
