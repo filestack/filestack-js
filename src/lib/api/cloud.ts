@@ -1,3 +1,4 @@
+import { isFacebook } from './../utils/index';
 /*
  * Copyright (c) 2018 by Filestack.
  * Some rights reserved.
@@ -50,7 +51,11 @@ export class CloudClient {
       if (token) return token;
     }
 
-    return sessionStorage.getItem(PICKER_KEY) || undefined;
+    if (isFacebook()) {
+      return sessionStorage.getItem(PICKER_KEY);
+    }
+
+    return this._token;
   }
 
   set token(key) {
@@ -58,7 +63,11 @@ export class CloudClient {
       localStorage.setItem(PICKER_KEY, key);
     }
 
-    sessionStorage.setItem(PICKER_KEY, key);
+    if (isFacebook()) {
+      sessionStorage.setItem(PICKER_KEY, key);
+    }
+
+    this._token = key;
   }
 
   prefetch() {
@@ -70,12 +79,14 @@ export class CloudClient {
       .then(res => res.data);
   }
 
-  list(clouds: any, token?: any) {
+  list(clouds: any, token?: any, appurl?: string) {
+    console.log(appurl, 'appurl');
     const payload: any = {
       apikey: this.session.apikey,
       clouds,
       flow: 'web',
       token: this.token,
+      appurl,
     };
 
     if (this.session.policy && this.session.signature) {

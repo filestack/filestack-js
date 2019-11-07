@@ -91,6 +91,11 @@ export const isNode = () => typeof process !== 'undefined' && process.versions &
 export const isMobile = () => !isNode() && navigator && navigator.userAgent && mobileRegexp.test(navigator.userAgent);
 
 /**
+ * Check if application is runned in facebook browser
+ */
+export const isFacebook = () => !isNode() && navigator && navigator.userAgent && navigator.userAgent.match(/\[FB.*;/i);
+
+/**
  * Returns unique time
  */
 let last;
