@@ -80,7 +80,6 @@ export class CloudClient {
   }
 
   list(clouds: any, token?: any, appurl?: string) {
-    console.log(appurl, 'appurl');
     const payload: any = {
       apikey: this.session.apikey,
       clouds,

@@ -17,6 +17,7 @@
 
 import { config } from './../../config';
 import { CloudClient, PICKER_KEY } from './cloud';
+import * as utils from './../utils';
 import * as nock from 'nock';
 
 const testApiKey = 'API_KEY';
@@ -99,6 +100,10 @@ const mockStore = jest
   });
 
 describe('cloud', () => {
+  beforeAll(() => {
+    spyOn(utils, 'isNode').and.returnValue(false);
+  });
+
   beforeEach(() => {
     scope
       .persist()
@@ -128,6 +133,28 @@ describe('cloud', () => {
     nock.cleanAll();
     jest.clearAllMocks();
     localStorage.clear();
+  });
+
+  describe('facebook inapp browser', () => {
+    it('should set token to sessionStore when inapp browser is detected', () => {
+      spyOn(utils, 'isFacebook').and.returnValue(true);
+
+      const client = new CloudClient(testSession);
+      const token = 'test';
+      client.token = token;
+
+      expect(sessionStorage.getItem(PICKER_KEY)).toEqual(token);
+    });
+
+    it('should get token from sessionStore when inapp browser is detected', () => {
+      spyOn(utils, 'isFacebook').and.returnValue(true);
+
+      const client = new CloudClient(testSession);
+      const token = 'test';
+      sessionStorage.setItem(PICKER_KEY, token);
+
+      expect(client.token).toEqual(token);
+    });
   });
 
   describe('prefetch', () => {

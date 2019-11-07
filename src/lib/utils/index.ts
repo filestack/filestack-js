@@ -93,7 +93,7 @@ export const isMobile = () => !isNode() && navigator && navigator.userAgent && m
 /**
  * Check if application is runned in facebook browser
  */
-export const isFacebook = () => !isNode() && navigator && navigator.userAgent && navigator.userAgent.match(/\[FB.*;/i);
+export const isFacebook = () => !isNode() && navigator && navigator.userAgent && /\[FB.*;/i.test(navigator.userAgent);
 
 /**
  * Returns unique time
