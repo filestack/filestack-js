@@ -1,4 +1,3 @@
-import { isFacebook } from './../utils/index';
 /*
  * Copyright (c) 2018 by Filestack.
  * Some rights reserved.
@@ -17,6 +16,7 @@ import { isFacebook } from './../utils/index';
  */
 
 import { removeEmpty } from '../utils';
+import { isFacebook } from './../utils/index';
 import { StoreParams } from '../filelink';
 import { ClientOptions, Session } from '../client';
 import { requestWithSource, request } from '../api/request';
