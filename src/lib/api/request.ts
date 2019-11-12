@@ -15,13 +15,13 @@
  * limitations under the License.
  */
 import Debug from 'debug';
-import fetch from 'cross-fetch';
-
-import { uniqueId, getVersion } from '../utils';
+import ky from 'ky-universal';
+import { Options as KyOptions, AfterResponseHook, DownloadProgress } from 'ky';
+import { uniqueId, getVersion, isNode } from '../utils';
 
 const debug = Debug('fs:request');
 
-const RESPONSE_DEBUG_PREFIX = 'x-filestack-';
+const RESPONSE_DEBUG_PREFIX = 'x-filestack-';// @todo on response if debug is enabled print all headers
 
 export interface RetryConfig {
   retry: number;
@@ -40,7 +40,7 @@ export interface RequestOptions {
   timeout?: number;
   cancelToken?: any;
   retryConfig?: RetryConfig;
-  onProgress?: (pr: ProgressEvent) => any;
+  onProgress?: (pr: any) => any; // @todo callback type
 }
 
 export interface FilestackResponse {
@@ -66,7 +66,7 @@ export interface FilestackResponse {
 export const fetchRequest = async (url: string, data: any, options: RequestOptions = {}): Promise<FilestackResponse> => {
   const isJson = data.constructor === Object;
 
-  const payload = {
+  const payload: KyOptions = {
     method: options.method || 'GET',
     mode: options.mode || 'cors',
     cache: options.cache || 'no-cache',
@@ -74,13 +74,24 @@ export const fetchRequest = async (url: string, data: any, options: RequestOptio
     redirect: options.redirect || 'follow',
     credentials: 'include',
     referrer: 'origin',
-    body: (isJson ? JSON.stringify(data) : data),
+    timeout: options.timeout,
+    hooks: {
+      afterResponse: [afterResponseDebug],
+    },
+    onDownloadProgress: onDownloadProgress(options),
   };
 
-  payload.headers = {
-    ...payload.headers,
-    'Content-Type': isJson ? 'application/json' : 'text/plain',
-  };
+  if (options.retryConfig) {
+    payload.retry =  {
+      limit: options.retryConfig.retry,
+    };
+  }
+
+  if (isJson) {
+    payload.json = data;
+  } else {
+    payload.body = data;
+  }
 
   if (options.filesstackHeaders) {
     payload.headers = {
@@ -91,14 +102,24 @@ export const fetchRequest = async (url: string, data: any, options: RequestOptio
     };
   }
 
-  debug('Filestack Request Payload: %O', payload);
+  debug('Filestack Request Payload for url %s: %O', url, payload);
 
   return new Promise(async (resolve) => {
-    const response = await fetch(url, payload);
+    let response;
+
+    try {
+      response = await ky(url, payload);
+    } catch (error) {
+      if (error.name === 'AbortError') {
+        console.log('errror aborted');
+      } else {
+        console.log('fetch error', error);
+      }
+    }
+    console.log(response);
     let headers = {};
 
     if (response.ok) {
-      const contentType = response.headers.get('content-type').toLowerCase();
       const data = await response.body();
 
       response.headers.forEach((value, name) => {
@@ -120,48 +141,31 @@ export const fetchRequest = async (url: string, data: any, options: RequestOptio
   });
 };
 
-export const FilestackRequest = {
-  post: (url: string, data: any, options: RequestOptions = {}) => {
-    options.method = 'POST';
-    return fetchRequest(url, data, options);
-  },
-  get: (url: string, options: RequestOptions = {}) => {
-    options.method = 'GET';
-    return fetchRequest(url, null, options);
-  },
-  put: (url: string, data: any, options: RequestOptions = {}) => {
-    options.method = 'PUT';
-    return fetchRequest(url, data, options);
-  },
-  delete: (url: string, data: any, options: RequestOptions = {}) => {
-    options.method = 'DELETE';
-    return fetchRequest(url, null, options);
-  },
+const afterResponseDebug: AfterResponseHook = (request, options, res)  => {
+
+  // debugger
+  res.headers.forEach((value, name) => {
+    if (name.indexOf(RESPONSE_DEBUG_PREFIX) === -1) {
+      return;
+    }
+
+    debug(`Filestack Response Debug Header - ${name}: ${value}`);
+  });
 };
 
-// export const postWithRetry = (url: string, fields: Object, config = {}, retryConfig?: RetryConfig): Promise<any> => {
-//   // debug(`[RequestWithRetry] set fields %O for url ${url}`, fields);
+const onDownloadProgress = (options) => (res): DownloadProgress => {
+  if (!options.onProgress) {
+    return;
+  }
 
-//   // if (!config.headers) {
-//   //   config.headers = {};
-//   // }
+  options.onProgress({
+    total: res.totalBytes,
+    percent: res.percent,
+    loaded: res.transferredBytes,
+  });
+};
 
-//   // config.headers = Object.assign({}, config.headers, {
-//   //   'filestack-source': getVersion(),
-//   //   'filestack-trace-id': `${Math.floor(Date.now() / 1000)}-${uniqueId()}`,
-//   //   'filestack-trace-span': `jssdk-${uniqueId()}`,
-//   // });
-
-//   // const axiosInstance = axios.create();
-
-//   // if (retryConfig) {
-//   //   useRetryPolicy(axiosInstance, retryConfig);
-//   // }
-
-//   // useDebugInterceptor(axiosInstance);
-//   // return axiosInstance.post(url, fields, config);
-// };
-
+// @todo ?
 export const shouldRetry = (errCode: number, errText: string) => {
   // we always should retry on network failure
   switch (errText.toUpperCase()) {
@@ -182,22 +186,27 @@ export const shouldRetry = (errCode: number, errText: string) => {
   return false;
 };
 
-// const useDebugInterceptor = (instance) => {
-//   /* istanbul ignore next */ // this is internal debug method
-//   instance.interceptors.response.use(resp => {
-//     if (debug.enabled) {
-//       for (let i in resp.headers) {
-//         if (!resp.headers.hasOwnProperty(resp.headers) && i.indexOf(RESPONSE_DEBUG_PREFIX) === -1) {
-//           continue;
-//         }
-
-//         debug(`Filestack Response Debug Header - ${i}: ${resp.headers[i]}`);
-//       }
-//     }
-
-//     return resp;
-//   });
-// };
+/**
+ * Global filestack request wrapper
+ */
+export const FilestackRequest = {
+  post: (url: string, data: any, options: RequestOptions = {}) => {
+    options.method = 'POST';
+    return fetchRequest(url, data, options);
+  },
+  get: (url: string, options: RequestOptions = {}) => {
+    options.method = 'GET';
+    return fetchRequest(url, null, options);
+  },
+  put: (url: string, data: any, options: RequestOptions = {}) => {
+    options.method = 'PUT';
+    return fetchRequest(url, data, options);
+  },
+  delete: (url: string, data: any, options: RequestOptions = {}) => {
+    options.method = 'DELETE';
+    return fetchRequest(url, null, options);
+  },
+};
 
 // export const useRetryPolicy = (instance: AxiosInstance, retryConfig: RetryConfig) => {
 //   instance.interceptors.request.use(config => {
@@ -249,6 +258,3 @@ export const shouldRetry = (errCode: number, errText: string) => {
 //     }, retryDelay));
 //   });
 // };
-
-// set global debug inspector
-// useDebugInterceptor(axios);

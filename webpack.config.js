@@ -44,6 +44,8 @@ const config =  {
     // those externals are only used in nodejs
     'fs',
     'crypto',
+    'path',
+    'readable-stream',
   ],
   plugins: [
     new CleanWebpackPlugin(),
