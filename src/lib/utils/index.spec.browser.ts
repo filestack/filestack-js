@@ -96,10 +96,4 @@ describe('utils:index', () => {
       expect(utils.b64('testtext')).toEqual('dGVzdHRleHQ=');
     });
   });
-
-  describe('requireNode', () => {
-    it('should require node package', () => {
-      expect(utils.requireNode('crypto')).toBeFalsy();
-    });
-  });
 });

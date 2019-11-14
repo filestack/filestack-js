@@ -43,6 +43,7 @@ const config =  {
   externals: [
     // those externals are only used in nodejs
     'fs',
+    'path',
     'crypto',
   ],
   plugins: [
@@ -50,7 +51,7 @@ const config =  {
     new webpack.BannerPlugin({ banner }),
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': 'production',
-      '@{VERSION}' : `${require("./package.json").version}1`,
+      '@{VERSION}' : `${require("./package.json").version}`,
     }),
   ],
   devtool: 'source-map',
@@ -86,4 +87,4 @@ const prod = merge({}, config,  {
   ],
 });
 
-module.exports = [umd, prod, esm];
+module.exports = [umd, esm, prod];

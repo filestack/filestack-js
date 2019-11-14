@@ -122,7 +122,7 @@ export const uniqueId = (len: number = 10): string => {
  */
 export const md5 = (data: any): string => {
   if (isNode()) {
-    return requireNode('crypto')
+    return require('crypto')
       .createHash('md5')
       .update(data)
       .digest('base64');
@@ -192,19 +192,6 @@ export const b64 = (data: string, safeUrl: boolean = false): string => {
 };
 
 /**
- * Hides require from buindling by weback to browser
- *
- * @param {string} name
- */
-export const requireNode = (name: string): any => {
-  if (!isNode()) {
-    return false;
-  }
-
-  return require && require(name);
-};
-
-/**
  * Return currently used filestack-js sdk version
  */
 export const getVersion = () => {
@@ -213,7 +200,7 @@ export const getVersion = () => {
     const fsIndex = rootArr.findIndex((e) => e === 'filestack-js');
     const rootDir = rootArr.splice(0, fsIndex + 1).join('/');
 
-    return `JS-${requireNode(`${rootDir}/package.json`).version}`;
+    return `JS-${require(`${rootDir}/package.json`).version}`;
   }
 
   return 'JS-@{VERSION}';

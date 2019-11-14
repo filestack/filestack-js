@@ -25,6 +25,11 @@ import { FilestackError } from './../../filestack_error';
  * @private
  */
 export const PICKER_KEY = '__fs_picker_token';
+
+/**
+ * key for picker callback url (specifies which tab will be opened after opening picker)
+ * @private
+ */
 export const CALLBACK_URL_KEY = 'fs-tab';
 
 /**
@@ -265,10 +270,10 @@ export class CloudClient {
 
     // set init string for clouds backend,
     // After this cloud service can make redirect back to current page url with selected tab for given cloud
-    // if param exists and its value is init, cloudrouter will fill it with cloud name
+    // if param exists and its value is init, backend will fill it with cloud name
     const searchParams = new URLSearchParams(window.location.search);
     searchParams.set(CALLBACK_URL_KEY, 'init');
 
     return `${window.location.protocol}//${window.location.host}${window.location.pathname}?${searchParams.toString()}`;
-  },
+  }
 }
