@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.10.0](https://github.com/filestack/filestack-js/compare/v3.9.0...v3.10.0) (2019-11-12)
+
+
+### Features
+
+* **picker:** remove clouddrive from sources - now this one is deprecated ([#305](https://github.com/filestack/filestack-js/issues/305)) ([cd47a38](https://github.com/filestack/filestack-js/commit/cd47a38))
+
+
+
 ## [3.9.0](https://github.com/filestack/filestack-js/compare/v3.8.0...v3.9.0) (2019-10-29)
 
 
