@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 import { File as FsFile } from './file';
-import { isNode, SanitizeOptions, requireNode, getMimetype } from './../../utils';
+import { isNode, SanitizeOptions, getMimetype } from './../../utils';
 import { FilestackError } from './../../../filestack_error';
 import fileType from 'file-type';
 
@@ -94,7 +94,7 @@ const isFileNamed = (input: InputFile): input is NamedInputFile => input && inpu
  * @node
  * @param input
  */
-const isFilePath = (input: InputFile): input is string => requireNode('fs').existsSync(input);
+const isFilePath = (input: InputFile): input is string => require('fs').existsSync(input);
 
 /**
  * Convert encoded base64 string or dataURI to blob
@@ -242,13 +242,13 @@ const getFileNode = (input: InputFile, sanitizeOptions?: SanitizeOptions): Promi
     let path = input;
     // @todo improve slicer open file and read it py by part
     return new Promise((resolve, reject) =>
-      requireNode('fs').readFile(path, (err, buffer) => {
+      require('fs').readFile(path, (err, buffer) => {
         if (err) {
           return reject(err);
         }
 
         if (!filename) {
-          filename = requireNode('path').basename(path);
+          filename = require && require('path').basename(path);
         }
 
         return resolve(

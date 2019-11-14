@@ -27,6 +27,12 @@ import { FilestackError } from './../../filestack_error';
 export const PICKER_KEY = '__fs_picker_token';
 
 /**
+ * key for picker callback url (specifies which tab will be opened after opening picker)
+ * @private
+ */
+export const CALLBACK_URL_KEY = 'fs-tab';
+
+/**
  * @private
  */
 export class CloudClient {
@@ -34,6 +40,7 @@ export class CloudClient {
   cloudApiUrl: string;
   private cache: boolean = false;
   private _token: string;
+  private _isInAppBrowser = false;
 
   constructor(session: Session, options?: ClientOptions) {
     this.session = session;
@@ -49,6 +56,11 @@ export class CloudClient {
       const token = localStorage.getItem(PICKER_KEY);
       if (token) return token;
     }
+
+    if (this._isInAppBrowser) {
+      return sessionStorage.getItem(PICKER_KEY);
+    }
+
     return this._token;
   }
 
@@ -56,6 +68,11 @@ export class CloudClient {
     if (this.cache) {
       localStorage.setItem(PICKER_KEY, key);
     }
+
+    if (this._isInAppBrowser) {
+      sessionStorage.setItem(PICKER_KEY, key);
+    }
+
     this._token = key;
   }
 
@@ -65,7 +82,14 @@ export class CloudClient {
     };
     return requestWithSource()
       .get(`${this.cloudApiUrl}/prefetch`, { params })
-      .then(res => res.data);
+      .then(res => res.data)
+      .then(data => {
+        if (data.inapp_browser) {
+          this._isInAppBrowser = true;
+        }
+
+        return data;
+      });
   }
 
   list(clouds: any, token?: any) {
@@ -75,6 +99,10 @@ export class CloudClient {
       flow: 'web',
       token: this.token,
     };
+
+    if (this._isInAppBrowser) {
+      payload.appurl = this.currentAppUrl();
+    }
 
     if (this.session.policy && this.session.signature) {
       payload.policy = this.session.policy;
@@ -233,5 +261,19 @@ export class CloudClient {
     return requestWithSource()
       .post(`${this.cloudApiUrl}/recording/${type}/stop`, payload)
       .then(res => res.data);
+  }
+
+  private currentAppUrl() {
+    if (!window.URLSearchParams) {
+      return undefined;
+    }
+
+    // set init string for clouds backend,
+    // After this cloud service can make redirect back to current page url with selected tab for given cloud
+    // if param exists and its value is init, backend will fill it with cloud name
+    const searchParams = new URLSearchParams(window.location.search);
+    searchParams.set(CALLBACK_URL_KEY, 'init');
+
+    return `${window.location.protocol}//${window.location.host}${window.location.pathname}?${searchParams.toString()}`;
   }
 }
