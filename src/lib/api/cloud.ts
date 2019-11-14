@@ -264,7 +264,7 @@ export class CloudClient {
   }
 
   private currentAppUrl() {
-    if (!this._isInAppBrowser || !window.URLSearchParams) {
+    if (!window.URLSearchParams) {
       return undefined;
     }
 

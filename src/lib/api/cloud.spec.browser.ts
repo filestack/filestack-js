@@ -151,6 +151,8 @@ describe('cloud', () => {
       client.token = token;
 
       expect(sessionStorage.getItem(PICKER_KEY)).toEqual(token);
+
+      sessionStorage.setItem(PICKER_KEY, undefined);
     });
 
     it('should get token from sessionStore when inapp browser is detected', async () => {
@@ -163,6 +165,7 @@ describe('cloud', () => {
       sessionStorage.setItem(PICKER_KEY, token);
 
       expect(client.token).toEqual(token);
+      sessionStorage.setItem(PICKER_KEY, undefined);
     });
 
     it('should send appurl in list action', async () => {
@@ -177,8 +180,28 @@ describe('cloud', () => {
         flow: 'web',
         appurl: 'http://localhost/?fs-tab=init',
         clouds,
-        token: 'test',
+        token: null,
       });
+    });
+
+    it('should not send app url if urlsearch params is undefined', async () => {
+      const clouds = { test: true };
+
+      const before = window.URLSearchParams;
+      window.URLSearchParams = undefined;
+
+      const client = new CloudClient(testSession);
+      await client.prefetch();
+      const res = await client.list({ ...clouds });
+
+      expect(res).toEqual({
+        apikey: testApiKey,
+        flow: 'web',
+        clouds,
+        token: null,
+      });
+
+      window.URLSearchParams = before;
     });
   });
 
