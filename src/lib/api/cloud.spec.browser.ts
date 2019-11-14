@@ -114,11 +114,6 @@ describe('cloud', () => {
         'access-control-allow-origin': '*',
       });
 
-    scope
-      .get('/prefetch')
-      .query({ apikey: testApiKey })
-      .reply(200, mockPrefetch);
-
     scope.post('/auth/logout').reply(200, mockLogout);
     scope.post('/folder/list').reply(200, (_, data) => mockList(JSON.parse(data)));
     scope.post('/store/').reply(200, (_, data) => mockStore(JSON.parse(data)));
@@ -136,28 +131,65 @@ describe('cloud', () => {
   });
 
   describe('facebook inapp browser', () => {
-    it('should set token to sessionStore when inapp browser is detected', () => {
+    beforeEach(() => {
+      scope
+        .get('/prefetch')
+        .query({ apikey: testApiKey })
+        .reply(200, {
+          inapp_browser: true,
+        });
+
+    });
+
+    it('should set token to sessionStore when inapp browser is detected', async () => {
       spyOn(utils, 'isFacebook').and.returnValue(true);
 
       const client = new CloudClient(testSession);
+      await client.prefetch();
+
       const token = 'test';
       client.token = token;
 
       expect(sessionStorage.getItem(PICKER_KEY)).toEqual(token);
     });
 
-    it('should get token from sessionStore when inapp browser is detected', () => {
+    it('should get token from sessionStore when inapp browser is detected', async () => {
       spyOn(utils, 'isFacebook').and.returnValue(true);
 
       const client = new CloudClient(testSession);
+      await client.prefetch();
+
       const token = 'test';
       sessionStorage.setItem(PICKER_KEY, token);
 
       expect(client.token).toEqual(token);
     });
+
+    it('should send appurl in list action', async () => {
+      const clouds = { test: true };
+
+      const client = new CloudClient(testSession);
+      await client.prefetch();
+      const res = await client.list({ ...clouds });
+
+      expect(res).toEqual({
+        apikey: testApiKey,
+        flow: 'web',
+        appurl: 'http://localhost/?fs-tab=init',
+        clouds,
+        token: 'test',
+      });
+    });
   });
 
   describe('prefetch', () => {
+    beforeEach(() => {
+      scope
+      .get('/prefetch')
+      .query({ apikey: testApiKey })
+      .reply(200, mockPrefetch);
+    });
+
     it('should make correct request to api', async () => {
       const res = await new CloudClient(testSession).prefetch();
 
