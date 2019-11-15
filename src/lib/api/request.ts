@@ -15,13 +15,12 @@
  * limitations under the License.
  */
 import Debug from 'debug';
-import ky from 'ky-universal';
-import { Options as KyOptions, AfterResponseHook, DownloadProgress } from 'ky';
-import { uniqueId, getVersion, isNode } from '../utils';
+import axios, { AxiosError, AxiosInstance, AxiosResponse, AxiosRequestConfig } from 'axios';
+import { uniqueId, getVersion } from '../utils';
 
 const debug = Debug('fs:request');
 
-const RESPONSE_DEBUG_PREFIX = 'x-filestack-';// @todo on response if debug is enabled print all headers
+const RESPONSE_DEBUG_PREFIX = 'x-filestack-';
 
 export interface RetryConfig {
   retry: number;
@@ -30,145 +29,55 @@ export interface RetryConfig {
   retryFactor: number;
 }
 
-export interface RequestOptions {
-  method?: string;
-  mode?: RequestMode;
-  cache?: RequestCache;
-  redirect?: RequestRedirect;
-  filesstackHeaders?: boolean;
-  headers?: any;
-  timeout?: number;
-  cancelToken?: any;
-  retryConfig?: RetryConfig;
-  onProgress?: (pr: any) => any; // @todo callback type
-}
-
-export interface FilestackResponse {
-  status: number;
-  statusText: string;
-  url: string;
-  headers: any;
-  data: any;
-  raw: Response;
-}
-
 /**
- * @todo apply retry policy
- * @todo handle errors
- * @todo handle response by type
- * @todo handle debug
  *
+ * @private
+ * @param method
  * @param url
- * @param data
- * @param options
- * @param retryConfig
  */
-export const fetchRequest = async (url: string, data: any, options: RequestOptions = {}): Promise<FilestackResponse> => {
-  const isJson = data.constructor === Object;
-
-  const payload: KyOptions = {
-    method: options.method || 'GET',
-    mode: options.mode || 'cors',
-    cache: options.cache || 'no-cache',
-    headers: options.headers,
-    redirect: options.redirect || 'follow',
-    credentials: 'include',
-    referrer: 'origin',
-    timeout: options.timeout,
-    hooks: {
-      afterResponse: [afterResponseDebug],
-    },
-    onDownloadProgress: onDownloadProgress(options),
-  };
-
-  if (options.retryConfig) {
-    payload.retry =  {
-      limit: options.retryConfig.retry,
-    };
-  }
-
-  if (isJson) {
-    payload.json = data;
-  } else {
-    payload.body = data;
-  }
-
-  if (options.filesstackHeaders) {
-    payload.headers = {
-      ...payload.headers,
+export const requestWithSource = (retryConfig?: RetryConfig): AxiosInstance => {
+  const axiosInstance = axios.create({
+    headers: {
       'filestack-source': getVersion(),
       'filestack-trace-id': `${Math.floor(Date.now() / 1000)}-${uniqueId()}`,
       'filestack-trace-span': `jssdk-${uniqueId()}`,
-    };
+    },
+  });
+
+  if (retryConfig) {
+    useRetryPolicy(axiosInstance, retryConfig);
   }
 
-  debug('Filestack Request Payload for url %s: %O', url, payload);
-
-  return new Promise(async (resolve) => {
-    let response;
-
-    try {
-      response = await ky(url, payload);
-    } catch (error) {
-      if (error.name === 'AbortError') {
-        console.log('errror aborted');
-      } else {
-        console.log('fetch error', error);
-      }
-    }
-    console.log(response);
-    let headers = {};
-
-    if (response.ok) {
-      const data = await response.body();
-
-      response.headers.forEach((value, name) => {
-        headers[name] = value;
-      });
-
-      return resolve({
-        url: response.url,
-        status: response.status,
-        statusText: response.statusText,
-        headers,
-        data,
-        raw: response,
-      });
-    }
-
-    // apply retry policy
-    // console.log('Request error @todo', response, response.error());
-  });
+  useDebugInterceptor(axiosInstance);
+  return axiosInstance;
 };
 
-const afterResponseDebug: AfterResponseHook = (request, options, res)  => {
+export const postWithRetry = (url: string, fields: Object, config: AxiosRequestConfig = {}, retryConfig?: RetryConfig): Promise<AxiosResponse> => {
+  debug(`[RequestWithRetry] set fields %O for url ${url}`, fields);
 
-  // debugger
-  res.headers.forEach((value, name) => {
-    if (name.indexOf(RESPONSE_DEBUG_PREFIX) === -1) {
-      return;
-    }
-
-    debug(`Filestack Response Debug Header - ${name}: ${value}`);
-  });
-};
-
-const onDownloadProgress = (options) => (res): DownloadProgress => {
-  if (!options.onProgress) {
-    return;
+  if (!config.headers) {
+    config.headers = {};
   }
 
-  options.onProgress({
-    total: res.totalBytes,
-    percent: res.percent,
-    loaded: res.transferredBytes,
+  config.headers = Object.assign({}, config.headers, {
+    'filestack-source': getVersion(),
+    'filestack-trace-id': `${Math.floor(Date.now() / 1000)}-${uniqueId()}`,
+    'filestack-trace-span': `jssdk-${uniqueId()}`,
   });
+
+  const axiosInstance = axios.create();
+
+  if (retryConfig) {
+    useRetryPolicy(axiosInstance, retryConfig);
+  }
+
+  useDebugInterceptor(axiosInstance);
+  return axiosInstance.post(url, fields, config);
 };
 
-// @todo ?
-export const shouldRetry = (errCode: number, errText: string) => {
+export const shouldRetry = (err: AxiosError) => {
   // we always should retry on network failure
-  switch (errText.toUpperCase()) {
+  switch (err.code) {
     case 'ECONNRESET':
     case 'ETIMEDOUT':
     case 'EADDRINUSE':
@@ -177,8 +86,13 @@ export const shouldRetry = (errCode: number, errText: string) => {
       return true;
   }
 
+  // if request was not made and there is no response - retry
+  if (!err.response) {
+    return true;
+  }
+
   // we should retry on all server errors (5xx)
-  if (500 <= errCode && errCode <= 599) {
+  if (500 <= err.response.status && err.response.status <= 599) {
     return true;
   }
 
@@ -186,75 +100,74 @@ export const shouldRetry = (errCode: number, errText: string) => {
   return false;
 };
 
-/**
- * Global filestack request wrapper
- */
-export const FilestackRequest = {
-  post: (url: string, data: any, options: RequestOptions = {}) => {
-    options.method = 'POST';
-    return fetchRequest(url, data, options);
-  },
-  get: (url: string, options: RequestOptions = {}) => {
-    options.method = 'GET';
-    return fetchRequest(url, null, options);
-  },
-  put: (url: string, data: any, options: RequestOptions = {}) => {
-    options.method = 'PUT';
-    return fetchRequest(url, data, options);
-  },
-  delete: (url: string, data: any, options: RequestOptions = {}) => {
-    options.method = 'DELETE';
-    return fetchRequest(url, null, options);
-  },
+const useDebugInterceptor = (instance) => {
+  /* istanbul ignore next */ // this is internal debug method
+  instance.interceptors.response.use(resp => {
+    if (debug.enabled) {
+      for (let i in resp.headers) {
+        if (!resp.headers.hasOwnProperty(resp.headers) && i.indexOf(RESPONSE_DEBUG_PREFIX) === -1) {
+          continue;
+        }
+
+        debug(`Filestack Response Debug Header - ${i}: ${resp.headers[i]}`);
+      }
+    }
+
+    return resp;
+  });
 };
 
-// export const useRetryPolicy = (instance: AxiosInstance, retryConfig: RetryConfig) => {
-//   instance.interceptors.request.use(config => {
-//     const currentState = config['retry'] || {};
-//     currentState.retryCount = currentState.retryCount || 0;
-//     config['retry'] = currentState;
-//     return config;
-//   });
+export const useRetryPolicy = (instance: AxiosInstance, retryConfig: RetryConfig) => {
+  instance.interceptors.request.use(config => {
+    const currentState = config['retry'] || {};
+    currentState.retryCount = currentState.retryCount || 0;
+    config['retry'] = currentState;
+    return config;
+  });
 
-//   return instance.interceptors.response.use(null, err => {
-//     const requestConfig = err.config;
+  return instance.interceptors.response.use(null, err => {
+    const requestConfig = err.config;
 
-//     if (axios.isCancel(err)) {
-//       debug('[Retry] Upload canceled by user');
-//       return Promise.reject(err);
-//     }
+    if (axios.isCancel(err)) {
+      debug('[Retry] Upload canceled by user');
+      return Promise.reject(err);
+    }
 
-//     debug(`[Retry] Start retry process code: ${err.code}, %O`, err);
+    debug(`[Retry] Start retry process code: ${err.code}, %O`, err);
 
-//     /* istanbul ignore next */
-//     if (!requestConfig) {
-//       debug(`[Retry] Retry config not found, Rejecting request`);
-//       return Promise.reject(err);
-//     }
+    /* istanbul ignore next */
+    if (!requestConfig) {
+      debug(`[Retry] Retry config not found, Rejecting request`);
+      return Promise.reject(err);
+    }
 
-//     const state = requestConfig.retry;
+    const state = requestConfig.retry;
 
-//     if (!shouldRetry(err)) {
-//       debug(`[Retry] Response code not allowing to retry`);
-//       return Promise.reject(err);
-//     }
+    if (!shouldRetry(err)) {
+      debug(`[Retry] Response code not allowing to retry`);
+      return Promise.reject(err);
+    }
 
-//     requestConfig.retry.retryCount += 1;
+    requestConfig.retry.retryCount += 1;
 
-//     if (requestConfig.retry.retryCount > retryConfig.retry) {
-//       debug(`[Retry] Max retry count reached ${requestConfig.retry.retryCount}`);
-//       return Promise.reject(err);
-//     }
+    if (requestConfig.retry.retryCount > retryConfig.retry) {
+      debug(`[Retry] Max retry count reached ${requestConfig.retry.retryCount}`);
+      return Promise.reject(err);
+    }
 
-//     const retryDelay = Math.max(Math.min(retryConfig.retryMaxTime, (retryConfig.retryFactor ** state.retryCount) * 1000), 1);
+    const retryDelay = Math.max(Math.min(retryConfig.retryMaxTime, (retryConfig.retryFactor ** state.retryCount) * 1000), 1);
 
-//     debug(`[Retry] Retrying request to ${requestConfig.url}, count ${state.retryCount} of ${retryConfig.retry} - Delay: ${retryDelay}`);
-//     return new Promise(resolve => setTimeout(() => {
-//       if (typeof retryConfig.onRetry === 'function') {
-//         retryConfig.onRetry.call(instance, requestConfig);
-//       }
+    debug(`[Retry] Retrying request to ${requestConfig.url}, count ${state.retryCount} of ${retryConfig.retry} - Delay: ${retryDelay}`);
+    return new Promise(resolve => setTimeout(() => {
+      if (typeof retryConfig.onRetry === 'function') {
+        retryConfig.onRetry.call(instance, requestConfig);
+      }
 
-//       resolve(instance(requestConfig));
-//     }, retryDelay));
-//   });
-// };
+      resolve(instance(requestConfig));
+    }, retryDelay));
+  });
+};
+
+// set global debug inspector
+useDebugInterceptor(axios);
+export { axios as request };
