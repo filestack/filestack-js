@@ -37,6 +37,18 @@ export interface AuthConfig {
   password: string;
 }
 
+export interface RequestHeaders {
+  [name: string]: string;
+}
+
+/**
+ * Request runtime data like retryCount etc
+ */
+export interface RequestRuntime {
+  retryCount?: number;
+  [name: string]: any;
+}
+
 export interface RequestOptions {
   url?: string;
   data?: any;
@@ -46,12 +58,13 @@ export interface RequestOptions {
   cache?: RequestCache;
   redirect?: RequestRedirect;
   filesstackHeaders?: boolean;
-  headers?: any;
+  headers?: RequestHeaders;
   timeout?: number;
   cancelToken?: any;
   retry?: RetryConfig;
   onProgress?: (pr: any) => any; // @todo callback type
   auth?: AuthConfig;
+  runtime?: RequestRuntime;
 }
 
 export interface Response {
@@ -60,7 +73,6 @@ export interface Response {
   headers: any;
   data: any;
   config: RequestOptions;
-  raw?: Response;
 }
 
 export interface FilestackStatic {

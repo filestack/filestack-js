@@ -14,16 +14,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { RequestOptions, Response } from './../types';
+import { isURLSearchParams, isObject } from './../utils';
+import { RequestHeaders } from './../types';
+import { set } from './headers';
 
-export abstract class AdapterAbstract {
-  abstract request(options: RequestOptions): Promise<Response>;
-
-  protected normalizeRequestData(config: RequestOptions, data: any) {
-
+export const prepareData = (headers: RequestHeaders, data: any) => {
+  if (isURLSearchParams(data)) {
+    set(headers, 'content-type', 'application/x-www-form-urlencoded;charset=utf-8');
+    data = data.toString();
   }
 
-  protected normalizeResponseData(responseData: any) {
-
+  if (isObject(data)) {
+    set(headers, 'content-type', 'application/json');
+    data = JSON.stringify(data);
   }
-}
+
+  return { headers, data };
+};

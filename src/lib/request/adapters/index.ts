@@ -15,18 +15,6 @@
  * limitations under the License.
  */
 
-import { AdapterAbstract } from './abstract';
-import { RequestOptions } from './../types';
-
-export class XhrAdapter extends AdapterAbstract {
-  request(config: RequestOptions) {
-    return Promise.resolve({
-      status: 200,
-      statusText: 'qweqwe',
-      url: 'qewqwe',
-      headers: {},
-      config,
-      data: {},
-    });
-  }
-}
+export * from './http';
+export * from './xhr';
+export * from './interface';

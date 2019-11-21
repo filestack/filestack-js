@@ -1,4 +1,3 @@
-
 /*
  * Copyright (c) 2018 by Filestack
  * Some rights reserved.
@@ -38,13 +37,13 @@ export const isArrayBuffer = (val: ArrayBuffer) => toString.call(val) === '[obje
  * @param {Object} val The value to test
  * @returns {boolean} True if value is a view on an ArrayBuffer, otherwise false
  */
-export const isArrayBufferView = (val: ArrayBufferView)  => {
+export const isArrayBufferView = (val: ArrayBufferView) => {
   let result;
 
-  if ((typeof ArrayBuffer !== 'undefined') && (ArrayBuffer.isView)) {
+  if (typeof ArrayBuffer !== 'undefined' && ArrayBuffer.isView) {
     result = ArrayBuffer.isView(val);
   } else {
-    result = (val) && (val.buffer) && (val.buffer instanceof ArrayBuffer);
+    result = val && val.buffer && val.buffer instanceof ArrayBuffer;
   }
 
   return result;
@@ -64,7 +63,7 @@ export const isObject = (val: any) => val !== null && typeof val === 'object';
  * @param {Object} val The value to test
  * @returns {boolean} True if value is an Object, otherwise false
  */
-export const isString = (val: any) => typeof val === 'string' || (val instanceof String);
+export const isString = (val: any) => typeof val === 'string' || val instanceof String;
 
 /**
  * Determine if a value is a File
@@ -99,9 +98,16 @@ export const isStream = (val: any) => isObject(val) && typeof val.pipe === 'func
 export const isURLSearchParams = (val: URLSearchParams) => typeof URLSearchParams !== 'undefined' && val instanceof URLSearchParams;
 
 /**
+ * Determine if value is form data
+ *
+ * @param val
+ */
+export const isFormData = val => typeof FormData !== 'undefined' && val instanceof FormData;
+
+/**
  * Trim excess whitespace off the beginning and end of a string
  *
  * @param {String} str The String to trim
  * @returns {String} The String freed of excess whitespace
  */
-export const trim = (str) => str.replace(/^\s*/, '').replace(/\s*$/, '');
+export const trim = str => str.replace(/^\s*/, '').replace(/\s*$/, '');

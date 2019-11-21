@@ -17,32 +17,28 @@
 import * as url from 'url';
 import * as zlib from 'zlib';
 
-import { AdapterAbstract } from './abstract';
-import { getVersion } from './../../utils';
-import { RequestOptions, Response } from './../types';
-import * as utils from './../utils';
-import { FilestackError } from './../../../';
+import { AdapterInterface } from './interface';
+import { getVersion } from '../../utils';
+import { RequestOptions, Response } from '../types';
+import * as utils from '../utils';
+import { prepareData } from './../helpers/data';
+import { set as setHeader } from './../helpers/headers';
 import Debug from 'debug';
-
-// import { parse } from 'path';
+import { RequestErrorCode, RequestError } from '../error';
 
 const HTTPS_REGEXP =  /https:?/;
 const MAX_REDIRECTS = 10;
 const debug = Debug('fs:request:http');
 
-export class HttpAdapter extends AdapterAbstract {
+export class HttpAdapter implements AdapterInterface {
 
   private redirectHoops = 0;
   private redirectPaths = [];
 
-  // @ts-ignore
   request(config: RequestOptions) {
-    let data = config.data;
-    const headers = config.headers;
+    let { data, headers } = prepareData(config.data, config.headers);
 
-    if (!headers['User-Agent'] && !headers['user-agent']) {
-      headers['User-Agent'] = `filestack-request/${getVersion()}`;
-    }
+    setHeader(headers, 'user-agent', `filestack-request/${getVersion()}`);
 
     if (data && !utils.isStream(data)) {
       if (utils.isArrayBuffer(data)) {
@@ -50,13 +46,10 @@ export class HttpAdapter extends AdapterAbstract {
       } else if (utils.isString(data)) {
         data = Buffer.from(data, 'utf-8');
       } else {
-        return Promise.reject(new FilestackError('Data after transformation must be a string, an ArrayBuffer, a Buffer, or a Stream', config));
+        return Promise.reject(new RequestError('Data after transformation must be a string, an ArrayBuffer, a Buffer, or a Stream', config));
       }
 
-      headers['Content-Length'] = data.length;
-
-      //@todo handle data type - content-type
-      //@todo normalize headers name
+      setHeader(headers, 'content-length', data.length, true);
     }
 
      // HTTP basic authentication
@@ -96,10 +89,10 @@ export class HttpAdapter extends AdapterAbstract {
 
     debug('Starting %s request with options %O', isHttpsRequest ? 'https' : 'http', options);
 
-    return new Promise((resolve, reject): any => {
+    return new Promise<Response>((resolve, reject): any => {
       let req = agent.request(options, (res) => {
         if (req.aborted) {
-          return reject(new FilestackError('Request aborted', config));
+          return reject(new RequestError('Request aborted', config));
         }
 
         let stream = res;
@@ -120,16 +113,16 @@ export class HttpAdapter extends AdapterAbstract {
           debug('Redirect received %s', res.statusCode);
 
           if (this.redirectHoops >= MAX_REDIRECTS) {
-            return reject(new FilestackError(`Max redirects (${this.redirectHoops}) reached. Exiting`));
+            return reject(new RequestError(`Max redirects (${this.redirectHoops}) reached. Exiting`, config, res, RequestErrorCode.MAXREDIRECTS));
           }
           const url = res.headers['location'];
 
           if (!url || url.length === 0) {
-            return reject(new FilestackError(`Redirect header location not found`));
+            return reject(new RequestError(`Redirect header location not found`, config, res, RequestErrorCode.SERVER));
           }
 
           if (this.redirectPaths.indexOf(url) > -1) {
-            return reject(new FilestackError(`Redirect loop detected at url ${url}`));
+            return reject(new RequestError(`Redirect loop detected at url ${url}`, config, res, RequestErrorCode.SERVER));
           }
 
           this.redirectPaths.push(url);
@@ -156,24 +149,42 @@ export class HttpAdapter extends AdapterAbstract {
         stream.on('data', (chunk) => responseBuffer.push(chunk));
 
         stream.on('error', (err) => {
+          res = undefined;
+          req = undefined;
+          responseBuffer = undefined;
+
+          debug('Request error: Aborted: %b', req.aborted);
+
           if (req.aborted) {
-            return reject(new FilestackError('Request aborted', config));
+            return;
           }
 
-          return reject(new FilestackError(err, config));
+          return reject(new RequestError(err, config, null, RequestErrorCode.NETWORK));
         });
 
         stream.on('end', () => {
+          if (!res.complete) {
+            return reject(new RequestError('The connection was terminated by server', config, null, RequestErrorCode.SERVER));
+          }
+
           let responseData = Buffer.concat(responseBuffer);
           response.data = responseData;
+
+          // free resources
+          res = undefined;
+          req = undefined;
+          responseBuffer = undefined;
+
           return resolve(response);
+        });
+
+        req.setTimeout(config.timeout,() => {
+          req.abort();
+          return reject(new RequestError('Request timeout', config, null, RequestErrorCode.TIMEOUT));
         });
       });
 
-      // @todo handle timeout
       // @todo handle cancel token
-      // @todo handle request error
-      // @todo implement retry
 
       req.end(data);
     });

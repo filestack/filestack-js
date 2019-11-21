@@ -14,49 +14,93 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { RequestOptions } from './types';
-import { AdapterAbstract } from './adapter';
+import { RequestOptions, Response } from './types';
+import { AdapterInterface } from './adapters/interface';
+import { RequestError, RequestErrorCode } from './error';
+import Debug from 'debug';
 
-export const dispatch = (config: RequestOptions, adapter: AdapterAbstract) => {
-  config.headers = config.headers || {};
+const debug = Debug('fs:request:dispatch');
 
-  // Flatten headers
-  config.headers = Object.assign({}, config.headers.common || {}, config.headers[config.method] || {}, config.headers || {});
+export class Dispatch {
 
-  ['delete', 'get', 'purge', 'head', 'post', 'put', 'patch', 'common'].forEach((method) => delete config.headers[method]);
+  adapter: AdapterInterface;
 
-  // @todo handle filestack headers
+  constructor(adapter: AdapterInterface) {
+    this.adapter = adapter;
+  }
 
-  console.log(config);
-  // return adapter(config).then(
-  //   function onAdapterResolution(response) {
-  //     throwIfCancellationRequested(config);
+  public request(config: RequestOptions): Promise<Response> {
+    config.headers = config.headers || {};
 
-  //     // Transform response data
-  //     response.data = transformData(response.data, response.headers, config.transformResponse);
+    // Flatten headers
+    config.headers = Object.assign({}, config.headers.common || {}, config.headers[config.method] || {}, config.headers || {});
 
-  //     return response;
-  //   },
-  //   function onAdapterRejection(reason) {
-  //     if (!isCancel(reason)) {
-  //       throwIfCancellationRequested(config);
+    ['delete', 'get', 'purge', 'head', 'post', 'put', 'patch', 'common'].forEach((method) => delete config.headers[method]);
 
-  //       // Transform response data
-  //       if (reason && reason.response) {
-  //         reason.response.data = transformData(reason.response.data, reason.response.headers, config.transformResponse);
-  //       }
-  //     }
+    return this.adapter.request(config).then((response) => {
+      // @todo return reject if cancel requested
 
-  //     return Promise.reject(reason);
-  //   }
-  // );
+      return response;
+    }, (reason) => {
+      return this.retry(reason);
+    });
+  }
 
-  return adapter.request(config).then((response) => {
-    // @todo return reject if cancel requested
+  private retry(err: RequestError)  {
+    const config = err.config;
 
-    return response;
-  }, (reason) => {
+    if (!config.retry) {
+      debug('[Retry] Retry config not found. Exiting');
+      return Promise.reject(err);
+    }
 
-    return Promise.reject(reason);
-  });
-};
+    if (!this.shouldRetry(err)) {
+      debug('[Retry] Request is not retriable. Exiting');
+      return Promise.reject(err);
+    }
+
+    const retryConfig = config.retry;
+    let attempts = config.runtime && config.runtime.retryCount ? config.runtime.retryCount : 0;
+
+    if (retryConfig.retry && retryConfig.retry <= attempts) {
+      debug('[Retry] Retry attempts reached %d. Exiting', attempts);
+      return Promise.reject(err);
+    }
+
+    const retryDelay = Math.max(Math.min(retryConfig.retryMaxTime, (retryConfig.retryFactor ** attempts) * 1000), 1);
+
+    config.runtime = {
+      ...config.runtime,
+      retryCount: attempts++,
+    };
+
+    debug(`[Retry] Retrying request to ${config.url}, count ${attempts} of ${retryConfig.retry} - Delay: ${retryDelay}`);
+
+    return new Promise<Response>((resolve) => {
+      setTimeout(() => resolve(this.request(config)), retryDelay);
+    });
+  }
+
+  private shouldRetry(err: RequestError) {
+    // we always should retry on network failure
+    switch (err.code) {
+      case RequestErrorCode.NETWORK:
+      case RequestErrorCode.SERVER:
+      case RequestErrorCode.TIMEOUT:
+        return true;
+    }
+
+    // if request was not made and there is no response - retry
+    if (!err.response) {
+      return true;
+    }
+
+    // we should retry on all server errors (5xx)
+    if (500 <= err.response.status && err.response.status <= 599) {
+      return true;
+    }
+
+    // we should not retry on other errors (4xx) ie: BadRequest etc
+    return false;
+  }
+}

@@ -15,6 +15,6 @@
  * limitations under the License.
  */
 
-export * from './http';
-export * from './xhr';
-export * from './abstract';
+export * from './cookies';
+export * from './headers';
+export * from './data';

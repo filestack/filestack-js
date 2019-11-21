@@ -15,18 +15,28 @@
  * limitations under the License.
  */
 import { RequestOptions, FilestackStatic, HttpMethod } from './types';
-import { HttpAdapter, XhrAdapter } from './adapter';
-import { dispatch } from './dispatch';
+import { Dispatch } from './dispatch';
 
-export class RequestInstance {
+let RequestAdapter;
+
+// @todo - select proper adapter according to env use require to for tree shaking ?
+if (typeof process !== 'undefined' && process.versions && process.versions.node) {
+  RequestAdapter = require('./adapters/http').HttpAdapter;
+} else {
+  RequestAdapter = require('./adapters/xhr').XhrAdapter;
+}
+
+export class Request {
   private defaults: RequestOptions;
+
+  private dispatcher: Dispatch;
 
   constructor(config?: RequestOptions) {
     this.defaults = config;
+    this.dispatcher = new Dispatch(new RequestAdapter(RequestAdapter));
   }
 
   request(config: RequestOptions) {
-     /*eslint no-param-reassign:0*/
     if (typeof config === 'string') {
       config = arguments[1] || {};
       config.url = arguments[0];
@@ -42,46 +52,39 @@ export class RequestInstance {
       config.method = HttpMethod.GET;
     }
 
-    let adapter;
-
-    // @todo - select proper adapter according to env use require to for tree shaking ?
-    if (typeof process !== 'undefined' && process.versions && process.versions.node) {
-      adapter = new HttpAdapter();
-    } else {
-      adapter = new XhrAdapter();
-    }
-
-    return dispatch(config, adapter);
+    return this.dispatcher.request(config);
   }
 }
 
+const RequestInstance = new Request();
+
 export const StaticRequest: FilestackStatic = {
   request: (url: string, config: RequestOptions) => {
-    return (new RequestInstance()).request(Object.assign({}, config || {}, { url }));
+    return RequestInstance.request(Object.assign({}, config || {}, { url }));
   },
   get: (url: string, config: RequestOptions) => {
-    return (new RequestInstance()).request(Object.assign({}, config || {}, { method: HttpMethod.GET, url }));
+    return RequestInstance.request(Object.assign({}, config || {}, { method: HttpMethod.GET, url }));
   },
   head: (url: string, config: RequestOptions) => {
-    return (new RequestInstance()).request(Object.assign({}, config || {}, { method: HttpMethod.HEAD, url }));
+    return RequestInstance.request(Object.assign({}, config || {}, { method: HttpMethod.HEAD, url }));
   },
   options: (url: string, config: RequestOptions) => {
-    return (new RequestInstance()).request(Object.assign({}, config || {}, { method: HttpMethod.OPTIONS, url }));
+    return RequestInstance.request(Object.assign({}, config || {}, { method: HttpMethod.OPTIONS, url }));
   },
   purge: (url: string, config: RequestOptions) => {
-    return (new RequestInstance()).request(Object.assign({}, config || {}, { method: HttpMethod.PURGE, url }));
+    return RequestInstance.request(Object.assign({}, config || {}, { method: HttpMethod.PURGE, url }));
   },
   delete: (url: string, config: RequestOptions) => {
-    return (new RequestInstance()).request(Object.assign({}, config || {}, { method: HttpMethod.DELETE, url }));
+    return RequestInstance.request(Object.assign({}, config || {}, { method: HttpMethod.DELETE, url }));
   },
   post: (url: string, data: any, config: RequestOptions) => {
-    return (new RequestInstance()).request(Object.assign({}, config || {}, { method: HttpMethod.POST, url, data }));
+    return RequestInstance.request(Object.assign({}, config || {}, { method: HttpMethod.POST, url, data }));
   },
   put: (url: string, data: any, config: RequestOptions) => {
-    return (new RequestInstance()).request(Object.assign({}, config || {}, { method: HttpMethod.PUT, url, data }));
+    return RequestInstance.request(Object.assign({}, config || {}, { method: HttpMethod.PUT, url, data }));
   },
   patch: (url: string, data: any, config: RequestOptions) => {
-    return (new RequestInstance()).request(Object.assign({}, config || {}, { method: HttpMethod.PATCH, url, data }));
+    return RequestInstance.request(Object.assign({}, config || {}, { method: HttpMethod.PATCH, url, data }));
   },
 };
 
