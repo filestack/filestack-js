@@ -21,7 +21,7 @@ import { AdapterInterface } from './interface';
 import { getVersion } from '../../utils';
 import { RequestOptions, Response } from '../types';
 import * as utils from '../utils';
-import { prepareData } from './../helpers/data';
+import { prepareData, parseResponse } from './../helpers/data';
 import { set as setHeader } from './../helpers/headers';
 import Debug from 'debug';
 import { RequestErrorCode, RequestError } from '../error';
@@ -36,17 +36,19 @@ export class HttpAdapter implements AdapterInterface {
   private redirectPaths = [];
 
   request(config: RequestOptions) {
-    let { data, headers } = prepareData(config.data, config.headers);
+    let { data, headers } = prepareData(config);
 
     setHeader(headers, 'user-agent', `filestack-request/${getVersion()}`);
 
     if (data && !utils.isStream(data)) {
-      if (utils.isArrayBuffer(data)) {
-        data = Buffer.from(new Uint8Array(data));
-      } else if (utils.isString(data)) {
-        data = Buffer.from(data, 'utf-8');
-      } else {
-        return Promise.reject(new RequestError('Data after transformation must be a string, an ArrayBuffer, a Buffer, or a Stream', config));
+      if (!Buffer.isBuffer(data)) {
+        if (utils.isArrayBuffer(data)) {
+          data = Buffer.from(new Uint8Array(data));
+        } else if (utils.isString(data)) {
+          data = Buffer.from(data, 'utf-8');
+        } else {
+          return Promise.reject(new RequestError('Data after transformation must be a string, an ArrayBuffer, a Buffer, or a Stream', config));
+        }
       }
 
       setHeader(headers, 'content-length', data.length, true);
@@ -96,6 +98,8 @@ export class HttpAdapter implements AdapterInterface {
         }
 
         let stream = res;
+
+        debug('Response statusCode: %d, Response Headers: %O', res.statusCode, res.headers);
 
         switch (res.headers['content-encoding']) {
           case 'gzip':
@@ -175,13 +179,15 @@ export class HttpAdapter implements AdapterInterface {
           req = undefined;
           responseBuffer = undefined;
 
-          return resolve(response);
+          return resolve(parseResponse(response));
         });
 
-        req.setTimeout(config.timeout,() => {
-          req.abort();
-          return reject(new RequestError('Request timeout', config, null, RequestErrorCode.TIMEOUT));
-        });
+        if (config.timeout) {
+          req.setTimeout(config.timeout, () => {
+            req.abort();
+            return reject(new RequestError('Request timeout', config, null, RequestErrorCode.TIMEOUT));
+          });
+        }
       });
 
       // @todo handle cancel token

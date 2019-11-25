@@ -19,13 +19,19 @@
 import { AdapterInterface } from './interface';
 import { RequestOptions, Response } from '../types';
 import * as utils from '../utils';
-import { prepareData } from './../helpers/data';
+import { prepareData, parseResponse } from './../helpers/data';
 import { RequestError, RequestErrorCode } from '../error';
 import { parse as parseHeaders } from '../helpers';
+import Debug from 'debug';
+
+const debug = Debug('fs:request:xhr');
 
 export class XhrAdapter implements AdapterInterface {
   request(config: RequestOptions) {
-    let { data, headers } = prepareData(config.data, config.headers);
+
+    config = prepareData(config);
+
+    let { data, headers } = config;
 
     // if data is type of form let browser to set proper content type
     if (utils.isFormData(data)) {
@@ -40,6 +46,8 @@ export class XhrAdapter implements AdapterInterface {
       const password = config.auth.password || '';
       headers.Authorization = 'Basic ' + btoa(username + ':' + password);
     }
+
+    debug('Starting request to %s with options %O', config.url, config);
 
     request.open(config.method.toUpperCase(), config.url, true);
 
@@ -69,7 +77,7 @@ export class XhrAdapter implements AdapterInterface {
 
         request = null;
 
-        resolve(response);
+        resolve(parseResponse(response));
       };
 
       // Handle browser request cancellation (as opposed to a manual cancellation)
@@ -95,9 +103,9 @@ export class XhrAdapter implements AdapterInterface {
       };
 
       // Add headers to the request
-      if ('setRequestHeader' in request && headers && headers.length) {
+      if ('setRequestHeader' in request && headers && Object.keys.length) {
         for (let key in headers) {
-          if (typeof data === 'undefined' && key.toLowerCase() === 'content-type') {
+          if (typeof data === 'undefined') {
             delete headers[key];
             continue;
           }

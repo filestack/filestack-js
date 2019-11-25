@@ -42,6 +42,7 @@ export class Dispatch {
 
       return response;
     }, (reason) => {
+      debug('Request error: %O', reason);
       return this.retry(reason);
     });
   }

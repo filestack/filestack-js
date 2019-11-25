@@ -14,20 +14,72 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { isURLSearchParams, isObject } from './../utils';
-import { RequestHeaders } from './../types';
+import { isURLSearchParams, isObject, isFormData, isArrayBuffer, isStream, isFile, isBlob, isBuffer } from './../utils';
+import { RequestOptions, Response } from './../types';
 import { set } from './headers';
 
-export const prepareData = (headers: RequestHeaders, data: any) => {
-  if (isURLSearchParams(data)) {
-    set(headers, 'content-type', 'application/x-www-form-urlencoded;charset=utf-8');
-    data = data.toString();
+/**
+ * Prepare request and set content-type header based on data
+ *
+ * @param headers
+ * @param data
+ */
+export const prepareData = (config: RequestOptions) => {
+  if (isFormData(config.data) || isArrayBuffer(config.data) || isBuffer(config.data) || isStream(config.data) || isFile(config.data) || isBlob(config.data)) {
+    return config;
   }
 
-  if (isObject(data)) {
-    set(headers, 'content-type', 'application/json');
-    data = JSON.stringify(data);
+  if (isURLSearchParams(config.data)) {
+    set(config.headers, 'content-type', 'application/x-www-form-urlencoded;charset=utf-8');
+    config.data = config.data.toString();
   }
 
-  return { headers, data };
+  if (isObject(config.data)) {
+    set(config.headers, 'content-type', 'application/json');
+    config.data = JSON.stringify(config.data);
+  }
+
+  return config;
 };
+
+/**
+ * Prepare response data based on content type
+ *
+ * @param response
+ */
+export const parseResponse = (response: Response): Response => {
+  if (!response.headers || !response.headers['content-type']) {
+    return response;
+  }
+
+  const contentType = response.headers['content-type'];
+
+  if (/application\/json/.test(contentType)) {
+    try {
+      response.data = JSON.parse(response.data);
+    } catch (e) {
+      console.error('Cannot parse response', e);
+    }
+  } else if (/text\/(plain|html)/.test(contentType)) {
+    response.data = bufferToString(response.data);
+  }
+
+  return response;
+};
+
+function bufferToString(buffer) {
+  const bufView = new Uint16Array(buffer);
+  const length = bufView.length;
+
+  let result = '';
+  let addition = Math.pow(2, 16) - 1;
+
+  for (let i = 0; i < length; i += addition) {
+    if (i + addition > length) {
+      addition = length - i;
+    }
+    result += String.fromCharCode.apply(null, bufView.subarray(i, i + addition));
+  }
+
+  return result;
+}

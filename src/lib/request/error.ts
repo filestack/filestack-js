@@ -41,10 +41,18 @@ export class RequestError extends Error {
 
     /* istanbul ignore next */
     super(message);
-    Object.setPrototypeOf(this, RequestError.prototype);
+
     this.config = config;
     this.response = response;
     this.code = code;
-  }
 
+    const captureStackTrace: Function = (Error as any).captureStackTrace;
+    captureStackTrace && captureStackTrace(this);
+    fixProto(this, new.target.prototype);
+  }
+}
+
+function fixProto(target: Error, prototype: {}) {
+  const setPrototypeOf: Function = (Object as any).setPrototypeOf;
+  setPrototypeOf ? setPrototypeOf(target, prototype) : ((target as any).__proto__ = prototype);
 }
