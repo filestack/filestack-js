@@ -53,10 +53,8 @@ export class Dispatch {
     config.headers = config.headers || {};
 
     return this.adapter.request(config).then((response) => {
-      // @todo return reject if cancel requested
-
       return response;
-    }, (reason: FsRequestError) => {
+    }).catch((reason: FsRequestError) => {
       debug('Request error "%s": %O', reason, reason.response);
       return this.retry(reason);
     });
@@ -73,13 +71,13 @@ export class Dispatch {
   private retry(err: FsRequestError)  {
     const config = err.config;
 
-    if (!config.retry) {
-      debug('[Retry] Retry config not found. Exiting');
+    if (!this.shouldRetry(err)) {
+      debug('[Retry] Request error is not retriable. Exiting');
       return Promise.reject(err);
     }
 
-    if (!this.shouldRetry(err)) {
-      debug('[Retry] Request is not retriable. Exiting');
+    if (!config.retry) {
+      debug('[Retry] Retry config not found. Exiting');
       return Promise.reject(err);
     }
 

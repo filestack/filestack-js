@@ -185,29 +185,30 @@ export class HttpAdapter implements AdapterInterface {
           debug('Request ends: %O', response);
           return resolve(parseResponse(response));
         });
-
-        if (config.timeout) {
-          req.setTimeout(config.timeout, () => {
-            req.abort();
-            return reject(new FsRequestError('Request timeout', config, null, FsRequestErrorCode.TIMEOUT));
-          });
-        }
-
-        if (config.token) {
-          config.token.getSource().then((reason) => {
-            req.abort();
-            return reject(new FsRequestError(`Request aborted. Reason: ${reason}`, config, null, FsRequestErrorCode.ABORTED));
-          });
-        }
       });
 
+      if (config.token) {
+        config.token.getSource().then((reason) => {
+          req.abort();
+          reject(new FsRequestError(`Request aborted - ${reason}`, config, null, FsRequestErrorCode.ABORTED));
+        });
+      }
+
+      if (config.timeout) {
+        req.setTimeout(config.timeout, () => {
+          req.abort();
+          return reject(new FsRequestError('Request timeout', config, null, FsRequestErrorCode.TIMEOUT));
+        });
+      }
+
       req.on('error', (err) => {
-        req.abort();
+        if (req.aborted) {
+          return;
+        }
+
         debug('Request error: %s - %O', err, err.code);
         return reject(new FsRequestError(`Request error: ${err.code}`, config, null, FsRequestErrorCode.OTHER));
       });
-
-      // @todo handle cancel token
 
       req.end(data);
     });

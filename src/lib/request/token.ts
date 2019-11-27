@@ -39,6 +39,7 @@ const tokenSource = () => {
       for (let i = 0; i < data.listeners.length; i++) {
         if (typeof data.listeners[i] === 'function') {
           data.listeners[i](reason);
+          data.listeners.splice(i, 1);
         }
       }
     }, 0);

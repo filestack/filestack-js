@@ -15,11 +15,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+const nock = require('nock');
 import { FsRequest } from './../src/lib/request/index';
-// import { Token } from './../src/lib/request/token';
+import { FsToken } from './../src/lib/request/token';
 
-FsRequest.get('https://cloud.filestackapi.com/prefetch?apikey=APEkwxKMZTsWNIP0XQsv2z').then((resp) => {
-  console.log(resp);
+const scope = nock('http://www.google.com')
+  .get('/123')
+  .delay(1000)
+  .reply(200, '<html></html>');
+
+const token = new FsToken();
+
+setTimeout(() => {
+  token.cancel();
+}, 500);
+
+FsRequest.get('http://www.google.com/123', {
+  token: token,
+}).then((resp) => {
+  console.log('Catch request error:', resp);
+}).catch((e) => {
+  console.error('ERROR', e);
 });
 
 // const token = new Token();
