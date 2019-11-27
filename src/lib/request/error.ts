@@ -27,6 +27,7 @@ export enum FsRequestErrorCode {
   NETWORK = 'NETWORK',
   TIMEOUT = 'TIMEDOUT',
   SERVER = 'SERVER',
+  REQUEST = 'REQUEST',
   OTHER = 'UNKNOWN',
   MAXREDIRECTS = 'MAXREDIRECTS',
 }

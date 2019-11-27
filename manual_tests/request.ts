@@ -23,7 +23,7 @@ nock('http://www.filestacktest.com')
   .get('/123')
   .once()
   // .delay(1000)
-  .reply(500, '<html></html>', { 'content-type': 'text/plain' })
+  .reply(404, '<html></html>', { 'content-type': 'text/plain' })
   .get('/123')
   .reply(200, '<html></html>', { 'content-type': 'text/plain' });
 

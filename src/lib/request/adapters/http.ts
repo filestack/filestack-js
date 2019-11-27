@@ -185,14 +185,18 @@ export class HttpAdapter implements AdapterInterface {
           // prepare response
           response = parseResponse(response);
 
+          // move it to some external helper to use it on xhr?
           if (500 <= response.status && response.status <= 599) {
             // server error throw
             debug('Server error - %O', res);
             return reject(new FsRequestError(`Server error ${url}`, config, response, FsRequestErrorCode.SERVER));
+          } else if (400 <= response.status && response.status <= 499) {
+            // @todo check if we need this
+            return reject(new FsRequestError(`Request error ${url}`, config, response, FsRequestErrorCode.REQUEST));
           }
 
           debug('Request ends: %O', response);
-          return resolve(response);;
+          return resolve(response);
         });
       });
 
