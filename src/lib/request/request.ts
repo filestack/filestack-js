@@ -139,7 +139,7 @@ export class FsRequest {
    * @returns {Promise<FsResponse>}
    * @memberof FsRequest
    */
-  public static get (url: string, config: FsRequestOptions): Promise<FsResponse> {
+  public static get (url: string, config?: FsRequestOptions): Promise<FsResponse> {
     return FsRequest.getInstance().dispatch(Object.assign({}, config || {}, { method: FsHttpMethod.GET, url }));
   }
 
@@ -152,7 +152,7 @@ export class FsRequest {
    * @returns {Promise<FsResponse>}
    * @memberof FsRequest
    */
-  public static head (url: string, config: FsRequestOptions): Promise<FsResponse> {
+  public static head (url: string, config?: FsRequestOptions): Promise<FsResponse> {
     return FsRequest.getInstance().dispatch(Object.assign({}, config || {}, { method: FsHttpMethod.HEAD, url }));
   }
 
@@ -165,7 +165,7 @@ export class FsRequest {
    * @returns {Promise<FsResponse>}
    * @memberof FsRequest
    */
-  public static options (url: string, config: FsRequestOptions): Promise<FsResponse> {
+  public static options (url: string, config?: FsRequestOptions): Promise<FsResponse> {
     return FsRequest.getInstance().dispatch(Object.assign({}, config || {}, { method: FsHttpMethod.OPTIONS, url }));
   }
 
@@ -178,7 +178,7 @@ export class FsRequest {
    * @returns {Promise<FsResponse>}
    * @memberof FsRequest
    */
-  public static purge (url: string, config: FsRequestOptions): Promise<FsResponse> {
+  public static purge (url: string, config?: FsRequestOptions): Promise<FsResponse> {
     return FsRequest.getInstance().dispatch(Object.assign({}, config || {}, { method: FsHttpMethod.PURGE, url }));
   }
 
@@ -191,7 +191,7 @@ export class FsRequest {
    * @returns {Promise<FsResponse>}
    * @memberof FsRequest
    */
-  public static delete (url: string, config: FsRequestOptions): Promise<FsResponse> {
+  public static delete (url: string, config?: FsRequestOptions): Promise<FsResponse> {
     return FsRequest.getInstance().dispatch(Object.assign({}, config || {}, { method: FsHttpMethod.DELETE, url }));
   }
 

@@ -94,7 +94,7 @@ export class HttpAdapter implements AdapterInterface {
 
     debug('Starting %s request with options %O', isHttpsRequest ? 'https' : 'http', options);
 
-    return new Promise<Response>((resolve, reject): any => {
+    return new Promise<FsResponse>((resolve, reject): any => {
       let req = agent.request(options, (res) => {
         if (req.aborted) {
           return reject(new FsRequestError('Request aborted', config));
@@ -120,16 +120,16 @@ export class HttpAdapter implements AdapterInterface {
           debug('Redirect received %s', res.statusCode);
 
           if (this.redirectHoops >= MAX_REDIRECTS) {
-            return reject(new FsRequestError(`Max redirects (${this.redirectHoops}) reached. Exiting`, config, res, RequestErrorCode.MAXREDIRECTS));
+            return reject(new FsRequestError(`Max redirects (${this.redirectHoops}) reached. Exiting`, config, res, FsRequestErrorCode.MAXREDIRECTS));
           }
           const url = res.headers['location'];
 
           if (!url || url.length === 0) {
-            return reject(new FsRequestError(`Redirect header location not found`, config, res, RequestErrorCode.NETWORK));
+            return reject(new FsRequestError(`Redirect header location not found`, config, res, FsRequestErrorCode.NETWORK));
           }
 
           if (this.redirectPaths.indexOf(url) > -1) {
-            return reject(new FsRequestError(`Redirect loop detected at url ${url}`, config, res, RequestErrorCode.NETWORK));
+            return reject(new FsRequestError(`Redirect loop detected at url ${url}`, config, res, FsRequestErrorCode.NETWORK));
           }
 
           this.redirectPaths.push(url);

@@ -15,10 +15,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Request } from './../src/lib/request/index';
-import { Token } from './../src/lib/request/token';
+import { FsRequest } from './../src/lib/request/index';
+// import { Token } from './../src/lib/request/token';
 
-// Request.get('https://cloud.filestackapi.com/prefetch?apikey=APEkwxKMZTsWNIP0XQsv2z').then((resp) => {
+FsRequest.get('https://cloud.filestackapi.com/prefetch?apikey=APEkwxKMZTsWNIP0XQsv2z').then((resp) => {
+  console.log(resp);
+});
 
 // const token = new Token();
 

@@ -64,7 +64,7 @@ export interface FsRequestOptions {
   url?: string;
   data?: any;
   json?: any;
-  method?: HttpMethod;
+  method?: FsHttpMethod;
   mode?: RequestMode;
   cache?: RequestCache;
   redirect?: RequestRedirect;

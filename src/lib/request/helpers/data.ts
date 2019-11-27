@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 import { isURLSearchParams, isObject, isFormData, isArrayBuffer, isStream, isFile, isBlob, isBuffer } from './../utils';
-import { RequestOptions, Response } from './../types';
+import { FsRequestOptions, FsResponse } from './../types';
 import { set } from './headers';
 
 /**
@@ -24,7 +24,7 @@ import { set } from './headers';
  * @param headers
  * @param data
  */
-export const prepareData = (config: RequestOptions) => {
+export const prepareData = (config: FsRequestOptions) => {
   if (isFormData(config.data) || isArrayBuffer(config.data) || isBuffer(config.data) || isStream(config.data) || isFile(config.data) || isBlob(config.data)) {
     return config;
   }
@@ -47,7 +47,7 @@ export const prepareData = (config: RequestOptions) => {
  *
  * @param response
  */
-export const parseResponse = (response: Response): Response => {
+export const parseResponse = (response: FsResponse): FsResponse => {
   if (!response.headers || !response.headers['content-type']) {
     return response;
   }
