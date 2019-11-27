@@ -21,7 +21,7 @@ import Debug from 'debug';
 
 import { File, FilePart, FilePartMetadata, FileState } from './../file';
 import { StoreUploadOptions } from './../types';
-import { StaticRequest, Response, RequestError } from './../../../request';
+import { FsRequest, FsResponse, FsRequestError } from './../../../request';
 // import { postWithRetry, request, useRetryPolicy, shouldRetry } from './../../request';
 import { uniqueTime, uniqueId, filterObject } from './../../../utils';
 import { UploaderAbstract, UploadMode, INTELLIGENT_CHUNK_SIZE, MIN_CHUNK_SIZE, DEFAULT_STORE_LOCATION } from './abstract';
@@ -300,7 +300,7 @@ export class S3Uploader extends UploaderAbstract {
     const payload = this.getPayloadById(id);
 
     debug(`[${id}] Make start request`);
-    return StaticRequest.post(
+    return FsRequest.post(
       `${this.getUrl()}/multipart/start`,
       {
         filename: payload.file.name,
@@ -421,7 +421,7 @@ export class S3Uploader extends UploaderAbstract {
       data.md5 = part.md5;
     }
 
-    return StaticRequest.post(
+    return FsRequest.post(
       `${url}/multipart/upload`,
       data,
       {
@@ -453,7 +453,7 @@ export class S3Uploader extends UploaderAbstract {
     const { data, headers } = await this.getS3PartMetadata(id, part);
     debug(`[${id}] Received part ${partNumber} info body: \n%O\n headers: \n%O\n`, data, headers);
 
-    return StaticRequest
+    return FsRequest
       .put(data.url, part.buffer, {
         // cancelToken: this.cancelToken.token,
         timeout: this.timeout,
@@ -537,7 +537,7 @@ export class S3Uploader extends UploaderAbstract {
       return Promise.reject(err);
     });
 
-    return StaticRequest
+    return FsRequest
       .put(data.url, chunk.buffer, {
         // cancelToken: this.cancelToken.token,
         timeout: this.timeout,
@@ -600,7 +600,7 @@ export class S3Uploader extends UploaderAbstract {
     const payload = this.getPayloadById(id);
     const part = payload.parts[partNumber];
 
-    return StaticRequest.post(
+    return FsRequest.post(
       `${this.getUploadUrl(id)}/multipart/commit`,
       {
         ...this.getDefaultFields(id, ['apikey', 'region', 'upload_id', 'policy', 'signature', 'uri']),
@@ -613,7 +613,7 @@ export class S3Uploader extends UploaderAbstract {
         headers: this.getDefaultHeaders(id),
         retry: this.retryConfig,
       }
-    ).then((res: Response) => {
+    ).then((res: FsResponse) => {
       debug(`[${id}] Commit Part number ${part.partNumber}. Response: %O`, res.data);
 
       return res;
@@ -646,7 +646,7 @@ export class S3Uploader extends UploaderAbstract {
 
     debug(`[${id}] Etags %O`, parts);
 
-    return StaticRequest.post(
+    return FsRequest.post(
       `${this.getUrl()}/multipart/complete`,
       {
         ...this.getDefaultFields(id, ['apikey', 'policy', 'signature', 'uri', 'region', 'upload_id', 'fii'], true),
@@ -819,7 +819,7 @@ export class S3Uploader extends UploaderAbstract {
    *
    * @param err
    */
-  private getErrorDetails(err: RequestError) {
+  private getErrorDetails(err: FsRequestError) {
     if (!err.response) {
       return {};
     }

@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export enum HttpMethod {
+export enum FsHttpMethod {
   GET = 'GET',
   DELETE = 'DELETE',
   HEAD = 'HEAD',
@@ -25,35 +25,42 @@ export enum HttpMethod {
   PATCH = 'PATH',
 }
 
-export interface RetryConfig {
+export interface FsRetryConfig {
   retry: number;
   onRetry?: (requestConfig: any) => void;
   retryMaxTime: number;
   retryFactor: number;
 }
 
-export interface AuthConfig {
+export interface FsTokenInterface {
+  cancel: (reason?: string | Error) => void;
+  pause: () => void;
+  resume: () => void;
+  getSource: () => Promise<any>;
+}
+
+export interface FsAuthConfig {
   username: string;
   password: string;
 }
 
-export interface RequestHeaders {
+export interface FsRequestHeaders {
   [name: string]: string;
 }
 
-export interface RequestParams {
+export interface FsRequestParams {
   [name: string]: string | number;
 }
 
 /**
  * Request runtime data like retryCount etc
  */
-export interface RequestRuntime {
+export interface FsRequestRuntime {
   retryCount?: number;
   [name: string]: any;
 }
 
-export interface RequestOptions {
+export interface FsRequestOptions {
   url?: string;
   data?: any;
   json?: any;
@@ -61,33 +68,22 @@ export interface RequestOptions {
   mode?: RequestMode;
   cache?: RequestCache;
   redirect?: RequestRedirect;
-  params?: RequestParams;
+  params?: FsRequestParams;
   filesstackHeaders?: boolean;
-  headers?: RequestHeaders;
+  headers?: FsRequestHeaders;
   timeout?: number;
   cancelToken?: any;
-  retry?: RetryConfig;
+  retry?: FsRetryConfig;
   onProgress?: (pr: any) => any; // @todo callback type
-  auth?: AuthConfig;
-  runtime?: RequestRuntime;
+  auth?: FsAuthConfig;
+  runtime?: FsRequestRuntime;
+  token?: FsTokenInterface;
 }
 
-export interface Response {
+export interface FsResponse {
   status: number;
   statusText: string;
   headers: any;
   data: any;
-  config: RequestOptions;
-}
-
-export interface FilestackStatic {
-  request(url: string, config?: RequestOptions): Promise<Response>;
-  get(url: string, config?: RequestOptions): Promise<Response>;
-  purge(url: string, config?: RequestOptions): Promise<Response>;
-  delete(url: string, config?: RequestOptions): Promise<Response>;
-  head(url: string, config?: RequestOptions): Promise<Response>;
-  options(url: string, config?: RequestOptions): Promise<Response>;
-  post(url: string, data?: any, config?: RequestOptions): Promise<Response>;
-  put(url: string, data?: any, config?: RequestOptions): Promise<Response>;
-  patch(url: string, data?: any, config?: RequestOptions): Promise<Response>;
+  config: FsRequestOptions;
 }

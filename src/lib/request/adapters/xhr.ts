@@ -18,14 +18,14 @@
 import Debug from 'debug';
 import * as utils from '../utils';
 import { AdapterInterface } from './interface';
-import { RequestOptions, Response } from '../types';
-import { RequestError, RequestErrorCode } from '../error';
+import { FsRequestOptions, FsResponse } from '../types';
+import { FsRequestError, FsRequestErrorCode } from '../error';
 import { prepareData, parseResponse, parse as parseHeaders, combineURL } from './../helpers';
 
 const debug = Debug('fs:request:xhr');
 
 export class XhrAdapter implements AdapterInterface {
-  request(config: RequestOptions) {
+  request(config: FsRequestOptions) {
 
     config = prepareData(config);
 
@@ -67,7 +67,7 @@ export class XhrAdapter implements AdapterInterface {
         const responseHeaders = 'getAllResponseHeaders' in request ? parseHeaders(request.getAllResponseHeaders()) : null;
         const responseData = request.response;
 
-        const response: Response = {
+        const response: FsResponse = {
           data: responseData,
           status: request.status,
           statusText: request.statusText,
@@ -87,19 +87,19 @@ export class XhrAdapter implements AdapterInterface {
         }
 
         request = null;
-        reject(new RequestError('Request aborted', config, null, RequestErrorCode.ABORTED));
+        reject(new FsRequestError('Request aborted', config, null, FsRequestErrorCode.ABORTED));
       };
 
       // Handle low level network errors
       request.onerror = function handleError() {
         request = null;
-        reject(new RequestError('Network Error', config, null, RequestErrorCode.NETWORK));
+        reject(new FsRequestError('Network Error', config, null, FsRequestErrorCode.NETWORK));
       };
 
       // Handle timeout
       request.ontimeout = function handleTimeout() {
         request = null;
-        reject(new RequestError('Request timeout', config, null, RequestErrorCode.TIMEOUT));
+        reject(new FsRequestError('Request timeout', config, null, FsRequestErrorCode.TIMEOUT));
       };
 
       // Add headers to the request
@@ -126,19 +126,14 @@ export class XhrAdapter implements AdapterInterface {
         request.addEventListener('progress', config.onProgress);
       }
 
-    // if (config.cancelToken) {
-    //   // Handle cancellation
-    //   config.cancelToken.promise.then(function onCanceled(cancel) {
-    //     if (!request) {
-    //       return;
-    //     }
+      if (config.token) {
+        config.token.getSource().then((reason) => {
+          request.abort();
 
-    //     request.abort();
-    //     reject(cancel);
-    //     // Clean up request
-    //     request = null;
-    //   });
-    // }
+          request = null;
+          return reject(new FsRequestError(`Request aborted. Reason: ${reason}`, config, null, FsRequestErrorCode.ABORTED));
+        });
+      }
 
       if (data === undefined) {
         data = null;

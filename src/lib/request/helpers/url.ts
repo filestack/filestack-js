@@ -15,6 +15,12 @@
  * limitations under the License.
  */
 
+/**
+ * Combine url with qs parameters
+ *
+ * @param {String} url base url
+ * @param {Object} params Query string params object
+ */
 export const combineURL = (url, params) => {
   if (!params) {
     return url;
@@ -32,6 +38,7 @@ export const combineURL = (url, params) => {
 
 /**
  * Change request json params to url search ones
+ *
  * @param {Object} obj Object to transform
  */
 export const urlfy = val =>

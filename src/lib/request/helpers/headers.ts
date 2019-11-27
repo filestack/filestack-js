@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 import { trim } from './../utils';
-import { RequestHeaders } from './../types';
+import { FsRequestHeaders } from './../types';
 
 const ignoreDuplicates = [
   'expires',
@@ -37,6 +37,11 @@ const ignoreDuplicates = [
   'user-agent',
 ];
 
+/**
+ * Parse response raw header (xhr)
+ *
+ * @param {string} headers - raw headers string
+ */
 export const parse = headers => {
   let parsed = {};
   let key;
@@ -75,7 +80,7 @@ export const parse = headers => {
  *
  * @param headers
  */
-export const normalizeHeaders = (headers: RequestHeaders): RequestHeaders => {
+export const normalizeHeaders = (headers: FsRequestHeaders): FsRequestHeaders => {
   if (!headers) {
     return {};
   }
@@ -96,7 +101,7 @@ export const normalizeHeaders = (headers: RequestHeaders): RequestHeaders => {
  * @param value - header value
  * @param setIFExists - determine if we should change header value if exists
  */
-export const set = (headers: RequestHeaders, name: string, value: string, setIFExists = false) => {
+export const set = (headers: FsRequestHeaders, name: string, value: string, setIFExists = false) => {
   name = normalizeName(name);
 
   if (!headers) {
@@ -112,6 +117,11 @@ export const set = (headers: RequestHeaders, name: string, value: string, setIFE
   return headers;
 };
 
+/**
+ * Normalize header names according to rfc spec
+ *
+ * @param {string} name - header name
+ */
 export const normalizeName = (name: string) => {
   // the exceptions
   let result = {

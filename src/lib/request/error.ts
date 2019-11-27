@@ -14,9 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { RequestOptions, Response } from './types';
+import { FsRequestOptions, FsResponse } from './types';
 
-export enum RequestErrorCode {
+export enum FsRequestErrorCode {
   ABORTED = 'ABORTED',
   NETWORK = 'NETWORK',
   TIMEOUT = 'TIMEDOUT',
@@ -25,7 +25,7 @@ export enum RequestErrorCode {
   MAXREDIRECTS = 'MAXREDIRECTS',
 }
 
-export class RequestError extends Error {
+export class FsRequestError extends Error {
 
   /**
    * Error details, ie validation errors
@@ -33,11 +33,11 @@ export class RequestError extends Error {
    * @type {*}
    * @memberof FilestackError
    */
-  public readonly config: RequestOptions;
-  public readonly response: Response;
-  public readonly code: RequestErrorCode;
+  public readonly config: FsRequestOptions;
+  public readonly response: FsResponse;
+  public readonly code: FsRequestErrorCode;
 
-  constructor(message: string, config: any, response?: Response, code?: RequestErrorCode) {
+  constructor(message: string, config: any, response?: FsResponse, code?: FsRequestErrorCode) {
 
     /* istanbul ignore next */
     super(message);

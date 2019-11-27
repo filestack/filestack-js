@@ -20,10 +20,10 @@ import Debug from 'debug';
 
 import { AdapterInterface } from './interface';
 import { getVersion } from '../../utils';
-import { RequestOptions, Response } from '../types';
+import { FsRequestOptions, FsResponse } from '../types';
 import * as utils from '../utils';
 import { prepareData, parseResponse, combineURL, set as setHeader, normalizeHeaders } from './../helpers';
-import { RequestErrorCode, RequestError } from '../error';
+import { FsRequestErrorCode, FsRequestError } from '../error';
 
 const HTTPS_REGEXP =  /https:?/;
 const MAX_REDIRECTS = 10;
@@ -34,7 +34,7 @@ export class HttpAdapter implements AdapterInterface {
   private redirectHoops = 0;
   private redirectPaths = [];
 
-  request(config: RequestOptions) {
+  request(config: FsRequestOptions) {
     config.headers = normalizeHeaders(config.headers);
 
     let { data, headers } = prepareData(config);
@@ -48,7 +48,7 @@ export class HttpAdapter implements AdapterInterface {
         } else if (utils.isString(data)) {
           data = Buffer.from(data, 'utf-8');
         } else {
-          return Promise.reject(new RequestError('Data after transformation must be a string, an ArrayBuffer, a Buffer, or a Stream', config));
+          return Promise.reject(new FsRequestError('Data after transformation must be a string, an ArrayBuffer, a Buffer, or a Stream', config));
         }
       }
 
@@ -70,7 +70,7 @@ export class HttpAdapter implements AdapterInterface {
     }
 
     if (!parsed.host || !parsed.protocol) {
-      return Promise.reject(new RequestError(`Cannot parse provided url ${config.url}`, config, null, RequestErrorCode.OTHER));
+      return Promise.reject(new FsRequestError(`Cannot parse provided url ${config.url}`, config, null, FsRequestErrorCode.OTHER));
     }
 
     // normalize auth header
@@ -97,7 +97,7 @@ export class HttpAdapter implements AdapterInterface {
     return new Promise<Response>((resolve, reject): any => {
       let req = agent.request(options, (res) => {
         if (req.aborted) {
-          return reject(new RequestError('Request aborted', config));
+          return reject(new FsRequestError('Request aborted', config));
         }
 
         let stream = res;
@@ -120,16 +120,16 @@ export class HttpAdapter implements AdapterInterface {
           debug('Redirect received %s', res.statusCode);
 
           if (this.redirectHoops >= MAX_REDIRECTS) {
-            return reject(new RequestError(`Max redirects (${this.redirectHoops}) reached. Exiting`, config, res, RequestErrorCode.MAXREDIRECTS));
+            return reject(new FsRequestError(`Max redirects (${this.redirectHoops}) reached. Exiting`, config, res, RequestErrorCode.MAXREDIRECTS));
           }
           const url = res.headers['location'];
 
           if (!url || url.length === 0) {
-            return reject(new RequestError(`Redirect header location not found`, config, res, RequestErrorCode.NETWORK));
+            return reject(new FsRequestError(`Redirect header location not found`, config, res, RequestErrorCode.NETWORK));
           }
 
           if (this.redirectPaths.indexOf(url) > -1) {
-            return reject(new RequestError(`Redirect loop detected at url ${url}`, config, res, RequestErrorCode.NETWORK));
+            return reject(new FsRequestError(`Redirect loop detected at url ${url}`, config, res, RequestErrorCode.NETWORK));
           }
 
           this.redirectPaths.push(url);
@@ -144,7 +144,7 @@ export class HttpAdapter implements AdapterInterface {
           return resolve(this.request(Object.assign({}, config, { url })));
         }
 
-        let response: Response = {
+        let response: FsResponse = {
           status: res.statusCode,
           statusText: res.statusMessage,
           headers: res.headers,
@@ -166,7 +166,7 @@ export class HttpAdapter implements AdapterInterface {
             return;
           }
 
-          return reject(new RequestError(err, config, null, RequestErrorCode.NETWORK));
+          return reject(new FsRequestError(err, config, null, FsRequestErrorCode.NETWORK));
         });
 
         stream.on('end', () => {
@@ -182,13 +182,21 @@ export class HttpAdapter implements AdapterInterface {
           req = undefined;
           responseBuffer = undefined;
 
+          debug('Request ends: %O', response);
           return resolve(parseResponse(response));
         });
 
         if (config.timeout) {
           req.setTimeout(config.timeout, () => {
             req.abort();
-            return reject(new RequestError('Request timeout', config, null, RequestErrorCode.TIMEOUT));
+            return reject(new FsRequestError('Request timeout', config, null, FsRequestErrorCode.TIMEOUT));
+          });
+        }
+
+        if (config.token) {
+          config.token.getSource().then((reason) => {
+            req.abort();
+            return reject(new FsRequestError(`Request aborted. Reason: ${reason}`, config, null, FsRequestErrorCode.ABORTED));
           });
         }
       });
@@ -196,7 +204,7 @@ export class HttpAdapter implements AdapterInterface {
       req.on('error', (err) => {
         req.abort();
         debug('Request error: %s - %O', err, err.code);
-        return reject(new RequestError(`Request error: ${err.code}`, config, null, RequestErrorCode.OTHER));
+        return reject(new FsRequestError(`Request error: ${err.code}`, config, null, FsRequestErrorCode.OTHER));
       });
 
       // @todo handle cancel token

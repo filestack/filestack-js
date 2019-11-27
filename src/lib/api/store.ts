@@ -19,7 +19,7 @@ import { Security, Session } from '../client';
 import { Filelink, StoreParams } from './../filelink';
 import { FilestackError } from './../../filestack_error';
 import { getValidator, StoreParamsSchema } from './../../schema';
-import { StaticRequest } from '../request';
+import { FsRequest } from '../request';
 
 /**
  *
@@ -73,7 +73,7 @@ export const storeURL = (
     // options.cancelToken = source.token;
   }
 
-  return StaticRequest.get(baseURL.toString(), options).then((res) => {
+  return FsRequest.get(baseURL.toString(), options).then((res) => {
     if (res.data && res.data.handle) {
       return { ...res.data, mimetype: res.data.type };
     }

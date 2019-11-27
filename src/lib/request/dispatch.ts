@@ -14,35 +14,63 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { RequestOptions, Response } from './types';
+import { FsRequestOptions, FsResponse } from './types';
 import { AdapterInterface } from './adapters/interface';
-import { RequestError, RequestErrorCode } from './error';
+import { FsRequestError, FsRequestErrorCode } from './error';
 import Debug from 'debug';
 
 const debug = Debug('fs:request:dispatch');
 
+/**
+ * Request dispatcher
+ *
+ * @export
+ * @class Dispatch
+ */
 export class Dispatch {
 
   adapter: AdapterInterface;
 
+  /**
+   * Creates an instance of Dispatch.
+   *
+   * @param {AdapterInterface} adapter http | XHR adapater
+   * @memberof Dispatch
+   */
   constructor(adapter: AdapterInterface) {
     this.adapter = adapter;
   }
 
-  public request(config: RequestOptions): Promise<Response> {
+  /**
+   * Dispatch request adding retry policy
+   * @todo add data preprocesor
+   *
+   * @param {FsRequestOptions} config
+   * @returns {Promise<FsResponse>}
+   * @memberof Dispatch
+   */
+  public request(config: FsRequestOptions): Promise<FsResponse> {
     config.headers = config.headers || {};
 
     return this.adapter.request(config).then((response) => {
       // @todo return reject if cancel requested
 
       return response;
-    }, (reason: RequestError) => {
+    }, (reason: FsRequestError) => {
       debug('Request error "%s": %O', reason, reason.response);
       return this.retry(reason);
     });
   }
 
-  private retry(err: RequestError)  {
+  /**
+   * Request retrier
+   *
+   * @private
+   * @param {FsRequestError} err
+   * @returns
+   * @memberof Dispatch
+   */
+  private retry(err: FsRequestError)  {
     const config = err.config;
 
     if (!config.retry) {
@@ -72,17 +100,25 @@ export class Dispatch {
 
     debug(`[Retry] Retrying request to ${config.url}, count ${attempts} of ${retryConfig.retry} - Delay: ${retryDelay}`);
 
-    return new Promise<Response>((resolve) => {
+    return new Promise<FsResponse>((resolve) => {
       setTimeout(() => resolve(this.request(config)), retryDelay);
     });
   }
 
-  private shouldRetry(err: RequestError) {
+  /**
+   * Indicates if method should be retried
+   *
+   * @private
+   * @param {FsRequestError} err
+   * @returns
+   * @memberof Dispatch
+   */
+  private shouldRetry(err: FsRequestError) {
     // we always should retry on network failure
     switch (err.code) {
-      case RequestErrorCode.NETWORK:
-      case RequestErrorCode.SERVER:
-      case RequestErrorCode.TIMEOUT:
+      case FsRequestErrorCode.NETWORK:
+      case FsRequestErrorCode.SERVER:
+      case FsRequestErrorCode.TIMEOUT:
         return true;
     }
 

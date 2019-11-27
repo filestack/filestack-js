@@ -1,4 +1,4 @@
-import { RequestError } from './../error';
+
 /*
  * Copyright (c) 2019 by Filestack.
  * Some rights reserved.
@@ -17,7 +17,8 @@ import { RequestError } from './../error';
  */
 import * as nock from 'nock';
 import { HttpAdapter } from './http';
-import { HttpMethod } from '../types';
+import { FsHttpMethod } from '../types';
+import { FsRequestError } from './../error';
 
 const TEST_HOST_HTTP = 'http://filestacktest.com';
 const TEST_HOST_HTTPS = 'https://filestacktest-https.com';
@@ -99,7 +100,7 @@ describe('Request/Adapter/Http', () => {
 
       const adapter = new HttpAdapter();
       const res = await adapter.request({
-        method: HttpMethod.GET,
+        method: FsHttpMethod.GET,
         url: TEST_HOST_HTTP,
         params,
       });
@@ -116,7 +117,7 @@ describe('Request/Adapter/Http', () => {
 
       const adapter = new HttpAdapter();
       const res = await adapter.request({
-        method: HttpMethod.GET,
+        method: FsHttpMethod.GET,
         url: TEST_HOST_HTTPS,
       });
 
@@ -131,7 +132,7 @@ describe('Request/Adapter/Http', () => {
 
       const adapter = new HttpAdapter();
       const res = await adapter.request({
-        method: HttpMethod.GET,
+        method: FsHttpMethod.GET,
         url: (TEST_HOST_HTTPS + '').replace('https://', ''),
       });
 
@@ -147,9 +148,9 @@ describe('Request/Adapter/Http', () => {
       const adapter = new HttpAdapter();
 
       return expect(adapter.request({
-        method: HttpMethod.GET,
+        method: FsHttpMethod.GET,
         url: '/',
-      })).rejects.toEqual(expect.any(RequestError));
+      })).rejects.toEqual(expect.any(FsRequestError));
     });
 
     it.only('should respect auth params', async () => {
@@ -167,7 +168,7 @@ describe('Request/Adapter/Http', () => {
         headers: {
           authorization: 'test',
         },
-        method: HttpMethod.GET,
+        method: FsHttpMethod.GET,
         url: TEST_HOST_HTTPS,
       });
 

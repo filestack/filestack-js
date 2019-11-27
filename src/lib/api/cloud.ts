@@ -20,7 +20,7 @@ import { StoreParams } from '../filelink';
 import { ClientOptions, Session } from '../client';
 // import { requestWithSource, request } from '../api/request';
 import { FilestackError } from './../../filestack_error';
-import { StaticRequest } from '../request';
+import { FsRequest } from '../request';
 
 /**
  * @private
@@ -64,7 +64,7 @@ export class CloudClient {
     const params = {
       apikey: this.session.apikey,
     };
-    return StaticRequest
+    return FsRequest
       .get(`${this.cloudApiUrl}/prefetch`, { params })
       .then(res => res.data);
   }
@@ -93,7 +93,7 @@ export class CloudClient {
       // options.cancelToken = source.token;
     }
 
-    return StaticRequest
+    return FsRequest
       .post(`${this.cloudApiUrl}/folder/list`, payload, options)
       .then(res => {
         if (res.data && res.data.token) {
@@ -145,7 +145,7 @@ export class CloudClient {
       // requestOptions.cancelToken = source.token;
     }
 
-    return StaticRequest
+    return FsRequest
       .post(`${this.cloudApiUrl}/store/`, payload, requestOptions)
       .then(res => {
         if (res.data && res.data.token) {
@@ -174,7 +174,7 @@ export class CloudClient {
       localStorage.removeItem(PICKER_KEY);
     }
 
-    return StaticRequest
+    return FsRequest
       .post(`${this.cloudApiUrl}/auth/logout`, payload)
       .then(res => {
         if (res.data && res.data[name]) {
@@ -195,7 +195,7 @@ export class CloudClient {
       payload.signature = this.session.signature;
     }
 
-    return StaticRequest
+    return FsRequest
       .post(`${this.cloudApiUrl}/metadata`, payload)
       .then(res => res.data);
   }
@@ -205,7 +205,7 @@ export class CloudClient {
     if (type !== 'video' && type !== 'audio') {
       throw new FilestackError('Type must be one of video or audio.');
     }
-    return StaticRequest
+    return FsRequest
       .post(`${this.cloudApiUrl}/recording/${type}/init`).then(res => res.data);
   }
 
@@ -218,7 +218,7 @@ export class CloudClient {
       session_id: sessionId,
     };
 
-    return StaticRequest
+    return FsRequest
       .post(`${this.cloudApiUrl}/recording/${type}/start`, payload)
       .then(res => res.data);
   }
@@ -234,7 +234,7 @@ export class CloudClient {
       archive_id: archiveId,
     };
 
-    return StaticRequest
+    return FsRequest
       .post(`${this.cloudApiUrl}/recording/${type}/stop`, payload)
       .then(res => res.data);
   }

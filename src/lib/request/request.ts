@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { RequestOptions, FilestackStatic, HttpMethod } from './types';
+import { FsRequestOptions, FsHttpMethod, FsResponse } from './types';
 import { Dispatch } from './dispatch';
 
 let RequestAdapter;
@@ -26,17 +26,69 @@ if (typeof process !== 'undefined' && process.versions && process.versions.node)
   RequestAdapter = require('./adapters/xhr').XhrAdapter;
 }
 
-export class Request {
-  private defaults: RequestOptions;
+/**
+ * Main isomorphic Filestack request library
+ *
+ * @export
+ * @class FsRequest
+ */
+export class FsRequest {
 
+  /**
+   * Request static instance
+   *
+   * @private
+   * @static
+   * @type {FsRequest}
+   * @memberof FsRequest
+   */
+  private static instance: FsRequest;
+
+  /**
+   * Default request options
+   *
+   * @private
+   * @type {RequestOptions}
+   * @memberof FsRequest
+   */
+  private defaults: FsRequestOptions;
+
+  /**
+   * Request Dispatcher
+   *
+   * @private
+   * @type {Dispatch}
+   * @memberof FsRequest
+   */
   private dispatcher: Dispatch;
 
-  constructor(config?: RequestOptions) {
+  /**
+   * Creates an instance of Request.
+   *
+   * @param {RequestOptions} [config]
+   * @memberof FsRequest
+   */
+  constructor(config?: FsRequestOptions) {
     this.defaults = config;
     this.dispatcher = new Dispatch(new RequestAdapter(RequestAdapter));
   }
 
-  request(config: RequestOptions) {
+  private static getInstance() {
+    if (!FsRequest.instance) {
+      FsRequest.instance = new FsRequest();
+    }
+
+    return FsRequest.instance;
+  }
+
+  /**
+   * Run request with given adapter
+   *
+   * @param {RequestOptions} config
+   * @returns
+   * @memberof Request
+   */
+  private request(config: FsRequestOptions) {
     if (typeof config === 'string') {
       config = arguments[1] || {};
       config.url = arguments[0];
@@ -48,44 +100,134 @@ export class Request {
       config.method = this.defaults.method;
     }
 
+    // @todo handle default config option
+
     if (!config.method) {
-      config.method = HttpMethod.GET;
+      config.method = FsHttpMethod.GET;
     }
 
     return this.dispatcher.request(config);
   }
+
+  /**
+   * Dispatch request
+   *
+   * @static
+   * @param {string} url
+   * @param {FsRequestOptions} config
+   * @returns {Promise<FsResponse>}
+   * @memberof FsRequest
+   */
+  public static dispatch (url: string, config: FsRequestOptions): Promise<FsResponse> {
+    return FsRequest.getInstance().request(Object.assign({}, config || {}, { url }));
+  }
+
+  /**
+   * Dispatch GET request
+   *
+   * @static
+   * @param {string} url
+   * @param {FsRequestOptions} config
+   * @returns {Promise<FsResponse>}
+   * @memberof FsRequest
+   */
+  public static get (url: string, config: FsRequestOptions): Promise<FsResponse> {
+    return FsRequest.getInstance().request(Object.assign({}, config || {}, { method: FsHttpMethod.GET, url }));
+  }
+
+  /**
+   * Dispatch HEAD request
+   *
+   * @static
+   * @param {string} url
+   * @param {FsRequestOptions} config
+   * @returns {Promise<FsResponse>}
+   * @memberof FsRequest
+   */
+  public static head (url: string, config: FsRequestOptions): Promise<FsResponse> {
+    return FsRequest.getInstance().request(Object.assign({}, config || {}, { method: FsHttpMethod.HEAD, url }));
+  }
+
+  /**
+   * Dispatch OPTIONS request
+   *
+   * @static
+   * @param {string} url
+   * @param {FsRequestOptions} config
+   * @returns {Promise<FsResponse>}
+   * @memberof FsRequest
+   */
+  public static options (url: string, config: FsRequestOptions): Promise<FsResponse> {
+    return FsRequest.getInstance().request(Object.assign({}, config || {}, { method: FsHttpMethod.OPTIONS, url }));
+  }
+
+  /**
+   * Dispatch PURGE request
+   *
+   * @static
+   * @param {string} url
+   * @param {FsRequestOptions} config
+   * @returns {Promise<FsResponse>}
+   * @memberof FsRequest
+   */
+  public static purge (url: string, config: FsRequestOptions): Promise<FsResponse> {
+    return FsRequest.getInstance().request(Object.assign({}, config || {}, { method: FsHttpMethod.PURGE, url }));
+  }
+
+  /**
+   * Dispatch DELETE request
+   *
+   * @static
+   * @param {string} url
+   * @param {FsRequestOptions} config
+   * @returns {Promise<FsResponse>}
+   * @memberof FsRequest
+   */
+  public static delete (url: string, config: FsRequestOptions): Promise<FsResponse> {
+    return FsRequest.getInstance().request(Object.assign({}, config || {}, { method: FsHttpMethod.DELETE, url }));
+  }
+
+  /**
+   * Dispatch POST request
+   *
+   * @static
+   * @param {string} url
+   * @param {*} [data]
+   * @param {FsRequestOptions} [config]
+   * @returns {Promise<FsResponse>}
+   * @memberof FsRequest
+   */
+  public static post (url: string, data?: any, config?: FsRequestOptions): Promise<FsResponse> {
+    return FsRequest.getInstance().request(Object.assign({}, config || {}, { method: FsHttpMethod.POST, url, data }));
+  }
+
+  /**
+   * Dispatch PUT request
+   *
+   * @static
+   * @param {string} url
+   * @param {*} [data]
+   * @param {FsRequestOptions} [config]
+   * @returns {Promise<FsResponse>}
+   * @memberof FsRequest
+   */
+  public static put (url: string, data?: any, config?: FsRequestOptions): Promise<FsResponse> {
+    return FsRequest.getInstance().request(Object.assign({}, config || {}, { method: FsHttpMethod.PUT, url, data }));
+  }
+
+  /**
+   * Dispatch PATCH request
+   *
+   * @static
+   * @param {string} url
+   * @param {*} [data]
+   * @param {FsRequestOptions} [config]
+   * @returns {Promise<FsResponse>}
+   * @memberof FsRequest
+   */
+  public static patch (url: string, data?: any, config?: FsRequestOptions): Promise<FsResponse> {
+    return FsRequest.getInstance().request(Object.assign({}, config || {}, { method: FsHttpMethod.PATCH, url, data }));
+  }
 }
 
-const RequestInstance = new Request();
-
-export const StaticRequest: FilestackStatic = {
-  request: (url: string, config: RequestOptions) => {
-    return RequestInstance.request(Object.assign({}, config || {}, { url }));
-  },
-  get: (url: string, config: RequestOptions) => {
-    return RequestInstance.request(Object.assign({}, config || {}, { method: HttpMethod.GET, url }));
-  },
-  head: (url: string, config: RequestOptions) => {
-    return RequestInstance.request(Object.assign({}, config || {}, { method: HttpMethod.HEAD, url }));
-  },
-  options: (url: string, config: RequestOptions) => {
-    return RequestInstance.request(Object.assign({}, config || {}, { method: HttpMethod.OPTIONS, url }));
-  },
-  purge: (url: string, config: RequestOptions) => {
-    return RequestInstance.request(Object.assign({}, config || {}, { method: HttpMethod.PURGE, url }));
-  },
-  delete: (url: string, config: RequestOptions) => {
-    return RequestInstance.request(Object.assign({}, config || {}, { method: HttpMethod.DELETE, url }));
-  },
-  post: (url: string, data: any, config: RequestOptions) => {
-    return RequestInstance.request(Object.assign({}, config || {}, { method: HttpMethod.POST, url, data }));
-  },
-  put: (url: string, data: any, config: RequestOptions) => {
-    return RequestInstance.request(Object.assign({}, config || {}, { method: HttpMethod.PUT, url, data }));
-  },
-  patch: (url: string, data: any, config: RequestOptions) => {
-    return RequestInstance.request(Object.assign({}, config || {}, { method: HttpMethod.PATCH, url, data }));
-  },
-};
-
-export default StaticRequest;
+export default FsRequest;

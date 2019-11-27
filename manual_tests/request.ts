@@ -15,11 +15,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { StaticRequest } from './../src/lib/request/index';
+import { Request } from './../src/lib/request/index';
+import { Token } from './../src/lib/request/token';
 
-// StaticRequest.get('https://cloud.filestackapi.com/prefetch?apikey=APEkwxKMZTsWNIP0XQsv2z').then((resp) => {
-StaticRequest.get('http://www.wp.pl').then((resp) => {
-  console.log(resp, 'request result');
-}).catch((err) => {
-  console.log(err);
-});
+// Request.get('https://cloud.filestackapi.com/prefetch?apikey=APEkwxKMZTsWNIP0XQsv2z').then((resp) => {
+
+// const token = new Token();
+
+// const promise = new Promise((resolve, reject) => {
+//   const requestSimulation = setTimeout(() => {
+//     console.log('fulfilled');
+//   }, 1000);
+
+//   token.getToken().then(() => {
+//     clearTimeout(requestSimulation);
+//     return reject(new Error('Canceleeed'));
+//   });
+// });
+
+// promise.then(() => {
+//   console.log('main promise resolved');
+// }).catch(() => {
+//   console.log('preomise rejected');
+// });
+
+// setTimeout(() => {
+//   console.log('cancel called');
+//   token.cancel();
+// }, 200);
