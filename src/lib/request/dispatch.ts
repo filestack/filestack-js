@@ -52,9 +52,7 @@ export class Dispatch {
   public request(config: FsRequestOptions): Promise<FsResponse> {
     config.headers = config.headers || {};
 
-    return this.adapter.request(config).then((response) => {
-      return response;
-    }).catch((reason: FsRequestError) => {
+    return this.adapter.request(config).catch((reason: FsRequestError) => {
       debug('Request error "%s": %O', reason, reason.response);
       return this.retry(reason);
     });
@@ -93,7 +91,7 @@ export class Dispatch {
 
     config.runtime = {
       ...config.runtime,
-      retryCount: attempts++,
+      retryCount: attempts + 1,
     };
 
     debug(`[Retry] Retrying request to ${config.url}, count ${attempts} of ${retryConfig.retry} - Delay: ${retryDelay}`);

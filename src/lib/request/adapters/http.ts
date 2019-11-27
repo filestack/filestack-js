@@ -115,21 +115,29 @@ export class HttpAdapter implements AdapterInterface {
             break;
         }
 
+        let response: FsResponse = {
+          status: res.statusCode,
+          statusText: res.statusMessage,
+          headers: res.headers,
+          config,
+          data: {},
+        };
+
         // we need to follow redirect so make same request with new location
         if ([301,302].indexOf(res.statusCode) > -1) {
           debug('Redirect received %s', res.statusCode);
 
           if (this.redirectHoops >= MAX_REDIRECTS) {
-            return reject(new FsRequestError(`Max redirects (${this.redirectHoops}) reached. Exiting`, config, res, FsRequestErrorCode.MAXREDIRECTS));
+            return reject(new FsRequestError(`Max redirects (${this.redirectHoops}) reached. Exiting`, config, response, FsRequestErrorCode.MAXREDIRECTS));
           }
           const url = res.headers['location'];
 
           if (!url || url.length === 0) {
-            return reject(new FsRequestError(`Redirect header location not found`, config, res, FsRequestErrorCode.NETWORK));
+            return reject(new FsRequestError(`Redirect header location not found`, config, response, FsRequestErrorCode.NETWORK));
           }
 
           if (this.redirectPaths.indexOf(url) > -1) {
-            return reject(new FsRequestError(`Redirect loop detected at url ${url}`, config, res, FsRequestErrorCode.NETWORK));
+            return reject(new FsRequestError(`Redirect loop detected at url ${url}`, config, response, FsRequestErrorCode.NETWORK));
           }
 
           this.redirectPaths.push(url);
@@ -143,14 +151,6 @@ export class HttpAdapter implements AdapterInterface {
 
           return resolve(this.request(Object.assign({}, config, { url })));
         }
-
-        let response: FsResponse = {
-          status: res.statusCode,
-          statusText: res.statusMessage,
-          headers: res.headers,
-          config,
-          data: {},
-        };
 
         let responseBuffer = [];
         stream.on('data', (chunk) => responseBuffer.push(chunk));
@@ -170,25 +170,39 @@ export class HttpAdapter implements AdapterInterface {
         });
 
         stream.on('end', () => {
+          // do we need this?
           // if (!res.complete) {
           //   return reject(new RequestError('The connection was terminated by server', config, null, RequestErrorCode.SERVER));
           // }
 
-          let responseData = Buffer.concat(responseBuffer);
-          response.data = responseData;
+          response.data = Buffer.concat(responseBuffer);
 
           // free resources
           res = undefined;
           req = undefined;
           responseBuffer = undefined;
 
+          // prepare response
+          response = parseResponse(response);
+
+          if (500 <= response.status && response.status <= 599) {
+            // server error throw
+            debug('Server error - %O', res);
+            return reject(new FsRequestError(`Server error ${url}`, config, response, FsRequestErrorCode.SERVER));
+          }
+
           debug('Request ends: %O', response);
-          return resolve(parseResponse(response));
+          return resolve(response);;
         });
       });
 
       if (config.token) {
         config.token.getSource().then((reason) => {
+          // if request is done cancel token should not throw any error
+          if (!req) {
+            return;
+          }
+
           req.abort();
           reject(new FsRequestError(`Request aborted - ${reason}`, config, null, FsRequestErrorCode.ABORTED));
         });

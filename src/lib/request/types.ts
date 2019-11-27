@@ -28,8 +28,8 @@ export enum FsHttpMethod {
 export interface FsRetryConfig {
   retry: number;
   onRetry?: (requestConfig: any) => void;
-  retryMaxTime: number;
-  retryFactor: number;
+  retryMaxTime?: number;
+  retryFactor?: number;
 }
 
 export interface FsTokenInterface {

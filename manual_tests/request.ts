@@ -19,23 +19,32 @@ const nock = require('nock');
 import { FsRequest } from './../src/lib/request/index';
 import { FsToken } from './../src/lib/request/token';
 
-const scope = nock('http://www.google.com')
+nock('http://www.filestacktest.com')
   .get('/123')
-  .delay(1000)
-  .reply(200, '<html></html>');
+  .once()
+  // .delay(1000)
+  .reply(500, '<html></html>', { 'content-type': 'text/plain' })
+  .get('/123')
+  .reply(200, '<html></html>', { 'content-type': 'text/plain' });
 
 const token = new FsToken();
 
-setTimeout(() => {
-  token.cancel();
-}, 500);
+// setTimeout(() => {
+//   token.cancel();
+// }, 1000);
 
-FsRequest.get('http://www.google.com/123', {
+FsRequest.get('http://www.filestacktest.com/123', {
   token: token,
+  timeout: 500,
+  retry: {
+    retry: 2,
+    retryFactor: 2,
+    retryMaxTime: 1500,
+  },
 }).then((resp) => {
-  console.log('Catch request error:', resp);
+  console.log('Response:', resp);
 }).catch((e) => {
-  console.error('ERROR', e);
+  console.error('Catch Errror', e);
 });
 
 // const token = new Token();

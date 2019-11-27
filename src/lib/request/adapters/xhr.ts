@@ -128,9 +128,14 @@ export class XhrAdapter implements AdapterInterface {
 
       if (config.token) {
         config.token.getSource().then((reason) => {
-          request.abort();
+          // if request is done cancel token should not throw any error
+          if (!request) {
+            return;
+          }
 
+          request.abort();
           request = null;
+
           return reject(new FsRequestError(`Request aborted. Reason: ${reason}`, config, null, FsRequestErrorCode.ABORTED));
         });
       }
