@@ -15,14 +15,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+import Debug from 'debug';
+import * as utils from '../utils';
 import { AdapterInterface } from './interface';
 import { RequestOptions, Response } from '../types';
-import * as utils from '../utils';
-import { prepareData, parseResponse } from './../helpers/data';
 import { RequestError, RequestErrorCode } from '../error';
-import { parse as parseHeaders } from '../helpers';
-import Debug from 'debug';
+import { prepareData, parseResponse, parse as parseHeaders, combineURL } from './../helpers';
 
 const debug = Debug('fs:request:xhr');
 
@@ -45,11 +43,13 @@ export class XhrAdapter implements AdapterInterface {
       const username = config.auth.username || '';
       const password = config.auth.password || '';
       headers.Authorization = 'Basic ' + btoa(username + ':' + password);
+      debug('Set request authorization to %s', username + ':' + password);
     }
 
-    debug('Starting request to %s with options %O', config.url, config);
+    const url = combineURL(config.url, config.params);
+    debug('Starting request to %s with options %O', url, config);
 
-    request.open(config.method.toUpperCase(), config.url, true);
+    request.open(config.method.toUpperCase(), url, true);
 
     request.timeout = config.timeout;
 
@@ -109,7 +109,7 @@ export class XhrAdapter implements AdapterInterface {
             delete headers[key];
             continue;
           }
-
+          debug('Set request header %s to %s', key, headers[key]);
           request.setRequestHeader(key, headers[key]);
         }
       }
@@ -122,6 +122,7 @@ export class XhrAdapter implements AdapterInterface {
 
       // Handle progress if needed
       if (typeof config.onProgress === 'function') {
+        debug('Request progress setup');
         request.addEventListener('progress', config.onProgress);
       }
 

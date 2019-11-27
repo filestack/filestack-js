@@ -39,8 +39,6 @@
   "dependencies": {
     "@sentry/minimal": "^5.8.0",
     "abab": "^2.0.2",
-    "abort-controller": "^3.0.0",
-    "axios": "^0.19.0",
     "debug": "^4.1.1",
     "eventemitter3": "^4.0.0",
     "file-type": "^10.0.0",

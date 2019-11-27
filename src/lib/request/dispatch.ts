@@ -32,17 +32,12 @@ export class Dispatch {
   public request(config: RequestOptions): Promise<Response> {
     config.headers = config.headers || {};
 
-    // Flatten headers
-    config.headers = Object.assign({}, config.headers.common || {}, config.headers[config.method] || {}, config.headers || {});
-
-    ['delete', 'get', 'purge', 'head', 'post', 'put', 'patch', 'common'].forEach((method) => delete config.headers[method]);
-
     return this.adapter.request(config).then((response) => {
       // @todo return reject if cancel requested
 
       return response;
-    }, (reason) => {
-      debug('Request error: %O', reason);
+    }, (reason: RequestError) => {
+      debug('Request error "%s": %O', reason, reason.response);
       return this.retry(reason);
     });
   }

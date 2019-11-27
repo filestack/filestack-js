@@ -87,13 +87,14 @@ export const isBlob = (val: Blob) => toString.call(val) === '[object Blob]';
  * @param {Object} val The value to test
  * @returns {boolean} True if value is a Buffer, otherwise false
  */
-export const isBuffer = (val) => {
+export const isBuffer = val => {
   if (typeof process !== 'undefined' && process.versions && process.versions.node) {
     return ![undefined, null].includes(val) && val.constructor === Buffer;
   }
 
   return false;
-}
+};
+
 /**
  * Determine if a value is a Stream
  *

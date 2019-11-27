@@ -16,10 +16,11 @@
  */
 
 import { Security, Session } from '../client';
-import { request } from './request';
 import { removeEmpty } from '../utils';
+import { HttpMethod } from './../request/types';
 import { FilestackError } from './../../filestack_error';
 import { getValidator, MetadataParamsSchema, RetrieveParamsSchema } from './../../schema';
+import { StaticRequest } from '../request';
 
 /**
  * Remove given file
@@ -50,7 +51,7 @@ export const remove = (session: Session, handle?: string, skipStorage?: boolean,
     options.skip_storage = true;
   }
 
-  return request.delete(baseURL, {
+  return StaticRequest.delete(baseURL, {
     params: removeEmpty(options),
   });
 };
@@ -104,28 +105,11 @@ export const metadata = (session: Session, handle?: string, opts?: MetadataOptio
 
   const baseURL = `${session.urls.fileApiUrl}/${handle}/metadata`;
   return new Promise((resolve, reject) => {
-    request
-      .get(baseURL, { params: removeEmpty(options) })
+    StaticRequest.get(baseURL, { params: removeEmpty(options) })
       .then(res => resolve({ ...res.data, handle }))
       .catch(reject);
   });
 };
-
-/**
- * @private
- */
-enum ERequestMethod {
-  get = 'get',
-  head = 'head',
-}
-
-/**
- * @private
- */
-enum EResponseType {
-  blob = 'blob',
-  json = 'json',
-}
 
 export interface RetrieveOptions {
   metadata?: boolean;
@@ -160,10 +144,10 @@ export const retrieve = (session: Session, handle: string, options: RetrieveOpti
   requestOptions.policy = (security && security.policy) || session.policy;
   requestOptions.signature = (security && security.signature) || session.signature;
 
-  let method: ERequestMethod = ERequestMethod.get;
+  let method: HttpMethod = HttpMethod.GET;
 
   if (requestOptions.head) {
-    method = ERequestMethod.head;
+    method = HttpMethod.HEAD;
     delete requestOptions.head;
   }
 
@@ -176,7 +160,7 @@ export const retrieve = (session: Session, handle: string, options: RetrieveOpti
 
   let metadata;
   if (requestOptions.metadata) {
-    if (method === ERequestMethod.head) {
+    if (method === HttpMethod.HEAD) {
       throw new FilestackError('Head and metadata options cannot be used together');
     }
 
@@ -187,12 +171,11 @@ export const retrieve = (session: Session, handle: string, options: RetrieveOpti
   const baseURL = `${session.urls.fileApiUrl}/${handle}` + (extension ? `+${extension}` : '') + (metadata ? '/metadata' : '');
 
   return new Promise((resolve, reject) => {
-    request({
-      url: baseURL,
+    StaticRequest.request(baseURL, {
       method,
       params: removeEmpty(requestOptions),
     })
-      .then(res => resolve(method === ERequestMethod.head ? res.headers : res.data))
+      .then(res => resolve(method === HttpMethod.HEAD ? res.headers : res.data))
       .catch(reject);
   });
 };

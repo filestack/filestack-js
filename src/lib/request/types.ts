@@ -41,6 +41,10 @@ export interface RequestHeaders {
   [name: string]: string;
 }
 
+export interface RequestParams {
+  [name: string]: string | number;
+}
+
 /**
  * Request runtime data like retryCount etc
  */
@@ -57,6 +61,7 @@ export interface RequestOptions {
   mode?: RequestMode;
   cache?: RequestCache;
   redirect?: RequestRedirect;
+  params?: RequestParams;
   filesstackHeaders?: boolean;
   headers?: RequestHeaders;
   timeout?: number;

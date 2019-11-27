@@ -15,11 +15,11 @@
  * limitations under the License.
  */
 
-import { request } from './request';
 import { Security, Session } from '../client';
 import { Filelink, StoreParams } from './../filelink';
 import { FilestackError } from './../../filestack_error';
 import { getValidator, StoreParamsSchema } from './../../schema';
+import { StaticRequest } from '../request';
 
 /**
  *
@@ -65,14 +65,15 @@ export const storeURL = (
   let options: any = {};
 
   if (token) {
-    const CancelToken = request.CancelToken;
-    const source = CancelToken.source();
-    token.cancel = source.cancel;
+    // @todo cancel token
+    // const CancelToken = request.CancelToken;
+    // const source = CancelToken.source();
+    // token.cancel = source.cancel;
 
-    options.cancelToken = source.token;
+    // options.cancelToken = source.token;
   }
 
-  return request.get(baseURL.toString(), options).then((res) => {
+  return StaticRequest.get(baseURL.toString(), options).then((res) => {
     if (res.data && res.data.handle) {
       return { ...res.data, mimetype: res.data.type };
     }

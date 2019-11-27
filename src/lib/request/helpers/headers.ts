@@ -71,6 +71,24 @@ export const parse = headers => {
 };
 
 /**
+ * Normalize input headers
+ *
+ * @param headers
+ */
+export const normalizeHeaders = (headers: RequestHeaders): RequestHeaders => {
+  if (!headers) {
+    return {};
+  }
+
+  for (let i in headers) {
+    delete headers[i];
+    headers[normalizeName(i)] =  headers[i];
+  }
+
+  return headers;
+};
+
+/**
  * Set request headers
  *
  * @param headers - object containing headers

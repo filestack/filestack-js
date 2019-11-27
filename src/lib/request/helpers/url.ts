@@ -15,7 +15,27 @@
  * limitations under the License.
  */
 
-export * from './cookies';
-export * from './headers';
-export * from './data';
-export * from './url';
+export const combineURL = (url, params) => {
+  if (!params) {
+    return url;
+  }
+
+  const serialized = urlfy(params);
+  const hashIndex = url.indexOf('#');
+
+  if (hashIndex !== -1) {
+    url = url.slice(0, hashIndex);
+  }
+
+  return url + (url.indexOf('?') === -1 ? '?' : '&') + serialized;
+};
+
+/**
+ * Change request json params to url search ones
+ * @param {Object} obj Object to transform
+ */
+export const urlfy = val =>
+  Object.keys(val)
+    .filter(k => k && typeof val[k] !== 'undefined')
+    .map(k => `${encodeURIComponent(k)}=${encodeURIComponent(val[k])}`)
+    .join('&');

@@ -45,6 +45,8 @@ const config =  {
     'fs',
     'crypto',
     'path',
+    'buffer',
+    'http',
     // 'url',
     'zlib',
     'readable-stream',

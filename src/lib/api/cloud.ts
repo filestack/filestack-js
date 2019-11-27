@@ -18,8 +18,9 @@
 import { removeEmpty } from '../utils';
 import { StoreParams } from '../filelink';
 import { ClientOptions, Session } from '../client';
-import { requestWithSource, request } from '../api/request';
+// import { requestWithSource, request } from '../api/request';
 import { FilestackError } from './../../filestack_error';
+import { StaticRequest } from '../request';
 
 /**
  * @private
@@ -63,7 +64,7 @@ export class CloudClient {
     const params = {
       apikey: this.session.apikey,
     };
-    return requestWithSource()
+    return StaticRequest
       .get(`${this.cloudApiUrl}/prefetch`, { params })
       .then(res => res.data);
   }
@@ -84,14 +85,15 @@ export class CloudClient {
     let options: any = {};
 
     if (token) {
-      const CancelToken = request.CancelToken;
-      const source = CancelToken.source();
-      token.cancel = source.cancel;
+      // @todo cancel token
+      // const CancelToken = request.CancelToken;
+      // const source = CancelToken.source();
+      // token.cancel = source.cancel;
 
-      options.cancelToken = source.token;
+      // options.cancelToken = source.token;
     }
 
-    return requestWithSource()
+    return StaticRequest
       .post(`${this.cloudApiUrl}/folder/list`, payload, options)
       .then(res => {
         if (res.data && res.data.token) {
@@ -134,14 +136,16 @@ export class CloudClient {
     let requestOptions: any = {};
 
     if (token) {
-      const CancelToken = request.CancelToken;
-      const source = CancelToken.source();
-      token.cancel = source.cancel;
+      // @todo cancel token
 
-      requestOptions.cancelToken = source.token;
+      // const CancelToken = request.CancelToken;
+      // const source = CancelToken.source();
+      // token.cancel = source.cancel;
+
+      // requestOptions.cancelToken = source.token;
     }
 
-    return requestWithSource()
+    return StaticRequest
       .post(`${this.cloudApiUrl}/store/`, payload, requestOptions)
       .then(res => {
         if (res.data && res.data.token) {
@@ -170,7 +174,7 @@ export class CloudClient {
       localStorage.removeItem(PICKER_KEY);
     }
 
-    return requestWithSource()
+    return StaticRequest
       .post(`${this.cloudApiUrl}/auth/logout`, payload)
       .then(res => {
         if (res.data && res.data[name]) {
@@ -191,7 +195,7 @@ export class CloudClient {
       payload.signature = this.session.signature;
     }
 
-    return requestWithSource()
+    return StaticRequest
       .post(`${this.cloudApiUrl}/metadata`, payload)
       .then(res => res.data);
   }
@@ -201,7 +205,7 @@ export class CloudClient {
     if (type !== 'video' && type !== 'audio') {
       throw new FilestackError('Type must be one of video or audio.');
     }
-    return requestWithSource()
+    return StaticRequest
       .post(`${this.cloudApiUrl}/recording/${type}/init`).then(res => res.data);
   }
 
@@ -214,7 +218,7 @@ export class CloudClient {
       session_id: sessionId,
     };
 
-    return requestWithSource()
+    return StaticRequest
       .post(`${this.cloudApiUrl}/recording/${type}/start`, payload)
       .then(res => res.data);
   }
@@ -230,7 +234,7 @@ export class CloudClient {
       archive_id: archiveId,
     };
 
-    return requestWithSource()
+    return StaticRequest
       .post(`${this.cloudApiUrl}/recording/${type}/stop`, payload)
       .then(res => res.data);
   }

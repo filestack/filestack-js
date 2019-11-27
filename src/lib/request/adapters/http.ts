@@ -16,14 +16,13 @@
  */
 import * as url from 'url';
 import * as zlib from 'zlib';
+import Debug from 'debug';
 
 import { AdapterInterface } from './interface';
 import { getVersion } from '../../utils';
 import { RequestOptions, Response } from '../types';
 import * as utils from '../utils';
-import { prepareData, parseResponse } from './../helpers/data';
-import { set as setHeader } from './../helpers/headers';
-import Debug from 'debug';
+import { prepareData, parseResponse, combineURL, set as setHeader, normalizeHeaders } from './../helpers';
 import { RequestErrorCode, RequestError } from '../error';
 
 const HTTPS_REGEXP =  /https:?/;
@@ -36,6 +35,8 @@ export class HttpAdapter implements AdapterInterface {
   private redirectPaths = [];
 
   request(config: RequestOptions) {
+    config.headers = normalizeHeaders(config.headers);
+
     let { data, headers } = prepareData(config);
 
     setHeader(headers, 'user-agent', `filestack-request/${getVersion()}`);
@@ -57,29 +58,31 @@ export class HttpAdapter implements AdapterInterface {
      // HTTP basic authentication
     let auth;
     if (config.auth) {
-      auth = `${config.auth.username}:${config.auth.password}`;
+      auth = `${config.auth.username || ''}:${config.auth.password || ''}`;
     }
 
     // Parse url
-    const parsed = url.parse(config.url);
-    const protocol = parsed.protocol || 'http:';
+    let parsed = url.parse(config.url);
 
-    if (!auth && parsed.auth) {
-      const urlAuth = parsed.auth.split(':');
-      const urlUsername = urlAuth[0] || '';
-      const urlPassword = urlAuth[1] || '';
-      auth = urlUsername + ':' + urlPassword;
+    // try to add default https protocol
+    if (!parsed.protocol) {
+      parsed = url.parse(`https://${config.url}`);
     }
 
-    if (auth) {
+    if (!parsed.host || !parsed.protocol) {
+      return Promise.reject(new RequestError(`Cannot parse provided url ${config.url}`, config, null, RequestErrorCode.OTHER));
+    }
+
+    // normalize auth header
+    if (auth && headers.Authorization) {
       delete headers.Authorization;
     }
 
-    const isHttpsRequest = HTTPS_REGEXP.test(protocol);
+    const isHttpsRequest = HTTPS_REGEXP.test(parsed.protocol);
     const agent = isHttpsRequest ? require('https') : require('http');
 
     const options = {
-      path: parsed.path,
+      path: combineURL(parsed.path, config.params),
       host: parsed.host,
       port: parsed.port,
       protocol: parsed.protocol,
@@ -122,11 +125,11 @@ export class HttpAdapter implements AdapterInterface {
           const url = res.headers['location'];
 
           if (!url || url.length === 0) {
-            return reject(new RequestError(`Redirect header location not found`, config, res, RequestErrorCode.SERVER));
+            return reject(new RequestError(`Redirect header location not found`, config, res, RequestErrorCode.NETWORK));
           }
 
           if (this.redirectPaths.indexOf(url) > -1) {
-            return reject(new RequestError(`Redirect loop detected at url ${url}`, config, res, RequestErrorCode.SERVER));
+            return reject(new RequestError(`Redirect loop detected at url ${url}`, config, res, RequestErrorCode.NETWORK));
           }
 
           this.redirectPaths.push(url);
@@ -167,9 +170,9 @@ export class HttpAdapter implements AdapterInterface {
         });
 
         stream.on('end', () => {
-          if (!res.complete) {
-            return reject(new RequestError('The connection was terminated by server', config, null, RequestErrorCode.SERVER));
-          }
+          // if (!res.complete) {
+          //   return reject(new RequestError('The connection was terminated by server', config, null, RequestErrorCode.SERVER));
+          // }
 
           let responseData = Buffer.concat(responseBuffer);
           response.data = responseData;
@@ -188,6 +191,12 @@ export class HttpAdapter implements AdapterInterface {
             return reject(new RequestError('Request timeout', config, null, RequestErrorCode.TIMEOUT));
           });
         }
+      });
+
+      req.on('error', (err) => {
+        req.abort();
+        debug('Request error: %s - %O', err, err.code);
+        return reject(new RequestError(`Request error: ${err.code}`, config, null, RequestErrorCode.OTHER));
       });
 
       // @todo handle cancel token

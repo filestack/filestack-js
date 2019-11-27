@@ -20,7 +20,7 @@ import * as EventEmitter from 'eventemitter3';
 import { File } from './../file';
 import { StoreUploadOptions } from './../types';
 import { Security } from './../../../client';
-import { RetryConfig } from './../../request';
+import { RetryConfig } from './../../../request';
 import { isMobile } from './../../../utils';
 import { FilestackError } from './../../../../filestack_error';
 
