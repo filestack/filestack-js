@@ -50,6 +50,14 @@ const tokenSource = () => {
   };
 };
 
+/**
+ * Filestack token that allow pause, resume or cancel given upload
+ *
+ * @export
+ * @class FsToken
+ * @extends {EventEmitter}
+ * @implements {FsTokenInterface}
+ */
 export class FsToken extends EventEmitter implements FsTokenInterface {
 
   private source: any;

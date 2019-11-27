@@ -16,6 +16,12 @@
  */
 import { FsRequestOptions, FsResponse } from './types';
 
+/**
+ * Filestack error codes (common for browser and node)
+ *
+ * @export
+ * @enum {number}
+ */
 export enum FsRequestErrorCode {
   ABORTED = 'ABORTED',
   NETWORK = 'NETWORK',
@@ -25,6 +31,13 @@ export enum FsRequestErrorCode {
   MAXREDIRECTS = 'MAXREDIRECTS',
 }
 
+/**
+ * Custom Filestack Request error class
+ *
+ * @export
+ * @class FsRequestError
+ * @extends {Error}
+ */
 export class FsRequestError extends Error {
 
   /**
@@ -37,6 +50,15 @@ export class FsRequestError extends Error {
   public readonly response: FsResponse;
   public readonly code: FsRequestErrorCode;
 
+  /**
+   * Creates an instance of FsRequestError.
+   *
+   * @param {string} message
+   * @param {*} config
+   * @param {FsResponse} [response]
+   * @param {FsRequestErrorCode} [code]
+   * @memberof FsRequestError
+   */
   constructor(message: string, config: any, response?: FsResponse, code?: FsRequestErrorCode) {
 
     /* istanbul ignore next */

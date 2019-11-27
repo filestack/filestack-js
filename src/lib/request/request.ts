@@ -73,6 +73,14 @@ export class FsRequest {
     this.dispatcher = new Dispatch(new RequestAdapter(RequestAdapter));
   }
 
+  /**
+   * Returns static FsRequest instance
+   *
+   * @private
+   * @static
+   * @returns
+   * @memberof FsRequest
+   */
   private static getInstance() {
     if (!FsRequest.instance) {
       FsRequest.instance = new FsRequest();
@@ -88,7 +96,7 @@ export class FsRequest {
    * @returns
    * @memberof Request
    */
-  private request(config: FsRequestOptions) {
+  public dispatch(config: FsRequestOptions) {
     if (typeof config === 'string') {
       config = arguments[1] || {};
       config.url = arguments[0];
@@ -119,7 +127,7 @@ export class FsRequest {
    * @memberof FsRequest
    */
   public static dispatch (url: string, config: FsRequestOptions): Promise<FsResponse> {
-    return FsRequest.getInstance().request(Object.assign({}, config || {}, { url }));
+    return FsRequest.getInstance().dispatch(Object.assign({}, config || {}, { url }));
   }
 
   /**
@@ -132,7 +140,7 @@ export class FsRequest {
    * @memberof FsRequest
    */
   public static get (url: string, config: FsRequestOptions): Promise<FsResponse> {
-    return FsRequest.getInstance().request(Object.assign({}, config || {}, { method: FsHttpMethod.GET, url }));
+    return FsRequest.getInstance().dispatch(Object.assign({}, config || {}, { method: FsHttpMethod.GET, url }));
   }
 
   /**
@@ -145,7 +153,7 @@ export class FsRequest {
    * @memberof FsRequest
    */
   public static head (url: string, config: FsRequestOptions): Promise<FsResponse> {
-    return FsRequest.getInstance().request(Object.assign({}, config || {}, { method: FsHttpMethod.HEAD, url }));
+    return FsRequest.getInstance().dispatch(Object.assign({}, config || {}, { method: FsHttpMethod.HEAD, url }));
   }
 
   /**
@@ -158,7 +166,7 @@ export class FsRequest {
    * @memberof FsRequest
    */
   public static options (url: string, config: FsRequestOptions): Promise<FsResponse> {
-    return FsRequest.getInstance().request(Object.assign({}, config || {}, { method: FsHttpMethod.OPTIONS, url }));
+    return FsRequest.getInstance().dispatch(Object.assign({}, config || {}, { method: FsHttpMethod.OPTIONS, url }));
   }
 
   /**
@@ -171,7 +179,7 @@ export class FsRequest {
    * @memberof FsRequest
    */
   public static purge (url: string, config: FsRequestOptions): Promise<FsResponse> {
-    return FsRequest.getInstance().request(Object.assign({}, config || {}, { method: FsHttpMethod.PURGE, url }));
+    return FsRequest.getInstance().dispatch(Object.assign({}, config || {}, { method: FsHttpMethod.PURGE, url }));
   }
 
   /**
@@ -184,7 +192,7 @@ export class FsRequest {
    * @memberof FsRequest
    */
   public static delete (url: string, config: FsRequestOptions): Promise<FsResponse> {
-    return FsRequest.getInstance().request(Object.assign({}, config || {}, { method: FsHttpMethod.DELETE, url }));
+    return FsRequest.getInstance().dispatch(Object.assign({}, config || {}, { method: FsHttpMethod.DELETE, url }));
   }
 
   /**
@@ -198,7 +206,7 @@ export class FsRequest {
    * @memberof FsRequest
    */
   public static post (url: string, data?: any, config?: FsRequestOptions): Promise<FsResponse> {
-    return FsRequest.getInstance().request(Object.assign({}, config || {}, { method: FsHttpMethod.POST, url, data }));
+    return FsRequest.getInstance().dispatch(Object.assign({}, config || {}, { method: FsHttpMethod.POST, url, data }));
   }
 
   /**
@@ -212,7 +220,7 @@ export class FsRequest {
    * @memberof FsRequest
    */
   public static put (url: string, data?: any, config?: FsRequestOptions): Promise<FsResponse> {
-    return FsRequest.getInstance().request(Object.assign({}, config || {}, { method: FsHttpMethod.PUT, url, data }));
+    return FsRequest.getInstance().dispatch(Object.assign({}, config || {}, { method: FsHttpMethod.PUT, url, data }));
   }
 
   /**
@@ -226,7 +234,7 @@ export class FsRequest {
    * @memberof FsRequest
    */
   public static patch (url: string, data?: any, config?: FsRequestOptions): Promise<FsResponse> {
-    return FsRequest.getInstance().request(Object.assign({}, config || {}, { method: FsHttpMethod.PATCH, url, data }));
+    return FsRequest.getInstance().dispatch(Object.assign({}, config || {}, { method: FsHttpMethod.PATCH, url, data }));
   }
 }
 
