@@ -25,12 +25,11 @@ import * as utils from '../utils';
 import { prepareData, parseResponse, combineURL, set as setHeader, normalizeHeaders } from './../helpers';
 import { FsRequestErrorCode, FsRequestError } from '../error';
 
-const HTTPS_REGEXP =  /https:?/;
+const HTTPS_REGEXP = /https:?/;
 const MAX_REDIRECTS = 10;
 const debug = Debug('fs:request:http');
 
 export class HttpAdapter implements AdapterInterface {
-
   private redirectHoops = 0;
   private redirectPaths = [];
 
@@ -55,7 +54,7 @@ export class HttpAdapter implements AdapterInterface {
       setHeader(headers, 'content-length', data.length, true);
     }
 
-     // HTTP basic authentication
+    // HTTP basic authentication
     let auth;
     if (config.auth) {
       auth = `${config.auth.username || ''}:${config.auth.password || ''}`;
@@ -95,7 +94,7 @@ export class HttpAdapter implements AdapterInterface {
     debug('Starting %s request with options %O', isHttpsRequest ? 'https' : 'http', options);
 
     return new Promise<FsResponse>((resolve, reject): any => {
-      let req = agent.request(options, (res) => {
+      let req = agent.request(options, res => {
         if (req.aborted) {
           return reject(new FsRequestError('Request aborted', config));
         }
@@ -109,7 +108,7 @@ export class HttpAdapter implements AdapterInterface {
           case 'compress':
           case 'deflate':
             // add the unzipper to the body stream processing pipeline
-            stream = (res.statusCode === 204) ? stream : stream.pipe(zlib.createUnzip());
+            stream = res.statusCode === 204 ? stream : stream.pipe(zlib.createUnzip());
             // remove the content-encoding in order to not confuse downstream operations
             delete res.headers['content-encoding'];
             break;
@@ -124,7 +123,7 @@ export class HttpAdapter implements AdapterInterface {
         };
 
         // we need to follow redirect so make same request with new location
-        if ([301,302].indexOf(res.statusCode) > -1) {
+        if ([301, 302].indexOf(res.statusCode) > -1) {
           debug('Redirect received %s', res.statusCode);
 
           if (this.redirectHoops >= MAX_REDIRECTS) {
@@ -153,9 +152,9 @@ export class HttpAdapter implements AdapterInterface {
         }
 
         let responseBuffer = [];
-        stream.on('data', (chunk) => responseBuffer.push(chunk));
+        stream.on('data', chunk => responseBuffer.push(chunk));
 
-        stream.on('error', (err) => {
+        stream.on('error', err => {
           res = undefined;
           req = undefined;
           responseBuffer = undefined;
@@ -202,15 +201,17 @@ export class HttpAdapter implements AdapterInterface {
       });
 
       if (config.cancelToken) {
-        config.cancelToken.getSource().then((reason) => {
-          // if request is done cancel token should not throw any error
-          if (!req) {
-            return;
-          }
-
-          req.abort();
-          reject(new FsRequestError(`Request aborted - ${reason}`, config, null, FsRequestErrorCode.ABORTED));
-        });
+        config.cancelToken
+          .getSource()
+          .then(reason => {
+            // if request is done cancel token should not throw any error
+            if (!req) {
+              return;
+            }
+            req.abort();
+            reject(new FsRequestError(`Request aborted - ${reason}`, config, null, FsRequestErrorCode.ABORTED));
+          })
+          .catch(error => error);
       }
 
       if (config.timeout) {
@@ -220,7 +221,7 @@ export class HttpAdapter implements AdapterInterface {
         });
       }
 
-      req.on('error', (err) => {
+      req.on('error', err => {
         if (req.aborted) {
           return;
         }

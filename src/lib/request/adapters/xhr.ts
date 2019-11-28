@@ -1,4 +1,3 @@
-
 /*
  * Copyright (c) 2018 by Filestack
  * Some rights reserved.
@@ -26,7 +25,6 @@ const debug = Debug('fs:request:xhr');
 
 export class XhrAdapter implements AdapterInterface {
   request(config: FsRequestOptions) {
-
     config = prepareData(config);
 
     let { data, headers } = config;
@@ -114,11 +112,11 @@ export class XhrAdapter implements AdapterInterface {
         }
       }
 
-    // Add withCredentials to request if needed
-    // @todo
-    // if (config.withCredentials) {
-    //   request.withCredentials = true;
-    // }
+      // Add withCredentials to request if needed
+      // @todo
+      // if (config.withCredentials) {
+      //   request.withCredentials = true;
+      // }
 
       // Handle progress if needed
       if (typeof config.onProgress === 'function') {
@@ -127,17 +125,20 @@ export class XhrAdapter implements AdapterInterface {
       }
 
       if (config.cancelToken) {
-        config.cancelToken.getSource().then((reason) => {
-          // if request is done cancel token should not throw any error
-          if (!request) {
-            return;
-          }
+        config.cancelToken
+          .getSource()
+          .then(reason => {
+            // if request is done cancel token should not throw any error
+            if (!request) {
+              return;
+            }
 
-          request.abort();
-          request = null;
+            request.abort();
+            request = null;
 
-          return reject(new FsRequestError(`Request aborted. Reason: ${reason}`, config, null, FsRequestErrorCode.ABORTED));
-        });
+            return reject(new FsRequestError(`Request aborted. Reason: ${reason}`, config, null, FsRequestErrorCode.ABORTED));
+          })
+          .catch(error => error);
       }
 
       if (data === undefined) {

@@ -162,7 +162,6 @@ const readFile = async (file): Promise<any> => {
  * @param file - file to slice
  */
 const readPart = (start: number, end: number, file): Promise<any> => {
-
   return new Promise((resolve, reject) => {
     const r = new FileReader();
 
@@ -201,25 +200,23 @@ const getFileBrowser = (input: InputFile, sanitizeOptions?: SanitizeOptions): Pr
     return Promise.reject(new FilestackError('Unsupported input file type'));
   }
 
-  return readFile(file).then(
-    async res => {
-      let mime = file.type;
-      if (!file.type) {
-        mime = getMimetype(await res.slice(0, fileType.minimumBytes), filename);
-      }
-
-      return new FsFile(
-        {
-          name: filename,
-          size: file.size,
-          type: mime,
-          slice: res.slice,
-          release: res.release,
-        },
-        sanitizeOptions
-      );
+  return readFile(file).then(async res => {
+    let mime = file.type;
+    if (!file.type) {
+      mime = getMimetype(await res.slice(0, fileType.minimumBytes), filename);
     }
-  );
+
+    return new FsFile(
+      {
+        name: filename,
+        size: file.size,
+        type: mime,
+        slice: res.slice,
+        release: res.release,
+      },
+      sanitizeOptions
+    );
+  });
 };
 
 // =================== NODE UTILS ===================
@@ -242,7 +239,7 @@ const getFileNode = (input: InputFile, sanitizeOptions?: SanitizeOptions): Promi
     let path = input;
     // @todo improve slicer open file and read it py by part
     return new Promise((resolve, reject) =>
-    require('fs').readFile(path, (err, buffer) => {
+      require('fs').readFile(path, (err, buffer) => {
         if (err) {
           return reject(err);
         }

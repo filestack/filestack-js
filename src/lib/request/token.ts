@@ -18,7 +18,7 @@ import { FsTokenInterface } from './types';
 import { EventEmitter } from 'eventemitter3';
 
 // token
-const token = (data) => new Promise((resolve) => data.listeners.push(resolve));
+const token = data => new Promise(resolve => data.listeners.push(resolve));
 
 const tokenSource = () => {
   const data = {
@@ -26,7 +26,7 @@ const tokenSource = () => {
     listeners: [],
   };
 
-  const cancel = (reason) => {
+  const cancel = reason => {
     reason = reason || 'Aborted';
 
     if (typeof reason === 'string') {
@@ -35,7 +35,7 @@ const tokenSource = () => {
 
     data.reason = reason;
 
-    setTimeout(function () {
+    setTimeout(function() {
       for (let i = 0; i < data.listeners.length; i++) {
         if (typeof data.listeners[i] === 'function') {
           data.listeners[i](reason);
@@ -51,7 +51,6 @@ const tokenSource = () => {
   };
 };
 
-
 /**
  * Filestack token that allow pause, resume or cancel given upload
  *
@@ -61,7 +60,6 @@ const tokenSource = () => {
  * @implements {FsTokenInterface}
  */
 export class FsCancelToken implements FsTokenInterface {
-
   private source: any;
   private cancelMethod: any;
 

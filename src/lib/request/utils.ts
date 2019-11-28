@@ -39,7 +39,6 @@ export const isArrayBuffer = (val: ArrayBuffer) => toString.call(val) === '[obje
  */
 export const isArrayBufferView = (val: ArrayBufferView) => {
   let result;
-
   if (typeof ArrayBuffer !== 'undefined' && ArrayBuffer.isView) {
     result = ArrayBuffer.isView(val);
   } else {
@@ -88,7 +87,7 @@ export const isBlob = (val: Blob) => toString.call(val) === '[object Blob]';
  * @returns {boolean} True if value is a Buffer, otherwise false
  */
 export const isBuffer = val => {
-  if (typeof process !== 'undefined' && process.versions && process.versions.node) {
+  if (isNode()) {
     return ![undefined, null].includes(val) && val.constructor === Buffer;
   }
 
@@ -125,3 +124,9 @@ export const isFormData = val => typeof FormData !== 'undefined' && val instance
  * @returns {String} The String freed of excess whitespace
  */
 export const trim = str => str.replace(/^\s*/, '').replace(/\s*$/, '');
+
+/**
+ * Returns information about current env (browser|nodejs)
+ * @returns {boolean} True if value is node env, otherwise false
+ */
+export const isNode = () => !!(typeof process !== 'undefined' && process.versions && process.versions.node);

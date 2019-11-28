@@ -62,9 +62,10 @@ export const getSecurity = (policyOptions: SecurityOptions, appSecret: string): 
   }
 
   const policy = Buffer.from(JSON.stringify(policyOptions)).toString('base64');
-  const signature = require('crypto').createHmac('sha256', appSecret)
-                   .update(policy)
-                   .digest('hex');
+  const signature = require('crypto')
+    .createHmac('sha256', appSecret)
+    .update(policy)
+    .digest('hex');
 
   return { policy, signature };
 };
@@ -83,13 +84,13 @@ export interface WebhookValidatePayload {
  */
 export const validateWebhookSignature = (secret: string, rawBody: string, toCompare: WebhookValidatePayload) => {
   if (!isNode()) {
-    throw new Error('validateWebhookSignature is only supported in nodejs');
+    throw new Error('validate Webhook Signature is only supported in nodejs');
   }
 
   const hash = require('crypto')
-                .createHmac('sha256', secret)
-                .update(`${toCompare.timestamp}.${rawBody}`)
-                .digest('hex');
+    .createHmac('sha256', secret)
+    .update(`${toCompare.timestamp}.${rawBody}`)
+    .digest('hex');
 
   return hash === toCompare.signature;
 };
