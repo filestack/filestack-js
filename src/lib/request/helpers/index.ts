@@ -19,3 +19,4 @@ export * from './cookies';
 export * from './headers';
 export * from './data';
 export * from './url';
+export * from './shouldRetry';

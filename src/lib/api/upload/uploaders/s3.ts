@@ -17,15 +17,14 @@
 
 import PQueue from 'p-queue';
 import Debug from 'debug';
-// import { CancelTokenSource, AxiosResponse } from 'axios';
 
 import { File, FilePart, FilePartMetadata, FileState } from './../file';
 import { StoreUploadOptions } from './../types';
-import { FsRequest, FsResponse, FsRequestError } from './../../../request';
-// import { postWithRetry, request, useRetryPolicy, shouldRetry } from './../../request';
+import { FsRequest, FsResponse, FsRequestError, FsCancelToken } from './../../../request';
 import { uniqueTime, uniqueId, filterObject } from './../../../utils';
 import { UploaderAbstract, UploadMode, INTELLIGENT_CHUNK_SIZE, MIN_CHUNK_SIZE, DEFAULT_STORE_LOCATION } from './abstract';
 import { FilestackError, FilestackErrorType } from './../../../../filestack_error';
+import { shouldRetry } from 'src/lib/request/helpers';
 
 const debug = Debug('fs:upload:s3');
 
@@ -50,7 +49,7 @@ export interface UploadPayload {
 
 export class S3Uploader extends UploaderAbstract {
   private partsQueue;
-  // private cancelToken: CancelTokenSource; // global cancel token for all requests
+  private cancelToken: FsCancelToken; // global cancel token for all requests
 
   private payloads: { [key: string]: UploadPayload } = {};
 
@@ -62,9 +61,7 @@ export class S3Uploader extends UploaderAbstract {
       concurrency: this.concurrency,
     });
 
-    // setup cancel token
-    // const CancelToken = request.CancelToken;
-    // this.cancelToken = CancelToken.source();
+    this.cancelToken = new FsCancelToken();
   }
 
   /**
@@ -94,7 +91,7 @@ export class S3Uploader extends UploaderAbstract {
    * @memberof S3Uploader
    */
   public abort(msg?: string): void {
-    // this.cancelToken.cancel(msg || 'Aborted by user');
+    this.cancelToken.cancel(msg || 'Aborted by user');
     this.partsQueue.clear();
   }
 
@@ -134,7 +131,7 @@ export class S3Uploader extends UploaderAbstract {
     return Promise.all(tasks).then((res) => {
       // prevent cancel token memory leak
       try {
-        // this.cancelToken.cancel();
+        this.cancelToken.cancel();
       } catch (e) {
         /* istanbul ignore next */
         debug(`Cannot cleanup cancel token %O`, e.message);
@@ -310,7 +307,7 @@ export class S3Uploader extends UploaderAbstract {
       },
       {
         timeout: this.timeout,
-        // cancelToken: this.cancelToken.token,
+        cancelToken: this.cancelToken,
         headers: this.getDefaultHeaders(id),
         retry: this.retryConfig,
       }
@@ -426,7 +423,7 @@ export class S3Uploader extends UploaderAbstract {
       data,
       {
         headers: this.getDefaultHeaders(id),
-        // cancelToken: this.cancelToken.token,
+        cancelToken: this.cancelToken,
         timeout: this.timeout,
         retry: this.retryConfig,
       }
@@ -455,7 +452,7 @@ export class S3Uploader extends UploaderAbstract {
 
     return FsRequest
       .put(data.url, part.buffer, {
-        // cancelToken: this.cancelToken.token,
+        cancelToken: this.cancelToken,
         timeout: this.timeout,
         headers: data.headers,
         filesstackHeaders: false,
@@ -539,7 +536,7 @@ export class S3Uploader extends UploaderAbstract {
 
     return FsRequest
       .put(data.url, chunk.buffer, {
-        // cancelToken: this.cancelToken.token,
+        cancelToken: this.cancelToken,
         timeout: this.timeout,
         headers: data.headers,
         filesstackHeaders: false,
@@ -575,10 +572,10 @@ export class S3Uploader extends UploaderAbstract {
         }
 
         // @todo
-        // if (shouldRetry(err)) {
-        //   debug(`[${id}] Request network error. Retry with new chunk size: ${nextChunkSize}`);
-        //   return this.uploadNextChunk(id, partNumber, nextChunkSize);
-        // }
+        if (shouldRetry(err)) {
+          debug(`[${id}] Request network error. Retry with new chunk size: ${nextChunkSize}`);
+          return this.uploadNextChunk(id, partNumber, nextChunkSize);
+        }
 
         part = null;
         chunk = null;
@@ -608,7 +605,7 @@ export class S3Uploader extends UploaderAbstract {
         part: part.partNumber + 1,
       },
       {
-        // cancelToken: this.cancelToken.token,
+        cancelToken: this.cancelToken,
         timeout: this.timeout,
         headers: this.getDefaultHeaders(id),
         retry: this.retryConfig,
@@ -658,7 +655,7 @@ export class S3Uploader extends UploaderAbstract {
       },
       {
         timeout: this.timeout,
-        // cancelToken: this.cancelToken.token,
+        cancelToken: this.cancelToken,
         headers: this.getDefaultHeaders(id),
         retry: this.retryConfig,
       }

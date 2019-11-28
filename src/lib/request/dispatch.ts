@@ -16,7 +16,8 @@
  */
 import { FsRequestOptions, FsResponse } from './types';
 import { AdapterInterface } from './adapters/interface';
-import { FsRequestError, FsRequestErrorCode } from './error';
+import { FsRequestError } from './error';
+import { shouldRetry } from './helpers/shouldRetry';
 import Debug from 'debug';
 
 const debug = Debug('fs:request:dispatch');
@@ -69,7 +70,7 @@ export class Dispatch {
   private retry(err: FsRequestError)  {
     const config = err.config;
 
-    if (!this.shouldRetry(err)) {
+    if (!shouldRetry(err)) {
       debug('[Retry] Request error is not retriable. Exiting');
       return Promise.reject(err);
     }
@@ -99,36 +100,5 @@ export class Dispatch {
     return new Promise<FsResponse>((resolve) => {
       setTimeout(() => resolve(this.request(config)), retryDelay);
     });
-  }
-
-  /**
-   * Indicates if method should be retried
-   *
-   * @private
-   * @param {FsRequestError} err
-   * @returns
-   * @memberof Dispatch
-   */
-  private shouldRetry(err: FsRequestError) {
-    // we always should retry on network failure
-    switch (err.code) {
-      case FsRequestErrorCode.NETWORK:
-      case FsRequestErrorCode.SERVER:
-      case FsRequestErrorCode.TIMEOUT:
-        return true;
-    }
-
-    // if request was not made and there is no response - retry
-    if (!err.response) {
-      return true;
-    }
-
-    // we should retry on all server errors (5xx)
-    if (500 <= err.response.status && err.response.status <= 599) {
-      return true;
-    }
-
-    // we should not retry on other errors (4xx) ie: BadRequest etc
-    return false;
   }
 }

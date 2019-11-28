@@ -19,7 +19,7 @@ import { Security, Session } from '../client';
 import { Filelink, StoreParams } from './../filelink';
 import { FilestackError } from './../../filestack_error';
 import { getValidator, StoreParamsSchema } from './../../schema';
-import { FsRequest } from '../request';
+import { FsRequest, FsCancelToken } from '../request';
 
 /**
  *
@@ -65,12 +65,10 @@ export const storeURL = (
   let options: any = {};
 
   if (token) {
-    // @todo cancel token
-    // const CancelToken = request.CancelToken;
-    // const source = CancelToken.source();
-    // token.cancel = source.cancel;
+    const cancelToken = new FsCancelToken();
+    token.cancel = cancelToken.cancel;
 
-    // options.cancelToken = source.token;
+    options.cancelToken = cancelToken;
   }
 
   return FsRequest.get(baseURL.toString(), options).then((res) => {

@@ -20,7 +20,7 @@ import { StoreParams } from '../filelink';
 import { ClientOptions, Session } from '../client';
 // import { requestWithSource, request } from '../api/request';
 import { FilestackError } from './../../filestack_error';
-import { FsRequest } from '../request';
+import { FsRequest, FsCancelToken } from '../request';
 
 /**
  * @private
@@ -85,12 +85,9 @@ export class CloudClient {
     let options: any = {};
 
     if (token) {
-      // @todo cancel token
-      // const CancelToken = request.CancelToken;
-      // const source = CancelToken.source();
-      // token.cancel = source.cancel;
-
-      // options.cancelToken = source.token;
+      const cancelToken = new FsCancelToken();
+      token.cancel = cancelToken.cancel;
+      options.cancelToken = cancelToken;
     }
 
     return FsRequest
@@ -136,13 +133,9 @@ export class CloudClient {
     let requestOptions: any = {};
 
     if (token) {
-      // @todo cancel token
-
-      // const CancelToken = request.CancelToken;
-      // const source = CancelToken.source();
-      // token.cancel = source.cancel;
-
-      // requestOptions.cancelToken = source.token;
+      const cancelToken = new FsCancelToken();
+      token.cancel = cancelToken.cancel;
+      requestOptions.cancelToken = cancelToken;
     }
 
     return FsRequest
