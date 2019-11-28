@@ -40,13 +40,13 @@ describe('Request/Utils', () => {
   });
 
   describe('isFile', () => {
-    const file = new File(['foo'], 'foo.txt', { type: 'text/plain' });
+    const file: File = new File(['foo'], 'foo.txt', { type: 'text/plain' });
     it(printLog(true, 'isFile', 'new File()'), () => expect(utils.isFile(file)).toBeTruthy());
   });
 
   describe('isBlob', () => {
     const parts = ['<a id="id"></a>'];
-    const blob = new Blob(parts, { type: 'text/html' });
+    const blob: Blob = new Blob(parts, { type: 'text/html' });
     it(printLog(true, 'isBlob', 'new Blob()'), () => expect(utils.isBlob(blob)).toBeTruthy());
   });
 
