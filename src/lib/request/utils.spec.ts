@@ -15,31 +15,31 @@
  * limitations under the License.
  */
 
-import { isArray, isArrayBuffer, isBuffer, isArrayBufferView, isObject, isString, isFile, isBlob, isStream, isURLSearchParams, isFormData, trim, isNode } from './utils';
+import * as utils from './utils';
 import { Readable } from 'stream';
 
 const printLog = (status: boolean | string, name: string, value: string): string => `${name} should return ${status} when value is ${value}`;
 
 describe('Request/Utils', () => {
   describe('isArray', () => {
-    it(printLog(true, 'isArray', "['value']"), () => expect(isArray(['value'])).toBeTruthy());
+    it(printLog(true, 'isArray', "['value']"), () => expect(utils.isArray(['value'])).toBeTruthy());
 
-    it(printLog(true, 'isArray', '[]'), () => expect(isArray([])).toBeTruthy());
-
-    // @ts-ignore
-    it(printLog(true, 'isArray', ''), () => expect(isArray()).toBeFalsy());
+    it(printLog(true, 'isArray', '[]'), () => expect(utils.isArray([])).toBeTruthy());
 
     // @ts-ignore
-    it(printLog(true, 'isArray', null), () => expect(isArray(null)).toBeFalsy());
+    it(printLog(true, 'isArray', ''), () => expect(utils.isArray()).toBeFalsy());
+
+    // @ts-ignore
+    it(printLog(true, 'isArray', null), () => expect(utils.isArray(null)).toBeFalsy());
   });
 
   describe('isArrayBuffer', () => {
     it(printLog(true, 'isArrayBuffer', 'new ArrayBuffer(10)'), () => {
-      expect(isArrayBuffer(new ArrayBuffer(10))).toBeTruthy();
+      expect(utils.isArrayBuffer(new ArrayBuffer(10))).toBeTruthy();
     });
     it(printLog(true, 'isArrayBuffer', ''), () => {
       // @ts-ignore
-      expect(isArrayBuffer()).toBeFalsy();
+      expect(utils.isArrayBuffer()).toBeFalsy();
     });
   });
 
@@ -47,113 +47,100 @@ describe('Request/Utils', () => {
   describe('isBuffer', () => {
     it(printLog(true, 'isBuffer', ''), () => {
       // @ts-ignore
-      expect(isBuffer(null)).toBeFalsy();
+      expect(utils.isBuffer(null)).toBeFalsy();
     });
     it(printLog(true, 'isBuffer', ''), () => {
       // @ts-ignore
-      expect(isBuffer(Buffer.alloc(10))).toBeTruthy();
+      expect(utils.isBuffer(Buffer.alloc(10))).toBeTruthy();
     });
   });
 
   describe('isArrayBufferView', () => {
     it(printLog(true, 'isArrayBufferView', 'new DataView(new ArrayBuffer(10))'), () => {
-      expect(isArrayBufferView(new DataView(new ArrayBuffer(10)))).toBeTruthy();
+      expect(utils.isArrayBufferView(new DataView(new ArrayBuffer(10)))).toBeTruthy();
     });
 
     it(printLog(true, 'isArrayBufferView', null), () => {
       // @ts-ignore
-      expect(isArrayBufferView(null)).toBeFalsy();
+      expect(utils.isArrayBufferView(null)).toBeFalsy();
     });
 
     it(printLog(true, 'isArrayBufferView', null), () => {
       // @ts-ignore
-      expect(isArrayBufferView(Buffer.alloc(10))).toBeTruthy();
+      expect(utils.isArrayBufferView(Buffer.alloc(10))).toBeTruthy();
     });
   });
 
   describe('isObject', () => {
-    it(printLog(true, 'isObject', "{prop: 'value'}"), () => expect(isObject({ prop: 'value' })).toBeTruthy());
+    it(printLog(true, 'isObject', "{prop: 'value'}"), () => expect(utils.isObject({ prop: 'value' })).toBeTruthy());
 
-    it(printLog(false, 'isObject', "'value'"), () => expect(isObject('value')).toBeFalsy());
+    it(printLog(false, 'isObject', "'value'"), () => expect(utils.isObject('value')).toBeFalsy());
 
-    it(printLog(false, 'isObject', '10'), () => expect(isObject(10)).toBeFalsy());
+    it(printLog(false, 'isObject', '10'), () => expect(utils.isObject(10)).toBeFalsy());
   });
 
   describe('isString', () => {
-    it(printLog(true, 'isString', "'value'"), () => expect(isString('value')).toBeTruthy());
+    it(printLog(true, 'isString', "'value'"), () => expect(utils.isString('value')).toBeTruthy());
 
-    it(printLog(false, 'isString', '10'), () => expect(isString(10)).toBeFalsy());
+    it(printLog(false, 'isString', '10'), () => expect(utils.isString(10)).toBeFalsy());
 
-    it(printLog(false, 'isString', '{}'), () => expect(isString({})).toBeFalsy());
+    it(printLog(false, 'isString', '{}'), () => expect(utils.isString({})).toBeFalsy());
 
-    it(printLog(false, 'isString', '[]'), () => expect(isString([])).toBeFalsy());
+    it(printLog(false, 'isString', '[]'), () => expect(utils.isString([])).toBeFalsy());
 
-    it(printLog(false, 'isString', 'false'), () => expect(isString(false)).toBeFalsy());
+    it(printLog(false, 'isString', 'false'), () => expect(utils.isString(false)).toBeFalsy());
   });
 
-  // @fixme: to browser ==>
-
-  // @todo @fixme
   describe('isFile', () => {
-    it(printLog(false, 'isFile', null), () => expect(isFile(null)).toBeFalsy());
+    it(printLog(false, 'isFile', null), () => expect(utils.isFile(null)).toBeFalsy());
   });
 
-  // @todo @fixme
   describe('isBlob', () => {
-    it(printLog(false, 'isBlob', null), () => expect(isBlob(null)).toBeFalsy());
-
-    // const blob = new Blob([JSON.stringify({ hello: 'word' }, null, 2)], { type: 'application/json' });
-    // it(printLog(true, 'isBlob', 'new Blob()'), () => expect(isBlob(blob)).toBeTruthy());
+    it(printLog(false, 'isBlob', null), () => expect(utils.isBlob(null)).toBeFalsy());
   });
 
   describe('isStream', () => {
     it(printLog(true, 'isStream', 'Stream.Readable()'), () => {
       const stream = new Readable();
-      spyOn(stream, '_read').and.returnValue(() => console.log(''));
+      stream._read = () => '';
       stream.push('beep');
-      expect(isStream(stream)).toBeTruthy();
+      expect(utils.isStream(stream)).toBeTruthy();
     });
 
-    it(printLog(true, 'isStream', "'value'"), () => expect(isStream('value')).toBeFalsy());
+    it(printLog(true, 'isStream', "'value'"), () => expect(utils.isStream('value')).toBeFalsy());
 
-    it(printLog(true, 'isStream', '10'), () => expect(isStream(10)).toBeFalsy());
+    it(printLog(true, 'isStream', '10'), () => expect(utils.isStream(10)).toBeFalsy());
 
-    it(printLog(true, 'isStream', '[]'), () => expect(isStream([])).toBeFalsy());
+    it(printLog(true, 'isStream', '[]'), () => expect(utils.isStream([])).toBeFalsy());
   });
 
   describe('isURLSearchParams', () => {
     it(printLog(true, 'isURLSearchParams', "new URLSearchParams('q=filename=&size=12')"), () => {
-      expect(isURLSearchParams(new URLSearchParams('q=filename=&size=12'))).toBeTruthy();
+      expect(utils.isURLSearchParams(new URLSearchParams('q=filename=&size=12'))).toBeTruthy();
     });
 
     it(printLog(true, 'isURLSearchParams', "new URLSearchParams('')"), () => {
-      expect(isURLSearchParams(new URLSearchParams(''))).toBeTruthy();
+      expect(utils.isURLSearchParams(new URLSearchParams(''))).toBeTruthy();
     });
   });
 
   describe('isFormData', () => {
-    // it(printLog(true, 'isFormData', "'value'"), () => expect(isFormData(formData)).toBeTruthy());
+    it(printLog(true, 'isFormData', "'value'"), () => expect(utils.isFormData('value')).toBeFalsy());
 
-    it(printLog(true, 'isFormData', "'value'"), () => expect(isFormData('value')).toBeFalsy());
+    it(printLog(true, 'isFormData', '10'), () => expect(utils.isFormData({})).toBeFalsy());
 
-    it(printLog(true, 'isFormData', '10'), () => expect(isFormData({})).toBeFalsy());
+    it(printLog(true, 'isFormData', '[]'), () => expect(utils.isFormData([])).toBeFalsy());
 
-    it(printLog(true, 'isFormData', '[]'), () => expect(isFormData([])).toBeFalsy());
-
-    it(printLog(true, 'isFormData', '{}'), () => expect(isFormData({})).toBeFalsy());
+    it(printLog(true, 'isFormData', '{}'), () => expect(utils.isFormData({})).toBeFalsy());
   });
 
   describe('trim', () => {
-    it(printLog("'value' without whitespace", 'trim', "' value'"), () => expect(trim(' value')).toEqual('value'));
+    it(printLog("'value' without whitespace", 'trim', "' value'"), () => expect(utils.trim(' value')).toEqual('value'));
 
-    it(printLog("'value' without whitespace ", 'trim', "' value '"), () => expect(trim(' value ')).toEqual('value'));
+    it(printLog("'value' without whitespace ", 'trim', "' value '"), () => expect(utils.trim(' value ')).toEqual('value'));
   });
 
   describe('isNode', () => {
-    it(printLog(true, 'isNode', ''), () => {
-      expect(isNode()).toBeTruthy();
-    });
-
-    // it(printLog(true, 'isNode', 'is node'), () => expect(isNode()).toBeFalsy());
+    it(printLog(true, 'isNode', ''), () => expect(utils.isNode()).toBeTruthy());
   });
 });
