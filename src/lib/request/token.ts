@@ -51,6 +51,7 @@ const tokenSource = () => {
   };
 };
 
+
 /**
  * Filestack token that allow pause, resume or cancel given upload
  *
@@ -59,13 +60,12 @@ const tokenSource = () => {
  * @extends {EventEmitter}
  * @implements {FsTokenInterface}
  */
-export class FsToken extends EventEmitter implements FsTokenInterface {
+export class FsCancelToken implements FsTokenInterface {
 
   private source: any;
   private cancelMethod: any;
 
   constructor() {
-    super();
     const cancelable = tokenSource();
 
     this.source = cancelable.token;
@@ -80,24 +80,6 @@ export class FsToken extends EventEmitter implements FsTokenInterface {
    */
   public cancel(reason?: string | Error) {
     this.cancelMethod(reason);
-  }
-
-  /**
-   * Pause upload action
-   *
-   * @memberof Token
-   */
-  public pause() {
-    this.emit('pause');
-  }
-
-  /**
-   * Resume upload action
-   *
-   * @memberof Token
-   */
-  public resume() {
-    this.emit('resume');
   }
 
   /**

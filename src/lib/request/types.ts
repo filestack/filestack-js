@@ -34,8 +34,6 @@ export interface FsRetryConfig {
 
 export interface FsTokenInterface {
   cancel: (reason?: string | Error) => void;
-  pause: () => void;
-  resume: () => void;
   getSource: () => Promise<any>;
 }
 
@@ -72,12 +70,11 @@ export interface FsRequestOptions {
   filesstackHeaders?: boolean;
   headers?: FsRequestHeaders;
   timeout?: number;
-  cancelToken?: any;
+  cancelToken?: FsTokenInterface;
   retry?: FsRetryConfig;
   onProgress?: (pr: any) => any; // @todo callback type
   auth?: FsAuthConfig;
   runtime?: FsRequestRuntime;
-  token?: FsTokenInterface;
 }
 
 export interface FsResponse {

@@ -17,7 +17,7 @@
  */
 const nock = require('nock');
 import { FsRequest } from './../src/lib/request/index';
-import { FsToken } from './../src/lib/request/token';
+import { FsCancelToken } from './../src/lib/request/token';
 
 nock('http://www.filestacktest.com')
   .get('/123')
@@ -27,14 +27,14 @@ nock('http://www.filestacktest.com')
   .get('/123')
   .reply(200, '<html></html>', { 'content-type': 'text/plain' });
 
-const token = new FsToken();
+const token = new FsCancelToken();
 
 // setTimeout(() => {
 //   token.cancel();
 // }, 1000);
 
 FsRequest.get('http://www.filestacktest.com/123', {
-  token: token,
+  cancelToken: token,
   timeout: 500,
   retry: {
     retry: 2,

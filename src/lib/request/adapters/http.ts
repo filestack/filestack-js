@@ -201,8 +201,8 @@ export class HttpAdapter implements AdapterInterface {
         });
       });
 
-      if (config.token) {
-        config.token.getSource().then((reason) => {
+      if (config.cancelToken) {
+        config.cancelToken.getSource().then((reason) => {
           // if request is done cancel token should not throw any error
           if (!req) {
             return;

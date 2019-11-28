@@ -53,7 +53,7 @@ export class XhrAdapter implements AdapterInterface {
 
     request.timeout = config.timeout;
 
-    return new Promise<Response>((resolve, reject) => {
+    return new Promise<FsResponse>((resolve, reject) => {
       request.onreadystatechange = function handleLoad() {
         if (!request || request.readyState !== 4) {
           return;
@@ -126,8 +126,8 @@ export class XhrAdapter implements AdapterInterface {
         request.addEventListener('progress', config.onProgress);
       }
 
-      if (config.token) {
-        config.token.getSource().then((reason) => {
+      if (config.cancelToken) {
+        config.cancelToken.getSource().then((reason) => {
           // if request is done cancel token should not throw any error
           if (!request) {
             return;
