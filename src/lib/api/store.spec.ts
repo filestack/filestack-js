@@ -93,6 +93,7 @@ describe('StoreURL', () => {
 
     // @ts-ignore
     setTimeout(() => token.cancel(), 10);
+    // tslint:disable-next-line
     expect(storeURL(mockedSession, mockHandle, {}, token)).rejects.toEqual(expect.any(Error));
   });
 

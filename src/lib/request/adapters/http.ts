@@ -100,7 +100,6 @@ export class HttpAdapter implements AdapterInterface {
         }
 
         let stream = res;
-
         debug('Response statusCode: %d, Response Headers: %O', res.statusCode, res.headers);
 
         switch (res.headers['content-encoding']) {
@@ -169,11 +168,6 @@ export class HttpAdapter implements AdapterInterface {
         });
 
         stream.on('end', () => {
-          // do we need this?
-          // if (!res.complete) {
-          //   return reject(new RequestError('The connection was terminated by server', config, null, RequestErrorCode.SERVER));
-          // }
-
           response.data = Buffer.concat(responseBuffer);
 
           // free resources

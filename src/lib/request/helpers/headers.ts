@@ -85,12 +85,13 @@ export const normalizeHeaders = (headers: FsRequestHeaders): FsRequestHeaders =>
     return {};
   }
 
+  const toReturn = {};
+
   for (let i in headers) {
-    delete headers[i];
-    headers[normalizeName(i)] =  headers[i];
+    toReturn[normalizeName(i)] =  headers[i];
   }
 
-  return headers;
+  return toReturn;
 };
 
 /**

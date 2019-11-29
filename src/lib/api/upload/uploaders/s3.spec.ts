@@ -71,6 +71,7 @@ const s3Callback = function(url) {
 describe('Api/Upload/Uploaders/S3', () => {
   beforeEach(() => {
     scope = nock(testHost);
+    // scope.defaultReplyHeaders({ 'access-control-allow-origin': '*', 'content-type': 'application/json' });
     scope.persist();
 
     interceptorStart = scope.post('/multipart/start');
@@ -79,10 +80,10 @@ describe('Api/Upload/Uploaders/S3', () => {
     interceptorComplete = scope.post('/multipart/complete');
     interceptorS3 = scope.put('/fakes3');
 
-    interceptorStart.reply(200, (_, data) => mockStart(JSON.parse(data)));
-    interceptorUpload.twice().reply(200, (_, data) => mockUpload(JSON.parse(data)));
-    interceptorCommit.reply(200, (_, data) => mockCommit(JSON.parse(data)));
-    interceptorComplete.reply(200, (_, data) => mockComplete(JSON.parse(data)));
+    interceptorStart.reply(200, (_, data) => mockStart(data));
+    interceptorUpload.twice().reply(200, (_, data) => mockUpload(data));
+    interceptorCommit.reply(200, (_, data) => mockCommit(data));
+    interceptorComplete.reply(200, (_, data) => mockComplete(data));
     interceptorS3.twice().reply(201, s3Callback, { etag: 'test' });
 
     mockStart.mockReturnValue({
@@ -172,7 +173,7 @@ describe('Api/Upload/Uploaders/S3', () => {
       nock.removeInterceptor(interceptorComplete);
       scope.persist(false);
       scope.post('/multipart/complete').reply(202, () => mock202());
-      scope.post('/multipart/complete').reply(200, (_, data) => mockComplete(JSON.parse(data)));
+      scope.post('/multipart/complete').reply(200, (_, data) => mockComplete(data));
 
       const u = new S3Uploader({});
       u.setUrl(testHost);
@@ -281,7 +282,7 @@ describe('Api/Upload/Uploaders/S3', () => {
       });
 
       interceptorUpload.reply(200, function(_, data) {
-        return mockUpload(JSON.parse(data), this.req.headers);
+        return mockUpload(data, this.req.headers);
       });
 
       const u = new S3Uploader({});
@@ -554,15 +555,15 @@ describe('Api/Upload/Uploaders/S3', () => {
 
       it('should lower chunk size on network error', async () => {
         const putRequestTimeout = 300;
-
         let delayApplied = false;
+
         interceptorS3.reply(
           function(url, _, cb) {
             if (!delayApplied) {
               delayApplied = true;
               setTimeout(() => {
-                cb();
-              }, putRequestTimeout + 10);
+                cb(504);
+              }, 3000);
             } else {
               cb(null, mockPut(url, this.req.headers));
             }
@@ -580,6 +581,7 @@ describe('Api/Upload/Uploaders/S3', () => {
 
         u.addFile(getSmallTestFile());
         const res = await u.execute();
+        console.log('tests done ?');
         expect(res[0].handle).toEqual('test_handle');
         expect(res[0].status).toEqual('test_status');
 
@@ -984,6 +986,7 @@ describe('Api/Upload/Uploaders/S3', () => {
     it('should repsect retry config', async () => {
       // simulate first request network fail
       let networkFail = true;
+
       nock.removeInterceptor(interceptorS3);
       scope.persist(false);
 
@@ -991,14 +994,12 @@ describe('Api/Upload/Uploaders/S3', () => {
         function(url, _, cb) {
           if (networkFail) {
             networkFail = false;
-            return cb('Error');
+            return cb(Error('error'));
           }
 
           cb(null, mockPut(url, this.req.headers));
         },
-        {
-          etag: 'test',
-        }
+        { etag: 'test' }
       );
 
       const u = new S3Uploader({});
@@ -1012,6 +1013,7 @@ describe('Api/Upload/Uploaders/S3', () => {
       });
 
       const res = await u.execute();
+
       expect(res[0].status).toEqual('test_status');
     });
   });

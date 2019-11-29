@@ -549,7 +549,6 @@ export class S3Uploader extends UploaderAbstract {
         const newOffset = Math.min(part.offset + chunkSize, part.size);
 
         debug(`[${id}] S3 Chunk uploaded! offset: ${part.offset}, part ${partNumber}! response headers for ${partNumber}: \n%O\n`, res.headers);
-
         this.setPartData(id, partNumber, 'offset', newOffset);
 
         // if all chunks was uploaded then return resolve
@@ -571,7 +570,6 @@ export class S3Uploader extends UploaderAbstract {
           return Promise.reject(new FilestackError('Min chunk size reached', err.data, FilestackErrorType.REQUEST));
         }
 
-        // @todo
         if (shouldRetry(err)) {
           debug(`[${id}] Request network error. Retry with new chunk size: ${nextChunkSize}`);
           return this.uploadNextChunk(id, partNumber, nextChunkSize);

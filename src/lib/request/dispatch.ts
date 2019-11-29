@@ -52,7 +52,7 @@ export class Dispatch {
    */
   public request(config: FsRequestOptions): Promise<FsResponse> {
     config.headers = config.headers || {};
-
+    debug('Dispatching request %O', config);
     return this.adapter.request(config).catch((reason: FsRequestError) => {
       debug('Request error "%s": %O', reason, reason.response);
       return this.retry(reason);
