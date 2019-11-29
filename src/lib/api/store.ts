@@ -66,8 +66,7 @@ export const storeURL = (
 
   if (token) {
     const cancelToken = new FsCancelToken();
-    token.cancel = cancelToken.cancel;
-
+    token.cancel = cancelToken.cancel.bind(cancelToken);
     options.cancelToken = cancelToken;
   }
 

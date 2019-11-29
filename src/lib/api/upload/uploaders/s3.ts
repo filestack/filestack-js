@@ -24,7 +24,7 @@ import { FsRequest, FsResponse, FsRequestError, FsCancelToken } from './../../..
 import { uniqueTime, uniqueId, filterObject } from './../../../utils';
 import { UploaderAbstract, UploadMode, INTELLIGENT_CHUNK_SIZE, MIN_CHUNK_SIZE, DEFAULT_STORE_LOCATION } from './abstract';
 import { FilestackError, FilestackErrorType } from './../../../../filestack_error';
-import { shouldRetry } from 'src/lib/request/helpers';
+import { shouldRetry } from './../../../request/helpers';
 
 const debug = Debug('fs:upload:s3');
 

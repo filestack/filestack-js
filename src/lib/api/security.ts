@@ -84,7 +84,7 @@ export interface WebhookValidatePayload {
  */
 export const validateWebhookSignature = (secret: string, rawBody: string, toCompare: WebhookValidatePayload) => {
   if (!isNode()) {
-    throw new Error('validate Webhook Signature is only supported in nodejs');
+    throw new Error('validateWebhookSignature is only supported in nodejs');
   }
 
   const hash = require('crypto')

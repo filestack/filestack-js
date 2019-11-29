@@ -17,6 +17,7 @@
 
 import { config } from './../../config';
 import { CloudClient, PICKER_KEY } from './cloud';
+import * as utils from './../request/utils';
 import * as nock from 'nock';
 
 const testApiKey = 'API_KEY';
@@ -37,6 +38,8 @@ const testSession = {
 };
 
 let scope = nock(sessionURls.cloudApiUrl);
+
+scope.defaultReplyHeaders({ 'access-control-allow-origin': '*', 'content-type': 'application/json' });
 
 const mockTokInit = jest
   .fn()
@@ -77,14 +80,13 @@ const mockList = jest
 const mockLogout = jest
   .fn()
   .mockName('logout')
-  .mockImplementation((url, data) => {
-    const params = data ? JSON.parse(data) : {};
+  .mockImplementation((url, params) => {
 
-    if (data && params.clouds && params.clouds.token) {
+    if (params.clouds && params.clouds.token) {
       return { token: testCloudToken };
     }
 
-    return data;
+    return params;
   });
 
 const mockStore = jest
@@ -100,6 +102,8 @@ const mockStore = jest
 
 describe('cloud', () => {
   beforeEach(() => {
+    spyOn(utils, 'isNode').and.returnValue(false);
+
     scope
       .persist()
       .options(/.*/)
@@ -115,8 +119,8 @@ describe('cloud', () => {
       .reply(200, mockPrefetch);
 
     scope.post('/auth/logout').reply(200, mockLogout);
-    scope.post('/folder/list').reply(200, (_, data) => mockList(JSON.parse(data)));
-    scope.post('/store/').reply(200, (_, data) => mockStore(JSON.parse(data)));
+    scope.post('/folder/list').reply(200, (_, data) => mockList(data));
+    scope.post('/store/').reply(200, (_, data) => mockStore(data));
     scope.post('/metadata').reply(200, mockMetadata);
 
     scope.post(/\/recording\/(audio|video)\/init/).reply(200, mockTokInit);
@@ -319,10 +323,10 @@ describe('cloud', () => {
 
       expect(mockMetadata).toHaveBeenCalledWith(
         expect.any(String),
-        JSON.stringify({
+        {
           apikey: testApiKey,
           url: testUrl,
-        })
+        }
       );
       expect(res).toEqual('metadata');
     });
@@ -337,11 +341,11 @@ describe('cloud', () => {
 
       expect(mockMetadata).toHaveBeenCalledWith(
         expect.any(String),
-        JSON.stringify({
+        {
           apikey: testApiKey,
           url: testUrl,
           ...testSecurity,
-        })
+        }
       );
       expect(res).toEqual('metadata');
     });
@@ -378,14 +382,14 @@ describe('cloud', () => {
       it('should make correct request to api (audio)', async () => {
         const res = await new CloudClient(testSession).tokStart('audio', 'key', testTokSession);
 
-        expect(mockTokStart).toHaveBeenCalledWith(expect.any(String), JSON.stringify({ apikey: 'key', session_id: testTokSession }));
+        expect(mockTokStart).toHaveBeenCalledWith(expect.any(String), { apikey: 'key', session_id: testTokSession });
         expect(res).toEqual('start');
       });
 
       it('should make correct request to api (video)', async () => {
         const res = await new CloudClient(testSession).tokStart('video', 'key', testTokSession);
 
-        expect(mockTokStart).toHaveBeenCalledWith(expect.any(String), JSON.stringify({ apikey: 'key', session_id: testTokSession }));
+        expect(mockTokStart).toHaveBeenCalledWith(expect.any(String), { apikey: 'key', session_id: testTokSession });
         expect(res).toEqual('start');
       });
 
@@ -400,11 +404,11 @@ describe('cloud', () => {
 
         expect(mockTokStop).toHaveBeenCalledWith(
           expect.any(String),
-          JSON.stringify({
+          {
             apikey: 'key',
             session_id: testTokSession,
             archive_id: testTokArchiveId,
-          })
+          }
         );
         expect(res).toEqual('stop');
       });
@@ -414,11 +418,11 @@ describe('cloud', () => {
 
         expect(mockTokStop).toHaveBeenCalledWith(
           expect.any(String),
-          JSON.stringify({
+          {
             apikey: 'key',
             session_id: testTokSession,
             archive_id: testTokArchiveId,
-          })
+          }
         );
         expect(res).toEqual('stop');
       });

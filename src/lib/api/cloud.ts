@@ -86,7 +86,7 @@ export class CloudClient {
 
     if (token) {
       const cancelToken = new FsCancelToken();
-      token.cancel = cancelToken.cancel;
+      token.cancel = cancelToken.cancel.bind(cancelToken);
       options.cancelToken = cancelToken;
     }
 
@@ -134,7 +134,7 @@ export class CloudClient {
 
     if (token) {
       const cancelToken = new FsCancelToken();
-      token.cancel = cancelToken.cancel;
+      token.cancel = cancelToken.cancel.bind(cancelToken);
       requestOptions.cancelToken = cancelToken;
     }
 

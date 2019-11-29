@@ -47,14 +47,16 @@ const responseObj = {
   size: 1,
 };
 
+const scope = nock(testHost);
+
 describe('StoreURL', () => {
-  beforeAll(() => {
+  beforeEach(() => {
     spyOn(Filelink.prototype, 'toString').and.returnValue(`${testHost}/${testUrl}`);
     mockGet.mockReturnValue(responseObj);
 
-    nock(testHost)
-      .persist()
+    scope
       .get(`/${testUrl}`)
+      .delay(15)
       .reply(200, mockGet);
   });
 
@@ -81,13 +83,17 @@ describe('StoreURL', () => {
     })).toThrowError('Invalid store params');
   });
 
-  it('should respect token cancel', () => {
+  it('should respect token cancel', async () => {
+    // simulate old token
     const token = {
-      cancel: () => jest.fn(),
+      cancel: () => {
+        console.log('cancel method');
+      },
     };
 
-    setImmediate(() => token.cancel());
-    return expect(storeURL(mockedSession, mockHandle, {}, token)).rejects.toEqual({});
+    // @ts-ignore
+    setTimeout(() => token.cancel(), 10);
+    expect(storeURL(mockedSession, mockHandle, {}, token)).rejects.toEqual(expect.any(Error));
   });
 
   it('should throw an error when missing url', async () => {

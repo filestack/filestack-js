@@ -208,7 +208,10 @@ export class HttpAdapter implements AdapterInterface {
             if (!req) {
               return;
             }
+
             req.abort();
+
+            debug('Request canceled by user %s', reason);
             reject(new FsRequestError(`Request aborted - ${reason}`, config, null, FsRequestErrorCode.ABORTED));
           })
           .catch(error => error);

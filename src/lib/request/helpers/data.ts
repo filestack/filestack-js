@@ -17,6 +17,9 @@
 import { isURLSearchParams, isObject, isFormData, isArrayBuffer, isStream, isFile, isBlob, isBuffer } from './../utils';
 import { FsRequestOptions, FsResponse } from './../types';
 import { set } from './headers';
+import Debug from 'debug';
+
+const debug = Debug('fs:request:data');
 
 /**
  * Prepare request and set content-type header based on data
@@ -58,7 +61,7 @@ export const parseResponse = (response: FsResponse): FsResponse => {
     try {
       response.data = JSON.parse(response.data);
     } catch (e) {
-      console.error('Cannot parse response', e);
+      debug('Cannot parse response %O - %O', response.data, response.headers);
     }
   } else if (/text\/(plain|html)/.test(contentType)) {
     response.data = bufferToString(response.data);

@@ -15,16 +15,8 @@
  * limitations under the License.
  */
 import { FsRequestOptions, FsHttpMethod, FsResponse } from './types';
+import { isNode } from './utils';
 import { Dispatch } from './dispatch';
-
-let RequestAdapter;
-
-// @todo - select proper adapter according to env use require to for tree shaking ?
-if (typeof process !== 'undefined' && process.versions && process.versions.node) {
-  RequestAdapter = require('./adapters/http').HttpAdapter;
-} else {
-  RequestAdapter = require('./adapters/xhr').XhrAdapter;
-}
 
 /**
  * Main isomorphic Filestack request library
@@ -69,8 +61,18 @@ export class FsRequest {
    * @memberof FsRequest
    */
   constructor(config?: FsRequestOptions) {
+
+    let adapter;
+
+    // move to adapters/index for cache purpose?
+    if (isNode()) {
+      adapter = require('./adapters/http').HttpAdapter;
+    } else {
+      adapter = require('./adapters/xhr').XhrAdapter;
+    }
+
     this.defaults = config;
-    this.dispatcher = new Dispatch(new RequestAdapter(RequestAdapter));
+    this.dispatcher = new Dispatch(new adapter());
   }
 
   /**
