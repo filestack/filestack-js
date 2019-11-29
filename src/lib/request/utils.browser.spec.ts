@@ -23,8 +23,36 @@ describe('Request/Utils', () => {
   beforeAll(() => {
     spyOn(utils, 'isNode').and.returnValue(false);
   });
+
   describe('isBuffer', () => {
     // @ts-ignore
     it(printLog(false, 'isBuffer', '{}'), () => expect(utils.isBuffer()).toBeFalsy());
+  });
+
+  describe('isArrayBuffer', () => {
+    it(printLog(true, 'isArrayBuffer', 'new ArrayBuffer(10)'), () => {
+      expect(utils.isArrayBuffer(Buffer.alloc(10))).toBeFalsy();
+    });
+    it(printLog(true, 'isArrayBuffer', ''), () => {
+      // @ts-ignore
+      expect(utils.isArrayBuffer()).toBeFalsy();
+    });
+  });
+
+  describe('isFile', () => {
+    const file: File = new File(['foo'], 'foo.txt', { type: 'text/plain' });
+    it(printLog(true, 'isFile', 'new File()'), () => expect(utils.isFile(file)).toBeTruthy());
+  });
+
+  describe('isBlob', () => {
+    const parts = ['<a id="id"></a>'];
+    const blob: Blob = new Blob(parts, { type: 'text/html' });
+    it(printLog(true, 'isBlob', 'new Blob()'), () => expect(utils.isBlob(blob)).toBeTruthy());
+  });
+
+  describe('isFormData', () => {
+    const formData: FormData = new FormData();
+    formData.append('name', 'value');
+    it(printLog(true, 'isFormData', "'value'"), () => expect(utils.isFormData(formData)).toBeTruthy());
   });
 });
