@@ -35,6 +35,8 @@ const tokenSource = () => {
 
     data.reason = reason;
 
+    // Only for security reason
+    /* istanbul ignore next */
     setTimeout(function() {
       for (let i = 0; i < data.listeners.length; i++) {
         if (typeof data.listeners[i] === 'function') {
