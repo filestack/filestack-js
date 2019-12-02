@@ -17,6 +17,9 @@
 
 import { FsRequest } from './request';
 import { FsRequestOptions } from './types';
+import { Dispatch } from './dispatch';
+
+jest.mock('./dispatch');
 
 describe('Request/Request', () => {
   describe('new FsRequest()', () => {
@@ -25,10 +28,20 @@ describe('Request/Request', () => {
     it(`request should return equal to `, () => expect(request).toEqual(expected));
   });
 
-  describe('get', () => {
+  describe.only('get', () => {
     it(`FsRequest get method should return status 200`, async () => {
+      const dispatchSpy = jest.fn(() => Promise.resolve('response'));
+
+      // @ts-ignore
+      Dispatch.prototype.request.mockImplementation(dispatchSpy);
       const response = await FsRequest.get('https://filestack.com');
-      expect(response.status).toBe(200);
+
+      expect(dispatchSpy).toHaveBeenCalledWith({
+        method: 'GET',
+        url: 'https://filestack.com',
+      });
+
+      expect(response).toBe('response');
     });
   });
 });
