@@ -128,7 +128,7 @@ export class S3Uploader extends UploaderAbstract {
         })
     );
 
-    return Promise.all(tasks).then((res) => {
+    return Promise.all(tasks).then(res => {
       // prevent cancel token memory leak
       try {
         this.cancelToken.cancel();
@@ -418,16 +418,12 @@ export class S3Uploader extends UploaderAbstract {
       data.md5 = part.md5;
     }
 
-    return FsRequest.post(
-      `${url}/multipart/upload`,
-      data,
-      {
-        headers: this.getDefaultHeaders(id),
-        cancelToken: this.cancelToken,
-        timeout: this.timeout,
-        retry: this.retryConfig,
-      }
-    ).catch(err => {
+    return FsRequest.post(`${url}/multipart/upload`, data, {
+      headers: this.getDefaultHeaders(id),
+      cancelToken: this.cancelToken,
+      timeout: this.timeout,
+      retry: this.retryConfig,
+    }).catch(err => {
       this.setPayloadStatus(id, FileState.FAILED);
 
       return Promise.reject(new FilestackError('Cannot get part metadata', this.getErrorDetails(err), FilestackErrorType.REQUEST));
@@ -450,17 +446,16 @@ export class S3Uploader extends UploaderAbstract {
     const { data, headers } = await this.getS3PartMetadata(id, part);
     debug(`[${id}] Received part ${partNumber} info body: \n%O\n headers: \n%O\n`, data, headers);
 
-    return FsRequest
-      .put(data.url, part.buffer, {
-        cancelToken: this.cancelToken,
-        timeout: this.timeout,
-        headers: data.headers,
-        filesstackHeaders: false,
-        // for now we cant test progress callback from upload
-        /* istanbul ignore next */
-        onProgress: (pr: ProgressEvent) => this.onProgressUpdate(id, partNumber, pr.loaded),
-        retry: this.retryConfig && this.uploadMode !== UploadMode.FALLBACK ? this.retryConfig : undefined,
-      })
+    return FsRequest.put(data.url, part.buffer, {
+      cancelToken: this.cancelToken,
+      timeout: this.timeout,
+      headers: data.headers,
+      filesStackHeaders: false,
+      // for now we cant test progress callback from upload
+      /* istanbul ignore next */
+      onProgress: (pr: ProgressEvent) => this.onProgressUpdate(id, partNumber, pr.loaded),
+      retry: this.retryConfig && this.uploadMode !== UploadMode.FALLBACK ? this.retryConfig : undefined,
+    })
       .then(res => {
         if (res.headers.etag) {
           this.setPartETag(id, partNumber, res.headers.etag);
@@ -534,16 +529,15 @@ export class S3Uploader extends UploaderAbstract {
       return Promise.reject(err);
     });
 
-    return FsRequest
-      .put(data.url, chunk.buffer, {
-        cancelToken: this.cancelToken,
-        timeout: this.timeout,
-        headers: data.headers,
-        filesstackHeaders: false,
-        // for now we cant test progress callback from upload
-        /* istanbul ignore next */
-        onProgress: (pr: ProgressEvent) => this.onProgressUpdate(id, partNumber, part.offset + pr.loaded),
-      })
+    return FsRequest.put(data.url, chunk.buffer, {
+      cancelToken: this.cancelToken,
+      timeout: this.timeout,
+      headers: data.headers,
+      filesStackHeaders: false,
+      // for now we cant test progress callback from upload
+      /* istanbul ignore next */
+      onProgress: (pr: ProgressEvent) => this.onProgressUpdate(id, partNumber, part.offset + pr.loaded),
+    })
       .then(res => {
         this.onProgressUpdate(id, partNumber, part.offset + chunk.size);
         const newOffset = Math.min(part.offset + chunkSize, part.size);
@@ -608,13 +602,15 @@ export class S3Uploader extends UploaderAbstract {
         headers: this.getDefaultHeaders(id),
         retry: this.retryConfig,
       }
-    ).then((res: FsResponse) => {
-      debug(`[${id}] Commit Part number ${part.partNumber}. Response: %O`, res.data);
+    )
+      .then((res: FsResponse) => {
+        debug(`[${id}] Commit Part number ${part.partNumber}. Response: %O`, res.data);
 
-      return res;
-    }).catch((err) => {
-      return Promise.reject(new FilestackError('Cannot commit file part metadata', this.getErrorDetails(err), FilestackErrorType.REQUEST));
-    });
+        return res;
+      })
+      .catch(err => {
+        return Promise.reject(new FilestackError('Cannot commit file part metadata', this.getErrorDetails(err), FilestackErrorType.REQUEST));
+      });
   }
 
   /**

@@ -22,7 +22,7 @@ export enum FsHttpMethod {
   OPTIONS = 'OPTIONS',
   POST = 'POST',
   PUT = 'PUT',
-  PATCH = 'PATH',
+  PATH = 'PATH',
 }
 
 export interface FsRetryConfig {
@@ -67,7 +67,7 @@ export interface FsRequestOptions {
   cache?: RequestCache;
   redirect?: RequestRedirect;
   params?: FsRequestParams;
-  filesstackHeaders?: boolean;
+  filesStackHeaders?: boolean;
   headers?: FsRequestHeaders;
   timeout?: number;
   cancelToken?: FsTokenInterface;
