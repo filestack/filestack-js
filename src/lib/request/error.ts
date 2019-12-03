@@ -40,7 +40,6 @@ export enum FsRequestErrorCode {
  * @extends {Error}
  */
 export class FsRequestError extends Error {
-
   /**
    * Error details, ie validation errors
    *
@@ -61,7 +60,6 @@ export class FsRequestError extends Error {
    * @memberof FsRequestError
    */
   constructor(message: string, config: any, response?: FsResponse, code?: FsRequestErrorCode) {
-
     /* istanbul ignore next */
     super(message);
 
@@ -77,5 +75,6 @@ export class FsRequestError extends Error {
 
 function fixProto(target: Error, prototype: {}) {
   const setPrototypeOf: Function = (Object as any).setPrototypeOf;
+  /* istanbul ignore next */
   setPrototypeOf ? setPrototypeOf(target, prototype) : ((target as any).__proto__ = prototype);
 }
