@@ -25,7 +25,7 @@ describe('Request/Helpers/Cookies', () => {
 
   describe('write', () => {
     it('should return array', () => {
-      expect(write('name', 'value', 0, '/', 'filestack.com', true)).toEqual(['name=value', 'path=/', 'domain=filestack.com', 'secure']);
+      expect(write('name', 'value', 0, '/', 'filestack.com', true)).toEqual(undefined);
     });
   });
 
