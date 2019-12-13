@@ -20,18 +20,28 @@ import * as utils from '../utils';
 import { XhrAdapter } from './xhr';
 import { FsHttpMethod } from '../types';
 import { FsCancelToken } from '../token';
+import { FsRequestError, FsRequestErrorCode } from '../error';
 
 describe('Request/Adapters/xhr', () => {
-  afterEach(() => {
-    nock.cleanAll();
-  });
+  let scope;
+  let requestAdapter;
+  const url = 'https://filestack.com';
 
   beforeAll(() => {
     spyOn(utils, 'isNode').and.returnValue(false);
   });
 
-  const url = 'https://filestack.com';
-  const scope = nock(url);
+  afterEach(() => {
+    nock.cleanAll();
+    scope = null;
+  });
+
+  beforeEach(() => {
+    scope = nock(url);
+
+    // depending on test we add xhr or http
+    requestAdapter = new XhrAdapter();
+  });
 
   describe('request basic', () => {
     it('should return req', async () => {
@@ -146,16 +156,92 @@ describe('Request/Adapters/xhr', () => {
   });
 
   describe.only('request delay', () => {
-    it('should return req', async () => {
-      const options = {
-        url: url,
-        method: FsHttpMethod.GET,
-      };
-      scope.get('/').replyWithError(200, 'ok', { 'access-control-allow-origin': '*' });
-      const adapter = new XhrAdapter();
-      const res = await adapter.request(options);
-      expect(res.status).toEqual(200);
-      scope.done();
+    describe('Timeouts', () => {
+      it('Should throw an FilestackError on socket abort', async () => {
+        const options = {
+          url: url,
+          method: FsHttpMethod.GET,
+          timeout: 50,
+        };
+
+        scope.get('/').socketDelay(2000).reply(200, 'ok', {
+          'Access-Control-Allow-Origin': '*',
+          'Content-type': 'application/json',
+        });
+
+        try {
+          setTimeout(() => {
+            nock.abortPendingRequests();
+          }, 100);
+          await requestAdapter.request(options);
+        } catch (err) {
+          expect(err).toEqual(expect.any(FsRequestError));
+          expect(err.code).toEqual(FsRequestErrorCode.ABORTED);
+        }
+        scope.done();
+      });
+    });
+
+    describe('Network errors', () => {
+      it('Should throw an FilestackError on response ECONNREFUSED error', async () => {
+        const options = {
+          url: url,
+          method: FsHttpMethod.GET,
+        };
+
+        scope.get('/').replyWithError({ code: 'ECONNREFUSED' });
+
+        let res;
+        try {
+          res = await requestAdapter.request(options);
+        } catch (err) {
+          expect(err).toEqual(expect.any(FsRequestError));
+          expect(err.code).toEqual(FsRequestErrorCode.NETWORK);
+        }
+
+        expect(res).toBeFalsy();
+        scope.done();
+      });
+
+      it('Should throw an FilestackError on response ECONNRESET error', async () => {
+        const options = {
+          url: url,
+          method: FsHttpMethod.GET,
+        };
+
+        scope.get('/').replyWithError({ code: 'ECONNRESET' });
+
+        let res;
+        try {
+          res = await requestAdapter.request(options);
+        } catch (err) {
+          expect(err).toEqual(expect.any(FsRequestError));
+          expect(err.code).toEqual(FsRequestErrorCode.NETWORK);
+        }
+
+        expect(res).toBeFalsy();
+        scope.done();
+      });
+
+      it('Should throw an FilestackError on response ENOTFOUND error', async () => {
+        const options = {
+          url: url,
+          method: FsHttpMethod.GET,
+        };
+
+        scope.get('/').replyWithError({ code: 'ENOTFOUND' });
+
+        let res;
+        try {
+          res = await requestAdapter.request(options);
+        } catch (err) {
+          expect(err).toEqual(expect.any(FsRequestError));
+          expect(err.code).toEqual(FsRequestErrorCode.NETWORK);
+        }
+
+        expect(res).toBeFalsy();
+        scope.done();
+      });
     });
   });
 
