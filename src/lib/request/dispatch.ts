@@ -29,7 +29,6 @@ const debug = Debug('fs:request:dispatch');
  * @class Dispatch
  */
 export class Dispatch {
-
   adapter: AdapterInterface;
 
   /**
@@ -67,7 +66,7 @@ export class Dispatch {
    * @returns
    * @memberof Dispatch
    */
-  private retry(err: FsRequestError)  {
+  private retry(err: FsRequestError) {
     const config = err.config;
 
     if (!shouldRetry(err)) {
@@ -88,7 +87,7 @@ export class Dispatch {
       return Promise.reject(err);
     }
 
-    const retryDelay = Math.max(Math.min(retryConfig.retryMaxTime, (retryConfig.retryFactor ** attempts) * 1000), 1);
+    const retryDelay = Math.max(Math.min(retryConfig.retryMaxTime, retryConfig.retryFactor ** attempts * 1000), 1);
 
     config.runtime = {
       ...config.runtime,
@@ -97,7 +96,7 @@ export class Dispatch {
 
     debug(`[Retry] Retrying request to ${config.url}, count ${attempts} of ${retryConfig.retry} - Delay: ${retryDelay}`);
 
-    return new Promise<FsResponse>((resolve) => {
+    return new Promise<FsResponse>(resolve => {
       setTimeout(() => resolve(this.request(config)), retryDelay);
     });
   }

@@ -1,4 +1,3 @@
-
 /*
  * Copyright (c) 2019 by Filestack.
  * Some rights reserved.
@@ -84,7 +83,6 @@ describe('Request/Adapter/Http', () => {
   // });
 
   describe('Make request', () => {
-
     afterEach(() => {
       nock.cleanAll();
     });
@@ -96,7 +94,10 @@ describe('Request/Adapter/Http', () => {
         testParam: 123,
       };
 
-      scope.get('/').query(params).reply(200, 'ok');
+      scope
+        .get('/')
+        .query(params)
+        .reply(200, 'ok');
 
       const adapter = new HttpAdapter();
       const res = await adapter.request({
@@ -110,7 +111,7 @@ describe('Request/Adapter/Http', () => {
       scope.done();
     });
 
-    it('should make correct https request', async() => {
+    it('should make correct https request', async () => {
       const scope = nock(TEST_HOST_HTTPS);
 
       scope.get('/').reply(200, 'ok');
@@ -126,7 +127,7 @@ describe('Request/Adapter/Http', () => {
       scope.done();
     });
 
-    it('should use default https protocol if not set', async() => {
+    it('should use default https protocol if not set', async () => {
       const scope = nock(TEST_HOST_HTTPS);
       scope.get('/').reply(200, 'ok');
 
@@ -147,10 +148,12 @@ describe('Request/Adapter/Http', () => {
 
       const adapter = new HttpAdapter();
 
-      return expect(adapter.request({
-        method: FsHttpMethod.GET,
-        url: '/',
-      })).rejects.toEqual(expect.any(FsRequestError));
+      return expect(
+        adapter.request({
+          method: FsHttpMethod.GET,
+          url: '/',
+        })
+      ).rejects.toEqual(expect.any(FsRequestError));
     });
 
     it.only('should respect auth params', async () => {
@@ -160,7 +163,10 @@ describe('Request/Adapter/Http', () => {
         password: 'test',
       };
 
-      scope.get('/').basicAuth({ user: auth.username, pass: auth.password }).reply(200, 'ok');
+      scope
+        .get('/')
+        .basicAuth({ user: auth.username, pass: auth.password })
+        .reply(200, 'ok');
 
       const adapter = new HttpAdapter();
       const res = await adapter.request({
@@ -176,6 +182,5 @@ describe('Request/Adapter/Http', () => {
 
       scope.done();
     });
-
   });
 });

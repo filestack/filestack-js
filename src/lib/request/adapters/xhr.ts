@@ -26,6 +26,7 @@ const debug = Debug('fs:request:xhr');
 export class XhrAdapter implements AdapterInterface {
   request(config: FsRequestOptions) {
     config = prepareData(config);
+    config.headers = config.headers || {};
 
     let { data, headers } = config;
 
@@ -103,10 +104,10 @@ export class XhrAdapter implements AdapterInterface {
       // Add headers to the request
       if ('setRequestHeader' in request && headers && Object.keys.length) {
         for (let key in headers) {
-          if (typeof data === 'undefined') {
-            delete headers[key];
+          if (typeof headers[key] === 'undefined') {
             continue;
           }
+
           debug('Set request header %s to %s', key, headers[key]);
           request.setRequestHeader(key, headers[key]);
         }
