@@ -58,7 +58,7 @@ export class XhrAdapter implements AdapterInterface {
           return;
         }
 
-        if (request.status === 0 && !(request.responseURL && request.responseURL.indexOf('file:') === 0)) {
+        if (request.status === 0 && !request.responseURL) {
           return;
         }
 

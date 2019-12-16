@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 import * as url from 'url';
 import * as zlib from 'zlib';
 import Debug from 'debug';
@@ -69,7 +70,7 @@ export class HttpAdapter implements AdapterInterface {
     }
 
     if (!parsed.host || !parsed.protocol) {
-      return Promise.reject(new FsRequestError(`Cannot parse provided url ${config.url}`, config, null, FsRequestErrorCode.OTHER));
+      return Promise.reject(new FsRequestError(`Cannot parse provided url ${config.url}`, config, null, FsRequestErrorCode.NETWORK));
     }
 
     // normalize auth header
@@ -122,12 +123,14 @@ export class HttpAdapter implements AdapterInterface {
         };
 
         // we need to follow redirect so make same request with new location
+
         if ([301, 302].indexOf(res.statusCode) > -1) {
           debug('Redirect received %s', res.statusCode);
 
           if (this.redirectHoops >= MAX_REDIRECTS) {
             return reject(new FsRequestError(`Max redirects (${this.redirectHoops}) reached. Exiting`, config, response, FsRequestErrorCode.MAXREDIRECTS));
           }
+
           const url = res.headers['location'];
 
           if (!url || url.length === 0) {
@@ -224,7 +227,7 @@ export class HttpAdapter implements AdapterInterface {
         }
 
         debug('Request error: %s - %O', err, err.code);
-        return reject(new FsRequestError(`Request error: ${err.code}`, config, null, FsRequestErrorCode.OTHER));
+        return reject(new FsRequestError(`Request error: ${err.code}`, config, null, FsRequestErrorCode.NETWORK));
       });
 
       req.end(data);
