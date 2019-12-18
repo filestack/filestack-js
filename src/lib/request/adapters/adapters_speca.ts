@@ -17,16 +17,13 @@
 
 import * as nock from 'nock';
 import * as utils from '../utils';
-import { XhrAdapter } from './xhr';
-import { HttpAdapter } from './http';
 import { FsHttpMethod } from '../types';
 import { FsCancelToken } from '../token';
 import { FsRequestError, FsRequestErrorCode } from '../error';
 
-export const adaptersSpeca = (adapter: XhrAdapter | HttpAdapter, adapterName: string) => {
+export const adaptersSpeca = (adapter: any, adapterName: string) => {
   describe(`Request/Adapters/${adapterName}`, () => {
     let scope;
-    let requestAdapter;
     const url = 'https://filestack.com';
 
     beforeAll(() => {
@@ -40,26 +37,25 @@ export const adaptersSpeca = (adapter: XhrAdapter | HttpAdapter, adapterName: st
 
     beforeEach(() => {
       scope = nock(url);
-
-      // depending on test we add xhr or http
-      requestAdapter = adapter;
     });
 
     describe('request basic', () => {
-      it('should return req', async () => {
+      it('should return status 200', async () => {
         const options = {
           url: url,
           method: FsHttpMethod.GET,
         };
         scope.get('/').reply(200, 'ok', { 'access-control-allow-origin': '*' });
-        const res = await adapter.request(options);
+
+        const requestAdapter = new adapter();
+        const res = await requestAdapter.request(options);
         expect(res.status).toEqual(200);
         scope.done();
       });
     });
 
-    describe.only('request auth', () => {
-      it('should return req', async () => {
+    describe('request auth', () => {
+      it('should return status 200', async () => {
         const auth = {
           username: 'test',
           password: 'test',
@@ -81,39 +77,132 @@ export const adaptersSpeca = (adapter: XhrAdapter | HttpAdapter, adapterName: st
           .basicAuth({ user: auth.username, pass: auth.password })
           .reply(200, 'ok');
 
-        const res = await adapter.request(options);
+        const requestAdapter = new adapter();
+        const res = await requestAdapter.request(options);
 
+        expect(res.status).toEqual(200);
+      });
+    });
+
+    describe('request with redirect', () => {
+      it('should return status 200', async () => {
+        const options = {
+          url: url,
+          method: FsHttpMethod.GET,
+        };
+
+        scope.get('/').reply(302, 'ok', { location: 'https://example.com' });
+
+        const requestAdapter = new adapter();
+        const res = await requestAdapter.request(options);
         expect(res.status).toEqual(200);
 
         scope.done();
+      });
+    });
+
+    describe('request with redirect but without url', () => {
+      it('should return FsRequestError with FsRequestErrorCode.NETWORK', async () => {
+        const options = {
+          url: url,
+          method: FsHttpMethod.GET,
+        };
+
+        scope.get('/').reply(302, 'ok', { location: '' });
+
+        try {
+          const requestAdapter = new adapter();
+          await requestAdapter.request(options);
+        } catch (err) {
+          expect(err).toEqual(expect.any(FsRequestError));
+          expect(err.code).toEqual(FsRequestErrorCode.NETWORK);
+        }
+        scope.done();
+      });
+    });
+
+    describe('request with redirect hoops', () => {
+      it('should return FsRequestError with FsRequestErrorCode.MAXREDIRECTS', async () => {
+        const options = {
+          url: url,
+          method: FsHttpMethod.GET,
+        };
+
+        scope
+          .get('/')
+          .reply(302, 'ok', { location: 'https://filestack.com/a' })
+          .get('/a')
+          .reply(302, 'ok', { location: 'https://filestack.com/b' })
+          .get('/b')
+          .reply(302, 'ok', { location: 'https://filestack.com/c' })
+          .get('/c')
+          .reply(302, 'ok', { location: 'https://filestack.com/d' })
+          .get('/d')
+          .reply(302, 'ok', { location: 'https://filestack.com/e' })
+          .get('/e')
+          .reply(302, 'ok', { location: 'https://filestack.com/f' })
+          .get('/f')
+          .reply(302, 'ok', { location: 'https://filestack.com/g' })
+          .get('/g')
+          .reply(302, 'ok', { location: 'https://filestack.com/h' })
+          .get('/h')
+          .reply(302, 'ok', { location: 'https://filestack.com/i' })
+          .get('/i')
+          .reply(302, 'ok', { location: 'https://filestack.com/j' })
+          .get('/j')
+          .reply(302, 'ok', { location: 'https://filestack.com/k' });
+
+        try {
+          const requestAdapter = new adapter();
+          await requestAdapter.request(options);
+        } catch (err) {
+          expect(err).toEqual(expect.any(FsRequestError));
+          expect(err.code).toEqual(FsRequestErrorCode.MAXREDIRECTS);
+        }
+
+        scope.done();
+      });
+    });
+
+    describe('request with redirect duplicate path', () => {
+      it('should return status 200', async () => {
+        const options = {
+          url: url,
+          method: FsHttpMethod.GET,
+        };
+
+        scope
+          .get('/')
+          .reply(302, 'ok', { location: 'https://filestack.com/a' })
+          .get('/a')
+          .reply(302, 'ok', { location: 'https://filestack.com/a' })
+          .get('/a')
+          .reply(200, 'ok');
+
+        const requestAdapter = new adapter();
+        const res = await requestAdapter.request(options);
+        expect(res.status).toEqual(200);
       });
     });
 
     describe('request form', () => {
-      it('should return req', async () => {
-        const auth = {
-          username: 'test',
-          password: 'test',
-        };
+      it('should return status 200', async () => {
+        const form = new FormData();
 
         const options = {
           url: url,
           method: FsHttpMethod.GET,
-          data: new FormData(),
-          auth,
+          data: form,
         };
 
         scope.options('/').reply(200, 'ok', {
           'access-control-allow-origin': '*',
-          'access-control-allow-headers': 'Authorization',
         });
 
-        scope
-          .get('/')
-          .basicAuth({ user: auth.username, pass: auth.password })
-          .reply(200, 'ok');
+        scope.get('/').reply(200, 'ok');
 
-        const res = await adapter.request(options);
+        const requestAdapter = new adapter();
+        const res = await requestAdapter.request(options);
 
         expect(res.status).toEqual(200);
 
@@ -122,7 +211,7 @@ export const adaptersSpeca = (adapter: XhrAdapter | HttpAdapter, adapterName: st
     });
 
     describe('request FsCancelToken', () => {
-      it('should return req', async () => {
+      it('should return status 200', async () => {
         const auth = {
           username: 'test',
           password: 'test',
@@ -145,17 +234,16 @@ export const adaptersSpeca = (adapter: XhrAdapter | HttpAdapter, adapterName: st
           .basicAuth({ user: auth.username, pass: auth.password })
           .reply(200, 'ok');
 
-        const res = await adapter.request(options);
+        const requestAdapter = new adapter();
+        const res = await requestAdapter.request(options);
 
         expect(res.status).toEqual(200);
-
-        scope.done();
       });
     });
 
     // @fixme:
     describe('Network errors Timeouts', () => {
-      it('Should throw an FilestackError on socket abort', async () => {
+      it('Should throw an FilestackError on socket abort with FsRequestErrorCode.ABORTED code', async () => {
         const options = {
           url: url,
           method: FsHttpMethod.GET,
@@ -174,6 +262,7 @@ export const adaptersSpeca = (adapter: XhrAdapter | HttpAdapter, adapterName: st
           setTimeout(() => {
             nock.abortPendingRequests();
           }, 100);
+          const requestAdapter = new adapter();
           await requestAdapter.request(options);
         } catch (err) {
           expect(err).toEqual(expect.any(FsRequestError));
@@ -184,7 +273,7 @@ export const adaptersSpeca = (adapter: XhrAdapter | HttpAdapter, adapterName: st
     });
 
     describe('Network errors ECONNREFUSED', () => {
-      it('Should throw an FilestackError on response ECONNREFUSED error', async () => {
+      it('Should throw an FilestackError on response ECONNREFUSED error with FsRequestErrorCode.NETWORK code', async () => {
         const options = {
           url: url,
           method: FsHttpMethod.GET,
@@ -194,6 +283,7 @@ export const adaptersSpeca = (adapter: XhrAdapter | HttpAdapter, adapterName: st
 
         let res;
         try {
+          const requestAdapter = new adapter();
           res = await requestAdapter.request(options);
         } catch (err) {
           expect(err).toEqual(expect.any(FsRequestError));
@@ -206,7 +296,7 @@ export const adaptersSpeca = (adapter: XhrAdapter | HttpAdapter, adapterName: st
     });
 
     describe('Network errors ECONNRESET', () => {
-      it('Should throw an FilestackError on response ECONNRESET error', async () => {
+      it('Should throw an FilestackError on response ECONNRESET error with FsRequestErrorCode.NETWORK code', async () => {
         const options = {
           url: url,
           method: FsHttpMethod.GET,
@@ -216,6 +306,7 @@ export const adaptersSpeca = (adapter: XhrAdapter | HttpAdapter, adapterName: st
 
         let res;
         try {
+          const requestAdapter = new adapter();
           res = await requestAdapter.request(options);
         } catch (err) {
           expect(err).toEqual(expect.any(FsRequestError));
@@ -228,7 +319,7 @@ export const adaptersSpeca = (adapter: XhrAdapter | HttpAdapter, adapterName: st
     });
 
     describe('Network errors ENOTFOUND', () => {
-      it('Should throw an FilestackError on response ENOTFOUND error', async () => {
+      it('Should throw an FilestackError on response ENOTFOUND error with FsRequestErrorCode.NETWORK code', async () => {
         const options = {
           url: url,
           method: FsHttpMethod.GET,
@@ -238,6 +329,7 @@ export const adaptersSpeca = (adapter: XhrAdapter | HttpAdapter, adapterName: st
 
         let res;
         try {
+          const requestAdapter = new adapter();
           res = await requestAdapter.request(options);
         } catch (err) {
           expect(err).toEqual(expect.any(FsRequestError));
@@ -250,7 +342,7 @@ export const adaptersSpeca = (adapter: XhrAdapter | HttpAdapter, adapterName: st
     });
 
     describe('Network errors onProgress', () => {
-      it('Should throw an FilestackError on response onProgress', async () => {
+      it('Should throw an FilestackError on response onProgress with FsRequestErrorCode.NETWORK code', async () => {
         const options = {
           url: url,
           method: FsHttpMethod.GET,
@@ -261,6 +353,7 @@ export const adaptersSpeca = (adapter: XhrAdapter | HttpAdapter, adapterName: st
 
         let res;
         try {
+          const requestAdapter = new adapter();
           res = await requestAdapter.request(options);
         } catch (err) {
           expect(err).toEqual(expect.any(FsRequestError));
@@ -273,7 +366,7 @@ export const adaptersSpeca = (adapter: XhrAdapter | HttpAdapter, adapterName: st
     });
 
     describe('Network errors cancelToken resolve', () => {
-      it('Should throw an FilestackError on response cancelToken resolve', async () => {
+      it('Should throw an FilestackError on response cancelToken resolve with FsRequestErrorCode.ABORTED code', async () => {
         const token = new FsCancelToken();
         token.getSource = () => Promise.resolve('ok');
 
@@ -287,6 +380,7 @@ export const adaptersSpeca = (adapter: XhrAdapter | HttpAdapter, adapterName: st
 
         let res;
         try {
+          const requestAdapter = new adapter();
           res = await requestAdapter.request(options);
         } catch (err) {
           expect(err).toEqual(expect.any(FsRequestError));
@@ -298,7 +392,7 @@ export const adaptersSpeca = (adapter: XhrAdapter | HttpAdapter, adapterName: st
     });
 
     describe('Network errors cancelToken reject', () => {
-      it('Should throw an FilestackError on response cancelToken reject', async () => {
+      it('Should throw an FilestackError on response cancelToken reject with FsRequestErrorCode.NETWORK code', async () => {
         const token = new FsCancelToken();
         token.getSource = () => Promise.reject('ok');
 
@@ -312,6 +406,7 @@ export const adaptersSpeca = (adapter: XhrAdapter | HttpAdapter, adapterName: st
 
         let res;
         try {
+          const requestAdapter = new adapter();
           res = await requestAdapter.request(options);
         } catch (err) {
           expect(err).toEqual(expect.any(FsRequestError));

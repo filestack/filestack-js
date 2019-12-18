@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { HttpAdapter } from './http';
+import * as adapters from './http';
 import { adaptersSpeca } from './adapters_speca';
 
-adaptersSpeca(new HttpAdapter(), 'http');
+adaptersSpeca(adapters.HttpAdapter, 'http');

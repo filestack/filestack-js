@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { XhrAdapter } from './xhr';
+import * as adapters from './xhr';
 import { adaptersSpeca } from './adapters_speca';
 
-adaptersSpeca(new XhrAdapter(), 'xhr');
+adaptersSpeca(adapters.XhrAdapter, 'xhr');
