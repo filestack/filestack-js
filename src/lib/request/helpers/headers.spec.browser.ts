@@ -23,81 +23,61 @@ describe('Request/Helpers/Headers', () => {
     spyOn(utils, 'isNode').and.returnValue(false);
   });
 
-  describe('parse', () => {
+  describe('parse headers', () => {
     it('should return object', () => {
       expect(parse(null)).toEqual({});
     });
-  });
 
-  describe('parse', () => {
     it('should return object', () => {
       const headers = ':';
       expect(parse(headers)).toEqual({});
     });
-  });
 
-  describe('parse', () => {
     it('should return object', () => {
       const headers = 'from:filestack.com\nfrom:filestack.com';
       expect(parse(headers)).toEqual({ from: 'filestack.com' });
     });
-  });
 
-  describe('parse', () => {
     it('should return object', () => {
       const headers = 'set-cookie:false';
       expect(parse(headers)).toEqual({ 'set-cookie': ['false'] });
     });
   });
 
-  // normalizeHeaders
-
-  describe('normalizeHeaders', () => {
+  describe('normalize headers', () => {
     it('should return object', () => {
       // @ts-ignore
       expect(normalizeHeaders()).toEqual({});
     });
-  });
 
-  describe('normalizeHeaders', () => {
     it('should return object', () => {
       const data = { ['set-cookies']: 'false' };
       expect(normalizeHeaders(data)).toEqual({ 'Set-Cookies': 'false' });
     });
   });
 
-  // set
-
-  describe('set', () => {
+  describe('cookies', () => {
     it('should return object', () => {
       const data = { ['set-cookies']: 'false' };
       expect(set(data, 'set-cookies', 'value', true)).toEqual({ 'Set-Cookies': 'value', 'set-cookies': 'false' });
     });
-  });
 
-  describe('set', () => {
     it('should return object', () => {
       // @ts-ignore
       expect(set('', 'name', 'value', true)).toEqual({ Name: 'value' });
     });
-  });
 
-  describe('set', () => {
     it('should return object', () => {
       const data = { 'www-authenticate': '' };
       expect(set(data, 'name', 'value', true)).toEqual({ Name: 'value', 'www-authenticate': '' });
     });
   });
 
-  // normalizeName
-
-  describe('normalizeName', () => {
+  describe('normalize name', () => {
     it('should return string', () => {
       expect(normalizeName('www-authenticate')).toEqual('WWW-Authenticate');
     });
-  });
 
-  describe('normalizeName', () => {
     it('should return string', () => {
       expect(normalizeName('content-type')).toBe('Content-Type');
     });

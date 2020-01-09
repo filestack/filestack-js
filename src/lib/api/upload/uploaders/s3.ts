@@ -450,7 +450,7 @@ export class S3Uploader extends UploaderAbstract {
       cancelToken: this.cancelToken,
       timeout: this.timeout,
       headers: data.headers,
-      filesStackHeaders: false,
+      filestackHeaders: false,
       // for now we cant test progress callback from upload
       /* istanbul ignore next */
       onProgress: (pr: ProgressEvent) => this.onProgressUpdate(id, partNumber, pr.loaded),
@@ -533,7 +533,7 @@ export class S3Uploader extends UploaderAbstract {
       cancelToken: this.cancelToken,
       timeout: this.timeout,
       headers: data.headers,
-      filesStackHeaders: false,
+      filestackHeaders: false,
       // for now we cant test progress callback from upload
       /* istanbul ignore next */
       onProgress: (pr: ProgressEvent) => this.onProgressUpdate(id, partNumber, part.offset + pr.loaded),

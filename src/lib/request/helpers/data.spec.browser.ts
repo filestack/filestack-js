@@ -23,29 +23,25 @@ describe('Request/Helpers/Data', () => {
     spyOn(utils, 'isNode').and.returnValue(false);
   });
 
-  describe('prepareData', () => {
-    it('should return FsRequestOptions', () => {
+  describe('prepare data', () => {
+    it('should return empty data', () => {
       const data = { url: 'https://filestack.com', data: {} };
       expect(prepareData(data)).toEqual(data);
     });
-  });
 
-  describe('prepareData', () => {
-    it('should return FsRequestOptions', () => {
+    it('should return ArrayBuffer', () => {
       const data = { url: 'https://filestack.com', data: new ArrayBuffer(10) };
       expect(prepareData(data)).toEqual(data);
     });
-  });
 
-  describe('prepareData', () => {
-    it('should return FsRequestOptions', () => {
+    it('should return url params', () => {
       const data = { url: 'https://filestack.com', data: new URLSearchParams('q=search&id=1') };
       expect(prepareData(data)).toEqual(data);
     });
   });
 
-  describe('parseResponse', () => {
-    it('should return FsRequestOptions', () => {
+  describe('parse response', () => {
+    it('should return equal response data', () => {
       const response = {
         status: 200,
         statusText: 'ok',
@@ -57,10 +53,8 @@ describe('Request/Helpers/Data', () => {
       };
       expect(parseResponse(response)).toEqual(response);
     });
-  });
 
-  describe('parseResponse', () => {
-    it('should return FsRequestOptions', () => {
+    it('should return response with application/json and data stringify', () => {
       const response = {
         status: 200,
         statusText: 'ok',
@@ -74,10 +68,8 @@ describe('Request/Helpers/Data', () => {
       };
       expect(parseResponse(response)).toEqual(response);
     });
-  });
 
-  describe('parseResponse', () => {
-    it('should return FsRequestOptions', () => {
+    it('should return response with application/json and json data ', () => {
       const response = {
         status: 200,
         statusText: 'ok',
@@ -91,10 +83,8 @@ describe('Request/Helpers/Data', () => {
       };
       expect(parseResponse(response)).toEqual(response);
     });
-  });
 
-  describe('parseResponse', () => {
-    it('should return FsRequestOptions', () => {
+    it('should return text/plain response with ArrayBuffer ', () => {
       const response = {
         status: 200,
         statusText: 'ok',

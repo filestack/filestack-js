@@ -29,18 +29,14 @@ describe('Request/Helpers/Url', () => {
       // @ts-ignore
       expect(combineURL(url)).toBe(url);
     });
-  });
 
-  describe('combineURL', () => {
-    it('should return url', () => {
+    it('should return url with id=1', () => {
       const url = 'https://filestack.com';
       const params = { id: 1 };
       expect(combineURL(url, params)).toEqual(`${url}?id=1`);
     });
-  });
 
-  describe('combineURL', () => {
-    it('should return url', () => {
+    it('should return url with id=1', () => {
       const url = 'https://filestack.com';
       const params = { id: '1' };
       expect(combineURL(url + '#', params)).toBe(`${url}?id=1`);

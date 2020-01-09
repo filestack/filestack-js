@@ -18,15 +18,13 @@
 import { FsRequestError, FsRequestErrorCode } from './error';
 
 describe('Request/Error', () => {
-  describe('new FsRequestError()', () => {
-    it('should return response instance of error', () => {
-      const error = new FsRequestError(
-        'Some error message',
-        {},
-        { status: 404, statusText: 'some error message', headers: '', data: Date(), config: {} },
-        FsRequestErrorCode.ABORTED
-      );
-      expect(error).toBeInstanceOf(Error);
-    });
+  it('should return error', () => {
+    const error = new FsRequestError(
+      'Some error message',
+      {},
+      { status: 404, statusText: 'some error message', headers: '', data: Date(), config: {} },
+      FsRequestErrorCode.ABORTED
+    );
+    expect(error).toBeInstanceOf(Error);
   });
 });

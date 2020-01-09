@@ -60,9 +60,7 @@ describe('Request/Dispatch', () => {
       const request = await dispatch.request(configBase).catch(err => err);
       expect(adapter.request).toHaveBeenCalledWith(configBase);
     });
-  });
 
-  describe('dispatch request catch', () => {
     it('should return config base', async () => {
       fsResponseBase.status = 500;
       const error = new FsRequestError('error msg', configBase, fsResponseBase, FsRequestErrorCode.NETWORK);
@@ -71,9 +69,7 @@ describe('Request/Dispatch', () => {
       await dispatch.request(configBase).catch(err => err);
       expect(adapter.request).toHaveBeenCalledWith(configBase);
     });
-  });
 
-  describe('dispatch request catch', () => {
     it('should return config', async () => {
       const config = {
         url: url,

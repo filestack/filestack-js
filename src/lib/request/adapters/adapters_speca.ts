@@ -30,7 +30,7 @@ export const adaptersSpeca = (adapter: any, adapterName: string) => {
       spyOn(utils, 'isNode').and.returnValue(false);
     });
 
-    afterEach(() => {
+    beforeEach(() => {
       nock.cleanAll();
       scope = null;
     });
@@ -210,7 +210,7 @@ export const adaptersSpeca = (adapter: any, adapterName: string) => {
       });
     });
 
-    describe('request FsCancelToken', () => {
+    describe('request auth', () => {
       it('should return status 200', async () => {
         const auth = {
           username: 'test',
@@ -242,7 +242,7 @@ export const adaptersSpeca = (adapter: any, adapterName: string) => {
     });
 
     // @fixme:
-    describe('Network errors Timeouts', () => {
+    describe('Network errors', () => {
       it('Should throw an FilestackError on socket abort with FsRequestErrorCode.ABORTED code', async () => {
         const options = {
           url: url,
@@ -270,9 +270,7 @@ export const adaptersSpeca = (adapter: any, adapterName: string) => {
         }
         scope.done();
       });
-    });
 
-    describe('Network errors ECONNREFUSED', () => {
       it('Should throw an FilestackError on response ECONNREFUSED error with FsRequestErrorCode.NETWORK code', async () => {
         const options = {
           url: url,
@@ -293,9 +291,7 @@ export const adaptersSpeca = (adapter: any, adapterName: string) => {
         expect(res).toBeFalsy();
         scope.done();
       });
-    });
 
-    describe('Network errors ECONNRESET', () => {
       it('Should throw an FilestackError on response ECONNRESET error with FsRequestErrorCode.NETWORK code', async () => {
         const options = {
           url: url,
@@ -316,9 +312,7 @@ export const adaptersSpeca = (adapter: any, adapterName: string) => {
         expect(res).toBeFalsy();
         scope.done();
       });
-    });
 
-    describe('Network errors ENOTFOUND', () => {
       it('Should throw an FilestackError on response ENOTFOUND error with FsRequestErrorCode.NETWORK code', async () => {
         const options = {
           url: url,
@@ -339,9 +333,7 @@ export const adaptersSpeca = (adapter: any, adapterName: string) => {
         expect(res).toBeFalsy();
         scope.done();
       });
-    });
 
-    describe('Network errors onProgress', () => {
       it('Should throw an FilestackError on response onProgress with FsRequestErrorCode.NETWORK code', async () => {
         const options = {
           url: url,
@@ -363,9 +355,7 @@ export const adaptersSpeca = (adapter: any, adapterName: string) => {
         expect(res).toBeFalsy();
         scope.done();
       });
-    });
 
-    describe('Network errors cancelToken resolve', () => {
       it('Should throw an FilestackError on response cancelToken resolve with FsRequestErrorCode.ABORTED code', async () => {
         const token = new FsCancelToken();
         token.getSource = () => Promise.resolve('ok');
@@ -389,9 +379,7 @@ export const adaptersSpeca = (adapter: any, adapterName: string) => {
 
         expect(res).toBeUndefined();
       });
-    });
 
-    describe('Network errors cancelToken reject', () => {
       it('Should throw an FilestackError on response cancelToken reject with FsRequestErrorCode.NETWORK code', async () => {
         const token = new FsCancelToken();
         token.getSource = () => Promise.reject('ok');

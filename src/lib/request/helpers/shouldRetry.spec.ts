@@ -43,9 +43,7 @@ describe('Request/Helpers/shouldRetry', () => {
       };
       expect(shouldRetry(data)).toBe(true);
     });
-  });
 
-  describe('shouldRetry', () => {
     it('should return true', () => {
       const data = {
         message: 'msg',
@@ -64,9 +62,7 @@ describe('Request/Helpers/shouldRetry', () => {
       };
       expect(shouldRetry(data)).toBe(true);
     });
-  });
 
-  describe('shouldRetry', () => {
     it('should return true', () => {
       const data = {
         message: 'msg',
@@ -85,9 +81,7 @@ describe('Request/Helpers/shouldRetry', () => {
       };
       expect(shouldRetry(data)).toBe(true);
     });
-  });
 
-  describe('shouldRetry', () => {
     it('should return true', () => {
       const data = {
         message: 'msg',
@@ -99,9 +93,7 @@ describe('Request/Helpers/shouldRetry', () => {
       // @ts-ignore
       expect(shouldRetry(data)).toBe(true);
     });
-  });
 
-  describe('shouldRetry', () => {
     it('should return true', () => {
       const data = {
         message: 'msg',
@@ -115,9 +107,7 @@ describe('Request/Helpers/shouldRetry', () => {
       // @ts-ignore
       expect(shouldRetry(data)).toBe(true);
     });
-  });
 
-  describe('shouldRetry', () => {
     it('should return false', () => {
       const data = {
         message: 'msg',

@@ -33,9 +33,6 @@ describe('Request/Helpers/Cookies', () => {
     it('should return null', () => {
       expect(read('name')).toEqual(null);
     });
-  });
-
-  describe('read', () => {
     it('should not return value', () => {
       document.cookie = 'name=value';
       expect(read('name')).toEqual('value');

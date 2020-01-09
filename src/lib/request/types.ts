@@ -67,7 +67,7 @@ export interface FsRequestOptions {
   cache?: RequestCache;
   redirect?: RequestRedirect;
   params?: FsRequestParams;
-  filesStackHeaders?: boolean;
+  filestackHeaders?: boolean;
   headers?: FsRequestHeaders;
   timeout?: number;
   cancelToken?: FsTokenInterface;
