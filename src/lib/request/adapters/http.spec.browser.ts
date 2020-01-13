@@ -16,6 +16,6 @@
  */
 
 import * as adapters from './http';
-import { adaptersSpeca } from './adapters_speca';
+import { adaptersHttpAbstract } from './adaptersHttpAbstract';
 
-adaptersSpeca(adapters.HttpAdapter, 'http');
+adaptersHttpAbstract(adapters.HttpAdapter, 'http');

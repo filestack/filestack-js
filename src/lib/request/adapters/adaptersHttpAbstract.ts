@@ -21,7 +21,7 @@ import { FsHttpMethod } from '../types';
 import { FsCancelToken } from '../token';
 import { FsRequestError, FsRequestErrorCode } from '../error';
 
-export const adaptersSpeca = (adapter: any, adapterName: string) => {
+export const adaptersHttpAbstract = (adapter: any, adapterName: string) => {
   describe(`Request/Adapters/${adapterName}`, () => {
     let scope;
     const url = 'https://filestack.com';

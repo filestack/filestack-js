@@ -16,6 +16,6 @@
  */
 
 import * as adapters from './xhr';
-import { adaptersSpeca } from './adapters_speca';
+import { adaptersHttpAbstract } from './adaptersHttpAbstract';
 
-adaptersSpeca(adapters.XhrAdapter, 'xhr');
+adaptersHttpAbstract(adapters.XhrAdapter, 'xhr');
