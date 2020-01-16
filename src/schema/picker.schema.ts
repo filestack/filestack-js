@@ -59,6 +59,7 @@ export const PickerParamsSchema = {
             'googledrive',
             'dropbox',
             'webcam',
+            'tint',
             'video',
             'audio',
             'box',
