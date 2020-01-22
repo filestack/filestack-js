@@ -217,6 +217,8 @@ export class Upload extends EventEmitter {
     const res = await this.uploader.execute();
     this.stopProgressInterval();
 
+    this.uploader.removeAllListeners();
+
     return Promise.resolve(res);
   }
 

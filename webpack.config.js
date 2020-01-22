@@ -47,6 +47,7 @@ const config =  {
     'crypto',
   ],
   plugins: [
+    // new webpack.NormalModuleReplacementPlugin(/^fs|path|crypto$/, './empty.js'),
     new CleanWebpackPlugin(),
     new webpack.BannerPlugin({ banner }),
     new webpack.DefinePlugin({

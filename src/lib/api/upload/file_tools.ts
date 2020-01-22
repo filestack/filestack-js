@@ -231,18 +231,19 @@ const getFileBrowser = (input: InputFile, sanitizeOptions?: SanitizeOptions): Pr
  * @returns {Promise<File>}
  */
 const getFileNode = (input: InputFile, sanitizeOptions?: SanitizeOptions): Promise<FsFile> => {
-  let filename;
+  // we have to wrap whole method inside promise because otherwise webpack is trying to parse
+  // all require statements inside for browser use
+  return new Promise((resolve, reject) => {
+    let filename;
 
-  if (isFileNamed(input)) {
-    filename = input.name;
-    input = input.file;
-  }
+    if (isFileNamed(input)) {
+      filename = input.name;
+      input = input.file;
+    }
+    if (isFilePath(input)) {
+      let path = input;
 
-  if (isFilePath(input)) {
-    let path = input;
-    // @todo improve slicer open file and read it py by part
-    return new Promise((resolve, reject) =>
-      require('fs').readFile(path, (err, buffer) => {
+      return require('fs').readFile(path, (err, buffer) => {
         if (err) {
           return reject(err);
         }
@@ -262,30 +263,30 @@ const getFileNode = (input: InputFile, sanitizeOptions?: SanitizeOptions): Promi
             sanitizeOptions
           )
         );
-      })
-    );
-  }
+      });
+    }
 
-  if (isFileBase(input)) {
-    input = Buffer.from(input, 'base64');
-  }
+    if (isFileBase(input)) {
+      input = Buffer.from(input, 'base64');
+    }
 
-  if (isFileBuffer(input)) {
-    return Promise.resolve(
-      new FsFile(
-        {
-          name: filename,
-          size: input.byteLength,
-          type: getMimetype(input, filename),
-          // @ts-ignore
-          slice: (start, end) => Promise.resolve(input.slice(start, end)),
-        },
-        sanitizeOptions
-      )
-    );
-  }
+    if (isFileBuffer(input)) {
+      return resolve(
+        new FsFile(
+          {
+            name: filename,
+            size: input.byteLength,
+            type: getMimetype(input, filename),
+            // @ts-ignore
+            slice: (start, end) => Promise.resolve(input.slice(start, end)),
+          },
+          sanitizeOptions
+        )
+      );
+    }
 
-  return Promise.reject(new FilestackError('Unsupported input file type'));
+    return reject(new FilestackError('Unsupported input file type'));
+  });
 };
 
 export const getFile = (input: InputFile, sanitizeOptions?: SanitizeOptions) => (isNode() ? getFileNode(input, sanitizeOptions) : getFileBrowser(input, sanitizeOptions));
