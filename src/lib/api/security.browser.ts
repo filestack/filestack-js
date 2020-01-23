@@ -15,25 +15,13 @@
  * limitations under the License.
  */
 
-/**
- * Configures a security policy
- *
- * @see https://www.filestack.com/docs/concepts/security
- */
-export interface SecurityOptions {
-  expiry: number;
-  call?: any[];
-  handle?: string;
-  url?: string;
-  maxSize?: number;
-  minSize?: number;
-  path?: string;
-  container?: string;
-}
+import { Security } from './../client';
+import { SecurityOptions, WebhookValidatePayload } from './security';
 
-export interface WebhookValidatePayload {
-  timestamp: string;
-  signature: string;
-}
+export const getSecurity = (policyOptions: SecurityOptions, appSecret: string): Security => {
+  throw new Error('getSecurity is only supported in nodejs');
+};
 
-export * from './security.node';
+export const validateWebhookSignature = (secret: string, rawBody: string, toCompare: WebhookValidatePayload) => {
+  throw new Error('validateWebhookSignature is only supported in nodejs');
+};
