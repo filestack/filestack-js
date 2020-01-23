@@ -24,7 +24,7 @@ const config =  {
     rules: [
       {
         test: /\.(js|jsx)$/,
-        exclude: /^.*\.node\.js$/,
+        exclude: /^.*\.node\.js|.*\.node\.spec\.js|.*\.browser\.spec\.js|.*\.spec\.js$/,
         use: {
           loader: 'babel-loader',
           options: {

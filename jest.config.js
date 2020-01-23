@@ -2,35 +2,24 @@ module.exports = {
   name: 'filestack-js',
   collectCoverage: true,
   clearMocks: true,
-  projects: [{
+  projects: [
+  {
     displayName: 'Common',
     clearMocks: true,
-    testMatch: ['<rootDir>/src/**/*.spec.ts'],
+    testMatch: ['<rootDir>/build/main/**/*.spec.js', '<rootDir>/build/main/**/*.spec.node.js'],
     testEnvironment: 'node',
-    moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
-    transform: {
-      '^.+\\.tsx?$': 'ts-jest'
-    },
-  }, {
-    displayName: 'Node',
-    clearMocks: true,
-    testMatch: ['<rootDir>/src/**/*.spec.ts'],
-    moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
-    testMatch: ['<rootDir>/src/**/*.spec.node.ts'],
-    testEnvironment: 'node',
-    transform: {
-      '^.+\\.tsx?$': 'ts-jest'
-    },
+    moduleFileExtensions: ['js'],
   }, {
     displayName: 'Browser',
     testMatch: ['<rootDir>/src/**/*.browser.spec.ts'],
     clearMocks: true,
     testEnvironment: 'jsdom',
     setupFiles: ['jest-localstorage-mock'],
-    testMatch: ['<rootDir>/src/**/*.spec.browser.ts'],
-    moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
-    transform: {
-      '^.+\\.tsx?$': 'ts-jest'
-    },
-  }]
+    testMatch: [ '<rootDir>/build/main/**/*.spec.browser.js'],
+    moduleFileExtensions: ['js'],
+    moduleNameMapper: {
+      "\(.*)\\.node": "$1.browser",
+    }
+  }
+]
 };

@@ -19,7 +19,7 @@ import axios from 'axios';
 import { requestWithSource, postWithRetry } from './request';
 import * as nock from 'nock';
 
-const v = require('../../../package.json').version;
+const v = require('../../../../package.json').version;
 
 const testHost = 'https://test.com';
 
