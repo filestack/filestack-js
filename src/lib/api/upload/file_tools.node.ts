@@ -19,7 +19,6 @@ import { SanitizeOptions, getMimetype } from './../../utils';
 import { FilestackError } from './../../../filestack_error';
 import { InputFile, base64Regexp, isFileNamed } from './file_tools';
 
-console.log('!!!!!!!!!!!!!!!!!! USING NODE VERSION !!!!!!!!!!!!!!!!!!');
 /**
  * Check if file is buffer
  *

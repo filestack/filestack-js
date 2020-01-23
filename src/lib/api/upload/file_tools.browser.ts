@@ -27,8 +27,6 @@ export type NamedInputFile = {
 
 type InputFile = RawFile | NamedInputFile;
 
-console.log('!!!!!!!!!!!!!!!!!! USING BROWSER VERSION !!!!!!!!!!!!!!!!!!');
-
 const base64Regexp = /data:([a-zA-Z]*\/[a-zA-Z]*);base64,([^\"]*)/i;
 
 /**
