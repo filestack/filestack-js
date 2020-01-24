@@ -16,6 +16,7 @@
  */
 import { resolveCdnUrl, resolveHost, removeEmpty, uniqueTime, uniqueId, md5, sanitizeName, filterObject, b64, getVersion } from './index';
 import { config } from '../../config';
+const v = require('../../../../package.json').version;
 
 describe('utils:index', () => {
   describe('resolveCdnUrl', () => {
@@ -105,7 +106,6 @@ describe('utils:index', () => {
 
   describe('getVersion', () => {
     it('should return correct version from package json', () => {
-      const v = require('../../../package.json').version;
       expect(getVersion()).toEqual(`JS-${v}`);
     });
   });

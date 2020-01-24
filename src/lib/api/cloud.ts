@@ -38,8 +38,32 @@ export const CALLBACK_URL_KEY = 'fs-tab';
 export class CloudClient {
   session: Session;
   cloudApiUrl: string;
+
+  /**
+   * Returns flag if token should be cached in local storage
+   *
+   * @private
+   * @type {boolean}
+   * @memberof CloudClient
+   */
   private cache: boolean = false;
+
+  /**
+   * Token returned from api for accessing clouds
+   *
+   * @private
+   * @type {string}
+   * @memberof CloudClient
+   */
   private _token: string;
+
+  /**
+   * Flag for in-app browser setup
+   * (in-app browsers are not supporting new window so we need to save token to session cache)
+   *
+   * @private
+   * @memberof CloudClient
+   */
   private _isInAppBrowser = false;
 
   constructor(session: Session, options?: ClientOptions) {
@@ -193,9 +217,15 @@ export class CloudClient {
 
     if (name) {
       payload.clouds = { [name]: {} };
-    } else if (this.cache) {
-      // No name means logout of ALL clouds. Clear local session.
-      localStorage.removeItem(PICKER_KEY);
+    } else {
+      if (this.cache) {
+        // No name means logout of ALL clouds. Clear local session.
+        localStorage.removeItem(PICKER_KEY);
+      }
+
+      if (this._isInAppBrowser) {
+        sessionStorage.removeItem(PICKER_KEY);
+      }
     }
 
     return requestWithSource()
