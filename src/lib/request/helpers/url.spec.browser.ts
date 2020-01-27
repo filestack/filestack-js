@@ -16,13 +16,8 @@
  */
 
 import { combineURL } from './url';
-import * as utils from '../utils';
 
 describe('Request/Helpers/Url', () => {
-  beforeAll(() => {
-    spyOn(utils, 'isNode').and.returnValue(false);
-  });
-
   describe('combineURL', () => {
     it('should return url', () => {
       const url = 'https://filestack.com';

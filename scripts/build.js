@@ -26,6 +26,6 @@ gulp.task('typescript:modules', () => {
     .pipe(gulp.dest('build/module'));
 });
 
-gulp.task('build:typescript', gulp.series(['typescript:main', 'typescript:modules']));
+gulp.task('build:typescript', gulp.series(['build:clean', 'typescript:main', 'typescript:modules']));
 
-gulp.task('build', gulp.series(['build:clean', 'build:typescript']));
+gulp.task('build', gulp.series(['build:typescript']));

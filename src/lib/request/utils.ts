@@ -81,28 +81,6 @@ export const isFile = (val: File) => toString.call(val) === '[object File]';
 export const isBlob = (val: Blob) => toString.call(val) === '[object Blob]';
 
 /**
- * Determine if a value is a Buffer
- *
- * @param {Object} val The value to test
- * @returns {boolean} True if value is a Buffer, otherwise false
- */
-export const isBuffer = val => {
-  if (isNode()) {
-    return ![undefined, null].includes(val) && val.constructor === Buffer;
-  }
-
-  return false;
-};
-
-/**
- * Determine if a value is a Stream
- *
- * @param {Object} val The value to test
- * @returns {boolean} True if value is a Stream, otherwise false
- */
-export const isStream = (val: any) => isObject(val) && typeof val.pipe === 'function';
-
-/**
  * Determine if a value is a URLSearchParams object
  *
  * @param {Object} val The value to test
@@ -125,8 +103,4 @@ export const isFormData = val => typeof FormData !== 'undefined' && val instance
  */
 export const trim = str => str.replace(/^\s*/, '').replace(/\s*$/, '');
 
-/**
- * Returns information about current env (browser|nodejs)
- * @returns {boolean} True if value is node env, otherwise false
- */
-export const isNode = () => !!(typeof process !== 'undefined' && process.versions && process.versions.node);
+export * from './utils.node';

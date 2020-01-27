@@ -17,7 +17,7 @@
 
 import { config } from './../../config';
 import { CloudClient, PICKER_KEY } from './cloud';
-import * as utils from './../request/utils';
+import * as utils from './../utils';
 import * as nock from 'nock';
 
 const testApiKey = 'API_KEY';
@@ -102,8 +102,6 @@ const mockStore = jest
 
 describe('cloud', () => {
   beforeEach(() => {
-    spyOn(utils, 'isNode').and.returnValue(false);
-
     scope
       .persist()
       .options(/.*/)
@@ -112,11 +110,6 @@ describe('cloud', () => {
         'access-control-allow-methods': '*',
         'access-control-allow-origin': '*',
       });
-
-    scope
-      .get('/prefetch')
-      .query({ apikey: testApiKey })
-      .reply(200, mockPrefetch);
 
     scope.post('/auth/logout').reply(200, mockLogout);
     scope.post('/folder/list').reply(200, (_, data) => mockList(data));
@@ -134,7 +127,89 @@ describe('cloud', () => {
     localStorage.clear();
   });
 
+  describe('facebook inapp browser', () => {
+    beforeEach(() => {
+      scope
+        .get('/prefetch')
+        .query({ apikey: testApiKey })
+        .reply(200, {
+          inapp_browser: true,
+        });
+
+    });
+
+    it('should set token to sessionStore when inapp browser is detected', async () => {
+      spyOn(utils, 'isFacebook').and.returnValue(true);
+
+      const client = new CloudClient(testSession);
+      await client.prefetch();
+
+      const token = 'test';
+      client.token = token;
+
+      expect(sessionStorage.getItem(PICKER_KEY)).toEqual(token);
+
+      sessionStorage.setItem(PICKER_KEY, undefined);
+    });
+
+    it('should get token from sessionStore when inapp browser is detected', async () => {
+      spyOn(utils, 'isFacebook').and.returnValue(true);
+
+      const client = new CloudClient(testSession);
+      await client.prefetch();
+
+      const token = 'test';
+      sessionStorage.setItem(PICKER_KEY, token);
+
+      expect(client.token).toEqual(token);
+      sessionStorage.setItem(PICKER_KEY, undefined);
+    });
+
+    it('should send appurl in list action', async () => {
+      const clouds = { test: true };
+
+      const client = new CloudClient(testSession);
+      await client.prefetch();
+      const res = await client.list({ ...clouds });
+
+      expect(res).toEqual({
+        apikey: testApiKey,
+        flow: 'web',
+        appurl: 'http://localhost/?fs-tab=init',
+        clouds,
+        token: null,
+      });
+    });
+
+    it('should not send app url if urlsearch params is undefined', async () => {
+      const clouds = { test: true };
+
+      const before = window.URLSearchParams;
+      window.URLSearchParams = undefined;
+
+      const client = new CloudClient(testSession);
+      await client.prefetch();
+      const res = await client.list({ ...clouds });
+
+      expect(res).toEqual({
+        apikey: testApiKey,
+        flow: 'web',
+        clouds,
+        token: null,
+      });
+
+      window.URLSearchParams = before;
+    });
+  });
+
   describe('prefetch', () => {
+    beforeEach(() => {
+      scope
+      .get('/prefetch')
+      .query({ apikey: testApiKey })
+      .reply(200, mockPrefetch);
+    });
+
     it('should make correct request to api', async () => {
       const res = await new CloudClient(testSession).prefetch();
 

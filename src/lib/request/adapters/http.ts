@@ -39,20 +39,21 @@ export class HttpAdapter implements AdapterInterface {
 
     let { data, headers } = prepareData(config);
 
-    setHeader(headers, 'user-agent', `filestack-request/${getVersion()}`);
+    headers = setHeader(headers, 'user-agent', `filestack-request/${getVersion()}`);
 
-    if (data && !utils.isStream(data)) {
+    // for now we are not using streams
+    if (data) {
+      debug('Request data %O', data);
+
       if (!Buffer.isBuffer(data)) {
-        if (utils.isArrayBuffer(data)) {
-          data = Buffer.from(new Uint8Array(data));
-        } else if (utils.isString(data)) {
-          data = Buffer.from(data, 'utf-8');
-        } else {
-          return Promise.reject(new FsRequestError('Data after transformation must be a string, an ArrayBuffer, a Buffer, or a Stream', config));
+        if (!utils.isString(data)) {
+          return Promise.reject(new FsRequestError('Data must be a string, JSON or a Buffer', config));
         }
+
+        data = Buffer.from(data, 'utf-8');
       }
 
-      setHeader(headers, 'content-length', data.length, true);
+      headers = setHeader(headers, 'content-length', data.length, true);
     }
 
     // HTTP basic authentication
@@ -69,7 +70,7 @@ export class HttpAdapter implements AdapterInterface {
       parsed = url.parse(`https://${config.url}`);
     }
 
-    if (!parsed.host || !parsed.protocol) {
+    if (!parsed.host) {
       return Promise.reject(new FsRequestError(`Cannot parse provided url ${config.url}`, config, null, FsRequestErrorCode.NETWORK));
     }
 
@@ -96,22 +97,22 @@ export class HttpAdapter implements AdapterInterface {
 
     return new Promise<FsResponse>((resolve, reject): any => {
       let req = agent.request(options, res => {
-        if (req.aborted) {
+        // just be sure that response will not be called after request is aborted
+        /* istanbul ignore next */
+        if (!req || req.aborted) {
           return reject(new FsRequestError('Request aborted', config));
         }
 
         let stream = res;
         debug('Response statusCode: %d, Response Headers: %O', res.statusCode, res.headers);
 
-        switch (res.headers['content-encoding']) {
-          case 'gzip':
-          case 'compress':
-          case 'deflate':
-            // add the unzipper to the body stream processing pipeline
-            stream = res.statusCode === 204 ? stream : stream.pipe(zlib.createUnzip());
-            // remove the content-encoding in order to not confuse downstream operations
-            delete res.headers['content-encoding'];
-            break;
+        const compressHeaders = res.headers['content-encoding'];
+
+        if (compressHeaders && compressHeaders.length && ['gzip', 'compress', 'deflate'].some((v) => compressHeaders.indexOf(v) > -1)) {
+          // add the unzipper to the body stream processing pipeline
+          stream = res.statusCode === 204 ? stream : stream.pipe(zlib.createUnzip());
+          // remove the content-encoding in order to not confuse downstream operations
+          delete res.headers['content-encoding'];
         }
 
         let response: FsResponse = {
@@ -128,17 +129,17 @@ export class HttpAdapter implements AdapterInterface {
           debug('Redirect received %s', res.statusCode);
 
           if (this.redirectHoops >= MAX_REDIRECTS) {
-            return reject(new FsRequestError(`Max redirects (${this.redirectHoops}) reached. Exiting`, config, response, FsRequestErrorCode.MAXREDIRECTS));
+            return reject(new FsRequestError(`Max redirects (${this.redirectHoops}) reached. Exiting`, config, response, FsRequestErrorCode.REDIRECT));
           }
 
           const url = res.headers['location'];
 
           if (!url || url.length === 0) {
-            return reject(new FsRequestError(`Redirect header location not found`, config, response, FsRequestErrorCode.NETWORK));
+            return reject(new FsRequestError(`Redirect header location not found`, config, response, FsRequestErrorCode.REDIRECT));
           }
 
           if (this.redirectPaths.indexOf(url) > -1) {
-            return reject(new FsRequestError(`Redirect loop detected at url ${url}`, config, response, FsRequestErrorCode.NETWORK));
+            return reject(new FsRequestError(`Redirect loop detected at url ${url}`, config, response, FsRequestErrorCode.REDIRECT));
           }
 
           this.redirectPaths.push(url);
@@ -161,33 +162,35 @@ export class HttpAdapter implements AdapterInterface {
           req = undefined;
           responseBuffer = undefined;
 
-          debug('Request error: Aborted: %b', req.aborted);
+          debug('Request error: Aborted %O', err);
 
           if (req.aborted) {
             return;
           }
 
-          return reject(new FsRequestError(err, config, null, FsRequestErrorCode.NETWORK));
+          return reject(new FsRequestError(err.message, config, null, FsRequestErrorCode.NETWORK));
         });
 
         stream.on('end', () => {
-          response.data = Buffer.concat(responseBuffer);
+          // check if there is any response data inside
+          if (res.statusCode !== 204) {
+            // prepare response
+            response.data = Buffer.concat(responseBuffer);
+            response = parseResponse(response);
+          } else {
+            response.data = null;
+          }
 
           // free resources
           res = undefined;
           req = undefined;
           responseBuffer = undefined;
 
-          // prepare response
-          response = parseResponse(response);
-
-          // move it to some external helper to use it on xhr?
           if (500 <= response.status && response.status <= 599) {
             // server error throw
             debug('Server error(5xx) - %O', response);
             return reject(new FsRequestError(`Server error ${url}`, config, response, FsRequestErrorCode.SERVER));
           } else if (400 <= response.status && response.status <= 499) {
-            // @todo check if we need this
             debug('Request error(4xx) - %O', response);
             return reject(new FsRequestError(`Request error ${url}`, config, response, FsRequestErrorCode.REQUEST));
           }
@@ -211,6 +214,8 @@ export class HttpAdapter implements AdapterInterface {
             debug('Request canceled by user %s', reason);
             reject(new FsRequestError(`Request aborted - ${reason}`, config, null, FsRequestErrorCode.ABORTED));
           })
+          // only for safety
+          /* istanbul ignore next */
           .catch(error => error);
       }
 

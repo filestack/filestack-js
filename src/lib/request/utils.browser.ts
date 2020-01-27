@@ -15,7 +15,18 @@
  * limitations under the License.
  */
 
-import * as adapters from './xhr';
-import { adaptersHttpAbstract } from './adapters_abstract.spec';
+/**
+ * Determine if a value is a Buffer
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if value is a Buffer, otherwise false
+ */
+export const isBuffer = () => false;
 
-adaptersHttpAbstract(adapters.XhrAdapter, 'xhr');
+/**
+ * Determine if a value is a Stream
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if value is a Stream, otherwise false
+ */
+export const isStream = () => false;

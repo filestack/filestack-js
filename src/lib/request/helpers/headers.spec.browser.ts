@@ -15,13 +15,9 @@
  * limitations under the License.
  */
 
-import * as utils from '../utils';
 import { parse, normalizeHeaders, set, normalizeName } from './headers';
 
 describe('Request/Helpers/Headers', () => {
-  beforeAll(() => {
-    spyOn(utils, 'isNode').and.returnValue(false);
-  });
 
   describe('parse headers', () => {
     it('should return empty object', () => {
@@ -59,17 +55,22 @@ describe('Request/Helpers/Headers', () => {
   describe('cookies', () => {
     it('should return cookies with specify values', () => {
       const data = { ['set-cookies']: 'false' };
-      expect(set(data, 'set-cookies', 'value', true)).toEqual({ 'Set-Cookies': 'value', 'set-cookies': 'false' });
+      const res = set(data, 'set-cookies', 'value', true);
+      expect(res).toEqual({ 'Set-Cookies': 'value', 'set-cookies': 'false' });
     });
 
     it('should return with value', () => {
-      // @ts-ignore
-      expect(set('', 'name', 'value', true)).toEqual({ Name: 'value' });
+      const h = {};
+      const res = set(h, 'name', 'value', true);
+
+      expect(res).toEqual({ Name: 'value' });
     });
 
     it('should return value www-authenticate', () => {
       const data = { 'www-authenticate': '' };
-      expect(set(data, 'name', 'value', true)).toEqual({ Name: 'value', 'www-authenticate': '' });
+      const res = set(data, 'name', 'value', true);
+
+      expect(res).toEqual({ Name: 'value', 'www-authenticate': '' });
     });
   });
 

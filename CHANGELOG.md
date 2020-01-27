@@ -2,6 +2,51 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.11.2](https://github.com/filestack/filestack-js/compare/v3.11.1...v3.11.2) (2020-01-24)
+
+
+### Bug Fixes
+
+* **polymorphic:** Split libs into node and browser env, update webpack config ([82689c2](https://github.com/filestack/filestack-js/commit/82689c2))
+
+
+
+### [3.11.1](https://github.com/filestack/filestack-js/compare/v3.11.0...v3.11.1) (2020-01-22)
+
+
+### Bug Fixes
+
+* **require:** fix problem during builds libs for browser - missing fs lib ([f77e4d1](https://github.com/filestack/filestack-js/commit/f77e4d1)), closes [#319](https://github.com/filestack/filestack-js/issues/319)
+
+
+
+## [3.11.0](https://github.com/filestack/filestack-js/compare/v3.10.1...v3.11.0) (2020-01-15)
+
+
+### Features
+
+* **picker:** bump picker version to 1.11.1 ([#318](https://github.com/filestack/filestack-js/issues/318)) ([e1bdb2c](https://github.com/filestack/filestack-js/commit/e1bdb2c))
+
+
+
+### [3.10.1](https://github.com/filestack/filestack-js/compare/v3.10.0...v3.10.1) (2019-11-14)
+
+
+### Features
+
+* **clouds:** Fix problems in in-app browsers like facebook, instagram, twitter ([0cf0df1](https://github.com/filestack/filestack-js/commit/0cf0df1))
+
+
+
+## [3.10.0](https://github.com/filestack/filestack-js/compare/v3.9.0...v3.10.0) (2019-11-12)
+
+
+### Features
+
+* **picker:** remove clouddrive from sources - now this one is deprecated ([#305](https://github.com/filestack/filestack-js/issues/305)) ([cd47a38](https://github.com/filestack/filestack-js/commit/cd47a38))
+
+
+
 ## [3.9.0](https://github.com/filestack/filestack-js/compare/v3.8.0...v3.9.0) (2019-10-29)
 
 

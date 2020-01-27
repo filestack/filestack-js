@@ -15,8 +15,8 @@
  * limitations under the License.
  */
 import { FsRequestOptions, FsHttpMethod, FsResponse } from './types';
-import { isNode } from './utils';
 import { Dispatch } from './dispatch';
+import { RequestAdapter } from './request_adapter.node';
 
 /**
  * Main isomorphic Filestack request library
@@ -60,17 +60,9 @@ export class FsRequest {
    * @memberof FsRequest
    */
   constructor(config?: FsRequestOptions) {
-    let adapter;
-
-    // move to adapters/index for cache purpose?
-    if (isNode()) {
-      adapter = require('./adapters/http').HttpAdapter;
-    } else {
-      adapter = require('./adapters/xhr').XhrAdapter;
-    }
 
     this.defaults = config;
-    this.dispatcher = new Dispatch(new adapter());
+    this.dispatcher = new Dispatch(new RequestAdapter());
   }
 
   /**
@@ -102,7 +94,7 @@ export class FsRequest {
       config.method = FsHttpMethod.GET;
     }
 
-    return this.dispatcher.request(config);
+    return this.dispatcher.request(Object.assign({}, this.defaults, config));
   }
 
   /**

@@ -581,7 +581,7 @@ describe('Api/Upload/Uploaders/S3', () => {
 
         u.addFile(getSmallTestFile());
         const res = await u.execute();
-        console.log('tests done ?');
+
         expect(res[0].handle).toEqual('test_handle');
         expect(res[0].status).toEqual('test_status');
 

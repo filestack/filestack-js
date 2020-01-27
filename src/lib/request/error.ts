@@ -29,7 +29,7 @@ export enum FsRequestErrorCode {
   SERVER = 'SERVER',
   REQUEST = 'REQUEST',
   OTHER = 'UNKNOWN',
-  MAXREDIRECTS = 'MAXREDIRECTS',
+  REDIRECT = 'REDIRECT',
 }
 
 /**
@@ -67,8 +67,8 @@ export class FsRequestError extends Error {
     this.response = response;
     this.code = code;
 
-    const captureStackTrace: Function = (Error as any).captureStackTrace;
-    captureStackTrace && captureStackTrace(this);
+    // const captureStackTrace: Function = (Error as any).captureStackTrace;
+    // captureStackTrace && captureStackTrace(this);
     fixProto(this, new.target.prototype);
   }
 }

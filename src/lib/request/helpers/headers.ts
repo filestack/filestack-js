@@ -109,6 +109,9 @@ export const set = (headers: FsRequestHeaders, name: string, value: string, setI
     headers = {};
   }
 
+  // cleanup headers from undefined vals
+  headers = JSON.parse(JSON.stringify(headers));
+
   if (!headers[name]) {
     headers[name] = value;
   } else if (setIFExists) {

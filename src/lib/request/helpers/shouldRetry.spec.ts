@@ -16,14 +16,9 @@
  */
 
 import { shouldRetry } from './shouldRetry';
-import * as utils from '../utils';
 import { FsRequestErrorCode } from '../error';
 
 describe('Request/Helpers/shouldRetry', () => {
-  beforeAll(() => {
-    spyOn(utils, 'isNode').and.returnValue(false);
-  });
-
   describe('shouldRetry', () => {
     it('should return true', () => {
       const data = {

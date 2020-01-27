@@ -139,8 +139,4 @@ describe('Request/Utils', () => {
 
     it(printLog("'value' without whitespace ", 'trim', "' value '"), () => expect(utils.trim(' value ')).toEqual('value'));
   });
-
-  describe('isNode', () => {
-    it(printLog(true, 'isNode', ''), () => expect(utils.isNode()).toBeTruthy());
-  });
 });

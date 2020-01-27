@@ -14,8 +14,4 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-import * as adapters from './xhr';
-import { adaptersHttpAbstract } from './adapters_abstract.spec';
-
-adaptersHttpAbstract(adapters.XhrAdapter, 'xhr');
+export const RequestAdapter = require('./adapters/http').HttpAdapter;

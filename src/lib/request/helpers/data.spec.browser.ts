@@ -15,14 +15,9 @@
  * limitations under the License.
  */
 
-import * as utils from '../utils';
 import { prepareData, parseResponse } from './data';
 
 describe('Request/Helpers/Data', () => {
-  beforeAll(() => {
-    spyOn(utils, 'isNode').and.returnValue(false);
-  });
-
   describe('prepare data', () => {
     it('should return empty data', () => {
       const data = { url: 'https://filestack.com', data: {} };

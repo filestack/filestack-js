@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 by Filestack
+ * Copyright (c) 2018 by Filestack.
  * Some rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,7 +15,13 @@
  * limitations under the License.
  */
 
-import * as adapters from './xhr';
-import { adaptersHttpAbstract } from './adapters_abstract.spec';
+import { Security } from './../client';
+import { SecurityOptions, WebhookValidatePayload } from './security';
 
-adaptersHttpAbstract(adapters.XhrAdapter, 'xhr');
+export const getSecurity = (policyOptions: SecurityOptions, appSecret: string): Security => {
+  throw new Error('getSecurity is only supported in nodejs');
+};
+
+export const validateWebhookSignature = (secret: string, rawBody: string, toCompare: WebhookValidatePayload) => {
+  throw new Error('validateWebhookSignature is only supported in nodejs');
+};

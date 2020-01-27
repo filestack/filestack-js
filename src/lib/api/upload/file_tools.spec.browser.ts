@@ -27,8 +27,6 @@ const base64Gif = 'R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw=='
 
 describe('Api/Upload/FileTools', () => {
   beforeAll(() => {
-    spyOn(utils, 'isNode').and.returnValue(false);
-
     spyOn(utils, 'sanitizeName').and.callFake((val, opts) => {
       sanitizeOptions(opts);
       return val;

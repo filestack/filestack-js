@@ -46,6 +46,7 @@ export * from './lib/api/transform';
 export * from './lib/filelink';
 export * from './filestack_error';
 export * from './lib/request';
+export * from './lib/utils';
 
 export {
   TransformSchema,

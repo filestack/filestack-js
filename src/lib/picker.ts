@@ -389,7 +389,6 @@ export interface PickerOptions {
    *  - picasa
    *  - onedrive
    *  - onedriveforbusiness
-   *  - clouddrive
    *  - customsource - Configure this in your Filestack Dev Portal.
    */
   fromSources?: string[];

@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 
-import * as utils from './utils';
 import { FsRequest } from './request';
 import { FsHttpMethod } from './types';
 import { Dispatch } from './dispatch';
@@ -27,9 +26,6 @@ const dispatchSpy = jest.fn(() => Promise.resolve('response'));
 Dispatch.prototype.request.mockImplementation(dispatchSpy);
 
 describe('Request/Request', () => {
-  beforeAll(() => {
-    spyOn(utils, 'isNode').and.returnValue(false);
-  });
 
   describe('dispatch', () => {
     it('should return response', async () => {

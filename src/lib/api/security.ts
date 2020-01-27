@@ -15,11 +15,6 @@
  * limitations under the License.
  */
 
-import { Security } from '../client';
-import { FilestackError, FilestackErrorType } from './../../filestack_error';
-import { getValidator, SecurityParamsSchema } from './../../schema';
-import { isNode } from '../utils';
-
 /**
  * Configures a security policy
  *
@@ -35,62 +30,10 @@ export interface SecurityOptions {
   path?: string;
   container?: string;
 }
-/**
- * Returns Filestack base64 policy and HMAC-SHA256 signature
- *
- * ### Example
- *
- * ```js
- * import * as filestack from 'filestack-js';
- *
- * const jsonPolicy = { 'expiry': 253381964415 };
- * const security = filestack.getSecurity(jsonPolicy, '<YOUR_APP_SECRET>');
- * ```
- *
- * @param policyOptions
- * @param appSecret
- */
-export const getSecurity = (policyOptions: SecurityOptions, appSecret: string): Security => {
-  if (!isNode()) {
-    throw new Error('getSecurity is only supported in nodejs');
-  }
-
-  const validateRes = getValidator(SecurityParamsSchema)(policyOptions);
-
-  if (validateRes.errors.length) {
-    throw new FilestackError(`Invalid security params`, validateRes.errors, FilestackErrorType.VALIDATION);
-  }
-
-  const policy = Buffer.from(JSON.stringify(policyOptions)).toString('base64');
-  const signature = require('crypto')
-    .createHmac('sha256', appSecret)
-    .update(policy)
-    .digest('hex');
-
-  return { policy, signature };
-};
 
 export interface WebhookValidatePayload {
   timestamp: string;
   signature: string;
 }
 
-/**
- * Check webhook signature
- *
- * @param secret - app secred
- * @param rawBody - unchanged raw webhook body
- * @param toCompare - data from wh response headers
- */
-export const validateWebhookSignature = (secret: string, rawBody: string, toCompare: WebhookValidatePayload) => {
-  if (!isNode()) {
-    throw new Error('validateWebhookSignature is only supported in nodejs');
-  }
-
-  const hash = require('crypto')
-    .createHmac('sha256', secret)
-    .update(`${toCompare.timestamp}.${rawBody}`)
-    .digest('hex');
-
-  return hash === toCompare.signature;
-};
+export * from './security.node';

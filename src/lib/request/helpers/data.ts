@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { isURLSearchParams, isObject, isFormData, isArrayBuffer, isStream, isFile, isBlob, isBuffer } from './../utils';
+import { isURLSearchParams, isObject, isStream, isFormData, isArrayBuffer, isFile, isBlob, isBuffer } from './../utils';
 import { FsRequestOptions, FsResponse } from './../types';
 import { set } from './headers';
 import Debug from 'debug';
@@ -33,12 +33,10 @@ export const prepareData = (config: FsRequestOptions) => {
   }
 
   if (isURLSearchParams(config.data)) {
-    set(config.headers, 'content-type', 'application/x-www-form-urlencoded;charset=utf-8');
+    config.headers = set(config.headers, 'content-type', 'application/x-www-form-urlencoded;charset=utf-8');
     config.data = config.data.toString();
-  }
-
-  if (isObject(config.data)) {
-    set(config.headers, 'content-type', 'application/json');
+  } else if (isObject(config.data)) {
+    config.headers = set(config.headers, 'content-type', 'application/json', true);
     config.data = JSON.stringify(config.data);
   }
 
@@ -64,7 +62,10 @@ export const parseResponse = (response: FsResponse): FsResponse => {
       debug('Cannot parse response %O - %O', response.data, response.headers);
     }
   } else if (/text\/(plain|html)/.test(contentType)) {
-    response.data = bufferToString(response.data);
+    if (isBuffer(response.data)) {
+      response.data = bufferToString(response.data);
+    }
+    // if its not a buffer its probably plain text
   }
 
   return response;

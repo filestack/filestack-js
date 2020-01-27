@@ -20,10 +20,6 @@ import * as utils from './utils';
 const printLog = (status: boolean | string, name: string, value: string): string => `${name} should return ${status} when value is ${value}`;
 
 describe('Request/Utils', () => {
-  beforeAll(() => {
-    spyOn(utils, 'isNode').and.returnValue(false);
-  });
-
   describe('isBuffer', () => {
     // @ts-ignore
     it(printLog(false, 'isBuffer', '{}'), () => expect(utils.isBuffer()).toBeFalsy());

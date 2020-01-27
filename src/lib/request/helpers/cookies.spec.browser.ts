@@ -15,14 +15,9 @@
  * limitations under the License.
  */
 
-import * as utils from '../utils';
 import { write, read, remove } from './cookies';
 
 describe('Request/Helpers/Cookies', () => {
-  beforeAll(() => {
-    spyOn(utils, 'isNode').and.returnValue(false);
-  });
-
   describe('write', () => {
     it('should return array', () => {
       expect(write('name', 'value', 0, '/', 'filestack.com', true)).toEqual(undefined);

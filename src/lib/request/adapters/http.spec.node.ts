@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 by Filestack
+ * Copyright (c) 2019 by Filestack.
  * Some rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import * as adapters from './xhr';
+import * as adapters from './http';
 import { adaptersHttpAbstract } from './adapters_abstract.spec';
 
-adaptersHttpAbstract(adapters.XhrAdapter, 'xhr');
+adaptersHttpAbstract(adapters.HttpAdapter, 'http');
