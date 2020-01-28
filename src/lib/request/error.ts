@@ -28,7 +28,7 @@ export enum FsRequestErrorCode {
   TIMEOUT = 'TIMEDOUT',
   SERVER = 'SERVER',
   REQUEST = 'REQUEST',
-  OTHER = 'UNKNOWN',
+  OTHER = 'OTHER',
   REDIRECT = 'REDIRECT',
 }
 

@@ -17,7 +17,7 @@
 import Debug from 'debug';
 import * as utils from '../utils';
 import { AdapterInterface } from './interface';
-import { FsRequestOptions, FsResponse } from '../types';
+import { FsRequestOptions, FsResponse, FsHttpMethod } from '../types';
 import { FsRequestError, FsRequestErrorCode } from '../error';
 import { prepareData, parseResponse, parse as parseHeaders, combineURL } from './../helpers';
 
@@ -40,10 +40,12 @@ export class XhrAdapter implements AdapterInterface {
 
     // HTTP basic authentication
     if (config.auth) {
-      const username = config.auth.username || '';
-      const password = config.auth.password || '';
-      headers.Authorization = 'Basic ' + btoa(username + ':' + password);
-      debug('Set request authorization to %s', username + ':' + password);
+      if (!config.auth.username || config.auth.username.length === 0 || !config.auth.password || config.auth.password.length === 0) {
+        return Promise.reject(new FsRequestError(`Basic auth: username and password are required ${config.auth}`, config));
+      }
+
+      headers.Authorization = 'Basic ' + btoa(unescape(encodeURIComponent(`${config.auth.username}:${config.auth.password}`)));
+      debug('Set request authorization to %s', config.auth.username + config.auth.password);
     }
 
     let url = config.url.trim();
@@ -99,8 +101,7 @@ export class XhrAdapter implements AdapterInterface {
 
       // Handle browser request cancellation (as opposed to a manual cancellation)
       request.onabort = function handleAbort() {
-        // just to be sure that abort was not called after request is done/aborted
-        /* istanbul ignore next */
+        /* istanbul ignore next: just to be sure that abort was not called after request is done/aborted */
         if (!request) {
           return;
         }
@@ -134,18 +135,22 @@ export class XhrAdapter implements AdapterInterface {
         }
       }
 
-      // Handle progress if needed
-      if (typeof config.onProgress === 'function') {
-        debug('Request progress setup');
-        request.addEventListener('progress', config.onProgress);
+      if (typeof config.onProgress === 'function' && [FsHttpMethod.POST, FsHttpMethod.PUT].indexOf(config.method) > -1) {
+        /* istanbul ignore else: else path is just fallback to normal progress event */
+        if (request.upload) {
+          debug('Bind to upload progress event');
+          request.upload.addEventListener('progress', config.onProgress);
+        } else {
+          debug('Bind to progress event');
+          request.addEventListener('progress', config.onProgress);
+        }
       }
 
       if (config.cancelToken) {
         config.cancelToken
           .getSource()
           .then(reason => {
-            // if request is done cancel token should not throw any error
-            /* istanbul ignore next */
+            /* istanbul ignore next: if request is done cancel token should not throw any error */
             if (!request) {
               return;
             }
@@ -155,9 +160,8 @@ export class XhrAdapter implements AdapterInterface {
 
             return reject(new FsRequestError(`Request aborted. Reason: ${reason}`, config, null, FsRequestErrorCode.ABORTED));
           })
-          // only for safety
-          /* istanbul ignore next */
-          .catch(error => error);
+          /* istanbul ignore next: only for safety */
+          .catch(() => {/* empty */});
       }
 
       if (data === undefined) {

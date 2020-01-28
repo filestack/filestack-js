@@ -59,7 +59,11 @@ export class HttpAdapter implements AdapterInterface {
     // HTTP basic authentication
     let auth;
     if (config.auth) {
-      auth = `${config.auth.username || ''}:${config.auth.password || ''}`;
+      if (!config.auth.username || config.auth.username.length === 0) {
+        return Promise.reject(new FsRequestError(`Basic auth: username is required ${config.auth}`, config));
+      }
+
+      auth = `${config.auth.username}:${config.auth.password}`;
     }
 
     // Parse url
@@ -70,8 +74,9 @@ export class HttpAdapter implements AdapterInterface {
       parsed = url.parse(`https://${config.url}`);
     }
 
+    /* istanbul ignore next: just be sure that the host is parsed correctly, not needed to test */
     if (!parsed.host) {
-      return Promise.reject(new FsRequestError(`Cannot parse provided url ${config.url}`, config, null, FsRequestErrorCode.NETWORK));
+      return Promise.reject(new FsRequestError(`Cannot parse provided url ${config.url}`, config));
     }
 
     // normalize auth header
@@ -97,8 +102,7 @@ export class HttpAdapter implements AdapterInterface {
 
     return new Promise<FsResponse>((resolve, reject): any => {
       let req = agent.request(options, res => {
-        // just be sure that response will not be called after request is aborted
-        /* istanbul ignore next */
+        /* istanbul ignore next: just be sure that response will not be called after request is aborted */
         if (!req || req.aborted) {
           return reject(new FsRequestError('Request aborted', config));
         }
@@ -124,7 +128,6 @@ export class HttpAdapter implements AdapterInterface {
         };
 
         // we need to follow redirect so make same request with new location
-
         if ([301, 302].indexOf(res.statusCode) > -1) {
           debug('Redirect received %s', res.statusCode);
 
@@ -157,6 +160,7 @@ export class HttpAdapter implements AdapterInterface {
         let responseBuffer = [];
         stream.on('data', chunk => responseBuffer.push(chunk));
 
+        /* istanbul ignore next: its hard to test socket events with jest and nock - tested manually */
         stream.on('error', err => {
           res = undefined;
           req = undefined;
@@ -184,6 +188,7 @@ export class HttpAdapter implements AdapterInterface {
           // free resources
           res = undefined;
           req = undefined;
+
           responseBuffer = undefined;
 
           if (500 <= response.status && response.status <= 599) {
@@ -214,9 +219,8 @@ export class HttpAdapter implements AdapterInterface {
             debug('Request canceled by user %s', reason);
             reject(new FsRequestError(`Request aborted - ${reason}`, config, null, FsRequestErrorCode.ABORTED));
           })
-          // only for safety
-          /* istanbul ignore next */
-          .catch(error => error);
+          /* istanbul ignore next: only for safety */
+          .catch(() => {/* empty */});
       }
 
       if (config.timeout) {

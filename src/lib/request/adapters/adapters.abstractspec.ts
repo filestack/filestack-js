@@ -19,15 +19,9 @@
 import * as nock from 'nock';
 import * as zlib from 'zlib';
 import { Readable } from 'stream';
-import { FsHttpMethod } from '../types';
+import { FsHttpMethod, FsRequestOptions } from '../types';
 import { FsCancelToken } from '../token';
 import { FsRequestError, FsRequestErrorCode } from '../error';
-
-describe('Abstract class', () => {
-  it.skip('should skip', () => {
-    /* ignore */
-  });
-});
 
 export const adaptersHttpAbstract = (adapter: any, adapterName: string) => {
 
@@ -211,6 +205,38 @@ export const adaptersHttpAbstract = (adapter: any, adapterName: string) => {
         const res = await requestAdapter.request(options);
 
         expect(res.status).toEqual(200);
+      });
+
+      it('should throw an error on empty username', async () => {
+        const auth = {
+          username: null,
+          password: 'test',
+        };
+
+        const options = {
+          url: url,
+          method: FsHttpMethod.GET,
+          auth,
+        };
+
+        const requestAdapter = new adapter();
+        return expect(requestAdapter.request(options)).rejects.toEqual(expect.any(FsRequestError));
+      });
+
+      it('should throw an error on empty password', async () => {
+        const auth = {
+          username: 'test',
+          password: null,
+        };
+
+        const options = {
+          url: url,
+          method: FsHttpMethod.GET,
+          auth,
+        };
+
+        const requestAdapter = new adapter();
+        return expect(requestAdapter.request(options)).rejects.toEqual(expect.any(FsRequestError));
       });
 
       it('should overwrite auth header if auth data is provided', async () => {
@@ -486,6 +512,38 @@ export const adaptersHttpAbstract = (adapter: any, adapterName: string) => {
       });
     });
 
+    if (adapterName === 'xhr') {
+      describe('progress event', () => {
+        it('should handle upload progress', async () => {
+          const progressSpy = jest.fn().mockName('bufferData').mockReturnThis();
+          const buf = Buffer.alloc(1024);
+          buf.fill('a');
+
+          const options: FsRequestOptions = {
+            url: `${url}/progress`,
+            method: FsHttpMethod.POST,
+            onProgress: progressSpy,
+            data: buf,
+          };
+
+          scope.options('/progress').reply(200, 'ok', {
+            'Access-Control-Allow-Origin': '*',
+            'Content-type': 'application/json',
+          });
+
+          scope.post('/progress').reply(200, 'ok', {
+            'Access-Control-Allow-Origin': '*',
+            'Content-type': 'application/json',
+          });
+
+          const requestAdapter = new adapter();
+          const res = await requestAdapter.request(options);
+          // for jsdom we cannot check progress event correctly
+          expect(progressSpy).toHaveBeenCalled();
+        });
+      });
+    }
+
     describe('cancelToken', () => {
       it('Should throw abort request when token will be called', async () => {
         const token = new FsCancelToken();
@@ -543,6 +601,16 @@ export const adaptersHttpAbstract = (adapter: any, adapterName: string) => {
     });
 
     describe('Network errors', () => {
+      it('should throw an error on domain not found', async () => {
+        const options = {
+          url: 'https://some-badd-url.er',
+          method: FsHttpMethod.GET,
+        };
+
+        const requestAdapter = new adapter();
+        return expect(requestAdapter.request(options)).rejects.toEqual(expect.any(FsRequestError));
+      });
+
       it('Should throw an FilestackError on socket abort with FsRequestErrorCode.TIMEOUTED code', async () => {
         const options = {
           url: url,
@@ -620,29 +688,6 @@ export const adaptersHttpAbstract = (adapter: any, adapterName: string) => {
         const options = {
           url: url,
           method: FsHttpMethod.GET,
-        };
-
-        scope.get('/').replyWithError({ code: 'ENOTFOUND' });
-
-        try {
-          const requestAdapter = new adapter();
-          await requestAdapter.request(options);
-
-          // return error in try will not emit error
-          expect(false).toEqual(true);
-        } catch (err) {
-          expect(err).toEqual(expect.any(FsRequestError));
-          expect(err.code).toEqual(FsRequestErrorCode.NETWORK);
-        }
-
-        scope.done();
-      });
-
-      it('Should throw an FilestackError on response onProgress with FsRequestErrorCode.NETWORK code', async () => {
-        const options = {
-          url: url,
-          method: FsHttpMethod.GET,
-          onProgress: () => {/* empty */},
         };
 
         scope.get('/').replyWithError({ code: 'ENOTFOUND' });

@@ -16,6 +16,6 @@
  */
 
 import * as adapters from './http';
-import { adaptersHttpAbstract } from './adapters_abstract.spec';
+import { adaptersHttpAbstract } from './adapters.abstractspec';
 
 adaptersHttpAbstract(adapters.HttpAdapter, 'http');

@@ -61,7 +61,6 @@ export interface FsRequestRuntime {
 export interface FsRequestOptions {
   url?: string;
   data?: any;
-  json?: any;
   method?: FsHttpMethod;
   mode?: RequestMode;
   cache?: RequestCache;
@@ -72,7 +71,7 @@ export interface FsRequestOptions {
   timeout?: number;
   cancelToken?: FsTokenInterface;
   retry?: FsRetryConfig;
-  onProgress?: (pr: any) => any; // @todo callback type
+  onProgress?: (pr: ProgressEvent) => any;
   auth?: FsAuthConfig;
   runtime?: FsRequestRuntime;
 }
