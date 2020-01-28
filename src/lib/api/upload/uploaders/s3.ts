@@ -802,6 +802,11 @@ export class S3Uploader extends UploaderAbstract {
    */
   private setPayloadStatus(id: string, status: FileState) {
     debug(`[${id}] Set payload status to ${status}`);
+    /* istanbul ignore next: additional check in case if file will be deleted before setting status */
+    if (!this.payloads[id]) {
+      return;
+    }
+
     this.payloads[id].file.status = status;
   }
 
