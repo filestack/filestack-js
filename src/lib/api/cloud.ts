@@ -153,7 +153,7 @@ export class CloudClient {
       });
   }
 
-  store(name: string, path: string, options: StoreParams = {}, customSource: any = {}, token?: any) {
+  store(name: string, path: string, options: StoreParams = {}, customSource: any = {}, cancelToken?: any) {
     // Default to S3
     if (options.location === undefined) options.location = 's3';
 
@@ -184,9 +184,9 @@ export class CloudClient {
 
     let requestOptions: any = {};
 
-    if (token) {
+    if (cancelToken) {
       const cancelToken = new FsCancelToken();
-      token.cancel = cancelToken.cancel.bind(cancelToken);
+      cancelToken.cancel = cancelToken.cancel.bind(cancelToken);
       requestOptions.cancelToken = cancelToken;
     }
 

@@ -721,7 +721,7 @@ export class S3Uploader extends UploaderAbstract {
         continue;
       }
 
-      const totalParts = payload.parts.map(p => p.progress || 0).reduce((a, b) => a + b);
+      const totalParts = payload.parts.map(p => p.progress || 0).reduce((a, b) => a + b, 0);
 
       totalBytes = totalBytes + totalParts;
 

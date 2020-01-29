@@ -190,6 +190,10 @@ export const filterObject = (toFilter, requiredFields: string[]) => {
     return toFilter;
   }
 
+  if (Object.keys(toFilter).length === 0) {
+    return toFilter;
+  }
+
   return Object.keys(toFilter)
     .filter(f => requiredFields.indexOf(f) > -1)
     .reduce((obj, key) => ({ ...obj, [key]: toFilter[key] }), {});
