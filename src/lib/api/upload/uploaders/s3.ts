@@ -128,17 +128,7 @@ export class S3Uploader extends UploaderAbstract {
         })
     );
 
-    return Promise.all(tasks).then(res => {
-      // prevent cancel token memory leak
-      try {
-        this.cancelToken.cancel();
-      } catch (e) {
-        /* istanbul ignore next */
-        debug(`Cannot cleanup cancel token %O`, e.message);
-      }
-
-      return res;
-    });
+    return Promise.all(tasks);
   }
 
   /**

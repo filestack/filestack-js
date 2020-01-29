@@ -101,7 +101,7 @@ export class XhrAdapter implements AdapterInterface {
 
       // Handle browser request cancellation (as opposed to a manual cancellation)
       request.onabort = function handleAbort() {
-        /* istanbul ignore next: just to be sure that abort was not called after request is done/aborted */
+        /* istanbul ignore next: just to be sure that abort was not called twice */
         if (!request) {
           return;
         }
@@ -120,6 +120,7 @@ export class XhrAdapter implements AdapterInterface {
       // Handle timeout
       request.ontimeout = function handleTimeout() {
         request = null;
+        debug('Request timed out. %O', config);
         reject(new FsRequestError('Request timeout', config, null, FsRequestErrorCode.TIMEOUT));
       };
 
@@ -150,15 +151,13 @@ export class XhrAdapter implements AdapterInterface {
         config.cancelToken
           .getSource()
           .then(reason => {
-            console.log(`Reuqest canceled callled. tryingto cancel request`, config);
             /* istanbul ignore next: if request is done cancel token should not throw any error */
-            if (!request) {
-              return;
+            if (request) {
+              request.abort();
+              request = null;
             }
 
-            request.abort();
-            request = null;
-
+            debug('Request canceled by user %s, config: %O', reason, config);
             return reject(new FsRequestError(`Request aborted. Reason: ${reason}`, config, null, FsRequestErrorCode.ABORTED));
           })
           /* istanbul ignore next: only for safety */

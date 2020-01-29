@@ -209,15 +209,14 @@ export class HttpAdapter implements AdapterInterface {
         config.cancelToken
           .getSource()
           .then(reason => {
-            // if request is done cancel token should not throw any error
-            if (!req) {
-              return;
+            /* istanbul ignore next: if request is done cancel token should not throw any error */
+            if (req) {
+              req.abort();
+              req = null;
             }
 
-            req.abort();
-
-            debug('Request canceled by user %s', reason);
-            reject(new FsRequestError(`Request aborted - ${reason}`, config, null, FsRequestErrorCode.ABORTED));
+            debug('Request canceled by user %s, config: %O', reason, config);
+            return reject(new FsRequestError(`Request aborted. Reason: ${reason}`, config, null, FsRequestErrorCode.ABORTED));
           })
           /* istanbul ignore next: only for safety */
           .catch(() => {/* empty */});
