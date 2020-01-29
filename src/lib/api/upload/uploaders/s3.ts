@@ -726,7 +726,7 @@ export class S3Uploader extends UploaderAbstract {
       totalBytes = totalBytes + totalParts;
 
       filesProgress[i] = {
-        totalBytes: totalParts || 0,
+        totalBytes: totalParts,
         totalPercent: Math.round((totalParts * 100) / payload.file.size) || 0,
       };
 

@@ -150,6 +150,7 @@ export class XhrAdapter implements AdapterInterface {
         config.cancelToken
           .getSource()
           .then(reason => {
+            console.log(`Reuqest canceled callled. tryingto cancel request`, config);
             /* istanbul ignore next: if request is done cancel token should not throw any error */
             if (!request) {
               return;

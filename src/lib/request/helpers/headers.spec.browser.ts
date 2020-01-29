@@ -38,6 +38,16 @@ describe('Request/Helpers/Headers', () => {
       const headers = 'set-cookie:false';
       expect(parse(headers)).toEqual({ 'set-cookie': ['false'] });
     });
+
+    it('should concat multiple set-cookie headers into array', () => {
+      const headers = 'set-cookie:test1\nset-cookie:test2\nset-cookie:test3';
+      expect(parse(headers)).toEqual({ 'set-cookie': ['test1', 'test2', 'test3'] });
+    });
+
+    it('should concat multiple not ignored headers into string', () => {
+      const headers = 'testheader:test1\ntestheader:test2\ntestheader:test3';
+      expect(parse(headers)).toEqual({ 'testheader': 'test1, test2, test3' });
+    });
   });
 
   describe('normalize headers', () => {
@@ -52,25 +62,35 @@ describe('Request/Helpers/Headers', () => {
     });
   });
 
-  describe('cookies', () => {
-    it('should return cookies with specify values', () => {
-      const data = { ['set-cookies']: 'false' };
-      const res = set(data, 'set-cookies', 'value', true);
-      expect(res).toEqual({ 'Set-Cookies': 'value', 'set-cookies': 'false' });
+  describe('set headers', () => {
+    it('should set correct headers to object', () => {
+      expect(set({}, 'set-cookies', 'value')).toEqual({ 'Set-Cookies': 'value' });
     });
 
-    it('should return with value', () => {
-      const h = {};
-      const res = set(h, 'name', 'value', true);
-
-      expect(res).toEqual({ Name: 'value' });
+    it('should set value on empty object if setIFExists is enabled', () => {
+      expect(set({}, 'name', 'value', true)).toEqual({ Name: 'value' });
     });
 
-    it('should return value www-authenticate', () => {
+    it('should overwrite value if setIFExists is enabled', () => {
+      const h = {
+        name: 'test',
+      };
+
+      expect(set(h, 'name', 'value', true)).toEqual({ Name: 'value' });
+    });
+
+    it('should not overwrite value if setIFExists is disabled', () => {
+      const h = {
+        name: 'test',
+      };
+
+      expect(set(h, 'name', 'value', false)).toEqual({ name: 'test' });
+    });
+
+    it('should allow to add header to not empty object', () => {
       const data = { 'www-authenticate': '' };
-      const res = set(data, 'name', 'value', true);
 
-      expect(res).toEqual({ Name: 'value', 'www-authenticate': '' });
+      expect(set(data, 'name', 'value')).toEqual({ Name: 'value', 'www-authenticate': '' });
     });
   });
 

@@ -16,6 +16,10 @@
  */
 
 import { FsRequestError, FsRequestErrorCode } from './../error';
+import Debug from 'debug';
+
+const debug = Debug('fs:request:shouldRetry');
+
 /**
  * Indicates if method should be retried
  *
@@ -25,20 +29,25 @@ import { FsRequestError, FsRequestErrorCode } from './../error';
  * @memberof Dispatch
  */
 export const shouldRetry = (err: FsRequestError) => {
+  debug('Checking error for retry. Code: %n, type: %s', err.response.status, err.code);
+
   // we always should retry on network failure
   switch (err.code) {
     case FsRequestErrorCode.NETWORK:
     case FsRequestErrorCode.SERVER:
     case FsRequestErrorCode.TIMEOUT:
       return true;
+    // we should not make request on request aborted
+    case FsRequestErrorCode.ABORTED:
+      return false;
   }
 
-  // if request was not made and there is no response - retry
   if (!err.response) {
-    return true;
+    return false;
   }
 
   // we should retry on all server errors (5xx)
+  // this should be handled by FsRequestErrorCode.SERVER but to be sure
   if (500 <= err.response.status && err.response.status <= 599) {
     return true;
   }

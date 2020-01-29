@@ -94,6 +94,7 @@ export const normalizeHeaders = (headers: FsRequestHeaders): FsRequestHeaders =>
   return toReturn;
 };
 
+// expect(set({}, 'set-cookies', 'value')).toEqual({ 'Set-Cookies': 'value' });
 /**
  * Set request headers
  *
@@ -103,7 +104,7 @@ export const normalizeHeaders = (headers: FsRequestHeaders): FsRequestHeaders =>
  * @param setIFExists - determine if we should change header value if exists
  */
 export const set = (headers: FsRequestHeaders, name: string, value: string, setIFExists = false) => {
-  name = normalizeName(name);
+  const normalizedName = normalizeName(name);
 
   if (!headers) {
     headers = {};
@@ -111,11 +112,11 @@ export const set = (headers: FsRequestHeaders, name: string, value: string, setI
 
   // cleanup headers from undefined vals
   headers = JSON.parse(JSON.stringify(headers));
-
-  if (!headers[name]) {
-    headers[name] = value;
+  if (headers[name] === undefined && headers[normalizedName] === undefined) {
+    headers[normalizedName] = value;
   } else if (setIFExists) {
-    headers[name] = value;
+    delete headers[name];
+    headers[normalizedName] = value;
   }
 
   return headers;

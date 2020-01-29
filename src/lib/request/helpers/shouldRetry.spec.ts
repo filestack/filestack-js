@@ -16,105 +16,49 @@
  */
 
 import { shouldRetry } from './shouldRetry';
-import { FsRequestErrorCode } from '../error';
+import { FsRequestErrorCode, FsRequestError } from '../error';
+import { FsResponse } from './../types';
+
+const testResponse = (code: number = 200): FsResponse => ({
+  status: code,
+  statusText: 'test',
+  headers: {},
+  data: {},
+  config: {},
+});
 
 describe('Request/Helpers/shouldRetry', () => {
   describe('shouldRetry', () => {
-    it('should return true', () => {
-      const data = {
-        message: 'msg',
-        name: '',
-        config: {},
-        response: {
-          status: 500,
-          statusText: '',
-          headers: null,
-          data: '',
-          config: {
-            url: 'https://filestack.com',
-          },
-        },
-        code: FsRequestErrorCode.NETWORK,
-      };
-      expect(shouldRetry(data)).toBe(true);
+    it('should retry on network error', () => {
+      expect(shouldRetry(new FsRequestError('', null, testResponse(), FsRequestErrorCode.NETWORK))).toEqual(true);
     });
 
-    it('should return true', () => {
-      const data = {
-        message: 'msg',
-        name: '',
-        config: {},
-        response: {
-          status: 500,
-          statusText: '',
-          headers: null,
-          data: '',
-          config: {
-            url: 'https://filestack.com',
-          },
-        },
-        code: FsRequestErrorCode.SERVER,
-      };
-      expect(shouldRetry(data)).toBe(true);
+    it('should retry on server error', () => {
+      expect(shouldRetry(new FsRequestError('', null, testResponse(), FsRequestErrorCode.SERVER))).toEqual(true);
     });
 
-    it('should return true', () => {
-      const data = {
-        message: 'msg',
-        name: '',
-        config: {},
-        response: {
-          status: 500,
-          statusText: '',
-          headers: null,
-          data: '',
-          config: {
-            url: 'https://filestack.com',
-          },
-        },
-        code: FsRequestErrorCode.TIMEOUT,
-      };
-      expect(shouldRetry(data)).toBe(true);
+    it('should retry on server error', () => {
+      expect(shouldRetry(new FsRequestError('', null, testResponse(), FsRequestErrorCode.TIMEOUT))).toEqual(true);
     });
 
-    it('should return true', () => {
-      const data = {
-        message: 'msg',
-        name: '',
-        config: {},
-        response: false,
-        code: FsRequestErrorCode.ABORTED,
-      };
+    it('should retry on request 5xx code', () => {
       // @ts-ignore
-      expect(shouldRetry(data)).toBe(true);
+      expect(shouldRetry(new FsRequestError('', null, testResponse(504), FsRequestErrorCode.OTHER))).toEqual(true);
     });
 
-    it('should return true', () => {
-      const data = {
-        message: 'msg',
-        name: '',
-        config: {},
-        response: {
-          status: 510,
-        },
-        code: FsRequestErrorCode.ABORTED,
-      };
+    it('should not retry on 4xx codes', () => {
       // @ts-ignore
-      expect(shouldRetry(data)).toBe(true);
+      expect(shouldRetry(new FsRequestError('', null, testResponse(404), FsRequestErrorCode.REQUEST))).toEqual(false);
     });
 
-    it('should return false', () => {
-      const data = {
-        message: 'msg',
-        name: '',
-        config: {},
-        response: {
-          status: 404,
-        },
-        code: FsRequestErrorCode.ABORTED,
-      };
+    it('should not retry on request error', () => {
       // @ts-ignore
-      expect(shouldRetry(data)).toBe(false);
+      expect(shouldRetry(new FsRequestError('', null, testResponse(), FsRequestErrorCode.REQUEST))).toEqual(false);
+    });
+
+    it('should not retry on request aborted', () => {
+      // @ts-ignore
+      expect(shouldRetry(new FsRequestError('', null, testResponse(), FsRequestErrorCode.ABORTED))).toEqual(false);
     });
   });
 });
