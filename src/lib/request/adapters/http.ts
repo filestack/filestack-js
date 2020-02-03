@@ -28,6 +28,7 @@ import { FsRequestErrorCode, FsRequestError } from '../error';
 
 const HTTPS_REGEXP = /https:?/;
 const MAX_REDIRECTS = 10;
+const CANCEL_CLEAR = `FsCleanMemory`;
 const debug = Debug('fs:request:http');
 
 export class HttpAdapter implements AdapterInterface {
@@ -154,6 +155,11 @@ export class HttpAdapter implements AdapterInterface {
 
           debug('Redirecting request to %s (hoop-count: %d)', url, this.redirectHoops);
 
+          // clear cancel token to avoid memory leak
+          if (config.cancelToken) {
+            config.cancelToken.cancel(CANCEL_CLEAR);
+          }
+
           return resolve(this.request(Object.assign({}, config, { url })));
         }
 
@@ -209,6 +215,11 @@ export class HttpAdapter implements AdapterInterface {
         config.cancelToken
           .getSource()
           .then(reason => {
+            // do nothing if promise is resolved by system
+            if (reason && reason.message === CANCEL_CLEAR) {
+              return;
+            }
+
             /* istanbul ignore next: if request is done cancel token should not throw any error */
             if (req) {
               req.abort();
