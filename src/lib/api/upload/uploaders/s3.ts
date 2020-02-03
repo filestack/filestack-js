@@ -446,36 +446,36 @@ export class S3Uploader extends UploaderAbstract {
       onProgress: (pr: ProgressEvent) => this.onProgressUpdate(id, partNumber, pr.loaded),
       retry: this.retryConfig && this.uploadMode !== UploadMode.FALLBACK ? this.retryConfig : undefined,
     })
-      .then(res => {
-        if (res.headers.etag) {
-          this.setPartETag(id, partNumber, res.headers.etag);
-        } else {
-          throw new FilestackError('Cannot upload file, check S3 bucket settings', 'Etag header is not exposed in CORS settings', FilestackErrorType.REQUEST);
-        }
+    .then(res => {
+      if (res.headers.etag) {
+        this.setPartETag(id, partNumber, res.headers.etag);
+      } else {
+        throw new FilestackError('Cannot upload file, check S3 bucket settings', 'Etag header is not exposed in CORS settings', FilestackErrorType.REQUEST);
+      }
 
-        debug(`[${id}] S3 Upload response headers for ${partNumber}: \n%O\n`, res.headers);
+      debug(`[${id}] S3 Upload response headers for ${partNumber}: \n%O\n`, res.headers);
 
-        this.onProgressUpdate(id, partNumber, part.size);
+      this.onProgressUpdate(id, partNumber, part.size);
 
-        return res;
-      })
-      .catch(err => {
-        if (err instanceof FilestackError) {
-          return Promise.reject(err);
-        }
-        // reset upload progress on failed part
-        this.onProgressUpdate(id, partNumber, 0);
+      return res;
+    })
+    .catch(err => {
+      if (err instanceof FilestackError) {
+        return Promise.reject(err);
+      }
+      // reset upload progress on failed part
+      this.onProgressUpdate(id, partNumber, 0);
 
-        // if fallback, set upload mode to intelligent and restart current part
-        if ((this.uploadMode === UploadMode.FALLBACK && !this.isModeLocked) || this.uploadMode === UploadMode.INTELLIGENT) {
-          debug(`[${id}] Regular upload failed. Switching to intelligent ingestion mode`);
-          this.setUploadMode(UploadMode.INTELLIGENT);
-          // restart part
-          return this.startPart(id, partNumber);
-        }
+      // if fallback, set upload mode to intelligent and restart current part
+      if ((this.uploadMode === UploadMode.FALLBACK && !this.isModeLocked) || this.uploadMode === UploadMode.INTELLIGENT) {
+        debug(`[${id}] Regular upload failed. Switching to intelligent ingestion mode`);
+        this.setUploadMode(UploadMode.INTELLIGENT);
+        // restart part
+        return this.startPart(id, partNumber);
+      }
 
-        return Promise.reject(new FilestackError('Cannot upload file part', this.getErrorDetails(err), FilestackErrorType.REQUEST));
-      });
+      return Promise.reject(new FilestackError('Cannot upload file part', this.getErrorDetails(err), FilestackErrorType.REQUEST));
+    });
   }
 
   /**

@@ -22,6 +22,7 @@ import { FsRequestError, FsRequestErrorCode } from '../error';
 import { prepareData, parseResponse, parse as parseHeaders, combineURL } from './../helpers';
 
 const debug = Debug('fs:request:xhr');
+const CANCEL_CLEAR = `FsCleanMemory`;
 
 export class XhrAdapter implements AdapterInterface {
 
@@ -96,6 +97,11 @@ export class XhrAdapter implements AdapterInterface {
           return reject(new FsRequestError(`Request error ${url}`, config, response, FsRequestErrorCode.REQUEST));
         }
 
+        // clear cancel token to avoid memory leak
+        if (config.cancelToken) {
+          config.cancelToken.cancel(CANCEL_CLEAR);
+        }
+
         return resolve(response);
       };
 
@@ -151,6 +157,11 @@ export class XhrAdapter implements AdapterInterface {
         config.cancelToken
           .getSource()
           .then(reason => {
+            // do nothing if promise is resolved by system
+            if (reason && reason.message === CANCEL_CLEAR) {
+              return;
+            }
+
             /* istanbul ignore next: if request is done cancel token should not throw any error */
             if (request) {
               request.abort();
