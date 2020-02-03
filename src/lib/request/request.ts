@@ -62,6 +62,7 @@ export class FsRequest {
   constructor(config?: FsRequestOptions) {
 
     this.defaults = config;
+    console.log(RequestAdapter, Dispatch);
     this.dispatcher = new Dispatch(new RequestAdapter());
   }
 

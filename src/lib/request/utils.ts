@@ -21,7 +21,7 @@
  * @param {Object} val The value to test
  * @returns {boolean} True if value is an Array, otherwise false
  */
-export const isArray = (val: any[]) => toString.call(val) === '[object Array]';
+export const isArray = (val: any[]) => Object.prototype.toString.call(val) === '[object Array]';
 
 /**
  * Determine if a value is an ArrayBuffer
@@ -29,7 +29,7 @@ export const isArray = (val: any[]) => toString.call(val) === '[object Array]';
  * @param {Object} val The value to test
  * @returns {boolean} True if value is an ArrayBuffer, otherwise false
  */
-export const isArrayBuffer = (val: ArrayBuffer) => toString.call(val) === '[object ArrayBuffer]';
+export const isArrayBuffer = (val: ArrayBuffer) => Object.prototype.toString.call(val) === '[object ArrayBuffer]';
 
 /**
  * Determine if a value is a view on an ArrayBuffer
@@ -70,7 +70,7 @@ export const isString = (val: any) => typeof val === 'string' || val instanceof 
  * @param {Object} val The value to test
  * @returns {boolean} True if value is a File, otherwise false
  */
-export const isFile = (val: File) => toString.call(val) === '[object File]';
+export const isFile = (val: File) => Object.prototype.toString.call(val) === '[object File]';
 
 /**
  * Determine if a value is a Blob
@@ -78,7 +78,7 @@ export const isFile = (val: File) => toString.call(val) === '[object File]';
  * @param {Object} val The value to test
  * @returns {boolean} True if value is a Blob, otherwise false
  */
-export const isBlob = (val: Blob) => toString.call(val) === '[object Blob]';
+export const isBlob = (val: Blob) => Object.prototype.toString.call(val) === '[object Blob]';
 
 /**
  * Determine if a value is a URLSearchParams object
