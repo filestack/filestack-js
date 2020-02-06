@@ -28,7 +28,12 @@ const debug = Debug('fs:request:data');
  * @param data
  */
 export const prepareData = (config: FsRequestOptions) => {
-  if (isFormData(config.data) || isArrayBuffer(config.data) || isBuffer(config.data) || isStream(config.data) || isFile(config.data) || isBlob(config.data)) {
+  if (isFormData(config.data) || isBuffer(config.data) || isStream(config.data) || isFile(config.data) || isBlob(config.data)) {
+    return config;
+  }
+
+  // @todo convert it to ArrayBufferView for browser
+  if (isArrayBuffer(config.data)) {
     return config;
   }
 

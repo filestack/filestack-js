@@ -450,6 +450,8 @@ export class S3Uploader extends UploaderAbstract {
       if (res.headers.etag) {
         this.setPartETag(id, partNumber, res.headers.etag);
       } else {
+        // release memory
+        part = null;
         throw new FilestackError('Cannot upload file, check S3 bucket settings', 'Etag header is not exposed in CORS settings', FilestackErrorType.REQUEST);
       }
 
@@ -457,9 +459,15 @@ export class S3Uploader extends UploaderAbstract {
 
       this.onProgressUpdate(id, partNumber, part.size);
 
+      // release memory
+      part = null;
+
       return res;
     })
     .catch(err => {
+      // release memory
+      part = null;
+
       if (err instanceof FilestackError) {
         return Promise.reject(err);
       }
@@ -540,6 +548,7 @@ export class S3Uploader extends UploaderAbstract {
           return Promise.resolve(res);
         }
 
+        // release memory
         part = null;
         chunk = null;
         return this.uploadNextChunk(id, partNumber, chunkSize);
@@ -559,6 +568,7 @@ export class S3Uploader extends UploaderAbstract {
           return this.uploadNextChunk(id, partNumber, nextChunkSize);
         }
 
+        // release memory
         part = null;
         chunk = null;
 
