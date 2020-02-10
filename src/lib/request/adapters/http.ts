@@ -241,7 +241,7 @@ export class HttpAdapter implements AdapterInterface {
       }
 
       req.on('error', err => {
-        if (req.aborted) {
+        if (!req || req.aborted) {
           return;
         }
 
