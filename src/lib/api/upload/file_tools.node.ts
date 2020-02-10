@@ -45,7 +45,7 @@ const isFileBase = (input: InputFile): input is string => {
     return false;
   }
 
-  if (input.indexOf('base64') > -1) {
+  if (input.indexOf('base64') > -1 && base64Regexp.test(input)) {
     input = input.match(base64Regexp).pop();
   }
 

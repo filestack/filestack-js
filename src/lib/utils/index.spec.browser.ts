@@ -91,5 +91,13 @@ describe('utils:index', () => {
     it('should return correct b65 value', () => {
       expect(utils.b64('testtext')).toEqual('dGVzdHRleHQ=');
     });
+
+    it('should escape chars to make b64 url without safe mode - char "+"', () => {
+      expect(utils.b64('*0eijATh#"I$PR)s<uTa}{t>E"LC:L', false)).toEqual('KjBlaWpBVGgjIkkkUFIpczx1VGF9e3Q+RSJMQzpM');
+    });
+
+    it('should escape chars to make b64 url with safe mode - char "+"', () => {
+      expect(utils.b64('*0eijATh#"I$PR)s<uTa}{t>E"LC:L', true)).toEqual('KjBlaWpBVGgjIkkkUFIpczx1VGF9e3Q-RSJMQzpM');
+    });
   });
 });

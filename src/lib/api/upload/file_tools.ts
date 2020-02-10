@@ -22,7 +22,7 @@ export type NamedInputFile = {
 
 export type InputFile = RawFile | NamedInputFile;
 
-export const base64Regexp = /data:([a-zA-Z]*\/[a-zA-Z]*);base64,([^\"]*)/i;
+export const base64Regexp = /data:([a-zA-Z]*\/[a-zA-Z+]*);base64,([^\"]*)/i;
 
 /**
  * Check if file is blob
