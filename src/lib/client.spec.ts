@@ -201,6 +201,24 @@ describe('client', () => {
     expect(Upload.prototype.upload).toHaveBeenCalledWith(file);
   });
 
+  it('should be able to upload file without token and security', async () => {
+    const client = new Client(defaultApikey);
+    const file = 'anyFile';
+    const uploadOptions = {};
+    const storeOptions = {};
+
+    spyOn(Upload.prototype, 'upload').and.returnValue(Promise.resolve());
+
+    await client.upload(file, uploadOptions, storeOptions);
+
+    expect(Upload.prototype.setSession).toHaveBeenCalledWith({
+      apikey: defaultApikey,
+      urls: sessionURls,
+    });
+
+    expect(Upload.prototype.upload).toHaveBeenCalledWith(file);
+  });
+
   it('should emit error', async () => {
     const client = new Client(defaultApikey);
     const file = 'anyFile';
@@ -238,6 +256,24 @@ describe('client', () => {
 
     expect(Upload.prototype.setToken).toHaveBeenCalledWith(token);
     expect(Upload.prototype.setSecurity).toHaveBeenCalledWith(defaultSecurity);
+    expect(Upload.prototype.multiupload).toHaveBeenCalledWith(files);
+  });
+
+  it('should call multiupload without security or token', async () => {
+    const client = new Client(defaultApikey);
+    const files = ['anyFile'];
+    const uploadOptions = {};
+    const storeOptions = {};
+
+    spyOn(Upload.prototype, 'multiupload').and.returnValue(Promise.resolve());
+
+    await client.multiupload(files, uploadOptions, storeOptions);
+
+    expect(Upload.prototype.setSession).toHaveBeenCalledWith({
+      apikey: defaultApikey,
+      urls: sessionURls,
+    });
+
     expect(Upload.prototype.multiupload).toHaveBeenCalledWith(files);
   });
 

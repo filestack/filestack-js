@@ -117,7 +117,7 @@ export class CloudClient {
       });
   }
 
-  list(clouds: any, token?: any) {
+  list(clouds: any, cancelTokenInput?: any) {
     const payload: any = {
       apikey: this.session.apikey,
       clouds,
@@ -136,9 +136,9 @@ export class CloudClient {
 
     let options: any = {};
 
-    if (token) {
+    if (cancelTokenInput) {
       const cancelToken = new FsCancelToken();
-      token.cancel = cancelToken.cancel.bind(cancelToken);
+      cancelTokenInput.cancel = cancelToken.cancel.bind(cancelToken);
       options.cancelToken = cancelToken;
     }
 
@@ -153,9 +153,11 @@ export class CloudClient {
       });
   }
 
-  store(name: string, path: string, options: StoreParams = {}, customSource: any = {}, cancelToken?: any) {
+  store(name: string, path: string, options: StoreParams = {}, customSource: any = {}, cancelTokenInput?: any) {
     // Default to S3
-    if (options.location === undefined) options.location = 's3';
+    if (options.location === undefined) {
+      options.location = 's3';
+    }
 
     const payload: any = {
       apikey: this.session.apikey,
@@ -184,9 +186,9 @@ export class CloudClient {
 
     let requestOptions: any = {};
 
-    if (cancelToken) {
+    if (cancelTokenInput) {
       const cancelToken = new FsCancelToken();
-      cancelToken.cancel = cancelToken.cancel.bind(cancelToken);
+      cancelTokenInput.cancel = cancelToken.cancel.bind(cancelToken);
       requestOptions.cancelToken = cancelToken;
     }
 

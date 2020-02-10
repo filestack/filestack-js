@@ -81,7 +81,6 @@ const mockLogout = jest
   .fn()
   .mockName('logout')
   .mockImplementation((url, params) => {
-
     if (params.clouds && params.clouds.token) {
       return { token: testCloudToken };
     }
@@ -127,6 +126,62 @@ describe('cloud', () => {
     localStorage.clear();
   });
 
+  describe('cancelToken', () => {
+    const testDomain = 'http://delay.filestack.test';
+    let scopeD;
+
+    beforeEach(() => {
+      scopeD = nock(testDomain);
+      scopeD.post('/store/').delay(4000).reply(200);
+      scopeD.post('/folder/list').delay(4000).reply(200);
+    });
+
+    afterEach(() => {
+      nock.cleanAll();
+      jest.clearAllMocks();
+      localStorage.clear();
+    });
+
+    it('Should cancel store request', (done) => {
+      const sessionClone = JSON.parse(JSON.stringify(testSession));
+      sessionClone.urls.cloudApiUrl = testDomain;
+
+      let token = {};
+
+      new CloudClient(sessionClone).store('google', 'test', { filename: '1', location: 'gcs' }, {}, token).then(() => {
+        done('Request not canceled');
+      }).catch((err) => {
+        expect(err).toEqual(expect.any(Error));
+        done();
+      });
+
+      setTimeout(() => {
+        // @ts-ignore
+        token.cancel();
+      }, 500);
+    });
+
+    it('Should cancel list request', (done) => {
+      const sessionClone = JSON.parse(JSON.stringify(testSession));
+      sessionClone.urls.cloudApiUrl = testDomain;
+
+      let token = {};
+
+      new CloudClient(sessionClone).list('google', token).then(() => {
+        done('Request not canceled');
+      }).catch((err) => {
+        expect(err).toEqual(expect.any(Error));
+        done();
+      });
+
+      setTimeout(() => {
+        // @ts-ignore
+        token.cancel();
+      }, 500);
+    });
+
+  });
+
   describe('facebook inapp browser', () => {
     beforeEach(() => {
       scope
@@ -135,7 +190,6 @@ describe('cloud', () => {
         .reply(200, {
           inapp_browser: true,
         });
-
     });
 
     it('should set token to sessionStore when inapp browser is detected', async () => {
@@ -205,9 +259,9 @@ describe('cloud', () => {
   describe('prefetch', () => {
     beforeEach(() => {
       scope
-      .get('/prefetch')
-      .query({ apikey: testApiKey })
-      .reply(200, mockPrefetch);
+        .get('/prefetch')
+        .query({ apikey: testApiKey })
+        .reply(200, mockPrefetch);
     });
 
     it('should make correct request to api', async () => {
@@ -396,13 +450,10 @@ describe('cloud', () => {
 
       const res = await new CloudClient(testSession).metadata(testUrl);
 
-      expect(mockMetadata).toHaveBeenCalledWith(
-        expect.any(String),
-        {
-          apikey: testApiKey,
-          url: testUrl,
-        }
-      );
+      expect(mockMetadata).toHaveBeenCalledWith(expect.any(String), {
+        apikey: testApiKey,
+        url: testUrl,
+      });
       expect(res).toEqual('metadata');
     });
 
@@ -414,14 +465,11 @@ describe('cloud', () => {
         ...testSecurity,
       }).metadata(testUrl);
 
-      expect(mockMetadata).toHaveBeenCalledWith(
-        expect.any(String),
-        {
-          apikey: testApiKey,
-          url: testUrl,
-          ...testSecurity,
-        }
-      );
+      expect(mockMetadata).toHaveBeenCalledWith(expect.any(String), {
+        apikey: testApiKey,
+        url: testUrl,
+        ...testSecurity,
+      });
       expect(res).toEqual('metadata');
     });
   });
@@ -442,13 +490,16 @@ describe('cloud', () => {
         expect(res).toEqual('init');
       });
 
-      it('should throw on wrong type', async() => {
+      it('should throw on wrong type', async () => {
         expect(() => {
-          new CloudClient(testSession).tokInit('videoa').then(() => {
-            console.log('init');
-          }).catch(() => {
-            console.log('err');
-          });
+          new CloudClient(testSession)
+            .tokInit('videoa')
+            .then(() => {
+              console.log('init');
+            })
+            .catch(() => {
+              console.log('err');
+            });
         }).toThrowError();
       });
     });
@@ -477,28 +528,22 @@ describe('cloud', () => {
       it('should make correct request to api (audio)', async () => {
         const res = await new CloudClient(testSession).tokStop('audio', 'key', testTokSession, testTokArchiveId);
 
-        expect(mockTokStop).toHaveBeenCalledWith(
-          expect.any(String),
-          {
-            apikey: 'key',
-            session_id: testTokSession,
-            archive_id: testTokArchiveId,
-          }
-        );
+        expect(mockTokStop).toHaveBeenCalledWith(expect.any(String), {
+          apikey: 'key',
+          session_id: testTokSession,
+          archive_id: testTokArchiveId,
+        });
         expect(res).toEqual('stop');
       });
 
       it('should make correct request to api (video)', async () => {
         const res = await new CloudClient(testSession).tokStop('video', 'key', testTokSession, testTokArchiveId);
 
-        expect(mockTokStop).toHaveBeenCalledWith(
-          expect.any(String),
-          {
-            apikey: 'key',
-            session_id: testTokSession,
-            archive_id: testTokArchiveId,
-          }
-        );
+        expect(mockTokStop).toHaveBeenCalledWith(expect.any(String), {
+          apikey: 'key',
+          session_id: testTokSession,
+          archive_id: testTokArchiveId,
+        });
         expect(res).toEqual('stop');
       });
 

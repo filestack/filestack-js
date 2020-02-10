@@ -29,7 +29,7 @@ const debug = Debug('fs:request:shouldRetry');
  * @memberof Dispatch
  */
 export const shouldRetry = (err: FsRequestError) => {
-  debug('Checking error for retry. Code: %n, type: %s', err.response.status, err.code);
+  debug('Checking error for retry. Code: %n, type: %s', (err.response ? err.response.status : 'Malformed response'), err.code);
 
   // we always should retry on network failure
   switch (err.code) {

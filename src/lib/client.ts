@@ -104,6 +104,7 @@ export class Client extends EventEmitter {
   constructor(apikey: string, options?: ClientOptions) {
     super();
 
+    /* istanbul ignore if */
     if (options && options.forwardErrors) {
       this.forwardErrors = options.forwardErrors;
     }
