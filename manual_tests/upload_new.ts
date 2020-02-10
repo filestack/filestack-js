@@ -62,7 +62,7 @@ const createFile = (size = 443200) => Buffer.alloc(size);
 
   const u = new S3Uploader({});
   u.setUrl('https://upload.filestackapi.com');
-  u.setApikey('AHvhedybhQMqZOqRvZquez');
+  u.setApikey(process.env.API_KEY);
   u.setIntegrityCheck(false);
   u.addFile(file);
   u.addFile(file1);
