@@ -8,6 +8,7 @@
     "declaration": true,
     "importHelpers": true,
     "inlineSourceMap": true,
+    "inlineSources": true,
     "listFiles": false,
     "traceResolution": false,
     "skipLibCheck": true,

@@ -41,16 +41,6 @@ const config =  {
       },
     ],
   },
-  externals: [
-    // 'buffer',
-    // 'crypto',
-    // 'path',
-    // 'buffer',
-    // 'http',
-    // // 'url',
-    // 'zlib',
-    // 'readable-stream',
-  ],
   plugins: [
     new CleanWebpackPlugin(),
     new webpack.BannerPlugin({ banner }),
