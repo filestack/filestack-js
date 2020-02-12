@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.12.2](https://github.com/filestack/filestack-js/compare/v3.12.1...v3.12.2) (2020-02-12)
+
+
+### Bug Fixes
+
+* **api/file:** remove new debug headers from old api requests ([a9a03fb](https://github.com/filestack/filestack-js/commit/a9a03fbf71fd837763c531152c8e93bc69938d62))
+
 ### [3.12.1](https://github.com/filestack/filestack-js/compare/v3.12.0...v3.12.1) (2020-02-12)
 
 
