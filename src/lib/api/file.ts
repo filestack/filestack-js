@@ -51,6 +51,7 @@ export const remove = (session: Session, handle?: string, skipStorage?: boolean,
   }
 
   return FsRequest.delete(baseURL, {
+    filestackHeaders: false,
     params: removeEmpty(options),
   });
 };
@@ -104,7 +105,7 @@ export const metadata = (session: Session, handle?: string, opts?: MetadataOptio
 
   const baseURL = `${session.urls.fileApiUrl}/${handle}/metadata`;
   return new Promise((resolve, reject) => {
-    FsRequest.get(baseURL, { params: removeEmpty(options) })
+    FsRequest.get(baseURL, { params: removeEmpty(options), filestackHeaders: false, })
       .then(res => resolve({ ...res.data, handle }))
       .catch(reject);
   });
@@ -172,6 +173,7 @@ export const retrieve = (session: Session, handle: string, options: RetrieveOpti
   return new Promise((resolve, reject) => {
     FsRequest.dispatch(baseURL, {
       method,
+      filestackHeaders: false,
       params: removeEmpty(requestOptions),
     })
       .then(res => resolve(method === FsHttpMethod.HEAD ? res.headers : res.data))
