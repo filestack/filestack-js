@@ -41,10 +41,6 @@ const config =  {
       },
     ],
   },
-  externals: [
-    'buffer',
-    'crypto',
-  ],
   plugins: [
     new CleanWebpackPlugin(),
     new webpack.BannerPlugin({ banner }),

@@ -18,8 +18,9 @@
 import { removeEmpty } from '../utils';
 import { StoreParams } from '../filelink';
 import { ClientOptions, Session } from '../client';
-import { requestWithSource, request } from '../api/request';
+// import { requestWithSource, request } from '../api/request';
 import { FilestackError } from './../../filestack_error';
+import { FsRequest, FsCancelToken } from '../request';
 
 /**
  * @private
@@ -104,7 +105,7 @@ export class CloudClient {
     const params = {
       apikey: this.session.apikey,
     };
-    return requestWithSource()
+    return FsRequest
       .get(`${this.cloudApiUrl}/prefetch`, { params })
       .then(res => res.data)
       .then(data => {
@@ -116,7 +117,7 @@ export class CloudClient {
       });
   }
 
-  list(clouds: any, token?: any) {
+  list(clouds: any, cancelTokenInput?: any) {
     const payload: any = {
       apikey: this.session.apikey,
       clouds,
@@ -135,15 +136,13 @@ export class CloudClient {
 
     let options: any = {};
 
-    if (token) {
-      const CancelToken = request.CancelToken;
-      const source = CancelToken.source();
-      token.cancel = source.cancel;
-
-      options.cancelToken = source.token;
+    if (cancelTokenInput) {
+      const cancelToken = new FsCancelToken();
+      cancelTokenInput.cancel = cancelToken.cancel.bind(cancelToken);
+      options.cancelToken = cancelToken;
     }
 
-    return requestWithSource()
+    return FsRequest
       .post(`${this.cloudApiUrl}/folder/list`, payload, options)
       .then(res => {
         if (res.data && res.data.token) {
@@ -154,9 +153,11 @@ export class CloudClient {
       });
   }
 
-  store(name: string, path: string, options: StoreParams = {}, customSource: any = {}, token?: any) {
+  store(name: string, path: string, options: StoreParams = {}, customSource: any = {}, cancelTokenInput?: any) {
     // Default to S3
-    if (options.location === undefined) options.location = 's3';
+    if (options.location === undefined) {
+      options.location = 's3';
+    }
 
     const payload: any = {
       apikey: this.session.apikey,
@@ -185,15 +186,13 @@ export class CloudClient {
 
     let requestOptions: any = {};
 
-    if (token) {
-      const CancelToken = request.CancelToken;
-      const source = CancelToken.source();
-      token.cancel = source.cancel;
-
-      requestOptions.cancelToken = source.token;
+    if (cancelTokenInput) {
+      const cancelToken = new FsCancelToken();
+      cancelTokenInput.cancel = cancelToken.cancel.bind(cancelToken);
+      requestOptions.cancelToken = cancelToken;
     }
 
-    return requestWithSource()
+    return FsRequest
       .post(`${this.cloudApiUrl}/store/`, payload, requestOptions)
       .then(res => {
         if (res.data && res.data.token) {
@@ -228,7 +227,7 @@ export class CloudClient {
       }
     }
 
-    return requestWithSource()
+    return FsRequest
       .post(`${this.cloudApiUrl}/auth/logout`, payload)
       .then(res => {
         if (res.data && res.data[name]) {
@@ -249,7 +248,7 @@ export class CloudClient {
       payload.signature = this.session.signature;
     }
 
-    return requestWithSource()
+    return FsRequest
       .post(`${this.cloudApiUrl}/metadata`, payload)
       .then(res => res.data);
   }
@@ -259,7 +258,7 @@ export class CloudClient {
     if (type !== 'video' && type !== 'audio') {
       throw new FilestackError('Type must be one of video or audio.');
     }
-    return requestWithSource()
+    return FsRequest
       .post(`${this.cloudApiUrl}/recording/${type}/init`).then(res => res.data);
   }
 
@@ -272,7 +271,7 @@ export class CloudClient {
       session_id: sessionId,
     };
 
-    return requestWithSource()
+    return FsRequest
       .post(`${this.cloudApiUrl}/recording/${type}/start`, payload)
       .then(res => res.data);
   }
@@ -288,7 +287,7 @@ export class CloudClient {
       archive_id: archiveId,
     };
 
-    return requestWithSource()
+    return FsRequest
       .post(`${this.cloudApiUrl}/recording/${type}/stop`, payload)
       .then(res => res.data);
   }

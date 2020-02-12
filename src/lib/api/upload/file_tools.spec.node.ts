@@ -83,6 +83,11 @@ describe('Api/Upload/FileTools', () => {
       expect(file.mimetype).toEqual('text/plain');
     });
 
+    it('Should handle base64 encoded string with b64 prefix (svg)', async () => {
+      // it is hard to detect svg mimetype for now using fallback to application/octet-stream
+      return expect((await getFile(`data:image/svg+xml;base64,${base64Svg}`)).mimetype).toEqual('application/octet-stream');
+    });
+
     it('Should get part of the buffer after slice', async () => {
       const file = await getFile(mockedTestFile);
 

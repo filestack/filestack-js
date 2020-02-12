@@ -70,6 +70,7 @@ export const PickerParamsSchema = {
             'clouddrive',
             'googlephotos',
             'customsource',
+            'tint',
           ],
         },
       ],

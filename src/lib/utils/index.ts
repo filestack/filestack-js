@@ -18,11 +18,8 @@
 import { Session } from '../client';
 import { Hosts } from './../../config';
 import { Map } from './extensions';
-import * as SparkMD5 from 'spark-md5';
 import fileType from 'file-type';
 import * as isutf8 from 'isutf8';
-
-const mobileRegexp = /(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series[46]0|symbian|treo|up\.(browser|link)|vodafone|wap|windows (ce|phone)|xda|xiino|android|ipad|playbook|silk/i;
 
 /**
  * Resolve cdn url based on handle type
@@ -80,22 +77,6 @@ export const removeEmpty = (obj: any) => {
 };
 
 /**
- * Returns information about current env (browser|nodejs)
- */
-export const isNode = () => typeof process !== 'undefined' && process.versions && process.versions.node;
-
-/**
- * Returns if browser is a mobile device (if node env always return false)
- */
-/* istanbul ignore next */
-export const isMobile = () => !isNode() && navigator && navigator.userAgent && mobileRegexp.test(navigator.userAgent);
-
-/**
- * Check if application is runned in facebook browser
- */
-export const isFacebook = () => !isNode() && navigator && navigator.userAgent && /\[FB.*;/i.test(navigator.userAgent);
-
-/**
  * Returns unique time
  */
 let last;
@@ -112,24 +93,6 @@ export const uniqueTime = () => {
  */
 export const uniqueId = (len: number = 10): string => {
   return new Array(len).join().replace(/(.|$)/g, () => ((Math.random() * 36) | 0).toString(36)[Math.random() < 0.5 ? 'toString' : 'toUpperCase']());
-};
-
-/**
- * Calculates a MD5 checksum for passed buffer
- * @private
- * @param data  Data to be hashed
- * @returns     base64 encoded MD5 hash
- */
-export const md5 = (data: any): string => {
-  if (isNode()) {
-    return require('crypto')
-      .createHash('md5')
-      .update(data)
-      .digest('base64');
-  }
-
-  /* istanbul ignore next */
-  return btoa(SparkMD5.ArrayBuffer.hash(data, true));
 };
 
 /**
@@ -169,41 +132,6 @@ export const getMimetype = (file: Uint8Array | Buffer, name?: string): string =>
   // this is only fallback, omit it in coverage
   /* istanbul ignore next */
   return 'application/octet-stream';
-};
-
-/**
- * return based string
- * @param data
- */
-export const b64 = (data: string, safeUrl: boolean = false): string => {
-  let b64;
-
-  if (isNode()) {
-    b64 = Buffer.from(data).toString('base64');
-  } else {
-    b64 = btoa(data);
-  }
-
-  if (safeUrl) {
-    return b64.replace(/\//g, '_').replace(/\+/g, '-');
-  }
-
-  return b64;
-};
-
-/**
- * Return currently used filestack-js sdk version
- */
-export const getVersion = () => {
-  if (isNode()) {
-    const rootArr = __dirname.split('/');
-    const fsIndex = rootArr.findIndex((e) => e === 'filestack-js');
-    const rootDir = rootArr.splice(0, fsIndex + 1).join('/');
-
-    return `JS-${require(`${rootDir}/package.json`).version}`;
-  }
-
-  return 'JS-@{VERSION}';
 };
 
 /**
@@ -262,7 +190,13 @@ export const filterObject = (toFilter, requiredFields: string[]) => {
     return toFilter;
   }
 
+  if (Object.keys(toFilter).length === 0) {
+    return toFilter;
+  }
+
   return Object.keys(toFilter)
     .filter(f => requiredFields.indexOf(f) > -1)
     .reduce((obj, key) => ({ ...obj, [key]: toFilter[key] }), {});
 };
+
+export * from './index.node';

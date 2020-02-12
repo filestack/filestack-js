@@ -16,13 +16,8 @@
  */
 
 import { getSecurity, validateWebhookSignature } from './security';
-import * as utils from './../utils';
 
 describe('api/security', () => {
-  beforeAll(() => {
-    spyOn(utils, 'isNode').and.returnValue(false);
-  });
-
   describe('getSecurity', () => {
     it('should throw not supported error', () => {
       const policy = {

@@ -71,6 +71,12 @@ export interface ClientOptions {
    * Please be aware that tokens stored in localStorage are accessible by other scripts on the same domain.
    */
   sessionCache?: boolean;
+
+  /**
+   * Enable forwarding error logs to sentry
+   * @default false
+   */
+  forwardErrors?: boolean;
 }
 
 /**
@@ -93,8 +99,15 @@ export class Client extends EventEmitter {
   session: Session;
   private cloud: CloudClient;
 
+  private forwardErrors: boolean = false;
+
   constructor(apikey: string, options?: ClientOptions) {
     super();
+
+    /* istanbul ignore if */
+    if (options && options.forwardErrors) {
+      this.forwardErrors = options.forwardErrors;
+    }
 
     /* istanbul ignore next */
     Sentry.configureScope(scope => {
@@ -396,11 +409,13 @@ export class Client extends EventEmitter {
 
     /* istanbul ignore next */
     upload.on('error', (e) => {
-      Sentry.withScope(scope => {
-        scope.setExtras(e.details);
-        scope.setExtras({ uploadOptions: options, storeOptions });
-        Sentry.captureException(e);
-      });
+      if (this.forwardErrors) {
+        Sentry.withScope(scope => {
+          scope.setExtras(e.details);
+          scope.setExtras({ uploadOptions: options, storeOptions });
+          Sentry.captureException(e);
+        });
+      }
 
       this.emit('upload.error', e);
     });

@@ -32,10 +32,10 @@
  */
 
 import { retrieve, remove, metadata } from './file';
-import * as axios from 'axios';
+import { FsRequest } from './../request';
 import { Session } from '../client';
 
-jest.mock('axios');
+jest.mock('./../request');
 jest.mock('./../filelink');
 
 const mockedSession: Session = {
@@ -54,7 +54,7 @@ describe('FileAPI', () => {
     it('should call correct metadata without options', async () => {
       const methodMocked = jest.fn(() => Promise.resolve({ data: {} }));
       // @ts-ignore
-      axios.get.mockImplementation(methodMocked);
+      FsRequest.get.mockImplementation(methodMocked);
       const resp = await metadata(mockedSession, 'fakeHandle');
 
       expect(resp).toEqual({ handle: 'fakeHandle' });
@@ -64,7 +64,7 @@ describe('FileAPI', () => {
     it('should call correct metadata with options', async () => {
       const methodMocked = jest.fn(() => Promise.resolve({ data: {} }));
       // @ts-ignore
-      axios.get.mockImplementation(methodMocked);
+      FsRequest.get.mockImplementation(methodMocked);
       const resp = await metadata(mockedSession, 'fakeHandle', { size: true });
 
       expect(resp).toEqual({ handle: 'fakeHandle' });
@@ -87,7 +87,7 @@ describe('FileAPI', () => {
       };
 
       // @ts-ignore
-      axios.get.mockImplementation(() => Promise.resolve({ data: {} }));
+      FsRequest.get.mockImplementation(() => Promise.resolve({ data: {} }));
       const resp = await metadata(mockedSession, 'fakeHandle', {}, fakeSecurity);
 
       expect(resp).toEqual({ handle: 'fakeHandle' });
@@ -99,7 +99,7 @@ describe('FileAPI', () => {
       const deleteMocked = jest.fn(() => Promise.resolve({ data: {} }));
 
       // @ts-ignore
-      axios.delete.mockImplementation(deleteMocked);
+      FsRequest.delete.mockImplementation(deleteMocked);
       const resp = await remove(
         Object.assign({}, mockedSession, {
           signature: 'fakeS',
@@ -116,7 +116,7 @@ describe('FileAPI', () => {
       const methodMocked = jest.fn(() => Promise.resolve({ data: {} }));
 
       // @ts-ignore
-      axios.delete.mockImplementation(methodMocked);
+      FsRequest.delete.mockImplementation(methodMocked);
       const resp = await remove(
         Object.assign({}, mockedSession, {
           signature: 'fakeS',
@@ -141,7 +141,7 @@ describe('FileAPI', () => {
       };
 
       // @ts-ignore
-      axios.delete.mockImplementation(() => Promise.resolve({ data: {} }));
+      FsRequest.delete.mockImplementation(() => Promise.resolve({ data: {} }));
       const resp = await remove(mockedSession, 'fakeHandle', false, fakeSecurity);
 
       expect(resp).toEqual({ data: {} });
@@ -175,24 +175,24 @@ describe('FileAPI', () => {
       const methodMocked = jest.fn(() => Promise.resolve({ data: {} }));
 
       // @ts-ignore
-      axios.mockImplementation(methodMocked);
+      FsRequest.dispatch.mockImplementation(methodMocked);
       const resp = await retrieve(mockedSession, 'fakeHandle');
 
       expect(resp).toEqual({});
-      expect(methodMocked).toHaveBeenCalledWith({ method: 'get', params: { key: 'fakeApikey' }, url: 'fakeApiUrl/fakeHandle' });
+      expect(methodMocked).toHaveBeenCalledWith('fakeApiUrl/fakeHandle', { method: 'GET', params: { key: 'fakeApikey' } });
     });
 
     it('should make correct retrieve request (HEAD)', async () => {
       const methodMocked = jest.fn(() => Promise.resolve({ data: {}, headers: { type: 'test' } }));
 
       // @ts-ignore
-      axios.mockImplementation(methodMocked);
+      FsRequest.dispatch.mockImplementation(methodMocked);
       const resp = await retrieve(mockedSession, 'fakeHandle', {
         head: true,
       });
 
       expect(resp).toEqual({ type: 'test' });
-      expect(methodMocked).toHaveBeenCalledWith({ method: 'head', params: { key: 'fakeApikey' }, url: 'fakeApiUrl/fakeHandle' });
+      expect(methodMocked).toHaveBeenCalledWith('fakeApiUrl/fakeHandle', { method: 'HEAD', params: { key: 'fakeApikey' } });
     });
 
     it('should make correct retrieve request with provided security', async () => {
@@ -204,14 +204,13 @@ describe('FileAPI', () => {
       };
 
       // @ts-ignore
-      axios.mockImplementation(methodMocked);
+      FsRequest.dispatch.mockImplementation(methodMocked);
       const resp = await retrieve(mockedSession, 'fakeHandle', {}, fakeSecurity);
 
       expect(resp).toEqual({});
-      expect(methodMocked).toHaveBeenCalledWith({
-        method: 'get',
+      expect(methodMocked).toHaveBeenCalledWith('fakeApiUrl/fakeHandle', {
+        method: 'GET',
         params: { key: 'fakeApikey', policy: 'fakeP', signature: 'fakeS' },
-        url: 'fakeApiUrl/fakeHandle',
       });
     });
 
@@ -219,26 +218,26 @@ describe('FileAPI', () => {
       const methodMocked = jest.fn(() => Promise.resolve({ data: {} }));
 
       // @ts-ignore
-      axios.mockImplementation(methodMocked);
+      FsRequest.dispatch.mockImplementation(methodMocked);
       const resp = await retrieve(mockedSession, 'fakeHandle', {
         extension: 'txt',
       });
 
       expect(resp).toEqual({});
-      expect(methodMocked).toHaveBeenCalledWith({ method: 'get', params: { key: 'fakeApikey' }, url: 'fakeApiUrl/fakeHandle+txt' });
+      expect(methodMocked).toHaveBeenCalledWith('fakeApiUrl/fakeHandle+txt', { method: 'GET', params: { key: 'fakeApikey' } });
     });
 
     it('should make correct retrieve request with metadata', async () => {
       const methodMocked = jest.fn(() => Promise.resolve({ data: {} }));
 
       // @ts-ignore
-      axios.mockImplementation(methodMocked);
+      FsRequest.dispatch.mockImplementation(methodMocked);
       const resp = await retrieve(mockedSession, 'fakeHandle', {
         metadata: true,
       });
 
       expect(resp).toEqual({});
-      expect(methodMocked).toHaveBeenCalledWith({ method: 'get', params: { key: 'fakeApikey' }, url: 'fakeApiUrl/fakeHandle/metadata' });
+      expect(methodMocked).toHaveBeenCalledWith('fakeApiUrl/fakeHandle/metadata', { method: 'GET', params: { key: 'fakeApikey' } });
     });
 
     it('should throw an error on empty handle', () => {
@@ -246,23 +245,29 @@ describe('FileAPI', () => {
     });
 
     it('should throw an error worng options provided', () => {
-      return expect(() => retrieve(mockedSession, 'fakeHandle', {
-        // @ts-ignore
-        test: 123,
-      })).toThrowError('Invalid retrieve params');
+      return expect(() =>
+        retrieve(mockedSession, 'fakeHandle', {
+          // @ts-ignore
+          test: 123,
+        })
+      ).toThrowError('Invalid retrieve params');
     });
 
     it('should not throw an error worng options provided', () => {
-      return expect(() => retrieve(mockedSession, 'fakeHandle', {
-        metadata: true,
-      })).not.toThrowError('Invalid retrieve params');
+      return expect(() =>
+        retrieve(mockedSession, 'fakeHandle', {
+          metadata: true,
+        })
+      ).not.toThrowError('Invalid retrieve params');
     });
 
     it('should throw an error when metadata and head is provided', () => {
-      return expect(() => retrieve(mockedSession, 'fakeHandle', {
-        metadata: true,
-        head: true,
-      })).toThrowError();
+      return expect(() =>
+        retrieve(mockedSession, 'fakeHandle', {
+          metadata: true,
+          head: true,
+        })
+      ).toThrowError();
     });
   });
 });

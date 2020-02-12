@@ -20,7 +20,7 @@ import * as EventEmitter from 'eventemitter3';
 import { File } from './../file';
 import { StoreUploadOptions } from './../types';
 import { Security } from './../../../client';
-import { RetryConfig } from './../../request';
+import { FsRetryConfig } from './../../../request';
 import { isMobile } from './../../../utils';
 import { FilestackError } from './../../../../filestack_error';
 
@@ -66,7 +66,7 @@ export abstract class UploaderAbstract extends EventEmitter {
   protected security: Security;
 
   protected isModeLocked: boolean = false; // if account does not support ii in fallback mode we should abort
-  protected retryConfig: RetryConfig;
+  protected retryConfig: FsRetryConfig;
   protected integrityCheck: boolean = true;
 
   constructor(protected readonly storeOptions: StoreUploadOptions, protected readonly concurrency: number = 3) {
@@ -88,7 +88,7 @@ export abstract class UploaderAbstract extends EventEmitter {
     this.timeout = timeout;
   }
 
-  public setRetryConfig(cfg: RetryConfig) {
+  public setRetryConfig(cfg: FsRetryConfig) {
     this.retryConfig = cfg;
   }
 

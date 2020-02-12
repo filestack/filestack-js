@@ -172,5 +172,9 @@ describe('utils:index', () => {
         test3: 3,
       });
     });
+
+    it('should not throw on empty filtered object', () => {
+      expect(filterObject({}, ['test'])).toEqual({});
+    });
   });
 });
