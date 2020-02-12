@@ -27,6 +27,11 @@ const CANCEL_CLEAR = `FsCleanMemory`;
 export class XhrAdapter implements AdapterInterface {
 
   request(config: FsRequestOptions) {
+    // if this option is unspecified set it by default
+    if (typeof config.filestackHeaders === 'undefined') {
+      config.filestackHeaders = true;
+    }
+
     config = prepareData(config);
     config.headers = config.headers || {};
 

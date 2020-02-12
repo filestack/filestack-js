@@ -36,6 +36,11 @@ export class HttpAdapter implements AdapterInterface {
   private redirectPaths = [];
 
   request(config: FsRequestOptions) {
+    // if this option is unspecified set it by default
+    if (typeof config.filestackHeaders === 'undefined') {
+      config.filestackHeaders = true;
+    }
+
     config.headers = normalizeHeaders(config.headers);
 
     let { data, headers } = prepareData(config);

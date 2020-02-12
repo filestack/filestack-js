@@ -15,6 +15,7 @@
  * limitations under the License.
  */
 import { isURLSearchParams, isObject, isStream, isFormData, isArrayBuffer, isFile, isBlob, isBuffer } from './../utils';
+import { getVersion, uniqueId } from './../../utils';
 import { FsRequestOptions, FsResponse } from './../types';
 import { set } from './headers';
 import Debug from 'debug';
@@ -28,6 +29,9 @@ const debug = Debug('fs:request:data');
  * @param data
  */
 export const prepareData = (config: FsRequestOptions) => {
+  // set filestack debug headers first
+  config = filestackHeaders(config);
+
   if (isFormData(config.data) || isBuffer(config.data) || isStream(config.data) || isFile(config.data) || isBlob(config.data)) {
     return config;
   }
@@ -44,6 +48,23 @@ export const prepareData = (config: FsRequestOptions) => {
     config.headers = set(config.headers, 'content-type', 'application/json', true);
     config.data = JSON.stringify(config.data);
   }
+
+  return config;
+};
+
+/**
+ * Add filestack debug headers to request
+ *
+ * @param config
+ */
+export const filestackHeaders = (config: FsRequestOptions) => {
+  if (!config.filestackHeaders) {
+    return config;
+  }
+
+  config.headers = set(config.headers, 'filestack-source', getVersion());
+  config.headers = set(config.headers, 'filestack-trace-id', `${Math.floor(Date.now() / 1000)}-${uniqueId()}`);
+  config.headers = set(config.headers, 'filestack-trace-span', `jssdk-${uniqueId()}`);
 
   return config;
 };

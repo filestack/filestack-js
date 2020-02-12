@@ -39,7 +39,12 @@ const testSession = {
 
 let scope = nock(sessionURls.cloudApiUrl);
 
-scope.defaultReplyHeaders({ 'access-control-allow-origin': '*', 'content-type': 'application/json' });
+scope.defaultReplyHeaders({
+  'access-control-allow-origin': req => req.headers['origin'],
+  'access-control-allow-methods': req => req.headers['access-control-request-method'],
+  'access-control-allow-headers': req => req.headers['access-control-request-headers'],
+  'content-type': 'application/json',
+});
 
 const mockTokInit = jest
   .fn()

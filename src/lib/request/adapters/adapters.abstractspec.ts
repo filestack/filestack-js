@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
- /* istanbul ignore file */
+/* istanbul ignore file */
 import * as nock from 'nock';
 import * as zlib from 'zlib';
 import { Readable } from 'stream';
@@ -24,7 +24,6 @@ import { FsCancelToken } from '../token';
 import { FsRequestError, FsRequestErrorCode } from '../error';
 
 export const adaptersHttpAbstract = (adapter: any, adapterName: string) => {
-
   describe(`Request/Adapters/${adapterName}`, () => {
     let scope;
     const url = 'https://somewrongdom.moc';
@@ -35,7 +34,15 @@ export const adaptersHttpAbstract = (adapter: any, adapterName: string) => {
     });
 
     beforeEach(() => {
-      scope = nock(url);
+      scope = nock(url).defaultReplyHeaders({
+        'access-control-allow-origin': req => req.headers['origin'],
+        'access-control-allow-methods': req => req.headers['access-control-request-method'],
+        'access-control-allow-headers': req => req.headers['access-control-request-headers'],
+      });
+
+      if (adapterName === 'xhr') {
+        scope.options(/.*/).reply(200);
+      }
     });
 
     describe('request basic', () => {
@@ -44,25 +51,35 @@ export const adaptersHttpAbstract = (adapter: any, adapterName: string) => {
           url: url,
           method: FsHttpMethod.GET,
         };
-        scope.get('/').reply(200, 'ok', { 'access-control-allow-origin': '*', 'Content-Type': 'text/plain' });
+        scope.get('/').reply(200, 'ok', { 'Content-Type': 'text/plain' });
 
         const requestAdapter = new adapter();
         const res = await requestAdapter.request(options);
+
         expect(res.status).toEqual(200);
         expect(res.data).toEqual('ok');
         scope.done();
       });
 
       it('should make correct request (http)', async () => {
-        const httpUrl = url.replace('https','http');
-        const scopeHttp = nock(httpUrl);
+        const httpUrl = url.replace('https', 'http');
+
+        const scopeHttp = nock(httpUrl).defaultReplyHeaders({
+          'access-control-allow-origin': req => req.headers['origin'],
+          'access-control-allow-methods': req => req.headers['access-control-request-method'],
+          'access-control-allow-headers': req => req.headers['access-control-request-headers'],
+        });
+
+        if (adapterName === 'xhr') {
+          scopeHttp.options(/.*/).reply(200);
+        }
 
         const options = {
           url: httpUrl,
           method: FsHttpMethod.GET,
         };
 
-        scopeHttp.get('/').reply(200, 'ok', { 'access-control-allow-origin': '*', 'Content-Type': 'text/plain' });
+        scopeHttp.get('/').reply(200, 'ok', { 'Content-Type': 'text/plain' });
 
         const requestAdapter = new adapter();
         const res = await requestAdapter.request(options);
@@ -77,7 +94,7 @@ export const adaptersHttpAbstract = (adapter: any, adapterName: string) => {
           method: FsHttpMethod.GET,
         };
 
-        scope.get('/').reply(200, 'ok', { 'access-control-allow-origin': '*', 'Content-Type': 'text/plain' });
+        scope.get('/').reply(200, 'ok', { 'Content-Type': 'text/plain' });
 
         const requestAdapter = new adapter();
         const res = await requestAdapter.request(options);
@@ -88,7 +105,10 @@ export const adaptersHttpAbstract = (adapter: any, adapterName: string) => {
 
       it('should handle string as data param', async () => {
         const msg = 'Some test stream data';
-        const mock = jest.fn().mockName('bufferData').mockReturnValue(msg);
+        const mock = jest
+          .fn()
+          .mockName('bufferData')
+          .mockReturnValue(msg);
 
         const options = {
           url: url,
@@ -98,7 +118,7 @@ export const adaptersHttpAbstract = (adapter: any, adapterName: string) => {
 
         scope.post('/').reply(200, function(_, data) {
           return mock(data);
-        }, { 'access-control-allow-origin': '*', 'Content-type': 'text/plain' });
+        }, { 'Content-Type': 'text/plain' });
 
         const requestAdapter = new adapter();
         const res = await requestAdapter.request(options);
@@ -119,7 +139,7 @@ export const adaptersHttpAbstract = (adapter: any, adapterName: string) => {
           };
 
           const data = zlib.gzipSync(Buffer.from('ok', 'utf-8'));
-          scope.get('/').reply(200, data, { 'access-control-allow-origin': '*', 'Content-encoding': 'gzip, deflate', 'Content-type': 'text/plain' });
+          scope.get('/').reply(200, data, { 'Content-encoding': 'gzip, deflate', 'Content-type': 'text/plain' });
 
           const requestAdapter = new adapter();
           const res = await requestAdapter.request(options);
@@ -134,7 +154,7 @@ export const adaptersHttpAbstract = (adapter: any, adapterName: string) => {
             method: FsHttpMethod.GET,
           };
 
-          scope.get('/').reply(204, '', { 'access-control-allow-origin': '*', 'Content-encoding': 'gzip, deflate', 'Content-type': 'text/plain' });
+          scope.get('/').reply(204, '', { 'Content-encoding': 'gzip, deflate', 'Content-type': 'text/plain' });
 
           const requestAdapter = new adapter();
           const res = await requestAdapter.request(options);
@@ -147,7 +167,11 @@ export const adaptersHttpAbstract = (adapter: any, adapterName: string) => {
         it('should handle Buffer as data param', async () => {
           const msg = 'Some test stream data';
 
-          const mock = jest.fn().mockName('bufferData').mockReturnValue('ok');
+          const mock = jest
+            .fn()
+            .mockName('bufferData')
+            .mockReturnValue('ok');
+
           const options = {
             url: url,
             method: FsHttpMethod.POST,
@@ -156,7 +180,7 @@ export const adaptersHttpAbstract = (adapter: any, adapterName: string) => {
 
           scope.post('/').reply(200, function(_, data) {
             return mock(data);
-          }, { 'access-control-allow-origin': '*', 'Content-type': 'text/plain' });
+          }, { 'Content-type': 'text/plain' });
 
           const requestAdapter = new adapter();
           const res = await requestAdapter.request(options);
@@ -191,10 +215,7 @@ export const adaptersHttpAbstract = (adapter: any, adapterName: string) => {
           auth,
         };
 
-        scope.options('/').reply(200, 'ok', {
-          'access-control-allow-origin': '*',
-          'access-control-allow-headers': 'Authorization',
-        });
+        scope.options('/').reply(200, 'ok');
 
         scope
           .get('/')
@@ -254,15 +275,12 @@ export const adaptersHttpAbstract = (adapter: any, adapterName: string) => {
           },
         };
 
-        scope.options('/').reply(200, 'ok', {
-          'access-control-allow-origin': '*',
-          'access-control-allow-headers': 'Authorization',
-        });
+        scope.options('/').reply(200, 'ok');
 
         scope
           .get('/')
           .basicAuth({ user: auth.username, pass: auth.password })
-          .reply(200, 'ok', { 'access-control-allow-origin': '*' });
+          .reply(200, 'ok');
 
         const requestAdapter = new adapter();
         const res = await requestAdapter.request(options);
@@ -270,22 +288,60 @@ export const adaptersHttpAbstract = (adapter: any, adapterName: string) => {
         expect(res.status).toEqual(200);
       });
 
+      it('should contain default headers', async () => {
+        const mock = jest
+          .fn()
+          .mockName('default/headers')
+          .mockReturnValue('ok');
+
+        const options = {
+          url: url,
+          method: FsHttpMethod.GET,
+        };
+
+        scope.get('/').reply(200, function(_, data) {
+          return mock(this.req.headers);
+        });
+
+        const requestAdapter = new adapter();
+        const res = await requestAdapter.request(options);
+
+        expect(res.status).toEqual(200);
+        expect(mock).toHaveBeenCalledWith(
+          expect.objectContaining({ 'filestack-source': expect.any(String), 'filestack-trace-id': expect.any(String), 'filestack-trace-span': expect.any(String) })
+        );
+      });
+
       it('should omit default headers', async () => {
+        const mock = jest
+          .fn()
+          .mockName('default/headers')
+          .mockReturnValue('ok');
+
         const options = {
           url: url,
           method: FsHttpMethod.GET,
           filestackHeaders: false,
         };
-        scope.get('/').reply(200, 'ok', { 'access-control-allow-origin': '*' });
+
+        scope.get('/').reply(200, function(_, data) {
+          return mock(this.req.headers);
+        });
 
         const requestAdapter = new adapter();
         const res = await requestAdapter.request(options);
+
         expect(res.status).toEqual(200);
-        scope.done();
+        expect(mock).toHaveBeenCalledWith(
+          expect.not.objectContaining({ 'filestack-source': expect.any(String), 'filestack-trace-id': expect.any(String), 'filestack-trace-span': expect.any(String) })
+        );
       });
 
       it('should skip undefined headers', async () => {
-        const mock = jest.fn().mockName('undefined/headers').mockReturnValue('ok');
+        const mock = jest
+          .fn()
+          .mockName('undefined/headers')
+          .mockReturnValue('ok');
         const options = {
           url: url,
           method: FsHttpMethod.GET,
@@ -296,7 +352,7 @@ export const adaptersHttpAbstract = (adapter: any, adapterName: string) => {
 
         scope.get('/').reply(200, function(_, data) {
           return mock(this.req.headers);
-        }, { 'access-control-allow-origin': '*' });
+        });
 
         const requestAdapter = new adapter();
         const res = await requestAdapter.request(options);
@@ -318,8 +374,12 @@ export const adaptersHttpAbstract = (adapter: any, adapterName: string) => {
 
           const response = { test: 123 };
 
-          scope.get('/').reply(302, 'ok', { location: `${url}/resp`, 'access-control-allow-origin': '*' });
-          scope.get('/resp').reply(200, response, { 'access-control-allow-origin': '*', 'Content-type': 'application/json' });
+          scope.get('/').reply(302, 'ok', {
+            location: `${url}/resp`,
+          });
+          scope.get('/resp').reply(200, response, {
+            'Content-type': 'application/json',
+          });
 
           const requestAdapter = new adapter();
           const res = await requestAdapter.request(options);
@@ -357,32 +417,54 @@ export const adaptersHttpAbstract = (adapter: any, adapterName: string) => {
           };
 
           if (adapterName === 'xhr') {
-            scope.options('/').reply(200, 'ok', { 'access-control-allow-origin': '*' });
+            scope.options('/').reply(200, 'ok');
           }
 
           scope
             .get('/')
-            .reply(302, 'ok', { location: `${url}/a`, 'access-control-allow-origin': '*' })
+            .reply(302, 'ok', {
+              location: `${url}/a`,
+            })
             .get('/a')
-            .reply(301, 'ok', { location: `${url}/b`, 'access-control-allow-origin': '*' })
+            .reply(301, 'ok', {
+              location: `${url}/b`,
+            })
             .get('/b')
-            .reply(302, 'ok', { location: `${url}/c`, 'access-control-allow-origin': '*' })
+            .reply(302, 'ok', {
+              location: `${url}/c`,
+            })
             .get('/c')
-            .reply(301, 'ok', { location: `${url}/d`, 'access-control-allow-origin': '*' })
+            .reply(301, 'ok', {
+              location: `${url}/d`,
+            })
             .get('/d')
-            .reply(302, 'ok', { location: `${url}/e`, 'access-control-allow-origin': '*' })
+            .reply(302, 'ok', {
+              location: `${url}/e`,
+            })
             .get('/e')
-            .reply(301, 'ok', { location: `${url}/f`, 'access-control-allow-origin': '*' })
+            .reply(301, 'ok', {
+              location: `${url}/f`,
+            })
             .get('/f')
-            .reply(302, 'ok', { location: `${url}/g`, 'access-control-allow-origin': '*' })
+            .reply(302, 'ok', {
+              location: `${url}/g`,
+            })
             .get('/g')
-            .reply(301, 'ok', { location: `${url}/h`, 'access-control-allow-origin': '*' })
+            .reply(301, 'ok', {
+              location: `${url}/h`,
+            })
             .get('/h')
-            .reply(302, 'ok', { location: `${url}/i`, 'access-control-allow-origin': '*' })
+            .reply(302, 'ok', {
+              location: `${url}/i`,
+            })
             .get('/i')
-            .reply(301, 'ok', { location: `${url}/j`, 'access-control-allow-origin': '*' })
+            .reply(301, 'ok', {
+              location: `${url}/j`,
+            })
             .get('/j')
-            .reply(302, 'ok', { location: `${url}/k`, 'access-control-allow-origin': '*' });
+            .reply(302, 'ok', {
+              location: `${url}/k`,
+            });
 
           try {
             const requestAdapter = new adapter();
@@ -439,7 +521,7 @@ export const adaptersHttpAbstract = (adapter: any, adapterName: string) => {
 
           const resp = { form: 'ok' };
 
-          scope.post('/').reply(200, resp, { 'access-control-allow-origin': '*', 'Content-type': 'application/json' });
+          scope.post('/').reply(200, resp, { 'Content-type': 'application/json' });
 
           const requestAdapter = new adapter();
           const res = await requestAdapter.request(options);
@@ -461,12 +543,9 @@ export const adaptersHttpAbstract = (adapter: any, adapterName: string) => {
 
         const errorResp = { test: 123 };
 
-        scope
-          .get('/')
-          .reply(404, errorResp, {
-            'Access-Control-Allow-Origin': '*',
-            'Content-type': 'application/json',
-          });
+        scope.get('/').reply(404, errorResp, {
+          'Content-type': 'application/json',
+        });
 
         try {
           const requestAdapter = new adapter();
@@ -490,12 +569,9 @@ export const adaptersHttpAbstract = (adapter: any, adapterName: string) => {
 
         const errorResp = { test: 123 };
 
-        scope
-          .get('/')
-          .reply(501, errorResp, {
-            'Access-Control-Allow-Origin': '*',
-            'Content-type': 'application/json',
-          });
+        scope.get('/').reply(501, errorResp, {
+          'Content-type': 'application/json',
+        });
 
         try {
           const requestAdapter = new adapter();
@@ -515,7 +591,10 @@ export const adaptersHttpAbstract = (adapter: any, adapterName: string) => {
     if (adapterName === 'xhr') {
       describe('progress event', () => {
         it('should handle upload progress', async () => {
-          const progressSpy = jest.fn().mockName('bufferData').mockReturnThis();
+          const progressSpy = jest
+            .fn()
+            .mockName('bufferData')
+            .mockReturnThis();
           const buf = Buffer.alloc(1024);
           buf.fill('a');
 
@@ -527,12 +606,10 @@ export const adaptersHttpAbstract = (adapter: any, adapterName: string) => {
           };
 
           scope.options('/progress').reply(200, 'ok', {
-            'Access-Control-Allow-Origin': '*',
             'Content-type': 'application/json',
           });
 
           scope.post('/progress').reply(200, 'ok', {
-            'Access-Control-Allow-Origin': '*',
             'Content-type': 'application/json',
           });
 
@@ -554,10 +631,12 @@ export const adaptersHttpAbstract = (adapter: any, adapterName: string) => {
           cancelToken: token,
         };
 
-        scope.get('/').delay(2000).reply(200, 'ok', {
-          'Access-Control-Allow-Origin': '*',
-          'Content-type': 'application/json',
-        });
+        scope
+          .get('/')
+          .delay(2000)
+          .reply(200, 'ok', {
+            'Content-type': 'application/json',
+          });
 
         setTimeout(() => {
           token.cancel();
@@ -585,7 +664,6 @@ export const adaptersHttpAbstract = (adapter: any, adapterName: string) => {
         };
 
         scope.get('/').reply(200, 'ok', {
-          'Access-Control-Allow-Origin': '*',
           'Content-type': 'text/plain',
         });
 
@@ -622,7 +700,6 @@ export const adaptersHttpAbstract = (adapter: any, adapterName: string) => {
           .get('/')
           .delay(2000)
           .reply(200, 'ok', {
-            'Access-Control-Allow-Origin': '*',
             'Content-type': 'application/json',
           });
 
@@ -713,7 +790,10 @@ export const adaptersHttpAbstract = (adapter: any, adapterName: string) => {
           timeout: 1000,
         };
 
-        scope.get('/').delay(2000).reply(200, 'ok');
+        scope
+          .get('/')
+          .delay(2000)
+          .reply(200, 'ok');
 
         try {
           const requestAdapter = new adapter();
