@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.12.0](https://github.com/filestack/filestack-js/compare/v3.11.2...v3.12.0) (2020-02-12)
+
+
+### Features
+
+* **request:** Change axios library to filestack one ([52a605a](https://github.com/filestack/filestack-js/commit/52a605aac5db6646e26f5bb8d8ac431afde2a768))
+
 ### [3.11.2](https://github.com/filestack/filestack-js/compare/v3.11.1...v3.11.2) (2020-01-24)
 
 
