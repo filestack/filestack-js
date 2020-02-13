@@ -2,18 +2,18 @@
  * S3 Uploader ripped from release-o-tron
  */
 
-const path = require('path');
+const { runOnEachFile, browserBuildDir, version } = require('./utils');
+const Path = require('path');
+const Fs = require('fs').promises;
 const AWS = require('aws-sdk');
-const jetpack = require('fs-jetpack');
 const mime = require('mime-types');
-const version = require('../package.json').version;
 const git = require('git-state');
 
 const s3 = new AWS.S3();
 const DEPLOY_BRANCH = 'master';
 
-const figureOutFileMimetype = (file) => {
-  const type = mime.lookup(path.extname(file.path));
+const figureOutFileMimetype = (filePath) => {
+  const type = mime.lookup(Path.extname(filePath));
   if (type !== false) {
     return type;
   }
@@ -21,61 +21,31 @@ const figureOutFileMimetype = (file) => {
   return 'application/octet-stream';
 };
 
-const getFilesToBeUploaded = (from) => {
-  const cwd = jetpack.cwd(from.cwd);
-  return cwd.findAsync({
-      matching: from.matching
-    })
-    .then((paths) => {
-      return paths.map((path) => {
-        return {
-          path,
-          content: cwd.read(path, 'buffer'),
-        };
-      });
-    });
-};
+const pushOneFileToS3 = (basePath, to) => {
+  return new Promise(async (resolve, reject) => {
+    file = Path.basename(basePath);
 
-const pushOneFileToS3 = (file, to) => {
-  return new Promise((resolve, reject) => {
-    const path = `${to.folder}/${file.path}`;
-    const isGzip = file.path.indexOf('gz') > -1;
+    // full path to read file
+    const uploadKey = `${to.path}/${file}`;
+    const content = await Fs.readFile(basePath);
 
     const options = {
       Bucket: to.bucket,
-      Key: path,
-      Body: file.content,
-      ContentType: figureOutFileMimetype(file),
+      Key: uploadKey,
+      Body: content,
+      ContentType: figureOutFileMimetype(basePath),
     };
 
-    if (isGzip) {
-      options['ContentEncoding'] = 'gzip';
-    }
-
-    s3.putObject(options, (err) => {
+    return s3.putObject(options, (err) => {
       if (err) {
         console.error('Upload ERROR:', err);
         reject(err);
       } else {
         console.log(`Uploaded: ${path}`);
-        resolve();
+        resolve(`File: ${file} has been uploaded to: ${to.bucket}/${uploadKey}`);
       }
     });
   });
-};
-
-const pushFilesToS3 = (files, to) => {
-  const promises = files.map((file) => {
-    return pushOneFileToS3(file, to);
-  });
-  return Promise.all(promises);
-};
-
-const upload = (from, to) => {
-  return getFilesToBeUploaded(from)
-    .then((files) => {
-      return pushFilesToS3(files, to);
-    });
 };
 
 const canDeploy = () => {
@@ -108,47 +78,42 @@ const canDeploy = () => {
   return true;
 }
 
-// Publish versions
+const upload = async (bucket, path) => {
+  return runOnEachFile(
+    browserBuildDir,
+    {
+      realpath: true,
+    },
+    (file, incOptions) => pushOneFileToS3(file, incOptions),
+    { bucket, path },
+  );
+};
 
-const bucket = 'static.filestackapi.com';
-const major = version.split('.').shift();
+(async () => {
+  const bucket = 'static.filestackapi.com';
+  const major = version.split('.').shift();
 
-const args = process.argv.slice(2);
-const versionsToPublish = [];
+  const args = process.argv.slice(2);
+  const paths = [];
 
-if (args.indexOf('--latest') > -1) {
-  console.log(`publishing to latest version ${major}.x.x`);
-
-  if (canDeploy()) {
-    versionsToPublish.push({
-      bucket,
-      folder: `filestack-js/${major}.x.x`,
-    });
+  if (args.indexOf('--latest') > -1) {
+    console.log(`publish latest version ${major}.x.x`);
+    if (canDeploy()) {
+      paths.push(`filestack-js/${major}.x.x`);
+    }
   }
-}
 
-if (args.indexOf('--current') > -1) {
-  console.log(`publishing to current version ${version}`);
-
-  if (canDeploy()) {
-    versionsToPublish.push({
-      bucket,
-      folder: `filestack-js/${version}`,
-    });
+  if (args.indexOf('--current') > -1) {
+    console.log(`publish current version ${version}`);
+    if (canDeploy()) {
+      paths.push(`filestack-js/${version}`)
+    }
   }
-}
 
-if (args.indexOf('--beta') > -1) {
-  console.log(`publishing to beta version`);
+  if (args.indexOf('--beta') > -1) {
+    console.log(`publish beta version`);
+    paths.push(`filestack-js/beta`)
+  }
 
-  versionsToPublish.push({
-    bucket,
-    folder: `filestack-js/beta`,
-  });
-}
-
-
-versionsToPublish.forEach((version) => {
-  upload({ cwd: './build/browser', matching: 'filestack*' }, version);
-  upload({ cwd: './build/browser', matching: 'manifest*' }, version);
-});
+  Promise.all(paths.map((p) => upload(bucket, p))).then((res) => console.log(res))
+})();
