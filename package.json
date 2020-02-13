@@ -15,7 +15,7 @@
     "build"
   ],
   "scripts": {
-    "build": "npx gulp build:typescript && npm run webpack",
+    "build": "npx gulp build:typescript && npm run webpack && npm run build:check",
     "build:main": "npx gulp typescript:main",
     "build:module": "npx gulp typescript:module",
     "build:check": "node scripts/check.js",
@@ -29,7 +29,7 @@
     "docs": "trash build/docs && typedoc src",
     "docs:publish": "npm run docs && gh-pages -d build/docs",
     "release": "standard-version",
-    "prepare": "npm run build && build:check",
+    "prepare": "npm run build",
     "publish:beta": "npm run build && node scripts/publish.js --beta",
     "publish": "npm run docs:publish && node scripts/publish.js --current --latest",
     "examples": "npm run build && node ./examples/examples.js"
