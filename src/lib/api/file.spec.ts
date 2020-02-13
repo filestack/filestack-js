@@ -58,7 +58,7 @@ describe('FileAPI', () => {
       const resp = await metadata(mockedSession, 'fakeHandle');
 
       expect(resp).toEqual({ handle: 'fakeHandle' });
-      expect(methodMocked).toHaveBeenLastCalledWith('fakeApiUrl/fakeHandle/metadata', { params: {} });
+      expect(methodMocked).toHaveBeenLastCalledWith('fakeApiUrl/fakeHandle/metadata', { params: {}, filestackHeaders: false });
     });
 
     it('should call correct metadata with options', async () => {
@@ -68,7 +68,7 @@ describe('FileAPI', () => {
       const resp = await metadata(mockedSession, 'fakeHandle', { size: true });
 
       expect(resp).toEqual({ handle: 'fakeHandle' });
-      expect(methodMocked).toHaveBeenLastCalledWith('fakeApiUrl/fakeHandle/metadata', { params: { size: true } });
+      expect(methodMocked).toHaveBeenLastCalledWith('fakeApiUrl/fakeHandle/metadata', { params: { size: true }, filestackHeaders: false });
     });
 
     it('should throw on wrong option', async () => {
@@ -109,7 +109,7 @@ describe('FileAPI', () => {
       );
 
       expect(resp).toEqual({ data: {} });
-      expect(deleteMocked).toHaveBeenCalledWith('fakeApiUrl/fakeHandle', { params: { key: 'fakeApikey', policy: 'fakeP', signature: 'fakeS' } });
+      expect(deleteMocked).toHaveBeenCalledWith('fakeApiUrl/fakeHandle', { params: { key: 'fakeApikey', policy: 'fakeP', signature: 'fakeS' }, filestackHeaders: false });
     });
 
     it('should respect skip storage option', async () => {
@@ -127,7 +127,7 @@ describe('FileAPI', () => {
       );
 
       expect(resp).toEqual({ data: {} });
-      expect(methodMocked).toHaveBeenCalledWith('fakeApiUrl/fakeHandle', { params: { key: 'fakeApikey', policy: 'fakeP', signature: 'fakeS', skip_storage: true } });
+      expect(methodMocked).toHaveBeenCalledWith('fakeApiUrl/fakeHandle', { params: { key: 'fakeApikey', policy: 'fakeP', signature: 'fakeS', skip_storage: true }, filestackHeaders: false });
     });
 
     it('should throw on empty handle', () => {
@@ -179,7 +179,7 @@ describe('FileAPI', () => {
       const resp = await retrieve(mockedSession, 'fakeHandle');
 
       expect(resp).toEqual({});
-      expect(methodMocked).toHaveBeenCalledWith('fakeApiUrl/fakeHandle', { method: 'GET', params: { key: 'fakeApikey' } });
+      expect(methodMocked).toHaveBeenCalledWith('fakeApiUrl/fakeHandle', { method: 'GET', params: { key: 'fakeApikey' }, filestackHeaders: false });
     });
 
     it('should make correct retrieve request (HEAD)', async () => {
@@ -192,7 +192,7 @@ describe('FileAPI', () => {
       });
 
       expect(resp).toEqual({ type: 'test' });
-      expect(methodMocked).toHaveBeenCalledWith('fakeApiUrl/fakeHandle', { method: 'HEAD', params: { key: 'fakeApikey' } });
+      expect(methodMocked).toHaveBeenCalledWith('fakeApiUrl/fakeHandle', { method: 'HEAD', params: { key: 'fakeApikey' }, filestackHeaders: false });
     });
 
     it('should make correct retrieve request with provided security', async () => {
@@ -211,6 +211,7 @@ describe('FileAPI', () => {
       expect(methodMocked).toHaveBeenCalledWith('fakeApiUrl/fakeHandle', {
         method: 'GET',
         params: { key: 'fakeApikey', policy: 'fakeP', signature: 'fakeS' },
+        filestackHeaders: false,
       });
     });
 
@@ -224,7 +225,7 @@ describe('FileAPI', () => {
       });
 
       expect(resp).toEqual({});
-      expect(methodMocked).toHaveBeenCalledWith('fakeApiUrl/fakeHandle+txt', { method: 'GET', params: { key: 'fakeApikey' } });
+      expect(methodMocked).toHaveBeenCalledWith('fakeApiUrl/fakeHandle+txt', { method: 'GET', params: { key: 'fakeApikey' }, filestackHeaders: false });
     });
 
     it('should make correct retrieve request with metadata', async () => {
@@ -237,7 +238,7 @@ describe('FileAPI', () => {
       });
 
       expect(resp).toEqual({});
-      expect(methodMocked).toHaveBeenCalledWith('fakeApiUrl/fakeHandle/metadata', { method: 'GET', params: { key: 'fakeApikey' } });
+      expect(methodMocked).toHaveBeenCalledWith('fakeApiUrl/fakeHandle/metadata', { method: 'GET', params: { key: 'fakeApikey' }, filestackHeaders: false });
     });
 
     it('should throw an error on empty handle', () => {
