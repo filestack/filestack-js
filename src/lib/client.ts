@@ -26,13 +26,10 @@ import { resolveHost, getVersion } from './utils';
 import { Upload, InputFile, UploadOptions, StoreUploadOptions } from './api/upload';
 import { preview, PreviewOptions } from './api/preview';
 import { CloudClient } from './api/cloud';
+import { Prefetch } from './api/prefetch';
 import { StoreParams } from './filelink';
 
-import {
-  picker,
-  PickerInstance,
-  PickerOptions,
-} from './picker';
+import { picker, PickerInstance, PickerOptions } from './picker';
 
 /* istanbul ignore next */
 Sentry.addBreadcrumb({ category: 'sdk', message: 'filestack-js-sdk scope' });
@@ -92,6 +89,7 @@ export interface ClientOptions {
 export class Client extends EventEmitter {
   session: Session;
   private cloud: CloudClient;
+  private prefetch: Prefetch;
 
   constructor(apikey: string, options?: ClientOptions) {
     super();
@@ -117,6 +115,11 @@ export class Client extends EventEmitter {
     }
 
     this.cloud = new CloudClient(this.session, options);
+    this.prefetch = new Prefetch(this.session, options);
+  }
+
+  getPrefetch(params: object) {
+    return this.prefetch.prefetchConfig(params);
   }
 
   /**
@@ -395,7 +398,7 @@ export class Client extends EventEmitter {
     }
 
     /* istanbul ignore next */
-    upload.on('error', (e) => {
+    upload.on('error', e => {
       Sentry.withScope(scope => {
         scope.setExtras(e.details);
         scope.setExtras({ uploadOptions: options, storeOptions });
@@ -454,7 +457,7 @@ export class Client extends EventEmitter {
     }
 
     /* istanbul ignore next */
-    upload.on('error', (e) => {
+    upload.on('error', e => {
       Sentry.withScope(scope => {
         scope.setExtras(e.details);
         scope.setExtras({ uploadOptions: options, storeOptions });

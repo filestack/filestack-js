@@ -79,9 +79,13 @@ export class CloudClient {
   prefetch() {
     const params = {
       apikey: this.session.apikey,
+      // picker_config: {
+      //   fromSources: ['gmail', 'googledrive'],
+      // },
     };
+
     return requestWithSource()
-      .get(`${this.cloudApiUrl}/prefetch`, { params })
+      .get(`${this.cloudApiUrl}/prefetch`, { params: params })
       .then(res => res.data)
       .then(data => {
         if (data.inapp_browser) {
@@ -230,7 +234,8 @@ export class CloudClient {
       throw new FilestackError('Type must be one of video or audio.');
     }
     return requestWithSource()
-      .post(`${this.cloudApiUrl}/recording/${type}/init`).then(res => res.data);
+      .post(`${this.cloudApiUrl}/recording/${type}/init`)
+      .then(res => res.data);
   }
 
   tokStart(type: string, key: string, sessionId: string) {
