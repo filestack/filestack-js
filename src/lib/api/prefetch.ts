@@ -16,91 +16,78 @@
  */
 
 import { ClientOptions, Session } from '../client';
+import { PickerOptions } from './../picker';
 import { requestWithSource } from '../api/request';
+
+type PrefetchOptions = {
+  pickerOptions: PickerOptions,
+  settings: any, // @todo interface
+  permissions: any,  // @todo interface
+};
 
 /**
  * @private
  */
 export class Prefetch {
-  session: Session;
-  prefetchUrl: string;
-  private _isInAppBrowser = false;
+  private session: Session;
 
-  constructor(session: Session, options?: ClientOptions) {
+  private prefetchUrl: string;
+
+  private configToCheck: PickerOptions;
+
+  // private requestInProgress;
+
+  constructor(session: Session) {
     this.session = session;
     this.prefetchUrl = session.urls.cloudApiUrl;
   }
 
-  async prefetchConfig(params1: any) {
-    const params = {
-      apikey: this.session.apikey,
-    };
+  async getConfig({ pickerOptions, settings, permissions }: PrefetchOptions) {
 
-    return requestWithSource()
-      .get(`${this.prefetchUrl}/prefetch`, { params: params })
-      .then(res => res.data)
-      .then(data => {
-        if (data.inapp_browser) {
-          this._isInAppBrowser = true;
-        }
+    if (this.session.prefetch) {
+      return Promise.resolve(this.session.prefetch);
+    }
 
-        return data;
-      });
+    const configToSend = this.cleanUpCallback(pickerOptions);
+    //pickerOptions
 
-    const perms = {
-      apikey: this.session.apikey,
-      security: {
-        policy: this.session.policy,
-        signature: this.session.policy,
+    // const params = {
+    //   apikey: this.session.apikey,
+    //   security: {
+    //     policy: this.session.policy,
+    //     signature: this.session.signature,
+    //   },
+    //   settings,
+    //   permissions,
+    //   picker_config: configToSend,
+    // };
+
+    // @todo
+    // after response reassign callback and return picker confif
+
+    // cosnt pickerOptionsToReturn = this.reassignCallbacks(response);
+
+    return Promise.resolve({
+      blocked: false,
+      settings: {
+        inapp_browser: true,
       },
-      settings: ['inapp_browser', 'customsource'],
-      permissions: ['whitelabel', 'itd'],
-      picker_config: {},
-    };
-
-    // async prefetchConfig(params: any) {
-    //   let assignParams = {
-    //     apikey: this.session.apikey,
-    //   };
-    //   Object.assign(assignParams, params);
-
-    //   console.log('PICKER | params', params);
-    //   console.log('PICKER | assignParams', assignParams);
-
-    // new response
-    return new Promise(resolve => {
-      const response = {
-        blocked: false,
-        settings: {
-          inapp_browser: true,
-        },
-        permissions: {
-          whitelabel: false,
-        },
-        updated_config: {
-          fromSources: ['facebook'],
-        },
-      };
-
-      resolve(response);
+      permissions: {
+        whitelabel: false,
+      },
+      pickerOptions,
     });
+
+    // @todo make request to backend and assign them to session
+    // return Promise.resolve(this.session.prefetch);
   }
 
-  // @todo interface
-  // async prefetchConfig(params: any) {
-  //   let assignParams = {
-  //     apikey: this.session.apikey,
-  //   };
-  //   Object.assign(assignParams, params);
+  private cleanUpCallback(pickerOptions: PickerOptions) {
+    this.configToCheck = pickerOptions;
+    // make copy of original picker config and cleanup all callbacks (all methods started form onXX)
+  }
 
-  //   return requestWithSource()
-  //     .post(`${this.prefetchUrl}/prefetch`, assignParams)
-  //     .then(res => res.data)
-  //     .then(data => {
-  //       if (data.inapp_browser) {
-  //         this._isInAppBrowser = true;
-  //       }
-  //       return data;
-  //     });
-  // }
+  private reassignCallbacks() {
+    // reassign all callback to new config returned from prefetch
+  }
 }

@@ -40,6 +40,12 @@ export interface Session {
   cname?: string;
   policy?: string;
   signature?: string;
+  prefetch?: {
+    blocked: boolean;
+    permissions?: any; // @todo add types
+    settings?: any; // @todo add types
+    pickerOptions?: PickerOptions;
+  };
 }
 
 export interface Security {
@@ -89,7 +95,7 @@ export interface ClientOptions {
 export class Client extends EventEmitter {
   session: Session;
   private cloud: CloudClient;
-  private prefetch: Prefetch;
+  private prefetchInstance: Prefetch;
 
   constructor(apikey: string, options?: ClientOptions) {
     super();
@@ -114,12 +120,12 @@ export class Client extends EventEmitter {
       this.setCname(cname);
     }
 
+    this.prefetchInstance = new Prefetch(this.session);
     this.cloud = new CloudClient(this.session, options);
-    this.prefetch = new Prefetch(this.session, options);
   }
 
-  getPrefetch(params: object) {
-    return this.prefetch.prefetchConfig(params);
+  prefetch(params: any) { // @todo use interface
+    return this.prefetchInstance.getConfig(params);
   }
 
   /**

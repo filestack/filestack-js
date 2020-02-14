@@ -44,6 +44,12 @@ export class CloudClient {
 
   constructor(session: Session, options?: ClientOptions) {
     this.session = session;
+
+    // @todo
+    if (this.session.prefetch.settings.inapp_browser) {
+      this._isInAppBrowser = this.session.prefetch.settings.inapp_browser;
+    }
+
     this.cloudApiUrl = session.urls.cloudApiUrl;
 
     if (options && options.sessionCache) {
@@ -74,26 +80,6 @@ export class CloudClient {
     }
 
     this._token = key;
-  }
-
-  prefetch() {
-    const params = {
-      apikey: this.session.apikey,
-      // picker_config: {
-      //   fromSources: ['gmail', 'googledrive'],
-      // },
-    };
-
-    return requestWithSource()
-      .get(`${this.cloudApiUrl}/prefetch`, { params: params })
-      .then(res => res.data)
-      .then(data => {
-        if (data.inapp_browser) {
-          this._isInAppBrowser = true;
-        }
-
-        return data;
-      });
   }
 
   list(clouds: any, token?: any) {
