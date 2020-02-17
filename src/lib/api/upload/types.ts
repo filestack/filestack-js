@@ -16,6 +16,7 @@
  */
 
 import { StoreBaseParams } from './../../filelink';
+import { Tags } from './file';
 import { SanitizeOptions } from './../../utils/index';
 
 export interface UploadOptions {
@@ -72,6 +73,14 @@ export interface UploadOptions {
    * On slower devices it can boost upload performance (disable counting md5 from file parts)
    */
   disableIntegrityCheck?: boolean;
+
+  /**
+   * Define tags to be passed to webhook
+   *
+   * @type {Tags}
+   * @memberof UploadOptions
+   */
+  tags?: Tags;
 }
 
 export type StoreUploadOptions = StoreBaseParams & {

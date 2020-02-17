@@ -67,6 +67,13 @@ export class Upload extends EventEmitter {
    */
   private overrideFileName;
 
+  /**
+   * Upload tags
+   *
+   * @private
+   * @type {Tags}
+   * @memberof Upload
+   */
   private tags: Tags = {};
 
   private lastProgress: ProgressEvent = {
@@ -129,6 +136,10 @@ export class Upload extends EventEmitter {
 
     if (options.intelligent) {
       this.uploader.setUploadMode(options.intelligent === 'fallback' ? UploadMode.FALLBACK : UploadMode.INTELLIGENT);
+    }
+
+    if (options.tags) {
+      this.tags = options.tags;
     }
 
     this.uploader.on('error', (e) => this.emit('error', e));

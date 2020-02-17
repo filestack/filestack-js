@@ -19,6 +19,7 @@ import { loadModule, knownModuleIds } from 'filestack-loader';
 import { FilestackError, FilestackErrorType } from './../filestack_error';
 import { Client } from './client';
 import { FSProgressEvent, UploadOptions, WorkflowConfig } from './api/upload/types';
+import { Tags } from './api/upload/file';
 import { getValidator, PickerParamsSchema } from './../schema';
 
 export interface PickerInstance {
@@ -662,6 +663,8 @@ export interface PickerOptions {
    * It can override global objects like console, error etc. Defaults to `true`.
    */
   useSentryBreadcrumbs?: boolean;
+
+  tags?: Tags;
 }
 
 export interface PickerCropOptions {

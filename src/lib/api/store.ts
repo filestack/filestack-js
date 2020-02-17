@@ -70,6 +70,8 @@ export const storeURL = (
     options.cancelToken = cancelToken;
   }
 
+  // @todo change to post and add tags
+
   return FsRequest.get(baseURL.toString(), options).then((res) => {
     if (res.data && res.data.handle) {
       return { ...res.data, mimetype: res.data.type };
