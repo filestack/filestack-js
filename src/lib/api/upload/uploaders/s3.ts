@@ -645,6 +645,7 @@ export class S3Uploader extends UploaderAbstract {
         filename: payload.file.name,
         mimetype: payload.file.type,
         size: payload.file.size,
+        tags: this.tags && this.tags.length ? this.tags : undefined,
         parts: parts.length ? parts : undefined,
       },
       {
@@ -675,6 +676,7 @@ export class S3Uploader extends UploaderAbstract {
         file.url = res.data.url;
         file.container = res.data.container;
         file.key = res.data.key;
+        file.tags = res.data.tags;
         file.workflows = res.data.workflows;
         file.status = res.data.status;
 

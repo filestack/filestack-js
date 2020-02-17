@@ -23,7 +23,7 @@ import { SanitizeOptions } from './../../utils';
 
 import { UploadOptions, StoreUploadOptions } from '../upload/types';
 import { getFile, InputFile } from './file_tools';
-import { FileState } from './file';
+import { FileState, Tags } from './file';
 import { UploadMode } from './uploaders/abstract';
 import { getValidator, UploadParamsSchema, StoreParamsSchema } from './../../../schema';
 
@@ -49,9 +49,25 @@ const normalizeProgress = (current, last) => {
  * @class Upload
  */
 export class Upload extends EventEmitter {
+
+  /**
+   * Uploader instance
+   *
+   * @private
+   * @type {S3Uploader}
+   * @memberof Upload
+   */
   private uploader: S3Uploader;
 
-  private overwriteFileName;
+  /**
+   * Should we overwrite file name
+   *
+   * @private
+   * @memberof Upload
+   */
+  private overrideFileName;
+
+  private tags: Tags = {};
 
   private lastProgress: ProgressEvent = {
     totalBytes: 0,
@@ -79,7 +95,7 @@ export class Upload extends EventEmitter {
     }
 
     if (storeOptions.filename) {
-      this.overwriteFileName = storeOptions.filename;
+      this.overrideFileName = storeOptions.filename;
       delete this.storeOptions.filename;
     }
 
@@ -169,6 +185,16 @@ export class Upload extends EventEmitter {
   }
 
   /**
+   * Set upload tags
+   *
+   * @param {Tags} tags
+   * @memberof Upload
+   */
+  public setTags(tags: Tags) {
+    this.tags = tags;
+  }
+
+  /**
    * Upload single file
    *
    * @param {(InputFile)} file
@@ -178,7 +204,7 @@ export class Upload extends EventEmitter {
   async upload(input: InputFile): Promise<any> {
 
     const f = await getFile(input, this.sanitizerOptions);
-    f.customName = this.overwriteFileName;
+    f.customName = this.overrideFileName;
     this.uploader.addFile(f);
 
     this.startProgressInterval();
@@ -209,7 +235,7 @@ export class Upload extends EventEmitter {
       }
 
       const f = await getFile(input[i], this.sanitizerOptions);
-      f.customName = this.overwriteFileName;
+      f.customName = this.overrideFileName;
       this.uploader.addFile(f);
     }
 
