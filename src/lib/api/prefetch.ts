@@ -88,19 +88,10 @@ export class Prefetch {
       .then(res => res.data)
       .then(data => data);
 
-    // @todo
-    // after response reassign callback and return picker config
-    // const pickerOptionsToReturn = this.reassignCallbacks(response);
-
-    const pickerOptionsToReturn = this.reassignCallbacks(response);
-    return pickerOptionsToReturn;
-
-    // @todo make request to backend and assign them to session
-    // return Promise.resolve(this.session.prefetch);
+    return this.reassignCallbacks(response);
   }
 
   private cleanUpCallback(pickerOptions: PickerOptions) {
-    // make copy of original picker config and cleanup all callbacks (all methods started form onXX)
     const tempCallbackVariable: null = null;
 
     this.configToCheck = pickerOptions;
@@ -122,7 +113,6 @@ export class Prefetch {
   }
 
   private reassignCallbacks(response: responseObject): PrefetchOptions {
-    // reassign all callback to new config returned from prefetch
     return {
       pickerOptions: {
         fromSources: response.updated_config.fromSources,
