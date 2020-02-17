@@ -18,36 +18,85 @@
 import { ClientOptions, Session } from '../client';
 import { PickerOptions } from './../picker';
 import { requestWithSource } from '../api/request';
+import * as cloneDeep from 'lodash.clonedeep';
 
-type PrefetchOptionsSetting = {
-  inapp_browser: boolean;
-  customsource: boolean;
+export type PrefetchOptionsSetting = {
+  inapp_browser?: boolean;
+  customsource?: boolean;
 };
 
-type PrefetchOptionsPermissions = {
-  intelligent_ingestion: boolean;
-  blocked: boolean;
-  blacklisted: boolean;
-  whitelabel: boolean;
+export type PrefetchOptionsPermissions = {
+  intelligent_ingestion?: boolean;
+  blocked?: boolean;
+  blacklisted?: boolean;
+  whitelabel?: boolean;
+  transforms_ui?: boolean;
 };
+
+enum PrefetchOptionsEvents {
+  PICKER = 'picker',
+  TRANSFORM_UI = 'transform_ui',
+}
 
 type PrefetchOptions = {
-  pickerOptions: PickerOptions;
-  settings: PrefetchOptionsSetting;
-  permissions: PrefetchOptionsPermissions;
+  pickerOptions?: PickerOptions;
+  settings?: PrefetchOptionsSetting;
+  permissions?: PrefetchOptionsPermissions;
+  events?: PrefetchOptionsEvents[];
 };
 
+interface SendObject {
+  apikey: string;
+  security?: {
+    policy?: string;
+    signature?: string;
+  };
+  permissions?: string[];
+  settings?: string[];
+  events?: PrefetchOptionsEvents[];
+  pickerOptions?: PickerOptions;
+}
+
 type responseObject = {
-  intelligent_ingestion: boolean;
-  blocked: boolean;
-  blacklisted: boolean;
-  whitelabel: boolean;
-  customsource: boolean;
-  inapp_browser: boolean;
-  updated_config: {
-    fromSources: string[];
+  blocked?: boolean;
+  settings?: PrefetchOptionsSetting;
+  permissions?: PrefetchOptionsPermissions;
+  updated_config?: {
+    fromSources?: string[];
   };
 };
+
+// ==>
+// {
+//   "apikey": "AHvhedybhQMqZOqRvZquez",
+//   security: {
+//     policy: "",
+//     signature: ""
+//   },
+// 	"permissions": ["transforms_ui", "gmail"], -- events
+// 	"settings": ["inapp_browser", "customsource"],
+// 	"events": ["picker"], -- events
+// 	"picker_config": {
+// 		"fromSources": ["googledrive", "dropbox"]
+// 	}
+// }
+
+// <==
+// {
+//   "blocked": false,
+//   "settings": {
+//     "customsource": false,
+//     "inapp_browser": true
+//   },
+//   "permissions": {
+//     "transforms_ui": false
+//   },
+//   "updated_config": {
+//     "fromSources": [
+//       "googledrive"
+//     ]
+//   }
+// }
 
 /**
  * @private
@@ -64,24 +113,32 @@ export class Prefetch {
     this.prefetchUrl = session.urls.cloudApiUrl;
   }
 
-  async getConfig({ pickerOptions, settings, permissions }: PrefetchOptions) {
-    // @todo: stay?
+  async getConfig({ pickerOptions, settings, permissions, events }: PrefetchOptions) {
     if (this.session.prefetch) {
+      await requestWithSource().post(`${this.prefetchUrl}/prefetch`, {
+        events,
+      });
+
       return Promise.resolve(this.session.prefetch);
     }
 
     const configToSend = this.cleanUpCallback(pickerOptions);
 
-    const paramsToSend = {
+    let paramsToSend: SendObject = {
       apikey: this.session.apikey,
-      security: {
-        policy: this.session.policy,
-        signature: this.session.signature,
-      },
-      settings,
-      permissions,
-      picker_config: configToSend,
+      permissions: Object.keys(permissions),
+      settings: Object.keys(settings),
+      pickerOptions: configToSend,
+      events,
     };
+
+    if (this.session.policy) {
+      Object.assign(paramsToSend, { security: { policy: this.session.policy } });
+    }
+
+    if (this.session.signature) {
+      Object.assign(paramsToSend, { security: { signature: this.session.signature } });
+    }
 
     const response = await requestWithSource()
       .post(`${this.prefetchUrl}/prefetch`, paramsToSend)
@@ -92,41 +149,52 @@ export class Prefetch {
   }
 
   private cleanUpCallback(pickerOptions: PickerOptions) {
-    const tempCallbackVariable: null = null;
+    this.configToCheck = cloneDeep.clone(pickerOptions);
 
-    this.configToCheck = pickerOptions;
+    const pickerDropPaneKey = ['onDragEnter', 'onDragLeave', 'onDragOver', 'onDrop', 'onSuccess', 'onError', 'onProgress', 'onClick'];
 
-    pickerOptions = {
-      onClose: tempCallbackVariable,
-      onOpen: tempCallbackVariable,
-      onFileSelected: tempCallbackVariable,
-      onFileUploadStarted: tempCallbackVariable,
-      onFileUploadFinished: tempCallbackVariable,
-      onFileUploadFailed: tempCallbackVariable,
-      onFileUploadProgress: tempCallbackVariable,
-      onFileCropped: tempCallbackVariable,
-      onUploadStarted: tempCallbackVariable,
-      onUploadDone: tempCallbackVariable,
-    };
+    const pickerKey = [
+      'onClose',
+      'onOpen',
+      'onFileSelected',
+      'onFileUploadStarted',
+      'onFileUploadFinished',
+      'onFileUploadFailed',
+      'onFileUploadProgress',
+      'onFileCropped',
+      'onUploadStarted',
+      'onUploadDone',
+    ];
 
-    return pickerOptions;
+    Object.keys(this.configToCheck).map(key => {
+      const keyName = this.configToCheck[key];
+      if (pickerKey.includes(keyName) || pickerDropPaneKey.includes(keyName)) {
+        this.configToCheck[key] = null;
+      }
+    });
+
+    return this.configToCheck;
   }
 
-  private reassignCallbacks(response: responseObject): PrefetchOptions {
-    return {
-      pickerOptions: {
-        fromSources: response.updated_config.fromSources,
-      },
-      settings: {
-        inapp_browser: response.inapp_browser,
-        customsource: response.customsource,
-      },
-      permissions: {
-        intelligent_ingestion: response.intelligent_ingestion,
-        blocked: response.blocked,
-        blacklisted: response.blacklisted,
-        whitelabel: response.whitelabel,
-      },
-    };
+  private reassignCallbacks(response: responseObject) {
+    let reassignResponse = {};
+
+    if (response.blocked) {
+      Object.assign(reassignResponse, response.blocked);
+    }
+
+    if (response.settings) {
+      Object.assign(reassignResponse, response.settings);
+    }
+
+    if (response.permissions) {
+      Object.assign(reassignResponse, response.permissions);
+    }
+
+    if (response.updated_config) {
+      Object.assign(reassignResponse, response.updated_config);
+    }
+
+    return response;
   }
 }
