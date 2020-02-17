@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.12.4](https://github.com/filestack/filestack-js/compare/v3.12.3...v3.12.4) (2020-02-17)
+
+
+### Bug Fixes
+
+* **picker:** fix problems with picker minimalization ([d23b79e](https://github.com/filestack/filestack-js/commit/d23b79e810045ae6906e667b148af71771bd5236))
+
 ### [3.12.3](https://github.com/filestack/filestack-js/compare/v3.12.2...v3.12.3) (2020-02-12)
 
 ### [3.12.2](https://github.com/filestack/filestack-js/compare/v3.12.1...v3.12.2) (2020-02-12)
