@@ -18,7 +18,8 @@
 import { ClientOptions, Session } from '../client';
 import { PickerOptions } from './../picker';
 import { requestWithSource } from '../api/request';
-import * as cloneDeep from 'lodash.clonedeep';
+import { clone as lodashCloneDeep } from 'lodash.clonedeep';
+import { merge as lodashMerge } from 'lodash.merge';
 
 export type PrefetchOptionsSetting = {
   inapp_browser?: boolean;
@@ -45,7 +46,7 @@ type PrefetchOptions = {
   events?: PrefetchOptionsEvents[];
 };
 
-interface SendObject {
+interface PrefetchRequest {
   apikey: string;
   security?: {
     policy?: string;
@@ -57,7 +58,7 @@ interface SendObject {
   pickerOptions?: PickerOptions;
 }
 
-type responseObject = {
+type PrefetchResponse = {
   blocked?: boolean;
   settings?: PrefetchOptionsSetting;
   permissions?: PrefetchOptionsPermissions;
@@ -124,7 +125,7 @@ export class Prefetch {
 
     const configToSend = this.cleanUpCallback(pickerOptions);
 
-    let paramsToSend: SendObject = {
+    let paramsToSend: PrefetchRequest = {
       apikey: this.session.apikey,
       permissions: Object.keys(permissions),
       settings: Object.keys(settings),
@@ -132,69 +133,30 @@ export class Prefetch {
       events,
     };
 
-    if (this.session.policy) {
-      Object.assign(paramsToSend, { security: { policy: this.session.policy } });
-    }
-
-    if (this.session.signature) {
-      Object.assign(paramsToSend, { security: { signature: this.session.signature } });
+    if (this.session.policy && this.session.signature) {
+      paramsToSend.security = { signature: this.session.signature, policy: this.session.signature };
     }
 
     const response = await requestWithSource()
       .post(`${this.prefetchUrl}/prefetch`, paramsToSend)
-      .then(res => res.data)
-      .then(data => data);
+      .then(res => res.data);
 
     return this.reassignCallbacks(response);
   }
 
   private cleanUpCallback(pickerOptions: PickerOptions) {
-    this.configToCheck = cloneDeep.clone(pickerOptions);
-
-    const pickerDropPaneKey = ['onDragEnter', 'onDragLeave', 'onDragOver', 'onDrop', 'onSuccess', 'onError', 'onProgress', 'onClick'];
-
-    const pickerKey = [
-      'onClose',
-      'onOpen',
-      'onFileSelected',
-      'onFileUploadStarted',
-      'onFileUploadFinished',
-      'onFileUploadFailed',
-      'onFileUploadProgress',
-      'onFileCropped',
-      'onUploadStarted',
-      'onUploadDone',
-    ];
+    this.configToCheck = lodashCloneDeep(pickerOptions);
 
     Object.keys(this.configToCheck).map(key => {
-      const keyName = this.configToCheck[key];
-      if (pickerKey.includes(keyName) || pickerDropPaneKey.includes(keyName)) {
-        this.configToCheck[key] = null;
+      if (key.indexOf('on') === 0) {
+        this.configToCheck[key] = undefined;
       }
     });
 
     return this.configToCheck;
   }
 
-  private reassignCallbacks(response: responseObject) {
-    let reassignResponse = {};
-
-    if (response.blocked) {
-      Object.assign(reassignResponse, response.blocked);
-    }
-
-    if (response.settings) {
-      Object.assign(reassignResponse, response.settings);
-    }
-
-    if (response.permissions) {
-      Object.assign(reassignResponse, response.permissions);
-    }
-
-    if (response.updated_config) {
-      Object.assign(reassignResponse, response.updated_config);
-    }
-
-    return response;
+  private reassignCallbacks(response: PrefetchResponse) {
+    return lodashMerge({}, response);
   }
 }
