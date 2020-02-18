@@ -141,6 +141,10 @@ describe('utils:index', () => {
       expect(sanitizeName('[]#|.jpg', false)).toEqual('[]#|.jpg');
     });
 
+    it('should not change dots in filename', () => {
+      expect(sanitizeName('[]#some.tar.gz', false)).toEqual('[]#some.tar.gz');
+    });
+
     it('should respect sanitize options with provided options', () => {
       expect(sanitizeName('[]#|.jpg', {
         exclude: ['[', ']'],
