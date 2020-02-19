@@ -21,7 +21,6 @@ import { getValidator } from './../schema/validator';
 import { resolveHost, b64 } from './utils';
 import { FilestackError, FilestackErrorType } from './../filestack_error';
 import Debug from 'debug';
-import { booleanLiteral } from '@babel/types';
 
 const debug = Debug('fs:filelink');
 
@@ -1384,7 +1383,7 @@ export class Filelink {
    * @memberof Filelink
    */
   private getCdnHost(): string {
-    let urls = config.urls;
+    let urls = Object.assign({}, config.urls);
 
     if (this.customDomain) {
       urls.cdnUrl = this.customDomain;

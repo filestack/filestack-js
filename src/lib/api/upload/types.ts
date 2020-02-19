@@ -75,7 +75,7 @@ export interface UploadOptions {
   disableIntegrityCheck?: boolean;
 
   /**
-   * Define tags to be passed to webhook
+   * Define upload tags to be passed to webhook
    *
    * @type {Tags}
    * @memberof UploadOptions

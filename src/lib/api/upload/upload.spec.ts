@@ -105,8 +105,13 @@ describe('Api/Upload/upload', () => {
 
     it('should fallback upload mode', () => {
       const u = new Upload({ intelligent: 'fallback' });
-
       expect(S3Uploader.prototype.setUploadMode).toHaveBeenCalledWith(UploadMode.FALLBACK);
+    });
+
+    it('should set upload tasks to uploader', () => {
+      const tags = { test: '123' };
+      const u = new Upload({ uploadTags: tags });
+      expect(S3Uploader.prototype.setUploadTags).toHaveBeenCalledWith(tags);
     });
 
     it('should pass store options to uploader class', () => {
