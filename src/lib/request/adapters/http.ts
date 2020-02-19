@@ -21,20 +21,68 @@ import Debug from 'debug';
 
 import { AdapterInterface } from './interface';
 import { getVersion } from '../../utils';
+import * as Stream from 'stream';
 import { FsRequestOptions, FsResponse } from '../types';
 import * as utils from '../utils';
 import { prepareData, parseResponse, combineURL, set as setHeader, normalizeHeaders } from './../helpers';
 import { FsRequestErrorCode, FsRequestError } from '../error';
+import { FsHttpMethod } from './../types';
 
 const HTTPS_REGEXP = /https:?/;
+const HTTP_CHUNK_SIZE = 16 * 1024;
 const MAX_REDIRECTS = 10;
 const CANCEL_CLEAR = `FsCleanMemory`;
 const debug = Debug('fs:request:http');
 
+/**
+ * Writable stream thats overwrap http request for progress event
+ *
+ * @class HttpWritableStream
+ * @extends {Stream.Writable}
+ */
+class HttpWritableStream extends Stream.Writable {
+  private request;
+
+  constructor(req, opts = {}) {
+    super(opts);
+
+    this.request = req;
+    req.once('drain', () => this.emit('drain'));
+  }
+
+  _write(chunk: any, encoding?: string, cb?: (error: Error | null | undefined) => void): void {
+    this.request.write(chunk, encoding, cb);
+  }
+
+  end(chunk) {
+    if (chunk) {
+      console.log('write last chunk', chunk.length);
+      this.request.write(chunk);
+    }
+
+    console.log('call end request');
+    this.request.end();
+  }
+}
+
+/**
+ * Node http request class
+ *
+ * @export
+ * @class HttpAdapter
+ * @implements {AdapterInterface}
+ */
 export class HttpAdapter implements AdapterInterface {
   private redirectHoops = 0;
   private redirectPaths = [];
 
+  /**
+   * do request based on configuration
+   *
+   * @param {FsRequestOptions} config
+   * @returns
+   * @memberof HttpAdapter
+   */
   request(config: FsRequestOptions) {
     // if this option is unspecified set it by default
     if (typeof config.filestackHeaders === 'undefined') {
@@ -176,7 +224,6 @@ export class HttpAdapter implements AdapterInterface {
           res = undefined;
           req = undefined;
           responseBuffer = undefined;
-
           debug('Request error: Aborted %O', err);
 
           if (req.aborted) {
@@ -254,7 +301,65 @@ export class HttpAdapter implements AdapterInterface {
         return reject(new FsRequestError(`Request error: ${err.code}`, config, null, FsRequestErrorCode.NETWORK));
       });
 
+      if (Buffer.isBuffer(data) && ['POST', 'PUT'].indexOf(config.method) > -1) {
+        return this.bufferToChunks(data).pipe(this.getProgressMonitor(config, data.length)).pipe(new HttpWritableStream(req));
+      }
+
       req.end(data);
     });
+  }
+
+  /**
+   * Monitor and emit progress event if needed
+   *
+   * @private
+   * @memberof HttpAdapter
+   */
+  private getProgressMonitor = (config, total) => {
+    let loaded = 0;
+
+    const progress = new Stream.Transform();
+    progress._transform = (chunk, encoding, cb) => {
+      if (typeof config.onProgress === 'function' && [FsHttpMethod.POST, FsHttpMethod.PUT].indexOf(config.method) > -1) {
+        loaded += chunk.length;
+        config.onProgress({
+          lengthComputable: true,
+          loaded,
+          total,
+        });
+      }
+      cb(null, chunk);
+    };
+
+    return progress;
+  }
+
+  /**
+   * Convert buffer to stream
+   *
+   * @private
+   * @param {*} buffer
+   * @returns {Stream.Readable}
+   * @memberof HttpAdapter
+   */
+  private bufferToChunks(buffer): Stream.Readable {
+    const chunking = new Stream.Readable();
+    const totalLength = buffer.length;
+    const remainder = totalLength % HTTP_CHUNK_SIZE;
+    const cutoff = totalLength - remainder;
+
+    for (let i = 0; i < cutoff; i += HTTP_CHUNK_SIZE) {
+      const chunk = buffer.slice(i, i + HTTP_CHUNK_SIZE);
+      chunking.push(chunk);
+    }
+
+    if (remainder > 0) {
+      const remainderBuffer = buffer.slice(-remainder);
+      chunking.push(remainderBuffer);
+    }
+
+    chunking.push(null);
+
+    return chunking;
   }
 }
