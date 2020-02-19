@@ -16,7 +16,7 @@
  */
 import { md5, sanitizeName, SanitizeOptions } from './../../utils';
 
-export interface Tags {
+export interface UploadTags {
   [key: string]: string;
 }
 

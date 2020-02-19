@@ -645,7 +645,7 @@ export class S3Uploader extends UploaderAbstract {
         filename: payload.file.name,
         mimetype: payload.file.type,
         size: payload.file.size,
-        tags: this.tags && this.tags.length ? this.tags : undefined,
+        uploadTags: this.uploadTags && this.uploadTags.length ? this.tags : undefined,
         parts: parts.length ? parts : undefined,
       },
       {

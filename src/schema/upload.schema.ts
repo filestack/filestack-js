@@ -73,7 +73,7 @@ export const UploadParamsSchema = {
     disableIntegrityCheck: {
       type: 'boolean',
     },
-    tags: {
+    uploadTags: {
       type: 'object',
       additionalProperties: {
         type: 'string',

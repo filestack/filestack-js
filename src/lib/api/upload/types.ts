@@ -16,7 +16,7 @@
  */
 
 import { StoreBaseParams } from './../../filelink';
-import { Tags } from './file';
+import { UploadTags } from './file';
 import { SanitizeOptions } from './../../utils/index';
 
 export interface UploadOptions {
@@ -80,7 +80,7 @@ export interface UploadOptions {
    * @type {Tags}
    * @memberof UploadOptions
    */
-  tags?: Tags;
+  uploadTags?: UploadTags;
 }
 
 export type StoreUploadOptions = StoreBaseParams & {
