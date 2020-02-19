@@ -19,7 +19,7 @@ import { Client, ClientOptions, Security } from './lib/client';
 import { PickerOptions, PickerInstance, PickerUploadDoneCallback, PickerFileMetadata, PickerResponse, PickerDisplayMode } from './lib/picker';
 import { TransformSchema } from './schema/transforms.schema';
 import { TransformOptions } from './lib/api/transform';
-import { RetrieveOptions, MetadataOptions} from './lib/api/file';
+import { RetrieveOptions, MetadataOptions } from './lib/api/file';
 import { InputFile } from './lib/api/upload/file_tools';
 import { UploadOptions } from './lib/api/upload/types';
 import { StoreUploadOptions } from './lib/api/upload';
