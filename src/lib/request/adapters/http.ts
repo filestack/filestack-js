@@ -56,11 +56,9 @@ class HttpWritableStream extends Stream.Writable {
 
   end(chunk) {
     if (chunk) {
-      console.log('write last chunk', chunk.length);
       this.request.write(chunk);
     }
 
-    console.log('call end request');
     this.request.end();
   }
 }
