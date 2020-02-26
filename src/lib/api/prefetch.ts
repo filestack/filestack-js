@@ -18,8 +18,7 @@
 import { ClientOptions, Session } from '../client';
 import { PickerOptions } from './../picker';
 import { requestWithSource } from '../api/request';
-import { clone as lodashCloneDeep } from 'lodash.clonedeep';
-import { merge as lodashMerge } from 'lodash.merge';
+import { cloneDeep as lodashCloneDeep, merge as lodashMerge } from 'lodash';
 
 export type PrefetchOptionsSetting = {
   inapp_browser?: boolean;
@@ -34,7 +33,7 @@ export type PrefetchOptionsPermissions = {
   transforms_ui?: boolean;
 };
 
-enum PrefetchOptionsEvents {
+export enum PrefetchOptionsEvents {
   PICKER = 'picker',
   TRANSFORM_UI = 'transform_ui',
 }
@@ -55,7 +54,7 @@ interface PrefetchRequest {
   permissions?: string[];
   settings?: string[];
   events?: PrefetchOptionsEvents[];
-  pickerOptions?: PickerOptions;
+  picker_config?: PickerOptions;
 }
 
 type PrefetchResponse = {
@@ -104,14 +103,12 @@ type PrefetchResponse = {
  */
 export class Prefetch {
   private session: Session;
-
   private prefetchUrl: string;
-
   private configToCheck: PickerOptions;
 
   constructor(session: Session) {
     this.session = session;
-    this.prefetchUrl = session.urls.cloudApiUrl;
+    this.prefetchUrl = session.urls.uploadApiUrl;
   }
 
   async getConfig({ pickerOptions, settings, permissions, events }: PrefetchOptions) {
@@ -119,27 +116,30 @@ export class Prefetch {
       await requestWithSource().post(`${this.prefetchUrl}/prefetch`, {
         events,
       });
-
       return Promise.resolve(this.session.prefetch);
     }
 
     const configToSend = this.cleanUpCallback(pickerOptions);
+    const permissionsKeys = [...Object.keys(permissions)];
 
     let paramsToSend: PrefetchRequest = {
       apikey: this.session.apikey,
-      permissions: Object.keys(permissions),
+      permissions: permissionsKeys,
       settings: Object.keys(settings),
-      pickerOptions: configToSend,
+      picker_config: configToSend,
       events,
     };
 
     if (this.session.policy && this.session.signature) {
-      paramsToSend.security = { signature: this.session.signature, policy: this.session.signature };
+      paramsToSend.security = { policy: this.session.policy, signature: this.session.signature };
     }
 
     const response = await requestWithSource()
       .post(`${this.prefetchUrl}/prefetch`, paramsToSend)
-      .then(res => res.data);
+      .then(res => res.data)
+      .catch(error => {
+        console.log('catch error', error);
+      });
 
     return this.reassignCallbacks(response);
   }

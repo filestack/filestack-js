@@ -26,7 +26,7 @@ import { resolveHost, getVersion } from './utils';
 import { Upload, InputFile, UploadOptions, StoreUploadOptions } from './api/upload';
 import { preview, PreviewOptions } from './api/preview';
 import { CloudClient } from './api/cloud';
-import { Prefetch } from './api/prefetch';
+import { Prefetch, PrefetchOptionsSetting } from './api/prefetch';
 import { StoreParams } from './filelink';
 
 import { picker, PickerInstance, PickerOptions } from './picker';
@@ -41,9 +41,8 @@ export interface Session {
   policy?: string;
   signature?: string;
   prefetch?: {
-    blocked: boolean;
-    permissions?: any; // @todo add types
-    settings?: any; // @todo add types
+    permissions?: PrefetchOptionsSetting;
+    settings?: PrefetchOptionsSetting;
     pickerOptions?: PickerOptions;
   };
 }
@@ -124,7 +123,8 @@ export class Client extends EventEmitter {
     this.cloud = new CloudClient(this.session, options);
   }
 
-  prefetch(params: any) { // @todo use interface
+  // @todo use interface
+  prefetch(params: any) {
     return this.prefetchInstance.getConfig(params);
   }
 
