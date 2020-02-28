@@ -17,7 +17,8 @@
 
 import { ClientOptions, Session } from '../client';
 import { PickerOptions } from './../picker';
-import { requestWithSource } from '../api/request';
+// import { requestWithSource } from '../api/request';
+import { FsRequest } from '../request';
 import { cloneDeep as lodashCloneDeep, merge as lodashMerge } from 'lodash';
 
 export type PrefetchOptionsSetting = {
@@ -81,9 +82,7 @@ export class Prefetch {
 
   async getConfig({ pickerOptions, settings, permissions, events }: PrefetchOptions) {
     if (this.session.prefetch) {
-      await requestWithSource().post(`${this.prefetchUrl}/prefetch`, {
-        events,
-      });
+      await FsRequest.post(`${this.prefetchUrl}/prefetch`, { events });
       return Promise.resolve(this.session.prefetch);
     }
 
@@ -102,9 +101,11 @@ export class Prefetch {
       paramsToSend.security = { policy: this.session.policy, signature: this.session.signature };
     }
 
-    const response = await requestWithSource()
-      .post(`${this.prefetchUrl}/prefetch`, paramsToSend)
-      .then(res => res.data);
+    const response = await FsRequest.post(`${this.prefetchUrl}/prefetch`, paramsToSend).then(res => res.data);
+
+    // const response = await requestWithSource()
+    //   .post(`${this.prefetchUrl}/prefetch`, paramsToSend)
+    //   .then(res => res.data);
 
     return this.reassignCallbacks(response);
   }

@@ -67,6 +67,7 @@ const mockPrefetch = jest
 
 describe('Prefetch', () => {
   beforeAll(() => {
+    // @ts-ignore
     spyOn(utils, 'isNode').and.returnValue(false);
   });
 
@@ -89,7 +90,6 @@ describe('Prefetch', () => {
         urls: testURL,
       },
     });
-
   });
 
   it('should return correct session', async () => {
