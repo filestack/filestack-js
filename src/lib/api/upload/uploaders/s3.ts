@@ -17,14 +17,14 @@
 
 import PQueue from 'p-queue';
 import Debug from 'debug';
-import { CancelTokenSource, AxiosResponse } from 'axios';
 
 import { File, FilePart, FilePartMetadata, FileState } from './../file';
 import { StoreUploadOptions } from './../types';
-import { postWithRetry, request, useRetryPolicy, shouldRetry } from './../../request';
+import { FsRequest, FsResponse, FsRequestError, FsCancelToken } from './../../../request';
 import { uniqueTime, uniqueId, filterObject } from './../../../utils';
 import { UploaderAbstract, UploadMode, INTELLIGENT_CHUNK_SIZE, MIN_CHUNK_SIZE, DEFAULT_STORE_LOCATION } from './abstract';
 import { FilestackError, FilestackErrorType } from './../../../../filestack_error';
+import { shouldRetry } from './../../../request/helpers';
 
 const debug = Debug('fs:upload:s3');
 
@@ -49,7 +49,7 @@ export interface UploadPayload {
 
 export class S3Uploader extends UploaderAbstract {
   private partsQueue;
-  private cancelToken: CancelTokenSource; // global cancel token for all requests
+  private cancelToken: FsCancelToken; // global cancel token for all requests
 
   private payloads: { [key: string]: UploadPayload } = {};
 
@@ -61,9 +61,7 @@ export class S3Uploader extends UploaderAbstract {
       concurrency: this.concurrency,
     });
 
-    // setup cancel token
-    const CancelToken = request.CancelToken;
-    this.cancelToken = CancelToken.source();
+    this.cancelToken = new FsCancelToken();
   }
 
   /**
@@ -130,17 +128,7 @@ export class S3Uploader extends UploaderAbstract {
         })
     );
 
-    return Promise.all(tasks).then((res) => {
-      // prevent cancel token memory leak
-      try {
-        this.cancelToken.cancel();
-      } catch (e) {
-        /* istanbul ignore next */
-        debug(`Cannot cleanup cancel token %O`, e.message);
-      }
-
-      return res;
-    });
+    return Promise.all(tasks);
   }
 
   /**
@@ -299,7 +287,7 @@ export class S3Uploader extends UploaderAbstract {
     const payload = this.getPayloadById(id);
 
     debug(`[${id}] Make start request`);
-    return postWithRetry(
+    return FsRequest.post(
       `${this.getUrl()}/multipart/start`,
       {
         filename: payload.file.name,
@@ -309,10 +297,10 @@ export class S3Uploader extends UploaderAbstract {
       },
       {
         timeout: this.timeout,
-        cancelToken: this.cancelToken.token,
+        cancelToken: this.cancelToken,
         headers: this.getDefaultHeaders(id),
-      },
-      this.retryConfig
+        retry: this.retryConfig,
+      }
     )
       .then(({ data }) => {
         if (!data || !data.location_url || !data.region || !data.upload_id || !data.uri) {
@@ -336,11 +324,8 @@ export class S3Uploader extends UploaderAbstract {
       .catch(err => {
         debug(`[${id}] Start request error %O`, err);
         this.setPayloadStatus(id, FileState.FAILED);
-        return Promise.reject(new FilestackError('Cannot upload file. Start request failed', {
-          code: err.response.status,
-          data: err.response.data,
-          headers: err.response.headers,
-        }, FilestackErrorType.REQUEST));
+
+        return Promise.reject(new FilestackError('Cannot upload file. Start request failed', this.getErrorDetails(err), FilestackErrorType.REQUEST));
       });
   }
 
@@ -423,22 +408,15 @@ export class S3Uploader extends UploaderAbstract {
       data.md5 = part.md5;
     }
 
-    return postWithRetry(
-      `${url}/multipart/upload`,
-      data,
-      {
-        headers: this.getDefaultHeaders(id),
-        cancelToken: this.cancelToken.token,
-        timeout: this.timeout,
-      },
-      this.retryConfig
-    ).catch(err => {
+    return FsRequest.post(`${url}/multipart/upload`, data, {
+      headers: this.getDefaultHeaders(id),
+      cancelToken: this.cancelToken,
+      timeout: this.timeout,
+      retry: this.retryConfig,
+    }).catch(err => {
       this.setPayloadStatus(id, FileState.FAILED);
-      return Promise.reject(new FilestackError('Cannot get part metadata', {
-        code: err.response.status,
-        data: err.response.data,
-        headers: err.response.headers,
-      }, FilestackErrorType.REQUEST));
+
+      return Promise.reject(new FilestackError('Cannot get part metadata', this.getErrorDetails(err), FilestackErrorType.REQUEST));
     });
   }
 
@@ -458,54 +436,54 @@ export class S3Uploader extends UploaderAbstract {
     const { data, headers } = await this.getS3PartMetadata(id, part);
     debug(`[${id}] Received part ${partNumber} info body: \n%O\n headers: \n%O\n`, data, headers);
 
-    // retry only in regular upload mode
-    if (this.retryConfig && this.uploadMode !== UploadMode.FALLBACK) {
-      useRetryPolicy(request, this.retryConfig);
-    }
+    return FsRequest.put(data.url, part.buffer, {
+      cancelToken: this.cancelToken,
+      timeout: this.timeout,
+      headers: data.headers,
+      filestackHeaders: false,
+      // for now we cant test progress callback from upload
+      /* istanbul ignore next */
+      onProgress: (pr: ProgressEvent) => this.onProgressUpdate(id, partNumber, pr.loaded),
+      retry: this.retryConfig && this.uploadMode !== UploadMode.FALLBACK ? this.retryConfig : undefined,
+    })
+    .then(res => {
+      if (res.headers.etag) {
+        this.setPartETag(id, partNumber, res.headers.etag);
+      } else {
+        // release memory
+        part = null;
+        throw new FilestackError('Cannot upload file, check S3 bucket settings', 'Etag header is not exposed in CORS settings', FilestackErrorType.REQUEST);
+      }
 
-    return request
-      .put(data.url, part.buffer, {
-        cancelToken: this.cancelToken.token,
-        timeout: this.timeout,
-        headers: data.headers,
-        // for now we cant test progress callback from upload
-        /* istanbul ignore next */
-        onUploadProgress: (pr: ProgressEvent) => this.onProgressUpdate(id, partNumber, pr.loaded),
-      })
-      .then(res => {
-        if (res.headers.etag) {
-          this.setPartETag(id, partNumber, res.headers.etag);
-        } else {
-          throw new FilestackError('Cannot upload file, check S3 bucket settings', 'Etag header is not exposed in CORS settings', FilestackErrorType.REQUEST);
-        }
+      debug(`[${id}] S3 Upload response headers for ${partNumber}: \n%O\n`, res.headers);
 
-        debug(`[${id}] S3 Upload response headers for ${partNumber}: \n%O\n`, res.headers);
+      this.onProgressUpdate(id, partNumber, part.size);
 
-        this.onProgressUpdate(id, partNumber, part.size);
+      // release memory
+      part = null;
 
-        return res;
-      })
-      .catch(err => {
-        if (err instanceof FilestackError) {
-          return Promise.reject(err);
-        }
-        // reset upload progress on failed part
-        this.onProgressUpdate(id, partNumber, 0);
+      return res;
+    })
+    .catch(err => {
+      // release memory
+      part = null;
 
-        // if fallback, set upload mode to intelligent and restart current part
-        if ((this.uploadMode === UploadMode.FALLBACK && !this.isModeLocked) || this.uploadMode === UploadMode.INTELLIGENT) {
-          debug(`[${id}] Regular upload failed. Switching to intelligent ingestion mode`);
-          this.setUploadMode(UploadMode.INTELLIGENT);
-          // restart part
-          return this.startPart(id, partNumber);
-        }
+      if (err instanceof FilestackError) {
+        return Promise.reject(err);
+      }
+      // reset upload progress on failed part
+      this.onProgressUpdate(id, partNumber, 0);
 
-        return Promise.reject(new FilestackError('Cannot upload file part', {
-          code: err.response.status,
-          data: err.response.data,
-          headers: err.response.headers,
-        }, FilestackErrorType.REQUEST));
-      });
+      // if fallback, set upload mode to intelligent and restart current part
+      if ((this.uploadMode === UploadMode.FALLBACK && !this.isModeLocked) || this.uploadMode === UploadMode.INTELLIGENT) {
+        debug(`[${id}] Regular upload failed. Switching to intelligent ingestion mode`);
+        this.setUploadMode(UploadMode.INTELLIGENT);
+        // restart part
+        return this.startPart(id, partNumber);
+      }
+
+      return Promise.reject(new FilestackError('Cannot upload file part', this.getErrorDetails(err), FilestackErrorType.REQUEST));
+    });
   }
 
   /**
@@ -549,21 +527,20 @@ export class S3Uploader extends UploaderAbstract {
       return Promise.reject(err);
     });
 
-    return request
-      .put(data.url, chunk.buffer, {
-        cancelToken: this.cancelToken.token,
-        timeout: this.timeout,
-        headers: data.headers,
-        // for now we cant test progress callback from upload
-        /* istanbul ignore next */
-        onUploadProgress: (pr: ProgressEvent) => this.onProgressUpdate(id, partNumber, part.offset + pr.loaded),
-      })
+    return FsRequest.put(data.url, chunk.buffer, {
+      cancelToken: this.cancelToken,
+      timeout: this.timeout,
+      headers: data.headers,
+      filestackHeaders: false,
+      // for now we cant test progress callback from upload
+      /* istanbul ignore next */
+      onProgress: (pr: ProgressEvent) => this.onProgressUpdate(id, partNumber, part.offset + pr.loaded),
+    })
       .then(res => {
         this.onProgressUpdate(id, partNumber, part.offset + chunk.size);
         const newOffset = Math.min(part.offset + chunkSize, part.size);
 
         debug(`[${id}] S3 Chunk uploaded! offset: ${part.offset}, part ${partNumber}! response headers for ${partNumber}: \n%O\n`, res.headers);
-
         this.setPartData(id, partNumber, 'offset', newOffset);
 
         // if all chunks was uploaded then return resolve
@@ -571,6 +548,7 @@ export class S3Uploader extends UploaderAbstract {
           return Promise.resolve(res);
         }
 
+        // release memory
         part = null;
         chunk = null;
         return this.uploadNextChunk(id, partNumber, chunkSize);
@@ -590,14 +568,11 @@ export class S3Uploader extends UploaderAbstract {
           return this.uploadNextChunk(id, partNumber, nextChunkSize);
         }
 
+        // release memory
         part = null;
         chunk = null;
 
-        return Promise.reject(new FilestackError('Cannot upload file part (FII)', {
-          code: err.response.status,
-          data: err.response.data,
-          headers: err.response.headers,
-        }, FilestackErrorType.REQUEST));
+        return Promise.reject(new FilestackError('Cannot upload file part (FII)', this.getErrorDetails(err), FilestackErrorType.REQUEST));
       });
   }
 
@@ -614,7 +589,7 @@ export class S3Uploader extends UploaderAbstract {
     const payload = this.getPayloadById(id);
     const part = payload.parts[partNumber];
 
-    return postWithRetry(
+    return FsRequest.post(
       `${this.getUploadUrl(id)}/multipart/commit`,
       {
         ...this.getDefaultFields(id, ['apikey', 'region', 'upload_id', 'policy', 'signature', 'uri']),
@@ -622,22 +597,20 @@ export class S3Uploader extends UploaderAbstract {
         part: part.partNumber + 1,
       },
       {
-        cancelToken: this.cancelToken.token,
+        cancelToken: this.cancelToken,
         timeout: this.timeout,
         headers: this.getDefaultHeaders(id),
-      },
-      this.retryConfig
-    ).then((res: AxiosResponse) => {
-      debug(`[${id}] Commit Part number ${part.partNumber}. Response: %O`, res.data);
+        retry: this.retryConfig,
+      }
+    )
+      .then((res: FsResponse) => {
+        debug(`[${id}] Commit Part number ${part.partNumber}. Response: %O`, res.data);
 
-      return res;
-    }).catch((err) => {
-      return Promise.reject(new FilestackError('Cannot commit file part metadata', {
-        code: err.response.status,
-        data: err.response.data,
-        headers: err.response.headers,
-      }, FilestackErrorType.REQUEST));
-    });
+        return res;
+      })
+      .catch(err => {
+        return Promise.reject(new FilestackError('Cannot commit file part metadata', this.getErrorDetails(err), FilestackErrorType.REQUEST));
+      });
   }
 
   /**
@@ -664,7 +637,7 @@ export class S3Uploader extends UploaderAbstract {
 
     debug(`[${id}] Etags %O`, parts);
 
-    return postWithRetry(
+    return FsRequest.post(
       `${this.getUrl()}/multipart/complete`,
       {
         ...this.getDefaultFields(id, ['apikey', 'policy', 'signature', 'uri', 'region', 'upload_id', 'fii'], true),
@@ -676,10 +649,10 @@ export class S3Uploader extends UploaderAbstract {
       },
       {
         timeout: this.timeout,
-        cancelToken: this.cancelToken.token,
+        cancelToken: this.cancelToken,
         headers: this.getDefaultHeaders(id),
-      },
-      this.retryConfig
+        retry: this.retryConfig,
+      }
     )
       .then(res => {
         // if parts hasnt been merged, retry complete request again
@@ -709,11 +682,8 @@ export class S3Uploader extends UploaderAbstract {
       })
       .catch(err => {
         this.setPayloadStatus(id, FileState.FAILED);
-        return Promise.reject(new FilestackError('Cannot complete file', {
-          code: err.response.status,
-          data: err.response.data,
-          headers: err.response.headers,
-        }, FilestackErrorType.REQUEST));
+
+        return Promise.reject(new FilestackError('Cannot complete file', this.getErrorDetails(err), FilestackErrorType.REQUEST));
       });
   }
 
@@ -751,13 +721,12 @@ export class S3Uploader extends UploaderAbstract {
         continue;
       }
 
-      const partsProgress = payload.parts.map(p => p.progress || 0);
-      const totalParts = partsProgress.reduce((a, b) => a + b);
+      const totalParts = payload.parts.map(p => p.progress || 0).reduce((a, b) => a + b, 0);
 
       totalBytes = totalBytes + totalParts;
 
       filesProgress[i] = {
-        totalBytes: totalParts || 0,
+        totalBytes: totalParts,
         totalPercent: Math.round((totalParts * 100) / payload.file.size) || 0,
       };
 
@@ -832,6 +801,28 @@ export class S3Uploader extends UploaderAbstract {
    */
   private setPayloadStatus(id: string, status: FileState) {
     debug(`[${id}] Set payload status to ${status}`);
+    /* istanbul ignore next: additional check in case if file will be deleted before setting status */
+    if (!this.payloads[id]) {
+      return;
+    }
+
     this.payloads[id].file.status = status;
+  }
+
+  /**
+   * Returns error details if response exists
+   *
+   * @param err
+   */
+  private getErrorDetails(err: FsRequestError) {
+    if (!err.response) {
+      return {};
+    }
+
+    return {
+      code: err.response.status,
+      data: err.response.data,
+      headers: err.response.headers,
+    };
   }
 }

@@ -217,6 +217,8 @@ export class Upload extends EventEmitter {
     const res = await this.uploader.execute();
     this.stopProgressInterval();
 
+    this.uploader.removeAllListeners();
+
     return Promise.resolve(res);
   }
 
@@ -231,6 +233,7 @@ export class Upload extends EventEmitter {
     if (typeof this.options.onProgress !== 'function') {
       return;
     }
+
     this.progressIntervalHandler = setInterval(() => {
       this.options.onProgress(this.lastProgress);
     }, this.options.progressInterval || DEFAULT_PROGRESS_INTERVAL);

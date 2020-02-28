@@ -24,6 +24,7 @@ const config =  {
     rules: [
       {
         test: /\.(js|jsx)$/,
+        exclude: /^.*\.node\.js|.*\.node\.spec\.js|.*\.browser\.spec\.js|.*\.spec\.js$/,
         use: {
           loader: 'babel-loader',
           options: {
@@ -40,18 +41,17 @@ const config =  {
       },
     ],
   },
-  externals: [
-    // those externals are only used in nodejs
-    'fs',
-    'path',
-    'crypto',
-  ],
   plugins: [
     new CleanWebpackPlugin(),
     new webpack.BannerPlugin({ banner }),
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': 'production',
       '@{VERSION}' : `${require("./package.json").version}`,
+    }),
+    new webpack.NormalModuleReplacementPlugin(/^.*\.node\.js$/,  (result) => {
+      if (result.resource) {
+        result.resource = result.resource.replace(/node/g, 'browser');
+      }
     }),
   ],
   devtool: 'source-map',

@@ -18,8 +18,9 @@
 import { removeEmpty } from '../utils';
 import { StoreParams } from '../filelink';
 import { ClientOptions, Session } from '../client';
-import { requestWithSource, request } from '../api/request';
+// import { requestWithSource, request } from '../api/request';
 import { FilestackError } from './../../filestack_error';
+import { FsRequest, FsCancelToken } from '../request';
 
 /**
  * @private
@@ -38,8 +39,32 @@ export const CALLBACK_URL_KEY = 'fs-tab';
 export class CloudClient {
   session: Session;
   cloudApiUrl: string;
+
+  /**
+   * Returns flag if token should be cached in local storage
+   *
+   * @private
+   * @type {boolean}
+   * @memberof CloudClient
+   */
   private cache: boolean = false;
+
+  /**
+   * Token returned from api for accessing clouds
+   *
+   * @private
+   * @type {string}
+   * @memberof CloudClient
+   */
   private _token: string;
+
+  /**
+   * Flag for in-app browser setup
+   * (in-app browsers are not supporting new window so we need to save token to session cache)
+   *
+   * @private
+   * @memberof CloudClient
+   */
   private _isInAppBrowser = false;
 
   constructor(session: Session, options?: ClientOptions) {
@@ -82,7 +107,22 @@ export class CloudClient {
     this._token = key;
   }
 
-  list(clouds: any, token?: any) {
+  prefetch() {
+    const params = {
+      apikey: this.session.apikey,
+    };
+    return FsRequest.get(`${this.cloudApiUrl}/prefetch`, { params })
+      .then(res => res.data)
+      .then(data => {
+        if (data.inapp_browser) {
+          this._isInAppBrowser = true;
+        }
+
+        return data;
+      });
+  }
+
+  list(clouds: any, cancelTokenInput?: any) {
     const payload: any = {
       apikey: this.session.apikey,
       clouds,
@@ -101,28 +141,26 @@ export class CloudClient {
 
     let options: any = {};
 
-    if (token) {
-      const CancelToken = request.CancelToken;
-      const source = CancelToken.source();
-      token.cancel = source.cancel;
-
-      options.cancelToken = source.token;
+    if (cancelTokenInput) {
+      const cancelToken = new FsCancelToken();
+      cancelTokenInput.cancel = cancelToken.cancel.bind(cancelToken);
+      options.cancelToken = cancelToken;
     }
 
-    return requestWithSource()
-      .post(`${this.cloudApiUrl}/folder/list`, payload, options)
-      .then(res => {
-        if (res.data && res.data.token) {
-          this.token = res.data.token;
-        }
+    return FsRequest.post(`${this.cloudApiUrl}/folder/list`, payload, options).then(res => {
+      if (res.data && res.data.token) {
+        this.token = res.data.token;
+      }
 
-        return res.data;
-      });
+      return res.data;
+    });
   }
 
-  store(name: string, path: string, options: StoreParams = {}, customSource: any = {}, token?: any) {
+  store(name: string, path: string, options: StoreParams = {}, customSource: any = {}, cancelTokenInput?: any) {
     // Default to S3
-    if (options.location === undefined) options.location = 's3';
+    if (options.location === undefined) {
+      options.location = 's3';
+    }
 
     const payload: any = {
       apikey: this.session.apikey,
@@ -151,27 +189,23 @@ export class CloudClient {
 
     let requestOptions: any = {};
 
-    if (token) {
-      const CancelToken = request.CancelToken;
-      const source = CancelToken.source();
-      token.cancel = source.cancel;
-
-      requestOptions.cancelToken = source.token;
+    if (cancelTokenInput) {
+      const cancelToken = new FsCancelToken();
+      cancelTokenInput.cancel = cancelToken.cancel.bind(cancelToken);
+      requestOptions.cancelToken = cancelToken;
     }
 
-    return requestWithSource()
-      .post(`${this.cloudApiUrl}/store/`, payload, requestOptions)
-      .then(res => {
-        if (res.data && res.data.token) {
-          this.token = res.data.token;
-        }
+    return FsRequest.post(`${this.cloudApiUrl}/store/`, payload, requestOptions).then(res => {
+      if (res.data && res.data.token) {
+        this.token = res.data.token;
+      }
 
-        if (res.data && res.data[name]) {
-          return res.data[name];
-        }
+      if (res.data && res.data[name]) {
+        return res.data[name];
+      }
 
-        return res.data;
-      });
+      return res.data;
+    });
   }
 
   logout(name?: string) {
@@ -183,19 +217,23 @@ export class CloudClient {
 
     if (name) {
       payload.clouds = { [name]: {} };
-    } else if (this.cache) {
-      // No name means logout of ALL clouds. Clear local session.
-      localStorage.removeItem(PICKER_KEY);
+    } else {
+      if (this.cache) {
+        // No name means logout of ALL clouds. Clear local session.
+        localStorage.removeItem(PICKER_KEY);
+      }
+
+      if (this._isInAppBrowser) {
+        sessionStorage.removeItem(PICKER_KEY);
+      }
     }
 
-    return requestWithSource()
-      .post(`${this.cloudApiUrl}/auth/logout`, payload)
-      .then(res => {
-        if (res.data && res.data[name]) {
-          return res.data[name];
-        }
-        return res.data;
-      });
+    return FsRequest.post(`${this.cloudApiUrl}/auth/logout`, payload).then(res => {
+      if (res.data && res.data[name]) {
+        return res.data[name];
+      }
+      return res.data;
+    });
   }
 
   metadata(url: string) {
@@ -209,9 +247,7 @@ export class CloudClient {
       payload.signature = this.session.signature;
     }
 
-    return requestWithSource()
-      .post(`${this.cloudApiUrl}/metadata`, payload)
-      .then(res => res.data);
+    return FsRequest.post(`${this.cloudApiUrl}/metadata`, payload).then(res => res.data);
   }
 
   // OpenTok API Endpoints
@@ -219,9 +255,7 @@ export class CloudClient {
     if (type !== 'video' && type !== 'audio') {
       throw new FilestackError('Type must be one of video or audio.');
     }
-    return requestWithSource()
-      .post(`${this.cloudApiUrl}/recording/${type}/init`)
-      .then(res => res.data);
+    return FsRequest.post(`${this.cloudApiUrl}/recording/${type}/init`).then(res => res.data);
   }
 
   tokStart(type: string, key: string, sessionId: string) {
@@ -233,9 +267,7 @@ export class CloudClient {
       session_id: sessionId,
     };
 
-    return requestWithSource()
-      .post(`${this.cloudApiUrl}/recording/${type}/start`, payload)
-      .then(res => res.data);
+    return FsRequest.post(`${this.cloudApiUrl}/recording/${type}/start`, payload).then(res => res.data);
   }
 
   tokStop(type: string, key: string, sessionId: string, archiveId: string) {
@@ -249,9 +281,7 @@ export class CloudClient {
       archive_id: archiveId,
     };
 
-    return requestWithSource()
-      .post(`${this.cloudApiUrl}/recording/${type}/stop`, payload)
-      .then(res => res.data);
+    return FsRequest.post(`${this.cloudApiUrl}/recording/${type}/stop`, payload).then(res => res.data);
   }
 
   private currentAppUrl() {

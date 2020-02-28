@@ -39,6 +39,13 @@ const testSession = {
 
 let scope = nock(sessionURls.cloudApiUrl);
 
+scope.defaultReplyHeaders({
+  'access-control-allow-origin': req => req.headers['origin'],
+  'access-control-allow-methods': req => req.headers['access-control-request-method'],
+  'access-control-allow-headers': req => req.headers['access-control-request-headers'],
+  'content-type': 'application/json',
+});
+
 const mockTokInit = jest
   .fn()
   .mockName('tokInit')
@@ -78,14 +85,12 @@ const mockList = jest
 const mockLogout = jest
   .fn()
   .mockName('logout')
-  .mockImplementation((url, data) => {
-    const params = data ? JSON.parse(data) : {};
-
-    if (data && params.clouds && params.clouds.token) {
+  .mockImplementation((url, params) => {
+    if (params.clouds && params.clouds.token) {
       return { token: testCloudToken };
     }
 
-    return data;
+    return params;
   });
 
 const mockStore = jest
@@ -100,10 +105,6 @@ const mockStore = jest
   });
 
 describe('cloud', () => {
-  beforeAll(() => {
-    spyOn(utils, 'isNode').and.returnValue(false);
-  });
-
   beforeEach(() => {
     scope
       .persist()
@@ -115,8 +116,8 @@ describe('cloud', () => {
       });
 
     scope.post('/auth/logout').reply(200, mockLogout);
-    scope.post('/folder/list').reply(200, (_, data) => mockList(JSON.parse(data)));
-    scope.post('/store/').reply(200, (_, data) => mockStore(JSON.parse(data)));
+    scope.post('/folder/list').reply(200, (_, data) => mockList(data));
+    scope.post('/store/').reply(200, (_, data) => mockStore(data));
     scope.post('/metadata').reply(200, mockMetadata);
 
     scope.post(/\/recording\/(audio|video)\/init/).reply(200, mockTokInit);
@@ -128,6 +129,62 @@ describe('cloud', () => {
     nock.cleanAll();
     jest.clearAllMocks();
     localStorage.clear();
+  });
+
+  describe('cancelToken', () => {
+    const testDomain = 'http://delay.filestack.test';
+    let scopeD;
+
+    beforeEach(() => {
+      scopeD = nock(testDomain);
+      scopeD.post('/store/').delay(4000).reply(200);
+      scopeD.post('/folder/list').delay(4000).reply(200);
+    });
+
+    afterEach(() => {
+      nock.cleanAll();
+      jest.clearAllMocks();
+      localStorage.clear();
+    });
+
+    it('Should cancel store request', (done) => {
+      const sessionClone = JSON.parse(JSON.stringify(testSession));
+      sessionClone.urls.cloudApiUrl = testDomain;
+
+      let token = {};
+
+      new CloudClient(sessionClone).store('google', 'test', { filename: '1', location: 'gcs' }, {}, token).then(() => {
+        done('Request not canceled');
+      }).catch((err) => {
+        expect(err).toEqual(expect.any(Error));
+        done();
+      });
+
+      setTimeout(() => {
+        // @ts-ignore
+        token.cancel();
+      }, 500);
+    });
+
+    it('Should cancel list request', (done) => {
+      const sessionClone = JSON.parse(JSON.stringify(testSession));
+      sessionClone.urls.cloudApiUrl = testDomain;
+
+      let token = {};
+
+      new CloudClient(sessionClone).list('google', token).then(() => {
+        done('Request not canceled');
+      }).catch((err) => {
+        expect(err).toEqual(expect.any(Error));
+        done();
+      });
+
+      setTimeout(() => {
+        // @ts-ignore
+        token.cancel();
+      }, 500);
+    });
+
   });
 
   describe('facebook inapp browser', () => {
@@ -204,13 +261,13 @@ describe('cloud', () => {
     //   });
     // });
 
-    // describe('prefetch', () => {
-    //   beforeEach(() => {
-    //     scope
-    //     .get('/prefetch')
-    //     .query({ apikey: testApiKey })
-    //     .reply(200, mockPrefetch);
-    //   });
+  describe('prefetch', () => {
+    beforeEach(() => {
+      scope
+        .get('/prefetch')
+        .query({ apikey: testApiKey })
+        .reply(200, mockPrefetch);
+    });
 
     //   it('should make correct request to api', async () => {
     //     const res = await new CloudClient(testSession).prefetch();
@@ -398,13 +455,10 @@ describe('cloud', () => {
 
       const res = await new CloudClient(testSession).metadata(testUrl);
 
-      expect(mockMetadata).toHaveBeenCalledWith(
-        expect.any(String),
-        JSON.stringify({
-          apikey: testApiKey,
-          url: testUrl,
-        })
-      );
+      expect(mockMetadata).toHaveBeenCalledWith(expect.any(String), {
+        apikey: testApiKey,
+        url: testUrl,
+      });
       expect(res).toEqual('metadata');
     });
 
@@ -416,14 +470,11 @@ describe('cloud', () => {
         ...testSecurity,
       }).metadata(testUrl);
 
-      expect(mockMetadata).toHaveBeenCalledWith(
-        expect.any(String),
-        JSON.stringify({
-          apikey: testApiKey,
-          url: testUrl,
-          ...testSecurity,
-        })
-      );
+      expect(mockMetadata).toHaveBeenCalledWith(expect.any(String), {
+        apikey: testApiKey,
+        url: testUrl,
+        ...testSecurity,
+      });
       expect(res).toEqual('metadata');
     });
   });
@@ -462,14 +513,14 @@ describe('cloud', () => {
       it('should make correct request to api (audio)', async () => {
         const res = await new CloudClient(testSession).tokStart('audio', 'key', testTokSession);
 
-        expect(mockTokStart).toHaveBeenCalledWith(expect.any(String), JSON.stringify({ apikey: 'key', session_id: testTokSession }));
+        expect(mockTokStart).toHaveBeenCalledWith(expect.any(String), { apikey: 'key', session_id: testTokSession });
         expect(res).toEqual('start');
       });
 
       it('should make correct request to api (video)', async () => {
         const res = await new CloudClient(testSession).tokStart('video', 'key', testTokSession);
 
-        expect(mockTokStart).toHaveBeenCalledWith(expect.any(String), JSON.stringify({ apikey: 'key', session_id: testTokSession }));
+        expect(mockTokStart).toHaveBeenCalledWith(expect.any(String), { apikey: 'key', session_id: testTokSession });
         expect(res).toEqual('start');
       });
 
@@ -482,28 +533,22 @@ describe('cloud', () => {
       it('should make correct request to api (audio)', async () => {
         const res = await new CloudClient(testSession).tokStop('audio', 'key', testTokSession, testTokArchiveId);
 
-        expect(mockTokStop).toHaveBeenCalledWith(
-          expect.any(String),
-          JSON.stringify({
-            apikey: 'key',
-            session_id: testTokSession,
-            archive_id: testTokArchiveId,
-          })
-        );
+        expect(mockTokStop).toHaveBeenCalledWith(expect.any(String), {
+          apikey: 'key',
+          session_id: testTokSession,
+          archive_id: testTokArchiveId,
+        });
         expect(res).toEqual('stop');
       });
 
       it('should make correct request to api (video)', async () => {
         const res = await new CloudClient(testSession).tokStop('video', 'key', testTokSession, testTokArchiveId);
 
-        expect(mockTokStop).toHaveBeenCalledWith(
-          expect.any(String),
-          JSON.stringify({
-            apikey: 'key',
-            session_id: testTokSession,
-            archive_id: testTokArchiveId,
-          })
-        );
+        expect(mockTokStop).toHaveBeenCalledWith(expect.any(String), {
+          apikey: 'key',
+          session_id: testTokSession,
+          archive_id: testTokArchiveId,
+        });
         expect(res).toEqual('stop');
       });
 

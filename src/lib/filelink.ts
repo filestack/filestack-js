@@ -1493,7 +1493,7 @@ export class Filelink {
    * @example [{name: 'resize', params: {height: 125}}] => {resize: {height: 125}}
    * @param arr - any array
    */
-  private arrayToObject = (array: object[], nameKey: string, dataKey: string) => {
+  private arrayToObject = (array: object[] = [], nameKey: string, dataKey: string) => {
     return array.reduce((obj, item) => {
       obj[item[nameKey]] = item[dataKey];
       return obj;

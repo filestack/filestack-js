@@ -1,4 +1,3 @@
-
 /*
  * Copyright (c) 2018 by Filestack.
  * Some rights reserved.
@@ -16,14 +15,14 @@
  * limitations under the License.
  */
 
-import { Client } from './../src/lib/client';
-import * as Path from 'path';
+// import { Client } from './../src/lib/client';
+// import * as Path from 'path';
 // import * as Sentry from '@sentry/node';
 
 import { S3Uploader } from './../src/lib/api/upload/uploaders/s3';
 import { getFile } from '../src/lib/api/upload';
 
-const createFile = (size = 44320) => Buffer.alloc(size);
+const createFile = (size = 443200) => Buffer.alloc(size);
 // Sentry.init({ dsn: 'DSN' });
 
 // const fs = new Client(process.env.API_KEY);
@@ -56,13 +55,22 @@ const createFile = (size = 44320) => Buffer.alloc(size);
 
 (async () => {
   const file = await getFile(createFile());
+  const file1 = await getFile(createFile());
   file.name = 'test.txt';
+
+  // const token = new FsCancelToken();
 
   const u = new S3Uploader({});
   u.setUrl('https://upload.filestackapi.com');
-  u.setApikey('AHvhedybhQMqZOqRvZquez');
+  u.setApikey(process.env.API_KEY);
   u.setIntegrityCheck(false);
   u.addFile(file);
+  u.addFile(file1);
+
+  setTimeout(() => {
+    console.log('abort call');
+    u.abort();
+  }, 3000);
 
   const res = await u.execute().catch((e) => {
     console.log('ERROR', e);

@@ -8,6 +8,7 @@
     "declaration": true,
     "importHelpers": true,
     "inlineSourceMap": true,
+    "inlineSources": true,
     "listFiles": false,
     "traceResolution": false,
     "skipLibCheck": true,
@@ -28,7 +29,7 @@
   ],
   "exclude": [
     "node_modules/**",
-    "src/**/*.spec.ts"
+    // "src/**/*.spec.ts"
   ],
   "compileOnSave": false,
 

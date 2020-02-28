@@ -2,6 +2,54 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.12.4](https://github.com/filestack/filestack-js/compare/v3.12.3...v3.12.4) (2020-02-17)
+
+
+### Bug Fixes
+
+* **picker:** fix problems with picker minimalization ([d23b79e](https://github.com/filestack/filestack-js/commit/d23b79e810045ae6906e667b148af71771bd5236))
+
+### [3.12.3](https://github.com/filestack/filestack-js/compare/v3.12.2...v3.12.3) (2020-02-12)
+
+### [3.12.2](https://github.com/filestack/filestack-js/compare/v3.12.1...v3.12.2) (2020-02-12)
+
+
+### Bug Fixes
+
+* **api/file:** remove new debug headers from old api requests ([a9a03fb](https://github.com/filestack/filestack-js/commit/a9a03fbf71fd837763c531152c8e93bc69938d62))
+
+### [3.12.1](https://github.com/filestack/filestack-js/compare/v3.12.0...v3.12.1) (2020-02-12)
+
+
+### Bug Fixes
+
+* **request:** add missing filestack debug headers in request library ([0356cd1](https://github.com/filestack/filestack-js/commit/0356cd17bd12973d3a76d6b0aa8f3c067342aeef))
+
+## [3.12.0](https://github.com/filestack/filestack-js/compare/v3.11.2...v3.12.0) (2020-02-12)
+
+
+### Features
+
+* **request:** Change axios library to filestack one ([52a605a](https://github.com/filestack/filestack-js/commit/52a605aac5db6646e26f5bb8d8ac431afde2a768))
+
+### [3.11.2](https://github.com/filestack/filestack-js/compare/v3.11.1...v3.11.2) (2020-01-24)
+
+
+### Bug Fixes
+
+* **polymorphic:** Split libs into node and browser env, update webpack config ([82689c2](https://github.com/filestack/filestack-js/commit/82689c2))
+
+
+
+### [3.11.1](https://github.com/filestack/filestack-js/compare/v3.11.0...v3.11.1) (2020-01-22)
+
+
+### Bug Fixes
+
+* **require:** fix problem during builds libs for browser - missing fs lib ([f77e4d1](https://github.com/filestack/filestack-js/commit/f77e4d1)), closes [#319](https://github.com/filestack/filestack-js/issues/319)
+
+
+
 ## [3.11.0](https://github.com/filestack/filestack-js/compare/v3.10.1...v3.11.0) (2020-01-15)
 
 
