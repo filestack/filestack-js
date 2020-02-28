@@ -66,38 +66,6 @@ type PrefetchResponse = {
   };
 };
 
-// ==>
-// {
-//   "apikey": "AHvhedybhQMqZOqRvZquez",
-//   security: {
-//     policy: "",
-//     signature: ""
-//   },
-// 	"permissions": ["transforms_ui", "gmail"], -- events
-// 	"settings": ["inapp_browser", "customsource"],
-// 	"events": ["picker"], -- events
-// 	"picker_config": {
-// 		"fromSources": ["googledrive", "dropbox"]
-// 	}
-// }
-
-// <==
-// {
-//   "blocked": false,
-//   "settings": {
-//     "customsource": false,
-//     "inapp_browser": true
-//   },
-//   "permissions": {
-//     "transforms_ui": false
-//   },
-//   "updated_config": {
-//     "fromSources": [
-//       "googledrive"
-//     ]
-//   }
-// }
-
 /**
  * @private
  */
@@ -136,10 +104,7 @@ export class Prefetch {
 
     const response = await requestWithSource()
       .post(`${this.prefetchUrl}/prefetch`, paramsToSend)
-      .then(res => res.data)
-      .catch(error => {
-        console.log('catch error', error);
-      });
+      .then(res => res.data);
 
     return this.reassignCallbacks(response);
   }

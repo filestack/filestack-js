@@ -57,11 +57,39 @@ const PrefetchRequest = {
   },
 };
 
+let scope = nock(testURL.uploadApiUrl);
+// let scope = nock(sessionURls.uploadApiUrl);
+
+const mockPrefetch = jest
+  .fn()
+  .mockName('prefetch')
+  .mockReturnValue('prefetch');
+
 describe('Prefetch', () => {
+  beforeAll(() => {
+    spyOn(utils, 'isNode').and.returnValue(false);
+  });
+
   beforeEach(() => {
-    beforeAll(() => {
-      spyOn(utils, 'isNode').and.returnValue(false);
+    console.log('testURL.uploadApiUrl => ', testURL.uploadApiUrl);
+
+    scope
+      .persist()
+      .options(/.*/)
+      .reply(204, '', {
+        'access-control-allow-headers': 'filestack-source,filestack-trace-id,filestack-trace-span',
+        'access-control-allow-methods': '*',
+        'access-control-allow-origin': '*',
+      });
+
+    scope.post('/prefetch').reply(200, {
+      prefetchUrl: testURL.uploadApiUrl,
+      session: {
+        apikey: testApiKey,
+        urls: testURL,
+      },
     });
+
   });
 
   it('should return correct session', async () => {
@@ -71,7 +99,6 @@ describe('Prefetch', () => {
       session: {
         apikey: testApiKey,
         urls: testURL,
-        prefetch: 'a',
       },
     };
 
@@ -81,6 +108,10 @@ describe('Prefetch', () => {
   it('should return correct security', () => {
     Object.assign(testSession, { ...testSecurity });
     const prefetchRequest = new Prefetch(testSession);
+
+    scope.post('/prefetch').reply(200, (_, data) => {
+      console.log('aaa => ', data);
+    });
 
     const prefetchResponse = {
       prefetchUrl: testURL.uploadApiUrl,

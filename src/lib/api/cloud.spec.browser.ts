@@ -138,87 +138,86 @@ describe('cloud', () => {
         .reply(200, {
           inapp_browser: true,
         });
-
     });
 
-    it('should set token to sessionStore when inapp browser is detected', async () => {
-      spyOn(utils, 'isFacebook').and.returnValue(true);
+    //   it('should set token to sessionStore when inapp browser is detected', async () => {
+    //     spyOn(utils, 'isFacebook').and.returnValue(true);
 
-      const client = new CloudClient(testSession);
-      await client.prefetch();
+    //     const client = new CloudClient(testSession);
+    //     await client.prefetch();
 
-      const token = 'test';
-      client.token = token;
+    //     const token = 'test';
+    //     client.token = token;
 
-      expect(sessionStorage.getItem(PICKER_KEY)).toEqual(token);
+    //     expect(sessionStorage.getItem(PICKER_KEY)).toEqual(token);
 
-      sessionStorage.setItem(PICKER_KEY, undefined);
-    });
+    //     sessionStorage.setItem(PICKER_KEY, undefined);
+    //   });
 
-    it('should get token from sessionStore when inapp browser is detected', async () => {
-      spyOn(utils, 'isFacebook').and.returnValue(true);
+    //   it('should get token from sessionStore when inapp browser is detected', async () => {
+    //     spyOn(utils, 'isFacebook').and.returnValue(true);
 
-      const client = new CloudClient(testSession);
-      await client.prefetch();
+    //     const client = new CloudClient(testSession);
+    //     await client.prefetch();
 
-      const token = 'test';
-      sessionStorage.setItem(PICKER_KEY, token);
+    //     const token = 'test';
+    //     sessionStorage.setItem(PICKER_KEY, token);
 
-      expect(client.token).toEqual(token);
-      sessionStorage.setItem(PICKER_KEY, undefined);
-    });
+    //     expect(client.token).toEqual(token);
+    //     sessionStorage.setItem(PICKER_KEY, undefined);
+    //   });
 
-    it('should send appurl in list action', async () => {
-      const clouds = { test: true };
+    //   it('should send appurl in list action', async () => {
+    //     const clouds = { test: true };
 
-      const client = new CloudClient(testSession);
-      await client.prefetch();
-      const res = await client.list({ ...clouds });
+    //     const client = new CloudClient(testSession);
+    //     await client.prefetch();
+    //     const res = await client.list({ ...clouds });
 
-      expect(res).toEqual({
-        apikey: testApiKey,
-        flow: 'web',
-        appurl: 'http://localhost/?fs-tab=init',
-        clouds,
-        token: null,
-      });
-    });
+    //     expect(res).toEqual({
+    //       apikey: testApiKey,
+    //       flow: 'web',
+    //       appurl: 'http://localhost/?fs-tab=init',
+    //       clouds,
+    //       token: null,
+    //     });
+    //   });
 
-    it('should not send app url if urlsearch params is undefined', async () => {
-      const clouds = { test: true };
+    //   it('should not send app url if urlsearch params is undefined', async () => {
+    //     const clouds = { test: true };
 
-      const before = window.URLSearchParams;
-      window.URLSearchParams = undefined;
+    //     const before = window.URLSearchParams;
+    //     window.URLSearchParams = undefined;
 
-      const client = new CloudClient(testSession);
-      await client.prefetch();
-      const res = await client.list({ ...clouds });
+    //     const client = new CloudClient(testSession);
+    //     await client.prefetch();
+    //     const res = await client.list({ ...clouds });
 
-      expect(res).toEqual({
-        apikey: testApiKey,
-        flow: 'web',
-        clouds,
-        token: null,
-      });
+    //     expect(res).toEqual({
+    //       apikey: testApiKey,
+    //       flow: 'web',
+    //       clouds,
+    //       token: null,
+    //     });
 
-      window.URLSearchParams = before;
-    });
-  });
+    //     window.URLSearchParams = before;
+    //   });
+    // });
 
-  describe('prefetch', () => {
-    beforeEach(() => {
-      scope
-      .get('/prefetch')
-      .query({ apikey: testApiKey })
-      .reply(200, mockPrefetch);
-    });
+    // describe('prefetch', () => {
+    //   beforeEach(() => {
+    //     scope
+    //     .get('/prefetch')
+    //     .query({ apikey: testApiKey })
+    //     .reply(200, mockPrefetch);
+    //   });
 
-    it('should make correct request to api', async () => {
-      const res = await new CloudClient(testSession).prefetch();
+    //   it('should make correct request to api', async () => {
+    //     const res = await new CloudClient(testSession).prefetch();
 
-      expect(mockPrefetch).toHaveBeenCalledWith(expect.any(String), '');
-      expect(res).toEqual('prefetch');
-    });
+    //     expect(mockPrefetch).toHaveBeenCalledWith(expect.any(String), '');
+    //     expect(res).toEqual('prefetch');
+    //   });
   });
 
   describe('list', () => {
@@ -445,13 +444,16 @@ describe('cloud', () => {
         expect(res).toEqual('init');
       });
 
-      it('should throw on wrong type', async() => {
+      it('should throw on wrong type', async () => {
         expect(() => {
-          new CloudClient(testSession).tokInit('videoa').then(() => {
-            console.log('init');
-          }).catch(() => {
-            console.log('err');
-          });
+          new CloudClient(testSession)
+            .tokInit('videoa')
+            .then(() => {
+              console.log('init');
+            })
+            .catch(() => {
+              console.log('err');
+            });
         }).toThrowError();
       });
     });
