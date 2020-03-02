@@ -20,7 +20,6 @@ import { Hosts } from './../../config';
 import { Map } from './extensions';
 import fileType from 'file-type';
 import * as isutf8 from 'isutf8';
-// import { PickerOptions } from '../';
 import { cloneDeep as lodashCloneDeep, merge as lodashMerge } from 'lodash';
 import { PrefetchResponse } from '../api/prefetch';
 import { PickerOptions } from '../picker';
