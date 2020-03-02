@@ -102,10 +102,6 @@ export class Prefetch {
 
     const { data } = await FsRequest.post(`${this.prefetchUrl}/prefetch`, paramsToSend).then(res => res.data);
 
-    // const response = await requestWithSource()
-    //   .post(`${this.prefetchUrl}/prefetch`, paramsToSend)
-    //   .then(res => res.data);
-
     return reassignCallbacks(this.configToCheck, data);
   }
 }
