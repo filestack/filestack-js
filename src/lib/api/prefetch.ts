@@ -15,11 +15,10 @@
  * limitations under the License.
  */
 
-import { ClientOptions, Session } from '../client';
+import { Session } from '../client';
 import { PickerOptions } from './../picker';
-// import { requestWithSource } from '../api/request';
 import { FsRequest } from '../request';
-import { cloneDeep as lodashCloneDeep, merge as lodashMerge } from 'lodash';
+import { cleanUpCallback, reassignCallbacks } from '../utils';
 
 export type PrefetchOptionsSetting = {
   inapp_browser?: boolean;
@@ -58,7 +57,7 @@ interface PrefetchRequest {
   picker_config?: PickerOptions;
 }
 
-type PrefetchResponse = {
+export type PrefetchResponse = {
   blocked?: boolean;
   settings?: PrefetchOptionsSetting;
   permissions?: PrefetchOptionsPermissions;
@@ -82,11 +81,11 @@ export class Prefetch {
 
   async getConfig({ pickerOptions, settings, permissions, events }: PrefetchOptions) {
     if (this.session.prefetch) {
-      await FsRequest.post(`${this.prefetchUrl}/prefetch`, { events });
+      FsRequest.post(`${this.prefetchUrl}/prefetch`, { events });
       return Promise.resolve(this.session.prefetch);
     }
 
-    const configToSend = this.cleanUpCallback(pickerOptions);
+    const configToSend = cleanUpCallback(this.configToCheck, pickerOptions);
     const permissionsKeys = [...Object.keys(permissions)];
 
     let paramsToSend: PrefetchRequest = {
@@ -101,28 +100,12 @@ export class Prefetch {
       paramsToSend.security = { policy: this.session.policy, signature: this.session.signature };
     }
 
-    const response = await FsRequest.post(`${this.prefetchUrl}/prefetch`, paramsToSend).then(res => res.data);
+    const { data } = await FsRequest.post(`${this.prefetchUrl}/prefetch`, paramsToSend).then(res => res.data);
 
     // const response = await requestWithSource()
     //   .post(`${this.prefetchUrl}/prefetch`, paramsToSend)
     //   .then(res => res.data);
 
-    return this.reassignCallbacks(response);
-  }
-
-  private cleanUpCallback(pickerOptions: PickerOptions) {
-    this.configToCheck = lodashCloneDeep(pickerOptions);
-
-    Object.keys(this.configToCheck).map(key => {
-      if (key.indexOf('on') === 0) {
-        this.configToCheck[key] = undefined;
-      }
-    });
-
-    return this.configToCheck;
-  }
-
-  private reassignCallbacks(response: PrefetchResponse) {
-    return lodashMerge({}, response);
+    return reassignCallbacks(this.configToCheck, data);
   }
 }

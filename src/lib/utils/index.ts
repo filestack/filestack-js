@@ -20,6 +20,10 @@ import { Hosts } from './../../config';
 import { Map } from './extensions';
 import fileType from 'file-type';
 import * as isutf8 from 'isutf8';
+// import { PickerOptions } from '../';
+import { cloneDeep as lodashCloneDeep, merge as lodashMerge } from 'lodash';
+import { PrefetchResponse } from '../api/prefetch';
+import { PickerOptions } from '../picker';
 
 /**
  * Resolve cdn url based on handle type
@@ -105,7 +109,7 @@ export const getMimetype = (file: Uint8Array | Buffer, name?: string): string =>
   let type = fileType(file);
 
   // check x-ms and x-msi by extension
-  if (type && (type.mime !== 'application/x-ms' && type.mime !== 'application/x-msi')) {
+  if (type && type.mime !== 'application/x-ms' && type.mime !== 'application/x-msi') {
     return type.mime;
   }
 
@@ -197,6 +201,34 @@ export const filterObject = (toFilter, requiredFields: string[]) => {
   return Object.keys(toFilter)
     .filter(f => requiredFields.indexOf(f) > -1)
     .reduce((obj, key) => ({ ...obj, [key]: toFilter[key] }), {});
+};
+
+/**
+ * Return cleanup callback
+ *
+ * @param previousPickerOptions
+ * @param pickerOptions
+ */
+export const cleanUpCallback = (previousPickerOptions: PickerOptions, pickerOptions: PickerOptions) => {
+  previousPickerOptions = lodashCloneDeep(pickerOptions);
+
+  Object.keys(previousPickerOptions).map(key => {
+    if (key.indexOf('on') === 0) {
+      previousPickerOptions[key] = undefined;
+    }
+  });
+
+  return previousPickerOptions;
+};
+
+/**
+ * Return reassign callbacks
+ *
+ * @param configToCheck
+ * @param response
+ */
+export const reassignCallbacks = (configToCheck: PickerOptions, response: PrefetchResponse) => {
+  return lodashMerge(configToCheck, response);
 };
 
 export * from './index.node';

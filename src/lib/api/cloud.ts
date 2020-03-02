@@ -70,7 +70,6 @@ export class CloudClient {
   constructor(session: Session, options?: ClientOptions) {
     this.session = session;
 
-    // @todo
     if (this.session.prefetch.settings.inapp_browser) {
       this._isInAppBrowser = this.session.prefetch.settings.inapp_browser;
     }
