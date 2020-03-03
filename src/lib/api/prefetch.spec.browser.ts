@@ -15,10 +15,9 @@
  * limitations under the License.
  */
 
-import { config } from './../../config';
+// import { config } from './../../config';
 import * as nock from 'nock';
-import * as utils from './../utils';
-import { Prefetch, PrefetchOptionsEvents } from './prefetch';
+import { Prefetch } from './prefetch';
 
 const testApiKey = 'AHvhedybhQMqZOqRvZquez';
 const testSecurity = {
@@ -28,107 +27,51 @@ const testSecurity = {
 
 const testURL = {
   fileApiUrl: '',
-  uploadApiUrl: 'https://upload.fs.stg.filestack.org',
-  cloudApiUrl: 'https://cloud.fs.stg.filestack.org',
-  cdnUrl: 'https://cdn.filestackcontent.com',
+  uploadApiUrl: 'https://uploadtesturl.com',
+  cloudApiUrl: '',
+  cdnUrl: '',
   pickerUrl: '',
 };
-
-const sessionURls = config.urls;
 
 const testSession = {
   apikey: testApiKey,
   urls: testURL,
-};
-
-const PrefetchRequest = {
-  settings: {
-    inapp_browser: false,
-    customsource: false,
-  },
-  permissions: {
-    transforms_ui: false,
-    gmail: true,
-    facebook: true,
-  },
-  events: [PrefetchOptionsEvents.PICKER],
-  pickerOptions: {
-    fromSources: ['googledrive', 'dropbox'],
-  },
+  security: testSecurity,
 };
 
 let scope = nock(testURL.uploadApiUrl);
-// let scope = nock(sessionURls.uploadApiUrl);
 
-const mockPrefetch = jest
-  .fn()
-  .mockName('prefetch')
-  .mockReturnValue('prefetch');
+// const mockPrefetch = jest
+//   .fn()
+//   .mockName('prefetch')
+//   .mockReturnValue('prefetch');
 
-describe('Prefetch', () => {
-  beforeAll(() => {
-    // @ts-ignore
-    spyOn(utils, 'isNode').and.returnValue(false);
-  });
+scope.defaultReplyHeaders({
+  'access-control-allow-origin': req => req.headers['origin'],
+  'access-control-allow-methods': req => req.headers['access-control-request-method'],
+  'access-control-allow-headers': req => req.headers['access-control-request-headers'],
+  'content-type': 'application/json',
+});
 
-  beforeEach(() => {
-    console.log('testURL.uploadApiUrl => ', testURL.uploadApiUrl);
+scope
+  .persist()
+  .options(/.*/)
+  .reply(204);
 
-    scope
-      .persist()
-      .options(/.*/)
-      .reply(204, '', {
-        'access-control-allow-headers': 'filestack-source,filestack-trace-id,filestack-trace-span',
-        'access-control-allow-methods': '*',
-        'access-control-allow-origin': '*',
-      });
+describe.only('Prefetch', () => {
 
-    scope.post('/prefetch').reply(200, {
-      prefetchUrl: testURL.uploadApiUrl,
-      session: {
-        apikey: testApiKey,
-        urls: testURL,
-      },
-    });
-  });
+  // apikey: string;
+  // security?: {
+  //   policy?: string;
+  //   signature?: string;
+  // };
+  // permissions?: string[];
+  // settings?: string[];
+  // events?: PrefetchOptionsEvents[];
+  // picker_config?: PickerOptions;
 
-  it('should return correct session', async () => {
-    const prefetchRequest = new Prefetch(testSession);
-    const prefetchResponse = {
-      prefetchUrl: testURL.uploadApiUrl,
-      session: {
-        apikey: testApiKey,
-        urls: testURL,
-      },
-    };
-
-    expect(prefetchRequest).toEqual(prefetchResponse);
-  });
-
-  it('should return correct security', () => {
-    Object.assign(testSession, { ...testSecurity });
-    const prefetchRequest = new Prefetch(testSession);
-
-    scope.post('/prefetch').reply(200, (_, data) => {
-      console.log('aaa => ', data);
-    });
-
-    const prefetchResponse = {
-      prefetchUrl: testURL.uploadApiUrl,
-      session: {
-        apikey: testApiKey,
-        ...testSecurity,
-        urls: testURL,
-      },
-    };
-
-    expect(prefetchRequest).toEqual(prefetchResponse);
-  });
-
-  it('should return correct config', async () => {
-    const prefetch = new Prefetch(testSession);
-    const prefetchResponse = await prefetch.getConfig(PrefetchRequest);
-    const expectationsResponse = {
+  it('Should make correct request to prefetch and return new config', async () => {
+    const serverResponse = {
       blocked: false,
       settings: {
         customsource: false,
@@ -142,6 +85,91 @@ describe('Prefetch', () => {
       },
     };
 
-    expect(prefetchResponse).toEqual(expectationsResponse);
+    scope.post('/prefetch').reply(200, serverResponse);
+
+    const test = () => 2;
+
+    const prefetch = new Prefetch(testSession);
+    const res = await prefetch.getConfig({ pickerOptions : {
+      // @ts-ignore
+      onFileSelected: test,
+      fromSources: ['facebook', 'test'],
+    }});
+
+    expect(res.picker_config.onFileSelected).toEqual(test);
+    expect(res.picker_config.fromSources).toEqual(['googleDrive']);
   });
+
+  // beforeEach(() => {
+  //   scope
+  //     .persist()
+  //     .options(/.*/)
+  //     .reply(204, '', {
+  //       'access-control-allow-headers': 'filestack-source,filestack-trace-id,filestack-trace-span',
+  //       'access-control-allow-methods': '*',
+  //       'access-control-allow-origin': '*',
+  //     });
+
+  //   // scope.post('/prefetch').reply(200, {
+  //   //   prefetchUrl: testURL.uploadApiUrl,
+  //   //   session: {
+  //   //     apikey: testApiKey,
+  //   //     urls: testURL,
+  //   //   },
+  //   // });
+
+  // });
+
+  // it('should return correct session', async () => {
+  //   const prefetchRequest = new Prefetch(testSession);
+  //   const prefetchResponse = {
+  //     prefetchUrl: testURL.uploadApiUrl,
+  //     session: {
+  //       apikey: testApiKey,
+  //       urls: testURL,
+  //     },
+  //   };
+
+  //   expect(prefetchRequest).toEqual(prefetchResponse);
+  // });
+
+  // it('should return correct security', () => {
+  //   Object.assign(testSession, { ...testSecurity });
+  //   const prefetchRequest = new Prefetch(testSession);
+
+  //   scope.post('/prefetch').reply(200, (_, data) => {
+  //     console.log('aaa => ', data);
+  //   });
+
+  //   const prefetchResponse = {
+  //     prefetchUrl: testURL.uploadApiUrl,
+  //     session: {
+  //       apikey: testApiKey,
+  //       ...testSecurity,
+  //       urls: testURL,
+  //     },
+  //   };
+
+  //   expect(prefetchRequest).toEqual(prefetchResponse);
+  // });
+
+  // it('should return correct config', async () => {
+  //   const prefetch = new Prefetch(testSession);
+  //   const prefetchResponse = await prefetch.getConfig(PrefetchRequest);
+  //   const expectationsResponse = {
+  //     blocked: false,
+  //     settings: {
+  //       customsource: false,
+  //       inapp_browser: false,
+  //     },
+  //     permissions: {
+  //       transforms_ui: false,
+  //     },
+  //     updated_config: {
+  //       fromSources: ['googledrive'],
+  //     },
+  //   };
+
+  //   expect(prefetchResponse).toEqual(expectationsResponse);
+  // });
 });

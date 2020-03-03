@@ -20,9 +20,6 @@ import { Hosts } from './../../config';
 import { Map } from './extensions';
 import fileType from 'file-type';
 import * as isutf8 from 'isutf8';
-import { cloneDeep as lodashCloneDeep, merge as lodashMerge } from 'lodash';
-import { PrefetchResponse } from '../api/prefetch';
-import { PickerOptions } from '../picker';
 
 /**
  * Resolve cdn url based on handle type
@@ -203,31 +200,30 @@ export const filterObject = (toFilter, requiredFields: string[]) => {
 };
 
 /**
- * Return cleanup callback
+ * Deep cleanup object from functions
  *
- * @param previousPickerOptions
- * @param pickerOptions
+ * @param obj
  */
-export const cleanUpCallback = (previousPickerOptions: PickerOptions, pickerOptions: PickerOptions) => {
-  previousPickerOptions = lodashCloneDeep(pickerOptions);
+export const cleanUpCallbacks = (obj: any) => {
+  if (!obj || Object.keys(obj).length === 0) {
+    return obj;
+  }
 
-  Object.keys(previousPickerOptions).map(key => {
-    if (key.indexOf('on') === 0) {
-      previousPickerOptions[key] = undefined;
+  return Object.keys(obj).map((k) => {
+    if (!obj[k]) {
+      return obj[k];
     }
+
+    if (obj[k] === Object(obj[k])) {
+      return cleanUpCallbacks(obj[k]);
+    }
+
+    if (typeof obj[k] === 'function') {
+      obj[k] = undefined;
+    }
+
+    return obj[k];
   });
-
-  return previousPickerOptions;
-};
-
-/**
- * Return reassign callbacks
- *
- * @param configToCheck
- * @param response
- */
-export const reassignCallbacks = (configToCheck: PickerOptions, response: PrefetchResponse) => {
-  return lodashMerge(configToCheck, response);
 };
 
 export * from './index.node';

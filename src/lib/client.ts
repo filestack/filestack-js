@@ -26,7 +26,7 @@ import { resolveHost, getVersion } from './utils';
 import { Upload, InputFile, UploadOptions, StoreUploadOptions } from './api/upload';
 import { preview, PreviewOptions } from './api/preview';
 import { CloudClient } from './api/cloud';
-import { Prefetch, PrefetchOptionsSetting } from './api/prefetch';
+import { Prefetch, PrefetchResponse } from './api/prefetch';
 import { StoreParams } from './filelink';
 
 import { picker, PickerInstance, PickerOptions } from './picker';
@@ -40,11 +40,7 @@ export interface Session {
   cname?: string;
   policy?: string;
   signature?: string;
-  prefetch?: {
-    permissions?: PrefetchOptionsSetting;
-    settings?: PrefetchOptionsSetting;
-    pickerOptions?: PickerOptions;
-  };
+  prefetch?: PrefetchResponse;
 }
 
 export interface Security {

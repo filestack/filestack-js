@@ -15,17 +15,22 @@
  * limitations under the License.
  */
 
-import { Session } from '../client';
+import * as cloneDeep from 'lodash.clonedeep';
+// import Debug from 'debug';
+import { FilestackError } from './../../filestack_error';
+import { Session, Security } from './../client';
 import { PickerOptions } from './../picker';
 import { FsRequest } from '../request';
-import { cleanUpCallback, reassignCallbacks } from '../utils';
+import { cleanUpCallbacks } from './../utils';
 
-export type PrefetchOptionsSetting = {
+// const debug = Debug('fs:prefetch');
+
+export type PrefetchSettings = {
   inapp_browser?: boolean;
   customsource?: boolean;
 };
 
-export type PrefetchOptionsPermissions = {
+export type PrefetchPermissions = {
   intelligent_ingestion?: boolean;
   blocked?: boolean;
   blacklisted?: boolean;
@@ -40,58 +45,57 @@ export enum PrefetchOptionsEvents {
 
 type PrefetchOptions = {
   pickerOptions?: PickerOptions;
-  settings?: PrefetchOptionsSetting;
-  permissions?: PrefetchOptionsPermissions;
+  settings?: keyof PrefetchPermissions[];
+  permissions?: keyof PrefetchSettings[];
   events?: PrefetchOptionsEvents[];
 };
 
 interface PrefetchRequest {
   apikey: string;
-  security?: {
-    policy?: string;
-    signature?: string;
-  };
-  permissions?: string[];
-  settings?: string[];
+  security?: Security;
+  permissions?: keyof PrefetchPermissions[];
+  settings?: keyof PrefetchSettings[];
   events?: PrefetchOptionsEvents[];
   picker_config?: PickerOptions;
 }
 
 export type PrefetchResponse = {
   blocked?: boolean;
-  settings?: PrefetchOptionsSetting;
-  permissions?: PrefetchOptionsPermissions;
-  updated_config?: {
-    fromSources?: string[];
-  };
+  settings?: PrefetchSettings;
+  permissions?: PrefetchPermissions;
+  updated_config: PickerOptions;
 };
 
 /**
  * @private
  */
 export class Prefetch {
+
   private session: Session;
-  private prefetchUrl: string;
-  private configToCheck: PickerOptions;
 
   constructor(session: Session) {
     this.session = session;
-    this.prefetchUrl = session.urls.uploadApiUrl;
   }
 
+  // @todo any return type?
+  // @todo think how to pass params?
+  // @todo we cant use lodash merge :/
   async getConfig({ pickerOptions, settings, permissions, events }: PrefetchOptions) {
-    if (this.session.prefetch) {
-      FsRequest.post(`${this.prefetchUrl}/prefetch`, { events });
-      return Promise.resolve(this.session.prefetch);
-    }
+    // @todo this one we will add later
+    // if (this.session.prefetch) {
+    //   FsRequest.post(`${this.prefetchUrl}/prefetch`, { events }).then(() => {
+    //     debug('Prefetch request finished. Events sent to backend');
+    //   });
 
-    const configToSend = cleanUpCallback(this.configToCheck, pickerOptions);
-    const permissionsKeys = [...Object.keys(permissions)];
+    //   return Promise.resolve(this.session.prefetch);
+    // }
+
+    const configToSend = cleanUpCallbacks(cloneDeep(pickerOptions));
 
     let paramsToSend: PrefetchRequest = {
       apikey: this.session.apikey,
-      permissions: permissionsKeys,
-      settings: Object.keys(settings),
+      permissions,
+      settings,
       picker_config: configToSend,
       events,
     };
@@ -100,8 +104,40 @@ export class Prefetch {
       paramsToSend.security = { policy: this.session.policy, signature: this.session.signature };
     }
 
-    const { data } = await FsRequest.post(`${this.prefetchUrl}/prefetch`, paramsToSend).then(res => res.data);
+    return FsRequest.post(`${this.session.urls.uploadApiUrl}/prefetch`, paramsToSend).then((res) => {
+      if (res.status !== 200) {
+        throw new FilestackError('There is a problem with prefetch request');
+      }
+      let data = res.data;
 
-    return reassignCallbacks(this.configToCheck, data);
+      // todo reassign callbacks from old config to new one
+      data.updated_config = this.reassignCallbacks(pickerOptions || {}, data.updated_config || {});
+      this.session.prefetch = data;
+
+      return data;
+    });
+  }
+
+  // @todo
+  private reassignCallbacks(objOld, objTarget) {
+    if (!objOld || Object.keys(objOld).length === 0) {
+      return objOld;
+    }
+
+    return Object.keys(objOld).map((k) => {
+      if (!objOld[k]) {
+        return objOld[k];
+      }
+
+      if (typeof objOld[k] === 'function') {
+        objTarget[k] = objOld[k];
+      }
+
+      if (objOld[k] === Object(objOld[k])) {
+        return this.reassignCallbacks(objOld[k], objTarget[k]);
+      }
+
+      return objTarget[k];
+    });
   }
 }
