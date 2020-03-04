@@ -63,7 +63,7 @@ export type PrefetchResponse = {
   blocked?: boolean;
   settings?: PrefetchSettings;
   permissions?: PrefetchPermissions;
-  updated_config: PickerOptions;
+  pickerOptions: PickerOptions;
 };
 
 /**
@@ -77,18 +77,15 @@ export class Prefetch {
     this.session = session;
   }
 
-  // @todo any return type?
-  // @todo think how to pass params?
-  // @todo we cant use lodash merge :/
-  async getConfig({ pickerOptions, settings, permissions, events }: PrefetchOptions) {
-    // @todo this one we will add later
-    // if (this.session.prefetch) {
-    //   FsRequest.post(`${this.prefetchUrl}/prefetch`, { events }).then(() => {
-    //     debug('Prefetch request finished. Events sent to backend');
-    //   });
-
-    //   return Promise.resolve(this.session.prefetch);
-    // }
+  /**
+   * Returns filestack options from backend according to input params
+   *
+   * @param param0
+   */
+  async getConfig({ pickerOptions, settings, permissions, events }: PrefetchOptions): Promise<PrefetchResponse> {
+    if (this.session.prefetch) {
+      return FsRequest.post(`${this.session.urls.uploadApiUrl}/prefetch`, { events }).then(() => this.session.prefetch);
+    }
 
     const configToSend = cleanUpCallbacks(cloneDeep(pickerOptions));
 
@@ -104,40 +101,47 @@ export class Prefetch {
       paramsToSend.security = { policy: this.session.policy, signature: this.session.signature };
     }
 
+    this.session.prefetch = null;
+
     return FsRequest.post(`${this.session.urls.uploadApiUrl}/prefetch`, paramsToSend).then((res) => {
       if (res.status !== 200) {
         throw new FilestackError('There is a problem with prefetch request');
       }
+
       let data = res.data;
 
       // todo reassign callbacks from old config to new one
-      data.updated_config = this.reassignCallbacks(pickerOptions || {}, data.updated_config || {});
+      data.pickerOptions = this.reassignCallbacks(pickerOptions || {}, data.updated_config || {});
+      // cleanup response from backend
+      delete data.updated_config;
+
       this.session.prefetch = data;
 
       return data;
     });
   }
 
-  // @todo
+  /**
+   * Reassign callbacks from old picker configuration
+   *
+   * @param objOld
+   * @param objTarget
+   */
   private reassignCallbacks(objOld, objTarget) {
     if (!objOld || Object.keys(objOld).length === 0) {
       return objOld;
     }
 
-    return Object.keys(objOld).map((k) => {
-      if (!objOld[k]) {
-        return objOld[k];
-      }
-
+    for (const k in objOld) {
       if (typeof objOld[k] === 'function') {
         objTarget[k] = objOld[k];
       }
 
       if (objOld[k] === Object(objOld[k])) {
-        return this.reassignCallbacks(objOld[k], objTarget[k]);
+        objTarget[k] = this.reassignCallbacks(objOld[k], objTarget[k]);
       }
+    }
 
-      return objTarget[k];
-    });
+    return objTarget;
   }
 }

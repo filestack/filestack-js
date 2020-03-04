@@ -41,11 +41,7 @@ const testSession = {
 
 let scope = nock(testURL.uploadApiUrl);
 
-// const mockPrefetch = jest
-//   .fn()
-//   .mockName('prefetch')
-//   .mockReturnValue('prefetch');
-
+// mock cors responses for all request for browser tests
 scope.defaultReplyHeaders({
   'access-control-allow-origin': req => req.headers['origin'],
   'access-control-allow-methods': req => req.headers['access-control-request-method'],
@@ -53,22 +49,13 @@ scope.defaultReplyHeaders({
   'content-type': 'application/json',
 });
 
+// mock options requests
 scope
   .persist()
   .options(/.*/)
   .reply(204);
 
-describe.only('Prefetch', () => {
-
-  // apikey: string;
-  // security?: {
-  //   policy?: string;
-  //   signature?: string;
-  // };
-  // permissions?: string[];
-  // settings?: string[];
-  // events?: PrefetchOptionsEvents[];
-  // picker_config?: PickerOptions;
+describe('Prefetch', () => {
 
   it('Should make correct request to prefetch and return new config', async () => {
     const serverResponse = {
@@ -96,80 +83,27 @@ describe.only('Prefetch', () => {
       fromSources: ['facebook', 'test'],
     }});
 
-    expect(res.picker_config.onFileSelected).toEqual(test);
-    expect(res.picker_config.fromSources).toEqual(['googleDrive']);
+    expect(res.pickerOptions.onFileSelected).toEqual(test);
+    expect(res.pickerOptions.fromSources).toEqual(['googledrive']);
   });
 
-  // beforeEach(() => {
-  //   scope
-  //     .persist()
-  //     .options(/.*/)
-  //     .reply(204, '', {
-  //       'access-control-allow-headers': 'filestack-source,filestack-trace-id,filestack-trace-span',
-  //       'access-control-allow-methods': '*',
-  //       'access-control-allow-origin': '*',
-  //     });
+  it('should set correct params to sessions', () => {
+    expect(true).toEqual(true); // @todo remove
+  });
 
-  //   // scope.post('/prefetch').reply(200, {
-  //   //   prefetchUrl: testURL.uploadApiUrl,
-  //   //   session: {
-  //   //     apikey: testApiKey,
-  //   //     urls: testURL,
-  //   //   },
-  //   // });
+  it('should return error on network error', () => {
+    expect(true).toEqual(true); // @todo remove
+  });
 
-  // });
+  it('should throw error when response code is other thant 200', () => {
+    expect(true).toEqual(true); // @todo remove
+  });
 
-  // it('should return correct session', async () => {
-  //   const prefetchRequest = new Prefetch(testSession);
-  //   const prefetchResponse = {
-  //     prefetchUrl: testURL.uploadApiUrl,
-  //     session: {
-  //       apikey: testApiKey,
-  //       urls: testURL,
-  //     },
-  //   };
+  it('should add security to request when provided', () => {
+    expect(true).toEqual(true); // @todo remove
+  });
 
-  //   expect(prefetchRequest).toEqual(prefetchResponse);
-  // });
-
-  // it('should return correct security', () => {
-  //   Object.assign(testSession, { ...testSecurity });
-  //   const prefetchRequest = new Prefetch(testSession);
-
-  //   scope.post('/prefetch').reply(200, (_, data) => {
-  //     console.log('aaa => ', data);
-  //   });
-
-  //   const prefetchResponse = {
-  //     prefetchUrl: testURL.uploadApiUrl,
-  //     session: {
-  //       apikey: testApiKey,
-  //       ...testSecurity,
-  //       urls: testURL,
-  //     },
-  //   };
-
-  //   expect(prefetchRequest).toEqual(prefetchResponse);
-  // });
-
-  // it('should return correct config', async () => {
-  //   const prefetch = new Prefetch(testSession);
-  //   const prefetchResponse = await prefetch.getConfig(PrefetchRequest);
-  //   const expectationsResponse = {
-  //     blocked: false,
-  //     settings: {
-  //       customsource: false,
-  //       inapp_browser: false,
-  //     },
-  //     permissions: {
-  //       transforms_ui: false,
-  //     },
-  //     updated_config: {
-  //       fromSources: ['googledrive'],
-  //     },
-  //   };
-
-  //   expect(prefetchResponse).toEqual(expectationsResponse);
-  // });
+  it('should send only events when config is already prefetched', () => {
+    expect(true).toEqual(true); // @todo remove
+  });
 });

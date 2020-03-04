@@ -704,26 +704,17 @@ export interface PickerTransformationOptions {
 class PickerLoader {
 
   private _initialized: Promise<PickerInstance>;
-
-  private client: Client;
-
-  private pickerOptions: PickerOptions;
-
   constructor(client: Client, options?: PickerOptions) {
     const validateRes = getValidator(PickerParamsSchema)(options);
+
     if (validateRes.errors.length) {
       throw new FilestackError(`Invalid picker params`, validateRes.errors, FilestackErrorType.VALIDATION);
     }
 
     this._initialized = this.loadModule(client, options);
-
-    this.client = client;
-    this.pickerOptions = options;
   }
 
   async open(): Promise<void> {
-    await this.client.prefetch(this.pickerOptions);
-
     const picker = await this._initialized;
     await picker.open();
   }

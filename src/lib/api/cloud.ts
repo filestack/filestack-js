@@ -69,7 +69,7 @@ export class CloudClient {
   constructor(session: Session, options?: ClientOptions) {
     this.session = session;
 
-    if (this.session.prefetch.settings.inapp_browser) {
+    if (this.session.prefetch && this.session.prefetch.settings && this.session.prefetch.settings.inapp_browser) {
       this._isInAppBrowser = this.session.prefetch.settings.inapp_browser;
     }
 
@@ -103,21 +103,6 @@ export class CloudClient {
     }
 
     this._token = key;
-  }
-
-  prefetch() {
-    const params = {
-      apikey: this.session.apikey,
-    };
-    return FsRequest.get(`${this.cloudApiUrl}/prefetch`, { params })
-      .then(res => res.data)
-      .then(data => {
-        if (data.inapp_browser) {
-          this._isInAppBrowser = true;
-        }
-
-        return data;
-      });
   }
 
   list(clouds: any, cancelTokenInput?: any) {
