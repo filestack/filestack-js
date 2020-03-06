@@ -16,18 +16,13 @@
  */
 
 import { preview, getUrl } from './preview';
+import { config } from './../../config';
 
 const mockAppendChild = jest.fn();
 
 const defaultSession = {
-  'apikey': 'TEST_API_KEY',
-  'urls': {
-    'fileApiUrl': 'https://www.filestackapi.com/api/file',
-    'uploadApiUrl': 'https://upload.filestackapi.com',
-    'cloudApiUrl': 'https://cloud.filestackapi.com',
-    'cdnUrl': 'https://cdn.filestackcontent.com',
-    'pickerUrl': 'https://static.filestackapi.com/picker/1.4.4/picker.js',
-  },
+  apikey: 'TEST_API_KEY',
+  urls: Object.assign({}, config.urls),
 };
 
 describe('api:upload:preview', () => {

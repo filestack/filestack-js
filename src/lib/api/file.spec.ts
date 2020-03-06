@@ -34,19 +34,20 @@
 import { retrieve, remove, metadata } from './file';
 import { FsRequest } from './../request';
 import { Session } from '../client';
+import { config } from './../../config';
 
 jest.mock('./../request');
 jest.mock('./../filelink');
 
 const mockedSession: Session = {
   apikey: 'fakeApikey',
-  urls: {
+  urls: Object.assign({}, config.urls, {
     cdnUrl: 'fakeUrl',
     fileApiUrl: 'fakeApiUrl',
     uploadApiUrl: 'fakeUploadApiUrl',
     cloudApiUrl: 'fakeCloudApiUrl',
     pickerUrl: 'fakePickerUrl',
-  },
+  }),
 };
 
 describe('FileAPI', () => {

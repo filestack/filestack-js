@@ -144,9 +144,17 @@ describe('client', () => {
     const url = 'http://example.com/img3.jpg';
     const options = {};
     const token = {};
-    await client.storeURL(url, options, token, defaultSecurity);
+    const uploadTags = { test: '123' };
+    await client.storeURL(url, options, token, defaultSecurity, uploadTags);
 
-    expect(storeURL).toHaveBeenCalledWith(defaultSession, url, options, token, defaultSecurity);
+    expect(storeURL).toHaveBeenCalledWith({
+      session: defaultSession,
+      url,
+      storeParams: options,
+      token,
+      security: defaultSecurity,
+      uploadTags,
+    });
   });
 
   it('should be able to retrieve handle', async () => {

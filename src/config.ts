@@ -30,6 +30,7 @@ export interface Hosts {
   cloudApiUrl: string;
   cdnUrl: string;
   pickerUrl: string;
+  processUrl: string;
 }
 
 /**
@@ -41,6 +42,7 @@ export interface Config {
 
 export const config = {
   urls: {
+    processUrl: 'https://process.filestackapi.com',
     fileApiUrl: 'https://www.filestackapi.com/api/file',
     uploadApiUrl: 'https://upload.filestackapi.com',
     cloudApiUrl: 'https://cloud.filestackapi.com',

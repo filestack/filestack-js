@@ -730,6 +730,15 @@ export class Filelink {
   }
 
   /**
+   * Returns all tasks added for transformation
+   *
+   * @memberof Filelink
+   */
+  getTasks() {
+    return this.transforms;
+  }
+
+  /**
    * Cleanup transformations on filelink
    *
    * @returns

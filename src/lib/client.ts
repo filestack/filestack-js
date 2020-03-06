@@ -23,16 +23,12 @@ import { metadata, MetadataOptions, remove, retrieve, RetrieveOptions } from './
 import { transform, TransformOptions } from './api/transform';
 import { storeURL } from './api/store';
 import { resolveHost, getVersion } from './utils';
-import { Upload, InputFile, UploadOptions, StoreUploadOptions } from './api/upload';
+import { Upload, InputFile, UploadOptions, StoreUploadOptions, UploadTags } from './api/upload';
 import { preview, PreviewOptions } from './api/preview';
 import { CloudClient } from './api/cloud';
 import { StoreParams } from './filelink';
 
-import {
-  picker,
-  PickerInstance,
-  PickerOptions,
-} from './picker';
+import { picker, PickerInstance, PickerOptions } from './picker';
 
 /* istanbul ignore next */
 Sentry.addBreadcrumb({ category: 'sdk', message: 'filestack-js-sdk scope' });
@@ -289,9 +285,15 @@ export class Client extends EventEmitter {
    * @param token     Optional control token to call .cancel()
    * @param security  Optional security override.
    */
-  storeURL(url: string, options?: StoreParams, token?: any, security?: Security): Promise<Object> {
-    /* istanbul ignore next */
-    return storeURL(this.session, url, options, token, security);
+  storeURL(url: string, storeParams?: StoreParams, token?: any, security?: Security, uploadTags?: UploadTags): Promise<Object> {
+    return storeURL({
+      session: this.session,
+      url,
+      storeParams,
+      token,
+      security,
+      uploadTags,
+    });
   }
 
   /**
@@ -408,7 +410,7 @@ export class Client extends EventEmitter {
     }
 
     /* istanbul ignore next */
-    upload.on('error', (e) => {
+    upload.on('error', e => {
       if (this.forwardErrors) {
         Sentry.withScope(scope => {
           scope.setExtras(e.details);
@@ -469,7 +471,7 @@ export class Client extends EventEmitter {
     }
 
     /* istanbul ignore next */
-    upload.on('error', (e) => {
+    upload.on('error', e => {
       Sentry.withScope(scope => {
         scope.setExtras(e.details);
         scope.setExtras({ uploadOptions: options, storeOptions });
