@@ -376,6 +376,26 @@ describe('cloud', () => {
       });
     });
 
+    it('should respect store upload tags', async () => {
+      const uploadTags = { testTag: 'testTag' };
+
+      const res = await new CloudClient(testSession).store('google', 'test', {}, null, null, uploadTags);
+
+      expect(res).toEqual({
+        apikey: testApiKey,
+        flow: 'web',
+        upload_tags: uploadTags,
+        clouds: {
+          google: {
+            path: 'test',
+            store: {
+              location: 's3',
+            },
+          },
+        },
+      });
+    });
+
     it('should make correct basic with security', async () => {
       const res = await new CloudClient({
         ...testSession,
