@@ -18,6 +18,7 @@
 // import { config } from './../../config';
 import * as nock from 'nock';
 import { Prefetch } from './prefetch';
+import { FsRequestError, FsRequestErrorCode } from '../request';
 
 const testApiKey = 'AHvhedybhQMqZOqRvZquez';
 const testSecurity = {
@@ -56,7 +57,6 @@ scope
   .reply(204);
 
 describe('Prefetch', () => {
-
   it('Should make correct request to prefetch and return new config', async () => {
     const serverResponse = {
       blocked: false,
@@ -77,33 +77,63 @@ describe('Prefetch', () => {
     const test = () => 2;
 
     const prefetch = new Prefetch(testSession);
-    const res = await prefetch.getConfig({ pickerOptions : {
-      // @ts-ignore
-      onFileSelected: test,
-      fromSources: ['facebook', 'test'],
-    }});
+    const res = await prefetch.getConfig({
+      pickerOptions: {
+        // @ts-ignore
+        onFileSelected: test,
+        fromSources: ['facebook', 'test'],
+      },
+    });
 
     expect(res.pickerOptions.onFileSelected).toEqual(test);
     expect(res.pickerOptions.fromSources).toEqual(['googledrive']);
   });
 
-  it('should set correct params to sessions', () => {
-    expect(true).toEqual(true); // @todo remove
+  it.only('should set correct params to sessions', async () => {
+    const prefetch = new Prefetch(testSession);
+    const response = await prefetch.getConfig({
+      // @ts-ignore
+      apikey: testApiKey,
+      urls: testURL,
+    });
+
+    console.log('response => ', response);
+
+    expect(true).toEqual(true);
   });
 
-  it('should return error on network error', () => {
-    expect(true).toEqual(true); // @todo remove
+  it('should return error on network error', async () => {
+    try {
+      const prefetch = new Prefetch(testSession);
+      await prefetch.getConfig({
+        // @ts-ignore
+        apikey: testApiKey,
+        urls: testURL,
+      });
+    } catch (err) {
+      expect(err.code).toEqual(FsRequestErrorCode.NETWORK);
+    }
   });
 
-  it('should throw error when response code is other thant 200', () => {
-    expect(true).toEqual(true); // @todo remove
+  it('should throw error when response code is other thant 200', async () => {
+    scope.post('/prefetch').reply(500, {});
+    try {
+      const prefetch = new Prefetch(testSession);
+      await prefetch.getConfig({
+        // @ts-ignore
+        apikey: testApiKey,
+      });
+    } catch (err) {
+      expect(err.code).toEqual(FsRequestErrorCode.SERVER);
+    }
+    expect(true).toEqual(true);
   });
 
-  it('should add security to request when provided', () => {
-    expect(true).toEqual(true); // @todo remove
+  it('should add security to request when provided', async () => {
+    expect(true).toEqual(true);
   });
 
   it('should send only events when config is already prefetched', () => {
-    expect(true).toEqual(true); // @todo remove
+    expect(true).toEqual(true);
   });
 });
