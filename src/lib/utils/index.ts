@@ -209,21 +209,17 @@ export const cleanUpCallbacks = (obj: any) => {
     return obj;
   }
 
-  return Object.keys(obj).map((k) => {
-    if (!obj[k]) {
-      return obj[k];
-    }
-
-    if (obj[k] === Object(obj[k])) {
-      return cleanUpCallbacks(obj[k]);
-    }
-
+  Object.keys(obj).forEach((k) => {
     if (typeof obj[k] === 'function') {
       obj[k] = undefined;
     }
 
-    return obj[k];
+    if (obj[k] === Object(obj[k])) {
+      obj[k] = cleanUpCallbacks(obj[k]);
+    }
   });
+
+  return obj;
 };
 
 export * from './index.node';

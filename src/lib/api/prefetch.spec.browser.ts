@@ -17,27 +17,27 @@
 
 // import { config } from './../../config';
 import * as nock from 'nock';
-import { Prefetch } from './prefetch';
-import { FsRequestError, FsRequestErrorCode } from '../request';
+import { Prefetch, PrefetchOptionsEvents } from './prefetch';
+import { Session, Security } from './../client';
+import { FsRequestErrorCode } from '../request';
 
 const testApiKey = 'AHvhedybhQMqZOqRvZquez';
-const testSecurity = {
+const testSecurity: Security = {
   policy: 'examplePolicy',
   signature: 'exampleSignature',
 };
 
 const testURL = {
   fileApiUrl: '',
-  uploadApiUrl: 'https://uploadtesturl.com',
+  uploadApiUrl: 'https://uploadtesturl-fs.com',
   cloudApiUrl: '',
   cdnUrl: '',
   pickerUrl: '',
 };
 
-const testSession = {
+const testSession: Session = {
   apikey: testApiKey,
   urls: testURL,
-  security: testSecurity,
 };
 
 let scope = nock(testURL.uploadApiUrl);
@@ -50,14 +50,16 @@ scope.defaultReplyHeaders({
   'content-type': 'application/json',
 });
 
-// mock options requests
-scope
-  .persist()
-  .options(/.*/)
-  .reply(204);
-
 describe('Prefetch', () => {
+  beforeEach(() => {
+    scope
+    .options(/.*/)
+    .reply(204);
+  });
+
   it('Should make correct request to prefetch and return new config', async () => {
+    const sessionCopy =  { ...testSession };
+
     const serverResponse = {
       blocked: false,
       settings: {
@@ -72,11 +74,11 @@ describe('Prefetch', () => {
       },
     };
 
-    scope.post('/prefetch').reply(200, serverResponse);
+    scope.post('/prefetch').once().reply(200, serverResponse);
 
     const test = () => 2;
 
-    const prefetch = new Prefetch(testSession);
+    const prefetch = new Prefetch(sessionCopy);
     const res = await prefetch.getConfig({
       pickerOptions: {
         // @ts-ignore
@@ -87,53 +89,121 @@ describe('Prefetch', () => {
 
     expect(res.pickerOptions.onFileSelected).toEqual(test);
     expect(res.pickerOptions.fromSources).toEqual(['googledrive']);
+
+    scope.done();
   });
 
-  it.only('should set correct params to sessions', async () => {
-    const prefetch = new Prefetch(testSession);
-    const response = await prefetch.getConfig({
-      // @ts-ignore
-      apikey: testApiKey,
-      urls: testURL,
+  it('should set correct params to sessions (prefetch)', async () => {
+    const sessionCopy =  { ...testSession };
+    const serverResponse = {
+      blocked: false,
+      settings: {
+        customsource: false,
+        inapp_browser: true,
+      },
+      permissions: {
+        transforms_ui: true,
+      },
+      updated_config: {
+        fromSources: ['googledrive'],
+      },
+    };
+
+    scope.post('/prefetch').once().reply(200, serverResponse);
+
+    const prefetch = new Prefetch(sessionCopy);
+    const res = await prefetch.getConfig({
+      pickerOptions: {
+        fromSources: ['facebook', 'test'],
+      },
     });
 
-    console.log('response => ', response);
+    expect(sessionCopy.prefetch).toEqual(expect.any(Object));
+    expect(sessionCopy.prefetch.settings.inapp_browser).toEqual(true);
+    expect(sessionCopy.prefetch.permissions.transforms_ui).toEqual(true);
 
-    expect(true).toEqual(true);
-  });
-
-  it('should return error on network error', async () => {
-    try {
-      const prefetch = new Prefetch(testSession);
-      await prefetch.getConfig({
-        // @ts-ignore
-        apikey: testApiKey,
-        urls: testURL,
-      });
-    } catch (err) {
-      expect(err.code).toEqual(FsRequestErrorCode.NETWORK);
-    }
+    scope.done();
   });
 
   it('should throw error when response code is other thant 200', async () => {
-    scope.post('/prefetch').reply(500, {});
     try {
-      const prefetch = new Prefetch(testSession);
-      await prefetch.getConfig({
-        // @ts-ignore
-        apikey: testApiKey,
-      });
+      const sessionCopy =  { ...testSession };
+      const prefetch = new Prefetch(sessionCopy);
+
+      scope.post('/prefetch').once().reply(500);
+
+      await prefetch.getConfig({});
     } catch (err) {
       expect(err.code).toEqual(FsRequestErrorCode.SERVER);
     }
-    expect(true).toEqual(true);
+
+    scope.done();
   });
 
   it('should add security to request when provided', async () => {
-    expect(true).toEqual(true);
+    const sessionCopy =  {
+      ...testSession,
+      signature: testSecurity.signature,
+      policy: testSecurity.policy,
+    };
+
+    const mockPref = jest.fn() .mockImplementation(() => ({}));
+
+    scope.post('/prefetch').once().reply(200, (_, data) => mockPref(data));
+
+    const prefetch = new Prefetch(sessionCopy);
+    const res = await prefetch.getConfig({
+      pickerOptions: {},
+    });
+
+    expect(mockPref).toHaveBeenCalledWith({
+      apikey: 'AHvhedybhQMqZOqRvZquez',
+      security: {
+        signature: testSecurity.signature,
+        policy: testSecurity.policy,
+      },
+    });
+
+    scope.done();
   });
 
-  it('should send only events when config is already prefetched', () => {
-    expect(true).toEqual(true);
+  it('should send only events when config is already prefetched', async () => {
+    const sessionCopy =  { ...testSession };
+    const mockPref = jest.fn() .mockImplementation(() => ({}));
+
+    scope.post('/prefetch').twice().reply(200, (_, data) => mockPref(data));
+
+    const prefetch = new Prefetch(sessionCopy);
+    const toSend = {
+      events: [PrefetchOptionsEvents.PICKER],
+      pickerOptions: {
+        uploadInBackground: true,
+      },
+    };
+
+    await prefetch.getConfig(toSend);
+
+    // add one more options request for second request
+    scope
+    .options(/.*/)
+    .reply(204);
+
+    await prefetch.getConfig(toSend);
+
+    expect(mockPref).toHaveBeenCalledTimes(2);
+    expect(mockPref).toHaveBeenCalledWith({
+      apikey: 'AHvhedybhQMqZOqRvZquez',
+      events: [PrefetchOptionsEvents.PICKER],
+      picker_config: {
+        uploadInBackground: true,
+      },
+    });
+
+    expect(mockPref).toHaveBeenCalledWith({
+      apikey: 'AHvhedybhQMqZOqRvZquez',
+      events: [PrefetchOptionsEvents.PICKER],
+    });
+
+    scope.done();
   });
 });

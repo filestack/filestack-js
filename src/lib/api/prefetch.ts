@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 
-import * as cloneDeep from 'lodash.clonedeep';
 // import Debug from 'debug';
 import { FilestackError } from './../../filestack_error';
 import { Session, Security } from './../client';
@@ -83,27 +82,35 @@ export class Prefetch {
    * @param param0
    */
   async getConfig({ pickerOptions, settings, permissions, events }: PrefetchOptions): Promise<PrefetchResponse> {
-    if (this.session.prefetch) {
-      return FsRequest.post(`${this.session.urls.uploadApiUrl}/prefetch`, { events }).then(() => this.session.prefetch);
-    }
-
-    const configToSend = cleanUpCallbacks(cloneDeep(pickerOptions));
-
     let paramsToSend: PrefetchRequest = {
       apikey: this.session.apikey,
-      permissions,
-      settings,
-      picker_config: configToSend,
-      events,
     };
 
     if (this.session.policy && this.session.signature) {
       paramsToSend.security = { policy: this.session.policy, signature: this.session.signature };
     }
 
+    if (this.session.prefetch && events) {
+      return FsRequest.post(`${this.session.urls.uploadApiUrl}/prefetch`, { ...paramsToSend, events }).then(() => this.session.prefetch);
+    }
+
+    let pickerOptionsToSend;
+    if (pickerOptions && Object.keys(pickerOptions).length) {
+      pickerOptionsToSend = cleanUpCallbacks({ ...pickerOptions });
+    }
+
+    paramsToSend = {
+      ...paramsToSend,
+      permissions,
+      settings,
+      picker_config: pickerOptionsToSend,
+      events,
+    };
+
     this.session.prefetch = null;
 
     return FsRequest.post(`${this.session.urls.uploadApiUrl}/prefetch`, paramsToSend).then((res) => {
+      /* istanbul ignore if */
       if (res.status !== 200) {
         throw new FilestackError('There is a problem with prefetch request');
       }
@@ -111,10 +118,9 @@ export class Prefetch {
       let data = res.data;
 
       // todo reassign callbacks from old config to new one
-      data.pickerOptions = this.reassignCallbacks(pickerOptions || {}, data.updated_config || {});
+      data.pickerOptions = this.reassignCallbacks(pickerOptions, data.updated_config || {});
       // cleanup response from backend
       delete data.updated_config;
-
       this.session.prefetch = data;
 
       return data;
