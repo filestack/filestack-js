@@ -21,7 +21,7 @@ import { Prefetch, PrefetchOptionsEvents } from './prefetch';
 import { Session, Security } from './../client';
 import { FsRequestErrorCode } from '../request';
 
-const testApiKey = 'AHvhedybhQMqZOqRvZquez';
+const testApiKey = 'AHv2222222222444444uez';
 const testSecurity: Security = {
   policy: 'examplePolicy',
   signature: 'exampleSignature',
@@ -157,7 +157,7 @@ describe('Prefetch', () => {
     });
 
     expect(mockPref).toHaveBeenCalledWith({
-      apikey: 'AHvhedybhQMqZOqRvZquez',
+      apikey: testApiKey,
       security: {
         signature: testSecurity.signature,
         policy: testSecurity.policy,
@@ -192,7 +192,7 @@ describe('Prefetch', () => {
 
     expect(mockPref).toHaveBeenCalledTimes(2);
     expect(mockPref).toHaveBeenCalledWith({
-      apikey: 'AHvhedybhQMqZOqRvZquez',
+      apikey: testApiKey,
       events: [PrefetchOptionsEvents.PICKER],
       picker_config: {
         uploadInBackground: true,
@@ -200,7 +200,7 @@ describe('Prefetch', () => {
     });
 
     expect(mockPref).toHaveBeenCalledWith({
-      apikey: 'AHvhedybhQMqZOqRvZquez',
+      apikey: testApiKey,
       events: [PrefetchOptionsEvents.PICKER],
     });
 
