@@ -24,6 +24,7 @@ import { InputFile } from './lib/api/upload/file_tools';
 import { UploadOptions } from './lib/api/upload/types';
 import { StoreUploadOptions } from './lib/api/upload';
 import { PreviewOptions } from './lib/api/preview';
+import { PrefetchOptions, PrefetchResponse } from './lib/api/prefetch';
 import { FilestackError } from './filestack_error';
 import { getMimetype } from './lib/utils/index';
 
@@ -33,9 +34,12 @@ import { getMimetype } from './lib/utils/index';
  * @param apikey
  * @param options
  */
-export const init = (apikey: string, options?: ClientOptions): Client => {
+export const Filestack = (apikey: string, options?: ClientOptions): Client => {
   return new Client(apikey, options);
 };
+
+// This will be deprecated in feature use
+export const init = Filestack;
 
 /**
  * filestack-js version. Interpolated at build time.
@@ -71,5 +75,7 @@ export {
   Client,
   FilestackError,
   PickerDisplayMode,
-  getMimetype
+  getMimetype,
+  PrefetchOptions,
+  PrefetchResponse
 };

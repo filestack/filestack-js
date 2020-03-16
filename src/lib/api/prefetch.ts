@@ -42,7 +42,7 @@ export enum PrefetchOptionsEvents {
   TRANSFORM_UI = 'transform_ui',
 }
 
-type PrefetchOptions = {
+export type PrefetchOptions = {
   pickerOptions?: PickerOptions;
   settings?: keyof PrefetchPermissions[];
   permissions?: keyof PrefetchSettings[];
