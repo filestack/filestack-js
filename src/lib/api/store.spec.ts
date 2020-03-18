@@ -38,11 +38,20 @@ describe('StoreURL', () => {
 
   beforeEach(() => {
     // @ts-ignore
-    FsRequest.post.mockImplementation(() => Promise.resolve({
-      data: {
-        handle: 'test',
-      },
-    }));
+    FsRequest.post.mockImplementation((_, options) => {
+      let toReturn = {
+        data: {
+          handle: 'test',
+        },
+      };
+
+      if (options && options.upload_tags) {
+        // @ts-ignore
+        toReturn.data.upload_tags = options.upload_tags;
+      }
+
+      return Promise.resolve(toReturn);
+    });
 
     // @ts-ignore
     Filelink.prototype.getTasks.mockImplementation(() => storeTaskDef);
@@ -115,7 +124,7 @@ describe('StoreURL', () => {
   it('should pass upload tags to request', async () => {
     const uploadTags = { test: '123' };
 
-    await storeURL({
+    const res = await storeURL({
       session: mockedSession,
       url: sourceToStore,
       uploadTags,
@@ -127,6 +136,8 @@ describe('StoreURL', () => {
       tasks: storeTaskDef,
       upload_tags: uploadTags,
     }, {});
+
+    expect(res.uploadTags).toEqual(uploadTags);
   });
 
   it('should throw an error when missing url', () => {

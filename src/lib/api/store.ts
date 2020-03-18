@@ -87,6 +87,11 @@ export const storeURL = ({
     upload_tags: uploadTags ? uploadTags : undefined,
   }, options).then((res) => {
     if (res.data && res.data.handle) {
+      if (res.data.upload_tags) {
+        res.data.uploadTags = res.data.upload_tags;
+        delete res.data.upload_tags;
+      }
+
       return { ...res.data, mimetype: res.data.type };
     }
 
