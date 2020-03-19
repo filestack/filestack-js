@@ -24,8 +24,9 @@ const mockPickerCrop = jest.fn(() => Promise.resolve());
 const mockPickerClose = jest.fn(() => Promise.resolve());
 const mockPickerCancel = jest.fn(() => Promise.resolve());
 
-jest.mock('filestack-loader', () => {
+jest.mock('@filestack/loader', () => {
   return {
+    registerModule: jest.fn(),
     loadModule: jest.fn(() => {
       return new Promise((resolve) => {
         resolve(jest.fn().mockImplementation(() => {
@@ -38,8 +39,9 @@ jest.mock('filestack-loader', () => {
         }));
       });
     }),
-    knownModuleIds: {
-      picker: '__filestack-picker-module',
+    FILESTACK_MODULES: {
+      PICKER: 'picker',
+      FILESTACK_SDK: 'sdk',
     },
   };
 });

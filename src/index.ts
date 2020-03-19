@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { registerModule, FILESTACK_MODULES } from '@filestack/loader';
 import { SecurityOptions, getSecurity, validateWebhookSignature, WebhookValidatePayload } from './lib/api/security';
 import { Client, ClientOptions, Security } from './lib/client';
 import { PickerOptions, PickerInstance, PickerUploadDoneCallback, PickerFileMetadata, PickerResponse, PickerDisplayMode } from './lib/picker';
@@ -45,6 +46,8 @@ export const init = Filestack;
  * filestack-js version. Interpolated at build time.
  */
 export const version = '@{VERSION}';
+
+registerModule(FILESTACK_MODULES.FILESTACK_SDK, Filestack, { version: '@{VERSION}' });
 
 export * from './lib/api/transform';
 export * from './lib/filelink';
