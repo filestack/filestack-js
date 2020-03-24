@@ -37,24 +37,24 @@ export type PrefetchPermissions = {
   advanced_enhance?: boolean;
 };
 
-export enum PrefetchOptionsEvents {
+export enum PrefetchEvents {
   PICKER = 'picker',
   TRANSFORM_UI = 'transform_ui',
 }
 
 export type PrefetchOptions = {
   pickerOptions?: PickerOptions;
-  settings?: keyof PrefetchPermissions[];
-  permissions?: keyof PrefetchSettings[];
-  events?: PrefetchOptionsEvents[];
+  settings?: Array<keyof PrefetchSettings>;
+  permissions?: Array<keyof PrefetchPermissions>;
+  events?: PrefetchEvents[];
 };
 
 interface PrefetchRequest {
   apikey: string;
   security?: Security;
-  permissions?: keyof PrefetchPermissions[];
-  settings?: keyof PrefetchSettings[];
-  events?: PrefetchOptionsEvents[];
+  permissions?: Array<keyof PrefetchPermissions>;
+  settings?: Array<keyof PrefetchSettings>;
+  events?: PrefetchEvents[];
   picker_config?: PickerOptions;
 }
 

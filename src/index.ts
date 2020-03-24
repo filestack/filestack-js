@@ -25,7 +25,7 @@ import { InputFile } from './lib/api/upload/file_tools';
 import { UploadOptions } from './lib/api/upload/types';
 import { StoreUploadOptions } from './lib/api/upload';
 import { PreviewOptions } from './lib/api/preview';
-import { PrefetchOptions, PrefetchResponse } from './lib/api/prefetch';
+import { PrefetchOptions, PrefetchResponse, PrefetchPermissions, PrefetchEvents } from './lib/api/prefetch';
 import { FilestackError } from './filestack_error';
 import { getMimetype } from './lib/utils/index';
 
@@ -80,5 +80,7 @@ export {
   PickerDisplayMode,
   getMimetype,
   PrefetchOptions,
-  PrefetchResponse
+  PrefetchResponse,
+  PrefetchPermissions,
+  PrefetchEvents
 };

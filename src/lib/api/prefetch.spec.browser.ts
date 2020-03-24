@@ -17,7 +17,7 @@
 
 // import { config } from './../../config';
 import * as nock from 'nock';
-import { Prefetch, PrefetchOptionsEvents } from './prefetch';
+import { Prefetch, PrefetchEvents } from './prefetch';
 import { Session, Security } from './../client';
 import { FsRequestErrorCode } from '../request';
 
@@ -202,7 +202,7 @@ describe('Prefetch', () => {
 
     const prefetch = new Prefetch(sessionCopy);
     const toSend = {
-      events: [PrefetchOptionsEvents.PICKER],
+      events: [PrefetchEvents.PICKER],
       pickerOptions: {
         uploadInBackground: true,
       },
@@ -220,7 +220,7 @@ describe('Prefetch', () => {
     expect(mockPref).toHaveBeenCalledTimes(2);
     expect(mockPref).toHaveBeenCalledWith({
       apikey: testApiKey,
-      events: [PrefetchOptionsEvents.PICKER],
+      events: [PrefetchEvents.PICKER],
       picker_config: {
         uploadInBackground: true,
       },
@@ -228,7 +228,7 @@ describe('Prefetch', () => {
 
     expect(mockPref).toHaveBeenCalledWith({
       apikey: testApiKey,
-      events: [PrefetchOptionsEvents.PICKER],
+      events: [PrefetchEvents.PICKER],
     });
 
     scope.done();
