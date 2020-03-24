@@ -26,7 +26,7 @@ import { resolveHost, getVersion } from './utils';
 import { Upload, InputFile, UploadOptions, StoreUploadOptions } from './api/upload';
 import { preview, PreviewOptions } from './api/preview';
 import { CloudClient } from './api/cloud';
-import { Prefetch, PrefetchResponse } from './api/prefetch';
+import { Prefetch, PrefetchResponse, PrefetchOptions } from './api/prefetch';
 import { StoreParams } from './filelink';
 
 import { picker, PickerInstance, PickerOptions } from './picker';
@@ -132,8 +132,12 @@ export class Client extends EventEmitter {
     this.cloud = new CloudClient(this.session, options);
   }
 
-  // @todo use interface
-  prefetch(params: any) {
+  /**
+   * Make basic prefetch request to check permissions
+   *
+   * @param params
+   */
+  prefetch(params: PrefetchOptions) {
     return this.prefetchInstance.getConfig(params);
   }
 
