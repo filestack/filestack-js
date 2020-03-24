@@ -31,10 +31,10 @@ export type PrefetchSettings = {
 
 export type PrefetchPermissions = {
   intelligent_ingestion?: boolean;
-  blocked?: boolean;
-  blacklisted?: boolean;
   whitelabel?: boolean;
   transforms_ui?: boolean;
+  enhance?: boolean;
+  advanced_enhance?: boolean;
 };
 
 export enum PrefetchOptionsEvents {
@@ -59,7 +59,7 @@ interface PrefetchRequest {
 }
 
 export type PrefetchResponse = {
-  blocked?: boolean;
+  blocked?: boolean | string;
   settings?: PrefetchSettings;
   permissions?: PrefetchPermissions;
   pickerOptions: PickerOptions;
@@ -117,10 +117,15 @@ export class Prefetch {
 
       let data = res.data;
 
-      // todo reassign callbacks from old config to new one
-      data.pickerOptions = this.reassignCallbacks(pickerOptions, data.updated_config || {});
-      // cleanup response from backend
-      delete data.updated_config;
+      // if backend not returning updated_config cay we take old config and return
+      if (data.updated_config) {
+        // reassign callback from old config to new one returned from backend
+        data.pickerOptions = this.reassignCallbacks(pickerOptions, data.updated_config || {});
+        delete data.updated_config;
+      } else {
+        data.pickerOptions = pickerOptions;
+      }
+
       this.session.prefetch = data;
 
       return data;

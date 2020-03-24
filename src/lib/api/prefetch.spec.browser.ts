@@ -83,7 +83,7 @@ describe('Prefetch', () => {
       pickerOptions: {
         // @ts-ignore
         onFileSelected: test,
-        fromSources: ['facebook', 'test'],
+        fromSources: ['googledrive', 'test'],
       },
     });
 
@@ -163,6 +163,33 @@ describe('Prefetch', () => {
         policy: testSecurity.policy,
       },
     });
+
+    scope.done();
+  });
+
+  it('should return old config when updated_config is missing in response', async () => {
+    const sessionCopy =  {
+      ...testSession,
+      signature: testSecurity.signature,
+      policy: testSecurity.policy,
+    };
+
+    scope.post('/prefetch').once().reply(200, {
+      blocked: true,
+    });
+
+    const pickerOptions = {
+      uploadInBackground: true,
+      onUploadDone: () => console.log,
+      storeTo: {
+        location: 'asd',
+      },
+    };
+
+    const prefetch = new Prefetch(sessionCopy);
+    const res = await prefetch.getConfig({ pickerOptions });
+
+    expect(res.pickerOptions).toEqual(pickerOptions);
 
     scope.done();
   });
