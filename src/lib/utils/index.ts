@@ -173,7 +173,7 @@ export const sanitizeName = (name: string, options: SanitizeOptions = true): str
   }
 
   return `${fileParts
-    .join('_')
+    .join('.')
     .split('')
     .map(char => (exclude.indexOf(char) > -1 ? replacement : char))
     .join('')}${ext ? '.' + ext : ''}`;
