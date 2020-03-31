@@ -17,7 +17,7 @@
 
 // import Debug from 'debug';
 import { FilestackError } from './../../filestack_error';
-import { Session, Security } from './../client';
+import { Session, Security, Client } from './../client';
 import { PickerOptions } from './../picker';
 import { FsRequest } from '../request';
 import { cleanUpCallbacks } from './../utils';
@@ -72,8 +72,12 @@ export class Prefetch {
 
   private session: Session;
 
-  constructor(session: Session) {
-    this.session = session;
+  constructor(param: Session | Client) {
+    if (param instanceof Client) {
+      this.session = param.session;
+    } else {
+      this.session = param;
+    }
   }
 
   /**

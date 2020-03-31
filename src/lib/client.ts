@@ -94,7 +94,7 @@ export interface ClientOptions {
  * ```
  */
 export class Client extends EventEmitter {
-  session: Session;
+  public session: Session;
   private cloud: CloudClient;
   private prefetchInstance: Prefetch;
 
