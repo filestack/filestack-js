@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { loadModule, knownModuleIds } from 'filestack-loader';
+import { loadModule, FILESTACK_MODULES } from '@filestack/loader';
 import { FilestackError, FilestackErrorType } from './../filestack_error';
 import { Client } from './client';
 import { FSProgressEvent, UploadOptions, WorkflowConfig } from './api/upload/types';
@@ -704,9 +704,9 @@ export interface PickerTransformationOptions {
 class PickerLoader {
 
   private _initialized: Promise<PickerInstance>;
-
   constructor(client: Client, options?: PickerOptions) {
     const validateRes = getValidator(PickerParamsSchema)(options);
+
     if (validateRes.errors.length) {
       throw new FilestackError(`Invalid picker params`, validateRes.errors, FilestackErrorType.VALIDATION);
     }
@@ -736,7 +736,7 @@ class PickerLoader {
 
   private async loadModule(client: Client, options?: PickerOptions): Promise<PickerInstance> {
     const { session: { urls: { pickerUrl: url } } } = client;
-    const Picker = await loadModule(url, knownModuleIds.picker);
+    const Picker = await loadModule(FILESTACK_MODULES.PICKER, url);
     return new Picker(client, options);
   }
 }

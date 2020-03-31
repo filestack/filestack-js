@@ -26,13 +26,10 @@ import { resolveHost, getVersion } from './utils';
 import { Upload, InputFile, UploadOptions, StoreUploadOptions } from './api/upload';
 import { preview, PreviewOptions } from './api/preview';
 import { CloudClient } from './api/cloud';
+import { Prefetch, PrefetchResponse, PrefetchOptions } from './api/prefetch';
 import { StoreParams } from './filelink';
 
-import {
-  picker,
-  PickerInstance,
-  PickerOptions,
-} from './picker';
+import { picker, PickerInstance, PickerOptions } from './picker';
 
 /* istanbul ignore next */
 Sentry.addBreadcrumb({ category: 'sdk', message: 'filestack-js-sdk scope' });
@@ -43,6 +40,7 @@ export interface Session {
   cname?: string;
   policy?: string;
   signature?: string;
+  prefetch?: PrefetchResponse;
 }
 
 export interface Security {
@@ -96,8 +94,9 @@ export interface ClientOptions {
  * ```
  */
 export class Client extends EventEmitter {
-  session: Session;
+  public session: Session;
   private cloud: CloudClient;
+  private prefetchInstance: Prefetch;
 
   private forwardErrors: boolean = false;
 
@@ -129,7 +128,17 @@ export class Client extends EventEmitter {
       this.setCname(cname);
     }
 
+    this.prefetchInstance = new Prefetch(this.session);
     this.cloud = new CloudClient(this.session, options);
+  }
+
+  /**
+   * Make basic prefetch request to check permissions
+   *
+   * @param params
+   */
+  prefetch(params: PrefetchOptions) {
+    return this.prefetchInstance.getConfig(params);
   }
 
   /**
@@ -408,7 +417,7 @@ export class Client extends EventEmitter {
     }
 
     /* istanbul ignore next */
-    upload.on('error', (e) => {
+    upload.on('error', e => {
       if (this.forwardErrors) {
         Sentry.withScope(scope => {
           scope.setExtras(e.details);
@@ -469,7 +478,7 @@ export class Client extends EventEmitter {
     }
 
     /* istanbul ignore next */
-    upload.on('error', (e) => {
+    upload.on('error', e => {
       Sentry.withScope(scope => {
         scope.setExtras(e.details);
         scope.setExtras({ uploadOptions: options, storeOptions });

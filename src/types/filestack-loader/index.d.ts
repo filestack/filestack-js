@@ -14,8 +14,3 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-declare module 'filestack-loader' {
-  export const knownModuleIds: any;
-  export function loadModule(module: string, id?: string): Promise<any>;
-}
