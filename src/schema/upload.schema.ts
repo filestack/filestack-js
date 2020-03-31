@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 export const UploadParamsSchema = {
-  '$schema': 'http://json-schema.org/draft-07/schema#',
+  $schema: 'http://json-schema.org/draft-07/schema#',
   title: 'Filestack Upload',
   description: 'Filestack Upload Options',
   type: 'object',
@@ -51,12 +51,15 @@ export const UploadParamsSchema = {
       maximum: 60 * 60 * 1000,
     },
     intelligent: {
-      oneOf: [{
-        type: 'boolean',
-      }, {
-        type: 'string',
-        enum: ['fallback'],
-      }],
+      oneOf: [
+        {
+          type: 'boolean',
+        },
+        {
+          type: 'string',
+          enum: ['fallback'],
+        },
+      ],
     },
     intelligentChunkSize: {
       type: 'integer',
@@ -69,6 +72,12 @@ export const UploadParamsSchema = {
     },
     disableIntegrityCheck: {
       type: 'boolean',
+    },
+    tags: {
+      type: 'object',
+      additionalProperties: {
+        type: 'string',
+      },
     },
   },
 };

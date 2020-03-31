@@ -17,7 +17,7 @@
 import Debug from 'debug';
 import * as EventEmitter from 'eventemitter3';
 
-import { File } from './../file';
+import { File, Tags } from './../file';
 import { StoreUploadOptions } from './../types';
 import { Security } from './../../../client';
 import { FsRetryConfig } from './../../../request';
@@ -69,6 +69,8 @@ export abstract class UploaderAbstract extends EventEmitter {
   protected retryConfig: FsRetryConfig;
   protected integrityCheck: boolean = true;
 
+  protected tags: Tags = null;
+
   constructor(protected readonly storeOptions: StoreUploadOptions, protected readonly concurrency: number = 3) {
     super();
   }
@@ -89,11 +91,18 @@ export abstract class UploaderAbstract extends EventEmitter {
   }
 
   public setRetryConfig(cfg: FsRetryConfig) {
+    debug(`Set retry config to ${cfg}`);
     this.retryConfig = cfg;
   }
 
   public setUrl(url: string): void {
+    debug(`Set upload url to ${url}`);
     this.url = url;
+  }
+
+  public setTags(tags: Tags) {
+    debug(`Set tags to %O`, tags);
+    this.tags = tags;
   }
 
   /**

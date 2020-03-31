@@ -16,6 +16,10 @@
  */
 import { md5, sanitizeName, SanitizeOptions } from './../../utils';
 
+export interface Tags {
+  [key: string]: string;
+}
+
 export interface FileInstance {
   name: string;
   type: string;
@@ -67,6 +71,8 @@ export class File {
   public key: string;
 
   public workflows: any[];
+
+  public tags: Tags;
 
   constructor(private readonly _file: FileInstance, private readonly _sanitizeOptions?: SanitizeOptions) {
     this._file.name = sanitizeName(this._file.name, this._sanitizeOptions);
@@ -254,6 +260,7 @@ export class File {
       size: this.size,
       url: this.url,
       handle: this.handle,
+      tags: this.tags,
     };
   }
 }

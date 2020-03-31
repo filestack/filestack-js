@@ -41,7 +41,6 @@ const pushOneFileToS3 = (basePath, to) => {
         console.error('Upload ERROR:', err);
         reject(err);
       } else {
-        console.log(`Uploaded: ${path}`);
         resolve(`File: ${file} has been uploaded to: ${to.bucket}/${uploadKey}`);
       }
     });

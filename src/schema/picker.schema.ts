@@ -75,6 +75,12 @@ export const PickerParamsSchema = {
         },
       ],
     },
+    tags: {
+      type: 'object',
+      additionalProperties: {
+        type: 'string',
+      },
+    },
     container: {
       format: 'HTMLContainer',
     },

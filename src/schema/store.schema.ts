@@ -54,6 +54,12 @@ export const StoreParamsSchema = {
     disableStorageKey: {
       type: 'boolean',
     },
+    tags: {
+      type: 'object',
+      additionalProperties: {
+        type: 'string',
+      },
+    },
     sanitizer: {
       oneOf: [{
         type: 'boolean',
