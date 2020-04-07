@@ -75,7 +75,7 @@ export const PickerParamsSchema = {
         },
       ],
     },
-    uploadTags: {
+    tags: {
       type: 'object',
       additionalProperties: {
         type: 'string',

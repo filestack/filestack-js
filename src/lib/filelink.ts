@@ -470,7 +470,7 @@ export interface MinifyJsParams {
   targets?: null | string;
 }
 
-const handleRegexp = /^[\w\-]{20}$/;
+const handleRegexp = /^[\w\-]{20}|wf:\/\/[\w\-\/]{106}$/;
 
 /**
  * Class for handling filelinks. For now its supports all filestack transforms.

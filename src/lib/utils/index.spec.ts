@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { resolveCdnUrl, resolveHost, removeEmpty, uniqueTime, uniqueId, md5, sanitizeName, filterObject, b64, getVersion } from './index';
+import { resolveCdnUrl, resolveHost, removeEmpty, uniqueTime, uniqueId, md5, sanitizeName, filterObject, b64, getVersion, cleanUpCallbacks } from './index';
 import { config } from '../../config';
 const v = require('../../../../package.json').version;
 
@@ -141,6 +141,10 @@ describe('utils:index', () => {
       expect(sanitizeName('[]#|.jpg', false)).toEqual('[]#|.jpg');
     });
 
+    it('should not change dots in filename', () => {
+      expect(sanitizeName('[]#some.tar.gz', false)).toEqual('[]#some.tar.gz');
+    });
+
     it('should respect sanitize options with provided options', () => {
       expect(sanitizeName('[]#|.jpg', {
         exclude: ['[', ']'],
@@ -175,6 +179,31 @@ describe('utils:index', () => {
 
     it('should not throw on empty filtered object', () => {
       expect(filterObject({}, ['test'])).toEqual({});
+    });
+  });
+
+  describe('CleanupCallbacks', () => {
+    it('should set callbacks as undefined and return untouched object', () => {
+      const testObj = {
+        fn: () => 1,
+        test: {
+          fn2: () => 2,
+        },
+        testN: 123,
+        tests: 'string',
+        testObj: {
+          tst: 123,
+        },
+      };
+
+      expect(cleanUpCallbacks(testObj)).toEqual({
+        test: {},
+        testN: 123,
+        tests: 'string',
+        testObj: {
+          tst: 123,
+        },
+      });
     });
   });
 });

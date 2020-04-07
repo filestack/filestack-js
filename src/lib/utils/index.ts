@@ -105,7 +105,7 @@ export const getMimetype = (file: Uint8Array | Buffer, name?: string): string =>
   let type = fileType(file);
 
   // check x-ms and x-msi by extension
-  if (type && (type.mime !== 'application/x-ms' && type.mime !== 'application/x-msi')) {
+  if (type && type.mime !== 'application/x-ms' && type.mime !== 'application/x-msi') {
     return type.mime;
   }
 
@@ -173,7 +173,7 @@ export const sanitizeName = (name: string, options: SanitizeOptions = true): str
   }
 
   return `${fileParts
-    .join('_')
+    .join('.')
     .split('')
     .map(char => (exclude.indexOf(char) > -1 ? replacement : char))
     .join('')}${ext ? '.' + ext : ''}`;
@@ -197,6 +197,29 @@ export const filterObject = (toFilter, requiredFields: string[]) => {
   return Object.keys(toFilter)
     .filter(f => requiredFields.indexOf(f) > -1)
     .reduce((obj, key) => ({ ...obj, [key]: toFilter[key] }), {});
+};
+
+/**
+ * Deep cleanup object from functions
+ *
+ * @param obj
+ */
+export const cleanUpCallbacks = (obj: any) => {
+  if (!obj || Object.keys(obj).length === 0) {
+    return obj;
+  }
+
+  Object.keys(obj).forEach((k) => {
+    if (typeof obj[k] === 'function') {
+      obj[k] = undefined;
+    }
+
+    if (obj[k] === Object(obj[k])) {
+      obj[k] = cleanUpCallbacks(obj[k]);
+    }
+  });
+
+  return obj;
 };
 
 export * from './index.node';

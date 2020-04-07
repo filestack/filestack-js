@@ -46,7 +46,7 @@ const config =  {
     new webpack.BannerPlugin({ banner }),
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': 'production',
-      '@{VERSION}' : `${require("./package.json").version}`,
+      '@{VERSION}' : `${require('./package.json').version}`,
     }),
     new webpack.NormalModuleReplacementPlugin(/^.*\.node\.js$/,  (result) => {
       if (result.resource) {
@@ -87,4 +87,4 @@ const prod = merge({}, config,  {
   ],
 });
 
-module.exports = [umd, esm, prod];
+module.exports = { umd, esm, prod };

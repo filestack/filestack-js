@@ -2,6 +2,29 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.13.2](https://github.com/filestack/filestack-js/compare/v3.13.1...v3.13.2) (2020-04-07)
+
+
+### Bug Fixes
+
+* **build:** Fix build webpack scripts ([37b2617](https://github.com/filestack/filestack-js/commit/37b2617ccde4ff9da298d24102d525fcbb3eb447))
+
+### [3.13.1](https://github.com/filestack/filestack-js/compare/v3.13.0...v3.13.1) (2020-04-07)
+
+
+### Bug Fixes
+
+* **prefetch:** always ask for inapp_browser setting ([61764f7](https://github.com/filestack/filestack-js/commit/61764f794c75a582dcd21c143f76581221ec76ac))
+
+## [3.13.0](https://github.com/filestack/filestack-js/compare/v3.12.4...v3.13.0) (2020-04-01)
+
+
+### Features
+
+* **picker:** bump picker version with new prefetch request ([77bc025](https://github.com/filestack/filestack-js/commit/77bc02568dc10f5a3c7c2c4ff3c405acc113eda7))
+* **prefetch:** Separate and update new prefetch request  ([7132ab1](https://github.com/filestack/filestack-js/commit/7132ab1eef38141e379c1cdf3f675f8dec30fe9e))
+* **request/http:** add progress monitor to node http library ([96ead9b](https://github.com/filestack/filestack-js/commit/96ead9bd4d2fbefb5eb788fabc48b802407e09d4))
+
 ### [3.12.4](https://github.com/filestack/filestack-js/compare/v3.12.3...v3.12.4) (2020-02-17)
 
 

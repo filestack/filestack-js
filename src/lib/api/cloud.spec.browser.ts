@@ -66,11 +66,6 @@ const mockMetadata = jest
   .mockName('metadata')
   .mockReturnValue('metadata');
 
-const mockPrefetch = jest
-  .fn()
-  .mockName('prefetch')
-  .mockReturnValue('prefetch');
-
 const mockList = jest
   .fn()
   .mockName('list')
@@ -137,8 +132,24 @@ describe('cloud', () => {
 
     beforeEach(() => {
       scopeD = nock(testDomain);
-      scopeD.post('/store/').delay(4000).reply(200);
-      scopeD.post('/folder/list').delay(4000).reply(200);
+
+      scopeD
+        .post('/store/')
+        .delay(4000)
+        .reply(200);
+      scopeD
+        .post('/folder/list')
+        .delay(4000)
+        .reply(200);
+
+      scopeD
+        .persist()
+        .options(/.*/)
+        .reply(204, '', {
+          'access-control-allow-headers': 'filestack-source,filestack-trace-id,filestack-trace-span',
+          'access-control-allow-methods': '*',
+          'access-control-allow-origin': '*',
+        });
     });
 
     afterEach(() => {
@@ -147,18 +158,21 @@ describe('cloud', () => {
       localStorage.clear();
     });
 
-    it('Should cancel store request', (done) => {
+    it('Should cancel store request', done => {
       const sessionClone = JSON.parse(JSON.stringify(testSession));
       sessionClone.urls.cloudApiUrl = testDomain;
 
       let token = {};
 
-      new CloudClient(sessionClone).store('google', 'test', { filename: '1', location: 'gcs' }, {}, token).then(() => {
-        done('Request not canceled');
-      }).catch((err) => {
-        expect(err).toEqual(expect.any(Error));
-        done();
-      });
+      new CloudClient(sessionClone)
+        .store('google', 'test', { filename: '1', location: 'gcs' }, {}, token)
+        .then(() => {
+          done('Request not canceled');
+        })
+        .catch(err => {
+          expect(err).toEqual(expect.any(Error));
+          done();
+        });
 
       setTimeout(() => {
         // @ts-ignore
@@ -166,42 +180,40 @@ describe('cloud', () => {
       }, 500);
     });
 
-    it('Should cancel list request', (done) => {
+    it('Should cancel list request', done => {
       const sessionClone = JSON.parse(JSON.stringify(testSession));
       sessionClone.urls.cloudApiUrl = testDomain;
 
       let token = {};
 
-      new CloudClient(sessionClone).list('google', token).then(() => {
-        done('Request not canceled');
-      }).catch((err) => {
-        expect(err).toEqual(expect.any(Error));
-        done();
-      });
+      new CloudClient(sessionClone)
+        .list('google', token)
+        .then(() => {
+          done('Request not canceled');
+        })
+        .catch(err => {
+          expect(err).toEqual(expect.any(Error));
+          done();
+        });
 
       setTimeout(() => {
         // @ts-ignore
         token.cancel();
       }, 500);
     });
-
   });
 
   describe('facebook inapp browser', () => {
-    beforeEach(() => {
-      scope
-        .get('/prefetch')
-        .query({ apikey: testApiKey })
-        .reply(200, {
-          inapp_browser: true,
-        });
-    });
-
     it('should set token to sessionStore when inapp browser is detected', async () => {
       spyOn(utils, 'isFacebook').and.returnValue(true);
 
-      const client = new CloudClient(testSession);
-      await client.prefetch();
+      const client = new CloudClient(Object.assign({}, testSession, {
+        prefetch: {
+          settings: {
+            inapp_browser: true,
+          },
+        },
+      }));
 
       const token = 'test';
       client.token = token;
@@ -214,8 +226,13 @@ describe('cloud', () => {
     it('should get token from sessionStore when inapp browser is detected', async () => {
       spyOn(utils, 'isFacebook').and.returnValue(true);
 
-      const client = new CloudClient(testSession);
-      await client.prefetch();
+      const client = new CloudClient(Object.assign({}, testSession, {
+        prefetch: {
+          settings: {
+            inapp_browser: true,
+          },
+        },
+      }));
 
       const token = 'test';
       sessionStorage.setItem(PICKER_KEY, token);
@@ -227,8 +244,14 @@ describe('cloud', () => {
     it('should send appurl in list action', async () => {
       const clouds = { test: true };
 
-      const client = new CloudClient(testSession);
-      await client.prefetch();
+      const client = new CloudClient(Object.assign({}, testSession, {
+        prefetch: {
+          settings: {
+            inapp_browser: true,
+          },
+        },
+      }));
+
       const res = await client.list({ ...clouds });
 
       expect(res).toEqual({
@@ -239,42 +262,32 @@ describe('cloud', () => {
         token: null,
       });
     });
-
-    it('should not send app url if urlsearch params is undefined', async () => {
-      const clouds = { test: true };
-
-      const before = window.URLSearchParams;
-      window.URLSearchParams = undefined;
-
-      const client = new CloudClient(testSession);
-      await client.prefetch();
-      const res = await client.list({ ...clouds });
-
-      expect(res).toEqual({
-        apikey: testApiKey,
-        flow: 'web',
-        clouds,
-        token: null,
-      });
-
-      window.URLSearchParams = before;
-    });
   });
 
-  describe('prefetch', () => {
-    beforeEach(() => {
-      scope
-        .get('/prefetch')
-        .query({ apikey: testApiKey })
-        .reply(200, mockPrefetch);
+  it('should not send app url if urlsearch params is undefined', async () => {
+    const clouds = { test: true };
+
+    const before = window.URLSearchParams;
+    window.URLSearchParams = undefined;
+
+    const client = new CloudClient(Object.assign({}, testSession, {
+      prefetch: {
+        settings: {
+          inapp_browser: true,
+        },
+      },
+    }));
+
+    const res = await client.list({ ...clouds });
+
+    expect(res).toEqual({
+      apikey: testApiKey,
+      flow: 'web',
+      clouds,
+      token: null,
     });
 
-    it('should make correct request to api', async () => {
-      const res = await new CloudClient(testSession).prefetch();
-
-      expect(mockPrefetch).toHaveBeenCalledWith(expect.any(String), '');
-      expect(res).toEqual('prefetch');
-    });
+    window.URLSearchParams = before;
   });
 
   describe('list', () => {

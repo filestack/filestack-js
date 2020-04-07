@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { registerModule, FILESTACK_MODULES } from '@filestack/loader';
 import { SecurityOptions, getSecurity, validateWebhookSignature, WebhookValidatePayload } from './lib/api/security';
 import { Client, ClientOptions, Security } from './lib/client';
 import { PickerOptions, PickerInstance, PickerUploadDoneCallback, PickerFileMetadata, PickerResponse, PickerDisplayMode } from './lib/picker';
@@ -25,6 +26,7 @@ import { InputFile } from './lib/api/upload/file_tools';
 import { UploadOptions } from './lib/api/upload/types';
 import { StoreUploadOptions } from './lib/api/upload';
 import { PreviewOptions } from './lib/api/preview';
+import { PrefetchOptions, PrefetchResponse, PrefetchPermissions, PrefetchEvents } from './lib/api/prefetch';
 import { FilestackError } from './filestack_error';
 import { getMimetype } from './lib/utils/index';
 
@@ -34,14 +36,19 @@ import { getMimetype } from './lib/utils/index';
  * @param apikey
  * @param options
  */
-export const init = (apikey: string, options?: ClientOptions): Client => {
+export const Filestack = (apikey: string, options?: ClientOptions): Client => {
   return new Client(apikey, options);
 };
+
+// This will be deprecated in feature use
+export const init = Filestack;
 
 /**
  * filestack-js version. Interpolated at build time.
  */
 export const version = '@{VERSION}';
+
+registerModule(FILESTACK_MODULES.FILESTACK_SDK, Filestack, { version: '@{VERSION}' });
 
 export * from './lib/api/transform';
 export * from './lib/filelink';
@@ -73,5 +80,9 @@ export {
   Client,
   FilestackError,
   PickerDisplayMode,
-  getMimetype
+  getMimetype,
+  PrefetchOptions,
+  PrefetchResponse,
+  PrefetchPermissions,
+  PrefetchEvents
 };

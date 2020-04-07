@@ -196,7 +196,7 @@ export interface TransformOptions {
   sfw?: boolean;
   store?: {
     filename?: string,
-    localion?: string,
+    location?: string,
     path?: string,
     container?: string,
     region?: string;
