@@ -26,7 +26,6 @@ import { cleanUpCallbacks } from './../utils';
 
 export type PrefetchSettings = {
   inapp_browser?: boolean;
-  customsource?: boolean;
 };
 
 export type PrefetchPermissions = {
@@ -96,6 +95,15 @@ export class Prefetch {
 
     if (this.session.prefetch && events) {
       return FsRequest.post(`${this.session.urls.uploadApiUrl}/prefetch`, { ...paramsToSend, events }).then(() => this.session.prefetch);
+    }
+
+    // we should always ask for this setting for picker
+    if (!settings) {
+      settings = ['inapp_browser'];
+    } else {
+      settings = settings.concat(['inapp_browser']);
+      // make arrray unique
+      settings = settings.filter((v, i, a) => settings.indexOf(v) === i);
     }
 
     let pickerOptionsToSend;
