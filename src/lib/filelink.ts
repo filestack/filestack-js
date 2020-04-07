@@ -21,7 +21,6 @@ import { getValidator } from './../schema/validator';
 import { resolveHost, b64 } from './utils';
 import { FilestackError, FilestackErrorType } from './../filestack_error';
 import Debug from 'debug';
-import { booleanLiteral } from '@babel/types';
 
 const debug = Debug('fs:filelink');
 
@@ -471,7 +470,7 @@ export interface MinifyJsParams {
   targets?: null | string;
 }
 
-const handleRegexp = /^[\w\-]{20}$/;
+const handleRegexp = /^[\w\-]{20}|wf:\/\/[\w\-\/]{106}$/;
 
 /**
  * Class for handling filelinks. For now its supports all filestack transforms.

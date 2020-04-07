@@ -158,10 +158,41 @@ describe('Prefetch', () => {
 
     expect(mockPref).toHaveBeenCalledWith({
       apikey: testApiKey,
+      settings: ['inapp_browser'],
       security: {
         signature: testSecurity.signature,
         policy: testSecurity.policy,
       },
+    });
+
+    scope.done();
+  });
+
+  it('should always add inapp browser setting to request', async () => {
+    const mockPref = jest.fn() .mockImplementation(() => ({}));
+    scope.post('/prefetch').once().reply(200, (_, data) => mockPref(data));
+
+    const prefetch = new Prefetch({ ...testSession });
+    await prefetch.getConfig({});
+
+    expect(mockPref).toHaveBeenCalledWith({
+      apikey: testApiKey,
+      settings: ['inapp_browser'],
+    });
+
+    scope.done();
+  });
+
+  it('should always add inapp browser setting to request event if some settings are provided', async () => {
+    const mockPref = jest.fn() .mockImplementation(() => ({}));
+    scope.post('/prefetch').once().reply(200, (_, data) => mockPref(data));
+
+    const prefetch = new Prefetch({ ...testSession });
+    await prefetch.getConfig({ settings: ['inapp_browser'] });
+
+    expect(mockPref).toHaveBeenCalledWith({
+      apikey: testApiKey,
+      settings: ['inapp_browser'],
     });
 
     scope.done();
@@ -221,6 +252,7 @@ describe('Prefetch', () => {
     expect(mockPref).toHaveBeenCalledWith({
       apikey: testApiKey,
       events: [PrefetchEvents.PICKER],
+      settings: ['inapp_browser'],
       picker_config: {
         uploadInBackground: true,
       },

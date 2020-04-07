@@ -41,6 +41,13 @@ describe('filelink', () => {
     }).toThrow('Invalid filestack source provided');
   });
 
+  it('should support workflows source', () => {
+    const source = 'wf://975092d5-2eb3-460e-aca8-e7b00a0838d5/2ec47319-24c8-4ced-9ae3-10a6d450a736/1c04a766e53633f1256759f2d06a50a3';
+    expect(() => {
+      const f = new Filelink(source);
+    }).not.toThrow();
+  });
+
   it('should throw an error when external handle and without apikey', () => {
     const source = 'src://test123/example.jpg';
 
