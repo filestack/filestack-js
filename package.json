@@ -19,7 +19,7 @@
     "build:main": "npx gulp typescript:main",
     "build:module": "npx gulp typescript:module",
     "build:check": "node scripts/check.js",
-    "webpack": "npx webpack",
+    "webpack": "npx gulp build:webpack",
     "webpack:profile": "npx webpack --profile --json > .stats.json",
     "webpack:analyze": "npm run webpack:profile && npx webpack-bundle-analyzer .stats.json build/browser/",
     "lint": "tslint -p tsconfig.tslint.json",
@@ -105,6 +105,7 @@
     "webpack-bundle-analyzer": "^3.6.1",
     "webpack-cli": "^3.3.10",
     "webpack-node-externals": "^1.7.2",
+    "webpack-stream": "^5.2.1",
     "webpack-subresource-integrity": "^1.4.0"
   },
   "keywords": [

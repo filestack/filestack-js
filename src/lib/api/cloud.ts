@@ -57,21 +57,8 @@ export class CloudClient {
    */
   private _token: string;
 
-  /**
-   * Flag for in-app browser setup
-   * (in-app browsers are not supporting new window so we need to save token to session cache)
-   *
-   * @private
-   * @memberof CloudClient
-   */
-  private _isInAppBrowser = false;
-
   constructor(session: Session, options?: ClientOptions) {
     this.session = session;
-
-    if (this.session.prefetch && this.session.prefetch.settings && this.session.prefetch.settings.inapp_browser) {
-      this._isInAppBrowser = this.session.prefetch.settings.inapp_browser;
-    }
 
     this.cloudApiUrl = session.urls.cloudApiUrl;
 
@@ -86,7 +73,7 @@ export class CloudClient {
       if (token) return token;
     }
 
-    if (this._isInAppBrowser) {
+    if (this.isInAppBrowser) {
       return sessionStorage.getItem(PICKER_KEY);
     }
 
@@ -98,11 +85,28 @@ export class CloudClient {
       localStorage.setItem(PICKER_KEY, key);
     }
 
-    if (this._isInAppBrowser) {
+    if (this.isInAppBrowser) {
       sessionStorage.setItem(PICKER_KEY, key);
     }
 
     this._token = key;
+  }
+
+  /**
+   * Return information is inappbrowser flag is set
+   *
+   * @readonly
+   * @memberof CloudClient
+   */
+  private get isInAppBrowser() {
+    if (this.session
+      && this.session.prefetch
+      && this.session.prefetch.settings
+      && this.session.prefetch.settings.inapp_browser) {
+      return this.session.prefetch.settings.inapp_browser;
+    }
+
+    return false;
   }
 
   list(clouds: any, cancelTokenInput?: any) {
@@ -113,7 +117,7 @@ export class CloudClient {
       token: this.token,
     };
 
-    if (this._isInAppBrowser) {
+    if (this.isInAppBrowser) {
       payload.appurl = this.currentAppUrl();
     }
 
@@ -206,7 +210,7 @@ export class CloudClient {
         localStorage.removeItem(PICKER_KEY);
       }
 
-      if (this._isInAppBrowser) {
+      if (this.isInAppBrowser) {
         sessionStorage.removeItem(PICKER_KEY);
       }
     }
