@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.13.2](https://github.com/filestack/filestack-js/compare/v3.13.1...v3.13.2) (2020-04-07)
+
+
+### Bug Fixes
+
+* **build:** Fix build webpack scripts ([37b2617](https://github.com/filestack/filestack-js/commit/37b2617ccde4ff9da298d24102d525fcbb3eb447))
+
 ### [3.13.1](https://github.com/filestack/filestack-js/compare/v3.13.0...v3.13.1) (2020-04-07)
 
 
