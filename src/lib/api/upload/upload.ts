@@ -129,7 +129,7 @@ export class Upload extends EventEmitter {
       this.uploader.setUploadMode(options.intelligent === 'fallback' ? UploadMode.FALLBACK : UploadMode.INTELLIGENT);
     }
 
-    this.uploader.setUploadTags(options.uploadTags);
+    this.uploader.setUploadTags(options.tags);
 
     this.uploader.on('error', (e) => this.emit('error', e));
     this.uploader.on('progress', this.handleProgress.bind(this));

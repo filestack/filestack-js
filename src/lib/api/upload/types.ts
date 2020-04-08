@@ -80,7 +80,7 @@ export interface UploadOptions {
    * @type {Tags}
    * @memberof UploadOptions
    */
-  uploadTags?: UploadTags;
+  tags?: UploadTags;
 }
 
 export type StoreUploadOptions = StoreBaseParams & {

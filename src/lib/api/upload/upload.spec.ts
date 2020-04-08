@@ -110,7 +110,7 @@ describe('Api/Upload/upload', () => {
 
     it('should set upload tasks to uploader', () => {
       const tags = { test: '123' };
-      const u = new Upload({ uploadTags: tags });
+      const u = new Upload({ tags: tags });
       expect(S3Uploader.prototype.setUploadTags).toHaveBeenCalledWith(tags);
     });
 
