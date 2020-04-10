@@ -75,8 +75,10 @@ export const UploadParamsSchema = {
     },
     tags: {
       type: 'object',
+      maxItems: 10,
       additionalProperties: {
         type: 'string',
+        maxlength: 256,
       },
     },
   },
