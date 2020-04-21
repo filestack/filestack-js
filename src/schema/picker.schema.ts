@@ -57,6 +57,7 @@ export const PickerParamsSchema = {
             'facebook',
             'instagram',
             'googledrive',
+            'unsplash',
             'dropbox',
             'webcam',
             'video',
@@ -178,7 +179,7 @@ export const PickerParamsSchema = {
     },
     lang: {
       type: 'string',
-      enum: ['ca', 'da', 'de', 'en', 'es', 'fr', 'he', 'it', 'ja', 'ko', 'nl', 'no', 'pl', 'pt', 'sv', 'ru', 'vi', 'zh', 'tr'],
+      enum: ['ca', 'da', 'de', 'en', 'es', 'fr', 'he', 'it', 'ja', 'ko', 'nl', 'no', 'pl', 'pt', 'sv', 'ru', 'vi', 'zh', 'tr', 'ar'],
     },
     minFiles: {
       type: 'integer',

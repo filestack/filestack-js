@@ -17,51 +17,55 @@
 
 import { storeURL } from './store';
 import { Session } from '../client';
-import { Filelink } from './../filelink';
-import * as nock from 'nock';
+import { FilestackError } from './../../filestack_error';
 
-const testHost = 'https://test.com';
-const testUrl = 'testurl';
-const mockGet = jest.fn().mockName('mockGet');
-const mockHandle = 'mockHandle';
+import { config } from './../../config';
+import { FsRequest } from './../request';
+import { Filelink } from './../filelink';
 
 jest.mock('./../filelink');
+jest.mock('./../request');
 
 const mockedSession: Session = {
   apikey: 'fakeApikey',
-  urls: {
-    cdnUrl: testHost,
-    fileApiUrl: 'fakeApiUrl',
-    uploadApiUrl: 'fakeUploadApiUrl',
-    cloudApiUrl: 'fakeCloudApiUrl',
-    pickerUrl: 'fakePickerUrl',
-  },
+  urls: config.urls,
 };
 
-const responseObj = {
-  filename: 'testFilename',
-  handle: 'testHandle',
-  url: 'testUrl',
-  type: 'testMimetype',
-  mimetype: 'testMimetype',
-  size: 1,
-};
-
-const scope = nock(testHost);
+const storeTaskDef = [{ name: 'store', params: {} }];
+const sourceToStore = 'urlToStore';
 
 describe('StoreURL', () => {
-  beforeEach(() => {
-    spyOn(Filelink.prototype, 'toString').and.returnValue(`${testHost}/${testUrl}`);
-    mockGet.mockReturnValue(responseObj);
 
-    scope
-      .get(`/${testUrl}`)
-      .delay(15)
-      .reply(200, mockGet);
+  beforeEach(() => {
+    // @ts-ignore
+    FsRequest.post.mockImplementation((_, options) => {
+      let toReturn = {
+        data: {
+          handle: 'test',
+        },
+      };
+
+      if (options && options.upload_tags) {
+        // @ts-ignore
+        toReturn.data.upload_tags = options.upload_tags;
+      }
+
+      return Promise.resolve(toReturn);
+    });
+
+    // @ts-ignore
+    Filelink.prototype.getTasks.mockImplementation(() => storeTaskDef);
   });
 
   it('should call correct store method', async () => {
-    expect(await storeURL(mockedSession, 'http://test.com')).toEqual(responseObj);
+    await storeURL({ session: mockedSession, url: sourceToStore });
+
+    expect(FsRequest.post).toHaveBeenCalledWith(`${mockedSession.urls.processUrl}/process`, {
+      apikey: mockedSession.apikey,
+      sources: [ sourceToStore ],
+      tasks: storeTaskDef,
+      upload_tags: undefined,
+    }, {});
   });
 
   it('should respect passed security and policy', async () => {
@@ -70,17 +74,27 @@ describe('StoreURL', () => {
       policy: 'fakeP',
     };
 
-    const res = await storeURL(mockedSession, mockHandle, {}, null, fakeSecurity);
+    await storeURL({ session: mockedSession, url: sourceToStore, security: fakeSecurity });
 
-    expect(Filelink.prototype.security).toBeCalledWith(fakeSecurity);
-    expect(res).toEqual(responseObj);
+    expect(Filelink.prototype.security).toHaveBeenCalledWith(fakeSecurity);
+
+    expect(FsRequest.post).toHaveBeenCalledWith(`${mockedSession.urls.processUrl}/process`, {
+      apikey: mockedSession.apikey,
+      sources: [ sourceToStore ],
+      tasks: storeTaskDef,
+      upload_tags: undefined,
+    }, {});
   });
 
   it('should throw error on wrong store params', () => {
-    expect(() => storeURL(mockedSession, mockHandle, {
-      // @ts-ignore
-      test: 123,
-    })).toThrowError('Invalid store params');
+    return expect(storeURL({
+      session: mockedSession,
+      url: sourceToStore,
+      storeParams: {
+        // @ts-ignore
+        test: 123,
+      },
+    })).rejects.toEqual(expect.any(FilestackError));
   });
 
   it('should respect token cancel', async () => {
@@ -91,39 +105,56 @@ describe('StoreURL', () => {
       },
     };
 
-    // @ts-ignore
-    setTimeout(() => token.cancel(), 10);
-    // tslint:disable-next-line
-    expect(storeURL(mockedSession, mockHandle, {}, token)).rejects.toEqual(expect.any(Error));
-  });
-
-  it('should throw an error when missing url', async () => {
-    expect(() => storeURL(mockedSession)).toThrowError();
-  });
-
-  it('should rejects on request error', () => {
-    // @ts-ignore
-    Filelink.prototype.toString.and.returnValue(`${testHost}/${testUrl}/404`);
-
-    nock(testHost)
-      .get(`/${testUrl}/404`)
-      .reply(404);
-
-    return expect(storeURL(mockedSession, mockHandle, {})).rejects.toEqual(expect.any(Error));
-  });
-
-  it('should rejects on wrong body structure', async () => {
-    // @ts-ignore
-    Filelink.prototype.toString.and.returnValue(`${testHost}/${testUrl}/body`);
-
-    mockGet.mockReturnValue({
-      test: 123,
+    await storeURL({
+      session: mockedSession,
+      url: sourceToStore,
+      token,
     });
 
-    nock(testHost)
-      .get(`/${testUrl}/body`)
-      .reply(200, mockGet);
+    expect(FsRequest.post).toHaveBeenCalledWith(`${mockedSession.urls.processUrl}/process`, {
+      apikey: mockedSession.apikey,
+      sources: [ sourceToStore ],
+      tasks: storeTaskDef,
+      upload_tags: undefined,
 
-    return expect(storeURL(mockedSession, mockHandle, {})).rejects.toEqual(expect.any(Error));
+      // expect.any(FsCancelToken) is not working correctly with mocked functions
+    }, { cancelToken: expect.any(Object) });
   });
+
+  it('should pass upload tags to request', async () => {
+    const uploadTags = { test: '123' };
+
+    const res = await storeURL({
+      session: mockedSession,
+      url: sourceToStore,
+      uploadTags,
+    });
+
+    expect(FsRequest.post).toHaveBeenCalledWith(`${mockedSession.urls.processUrl}/process`, {
+      apikey: mockedSession.apikey,
+      sources: [ sourceToStore ],
+      tasks: storeTaskDef,
+      upload_tags: uploadTags,
+    }, {});
+
+    expect(res.uploadTags).toEqual(uploadTags);
+  });
+
+  it('should throw an error when missing url', () => {
+    return expect(storeURL({ session: mockedSession })).rejects.toEqual(expect.any(FilestackError));
+  });
+
+  it('should throw on missing handle in response', () => {
+
+    // @ts-ignore
+    FsRequest.post.mockImplementation(() => Promise.resolve({
+      data: {},
+    }));
+
+    return expect(storeURL({
+      session: mockedSession,
+      url: sourceToStore,
+    })).rejects.toEqual(expect.any(FilestackError));
+  });
+
 });

@@ -20,48 +20,58 @@ import { Filelink, StoreParams } from './../filelink';
 import { FilestackError } from './../../filestack_error';
 import { getValidator, StoreParamsSchema } from './../../schema';
 import { FsRequest, FsCancelToken } from '../request';
+import { UploadTags } from './upload/file';
+
+export type StoreUrlParams = {
+  session: Session;
+  url?: string;
+  storeParams?: StoreParams;
+  token?: any;
+  security?: Security;
+  uploadTags?: UploadTags;
+};
 
 /**
+ * Store given url with options and
  *
- * @private
  * @param session
  * @param url
- * @param opts
+ * @param storeOpts
  * @param token
  * @param security
+ * @param uploadTags
  */
-export const storeURL = (
-  session: Session,
-  url?: string,
-  opts?: StoreParams,
-  token?: any,
-  security?: Security
-): Promise<any> => {
+export const storeURL = ({
+  session,
+  url,
+  storeParams,
+  token,
+  security,
+  uploadTags,
+}: StoreUrlParams): Promise<any> => {
   if (!url || typeof url !== 'string') {
-    throw new Error('url is required for storeURL');
+    return Promise.reject(new FilestackError('url is required for storeURL'));
   }
 
-  const validateRes = getValidator(StoreParamsSchema)(opts);
+  const validateRes = getValidator(StoreParamsSchema)(storeParams);
 
   if (validateRes.errors.length) {
-    throw new FilestackError(`Invalid store params`, validateRes.errors);
+    return Promise.reject(new FilestackError(`Invalid store params`, validateRes.errors));
   }
 
   session.policy = security && security.policy || session.policy;
   session.signature = security && security.signature || session.signature;
 
-  const baseURL = new Filelink(url, session.apikey);
-  baseURL.setCname(session.cname);
-  baseURL.setBase64(true);
+  const filelink = new Filelink(url, session.apikey);
+  filelink.store(storeParams);
 
   if (session.policy && session.signature) {
-    baseURL.security({
+    filelink.security({
       policy: session.policy,
       signature: session.signature,
     });
   }
 
-  baseURL.store(opts);
   let options: any = {};
 
   if (token) {
@@ -70,10 +80,18 @@ export const storeURL = (
     options.cancelToken = cancelToken;
   }
 
-  // @todo change to post and add tags
-
-  return FsRequest.get(baseURL.toString(), options).then((res) => {
+  return FsRequest.post(`${session.urls.processUrl}/process`, {
+    apikey: session.apikey,
+    sources: [ url ],
+    tasks: filelink.getTasks(),
+    upload_tags: uploadTags ? uploadTags : undefined,
+  }, options).then((res) => {
     if (res.data && res.data.handle) {
+      if (res.data.upload_tags) {
+        res.data.uploadTags = res.data.upload_tags;
+        delete res.data.upload_tags;
+      }
+
       return { ...res.data, mimetype: res.data.type };
     }
 

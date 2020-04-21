@@ -16,7 +16,7 @@
  */
 import { md5, sanitizeName, SanitizeOptions } from './../../utils';
 
-export interface Tags {
+export interface UploadTags {
   [key: string]: string;
 }
 
@@ -72,7 +72,7 @@ export class File {
 
   public workflows: any[];
 
-  public tags: Tags;
+  public uploadTags: UploadTags;
 
   constructor(private readonly _file: FileInstance, private readonly _sanitizeOptions?: SanitizeOptions) {
     this._file.name = sanitizeName(this._file.name, this._sanitizeOptions);
@@ -260,7 +260,7 @@ export class File {
       size: this.size,
       url: this.url,
       handle: this.handle,
-      tags: this.tags,
+      uploadTags: this.uploadTags,
     };
   }
 }

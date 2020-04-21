@@ -21,6 +21,7 @@ import { PickerOptions, PickerInstance, PickerUploadDoneCallback, PickerFileMeta
 import { TransformSchema } from './schema/transforms.schema';
 import { TransformOptions } from './lib/api/transform';
 import { RetrieveOptions, MetadataOptions } from './lib/api/file';
+import { UploadTags } from './lib/api/upload/file';
 import { InputFile } from './lib/api/upload/file_tools';
 import { UploadOptions } from './lib/api/upload/types';
 import { StoreUploadOptions } from './lib/api/upload';
@@ -56,6 +57,7 @@ export * from './lib/request';
 export * from './lib/utils';
 
 export {
+  UploadTags,
   TransformSchema,
   SecurityOptions,
   getSecurity,

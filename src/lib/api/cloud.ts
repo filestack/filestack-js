@@ -19,6 +19,7 @@ import { removeEmpty } from '../utils';
 import { StoreParams } from '../filelink';
 import { ClientOptions, Session } from '../client';
 import { FilestackError } from './../../filestack_error';
+import { UploadTags } from './upload/file';
 import { FsRequest, FsCancelToken } from '../request';
 
 /**
@@ -143,7 +144,7 @@ export class CloudClient {
     });
   }
 
-  store(name: string, path: string, options: StoreParams = {}, customSource: any = {}, cancelTokenInput?: any) {
+  store(name: string, path: string, options: StoreParams = {}, customSource: any = {}, cancelTokenInput?: any, uploadTags: UploadTags = null) {
     // Default to S3
     if (options.location === undefined) {
       options.location = 's3';
@@ -153,6 +154,7 @@ export class CloudClient {
       apikey: this.session.apikey,
       token: this.token,
       flow: 'web',
+      upload_tags: uploadTags ? uploadTags : undefined,
       clouds: {
         [name]: {
           path,

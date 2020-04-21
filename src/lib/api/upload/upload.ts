@@ -23,7 +23,7 @@ import { SanitizeOptions } from './../../utils';
 
 import { UploadOptions, StoreUploadOptions } from '../upload/types';
 import { getFile, InputFile } from './file_tools';
-import { FileState, Tags } from './file';
+import { FileState, UploadTags } from './file';
 import { UploadMode } from './uploaders/abstract';
 import { getValidator, UploadParamsSchema, StoreParamsSchema } from './../../../schema';
 
@@ -66,15 +66,6 @@ export class Upload extends EventEmitter {
    * @memberof Upload
    */
   private overrideFileName;
-
-  /**
-   * Upload tags
-   *
-   * @private
-   * @type {Tags}
-   * @memberof Upload
-   */
-  private tags: Tags = {};
 
   private lastProgress: ProgressEvent = {
     totalBytes: 0,
@@ -138,9 +129,7 @@ export class Upload extends EventEmitter {
       this.uploader.setUploadMode(options.intelligent === 'fallback' ? UploadMode.FALLBACK : UploadMode.INTELLIGENT);
     }
 
-    if (options.tags) {
-      this.tags = options.tags;
-    }
+    this.uploader.setUploadTags(options.tags);
 
     this.uploader.on('error', (e) => this.emit('error', e));
     this.uploader.on('progress', this.handleProgress.bind(this));
@@ -201,8 +190,8 @@ export class Upload extends EventEmitter {
    * @param {Tags} tags
    * @memberof Upload
    */
-  public setTags(tags: Tags) {
-    this.tags = tags;
+  public setUploadTags(tags: UploadTags) {
+    this.uploader.setUploadTags(tags);
   }
 
   /**

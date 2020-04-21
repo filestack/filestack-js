@@ -33,6 +33,7 @@ const testURL = {
   cloudApiUrl: '',
   cdnUrl: '',
   pickerUrl: '',
+  processUrl: '',
 };
 
 const testSession: Session = {

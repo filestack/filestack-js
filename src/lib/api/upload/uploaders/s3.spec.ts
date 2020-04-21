@@ -111,6 +111,7 @@ describe('Api/Upload/Uploaders/S3', () => {
       size: 123,
       mimetype: 'test_mimetype',
       status: 'test_status',
+      upload_tags: { test: 123 },
     });
   });
 
@@ -189,7 +190,7 @@ describe('Api/Upload/Uploaders/S3', () => {
       expect(mockComplete).toHaveBeenCalledTimes(1);
     });
 
-    it('should respect provided store options and add prefix to them', async () => {
+    it('should respect provided store options', async () => {
       const storeOption = {
         container: 'test',
         location: DEFAULT_STORE_LOCATION,
@@ -204,27 +205,8 @@ describe('Api/Upload/Uploaders/S3', () => {
       u.addFile(getSmallTestFile());
 
       await u.execute();
-
-      const testFile = getSmallTestFile();
-      expect(mockStart).toHaveBeenCalledWith({
-        filename: testFile.name,
-        mimetype: testFile.mimetype,
-        size: testFile.size,
-        store: storeOption,
-        apikey: testApikey,
-      });
-
-      expect(mockComplete).toHaveBeenCalledWith({
-        filename: testFile.name,
-        mimetype: testFile.mimetype,
-        size: testFile.size,
-        store: storeOption,
-        apikey: testApikey,
-        parts: [{ part_number: 1, etag: 'test' }],
-        region: mockRegion,
-        upload_id: mockUploadId,
-        uri: mockedUri,
-      });
+      expect(mockStart).toHaveBeenCalledWith(expect.objectContaining({ store: storeOption }));
+      expect(mockComplete).toHaveBeenCalledWith(expect.objectContaining({ store: storeOption }));
     });
 
     it('should add https protocol to location_url', async () => {
@@ -446,6 +428,35 @@ describe('Api/Upload/Uploaders/S3', () => {
       expect(mockComplete).toHaveBeenCalledWith(expect.objectContaining(storageKeyExpect));
     });
 
+  });
+
+  describe('Tags', () => {
+    it('Make correct request with upload tags', async () => {
+      const u = new S3Uploader({
+        disableStorageKey: true,
+        path: '/test',
+      });
+
+      const tags = {
+        test: '123',
+        test2: 'test',
+      };
+
+      u.setUrl(testHost);
+      u.setApikey(testApikey);
+      u.addFile(getSmallTestFile());
+      u.setUploadTags(tags);
+
+      const res = await u.execute();
+      expect(res[0].status).toEqual('test_status');
+
+      const tagsExpected = {
+        upload_tags: tags,
+      };
+
+      expect(res[0].uploadTags).toEqual({ test: 123 });
+      expect(mockComplete).toHaveBeenCalledWith(expect.objectContaining(tagsExpected));
+    });
   });
 
   describe('Upload modes', () => {

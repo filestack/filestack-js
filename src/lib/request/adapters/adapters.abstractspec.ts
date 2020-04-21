@@ -18,7 +18,6 @@
 /* istanbul ignore file */
 import * as nock from 'nock';
 import * as zlib from 'zlib';
-import { Readable } from 'stream';
 import { FsHttpMethod, FsRequestOptions } from '../types';
 import { FsCancelToken } from '../token';
 import { FsRequestError, FsRequestErrorCode } from '../error';
@@ -191,6 +190,8 @@ export const adaptersHttpAbstract = (adapter: any, adapterName: string) => {
         });
 
         it('should throw error when data type is unsupported', () => {
+          const Readable = require('stream').Readable;
+
           const options = {
             url: url,
             method: FsHttpMethod.POST,

@@ -23,7 +23,7 @@ import { metadata, MetadataOptions, remove, retrieve, RetrieveOptions } from './
 import { transform, TransformOptions } from './api/transform';
 import { storeURL } from './api/store';
 import { resolveHost, getVersion } from './utils';
-import { Upload, InputFile, UploadOptions, StoreUploadOptions } from './api/upload';
+import { Upload, InputFile, UploadOptions, StoreUploadOptions, UploadTags } from './api/upload';
 import { preview, PreviewOptions } from './api/preview';
 import { CloudClient } from './api/cloud';
 import { Prefetch, PrefetchResponse, PrefetchOptions } from './api/prefetch';
@@ -297,10 +297,17 @@ export class Client extends EventEmitter {
    * @param options   Configure file storage.
    * @param token     Optional control token to call .cancel()
    * @param security  Optional security override.
+   * @param uploadTags Optional tags visible in webhooks.
    */
-  storeURL(url: string, options?: StoreParams, token?: any, security?: Security): Promise<Object> {
-    /* istanbul ignore next */
-    return storeURL(this.session, url, options, token, security);
+  storeURL(url: string, storeParams?: StoreParams, token?: any, security?: Security, uploadTags?: UploadTags): Promise<Object> {
+    return storeURL({
+      session: this.session,
+      url,
+      storeParams,
+      token,
+      security,
+      uploadTags,
+    });
   }
 
   /**

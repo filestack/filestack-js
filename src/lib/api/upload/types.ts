@@ -16,7 +16,7 @@
  */
 
 import { StoreBaseParams } from './../../filelink';
-import { Tags } from './file';
+import { UploadTags } from './file';
 import { SanitizeOptions } from './../../utils/index';
 
 export interface UploadOptions {
@@ -75,12 +75,12 @@ export interface UploadOptions {
   disableIntegrityCheck?: boolean;
 
   /**
-   * Define tags to be passed to webhook
+   * Define upload tags to be passed to webhook
    *
    * @type {Tags}
    * @memberof UploadOptions
    */
-  tags?: Tags;
+  tags?: UploadTags;
 }
 
 export type StoreUploadOptions = StoreBaseParams & {

@@ -730,6 +730,15 @@ export class Filelink {
   }
 
   /**
+   * Returns all tasks added for transformation
+   *
+   * @memberof Filelink
+   */
+  getTasks() {
+    return this.transforms;
+  }
+
+  /**
    * Cleanup transformations on filelink
    *
    * @returns
@@ -1383,7 +1392,7 @@ export class Filelink {
    * @memberof Filelink
    */
   private getCdnHost(): string {
-    let urls = config.urls;
+    let urls = Object.assign({}, config.urls);
 
     if (this.customDomain) {
       urls.cdnUrl = this.customDomain;
