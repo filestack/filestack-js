@@ -178,7 +178,7 @@ export const getFile = (input: InputFile, sanitizeOptions?: SanitizeOptions): Pr
   return readFile(file).then(
     async res => {
       let mime = file.type;
-      if (!file.type) {
+      if (!file.type  || file.type.length === 0 || file.type === 'text/plain') {
         mime = getMimetype(await res.slice(0, fileType.minimumBytes), filename);
       }
 

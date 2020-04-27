@@ -51,6 +51,15 @@ const getSmallTestFile = () =>
     name: 'test.txt',
   });
 
+const getNullSizeFile = () =>
+  new File({
+    slice: (start, end) => Promise.resolve(testBuff.slice(start, end)),
+    type: 'text/plain',
+    // @ts-ignore
+    size: 0,
+    name: 'test.txt',
+  });
+
 const testApikey = 'testapikey';
 const testHost = 'https://filestack-test.com';
 const mockUploadId = '123132123';
@@ -228,6 +237,25 @@ describe('Api/Upload/Uploaders/S3', () => {
       expect(res[0].status).toEqual('test_status');
 
       expect(mockPut).toHaveBeenCalled();
+    });
+
+    it('should throw error on file size 0', async () => {
+      mockStart.mockReturnValue({
+        uri: mockedUri,
+        region: mockRegion,
+        upload_id: mockUploadId,
+        location_url: testHost.replace('https://', ''),
+      });
+
+      const u = new S3Uploader({});
+      u.setUrl(testHost);
+      u.setApikey(testApikey);
+      u.addFile(getNullSizeFile());
+
+      const res = await u.execute();
+
+      expect(res[0].status).toEqual('Failed');
+      expect(mockStart).not.toHaveBeenCalled();
     });
 
     it('should throw error on wrong etag field', async (done) => {

@@ -286,6 +286,11 @@ export class S3Uploader extends UploaderAbstract {
   private startRequest(id: string): Promise<any> {
     const payload = this.getPayloadById(id);
 
+    if (payload.file.size === 0) {
+      this.setPayloadStatus(id, FileState.FAILED);
+      return Promise.reject(new FilestackError(`Invalid file "${payload.file.name}" size - 0`, {}, FilestackErrorType.VALIDATION));
+    }
+
     debug(`[${id}] Make start request`);
     return FsRequest.post(
       `${this.getUrl()}/multipart/start`,
