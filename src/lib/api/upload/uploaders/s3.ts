@@ -286,6 +286,11 @@ export class S3Uploader extends UploaderAbstract {
   private startRequest(id: string): Promise<any> {
     const payload = this.getPayloadById(id);
 
+    if (payload.file.size === 0) {
+      this.setPayloadStatus(id, FileState.FAILED);
+      return Promise.reject(new FilestackError(`Invalid file "${payload.file.name}" size - 0`, {}, FilestackErrorType.VALIDATION));
+    }
+
     debug(`[${id}] Make start request`);
     return FsRequest.post(
       `${this.getUrl()}/multipart/start`,
@@ -435,7 +440,6 @@ export class S3Uploader extends UploaderAbstract {
 
     const { data, headers } = await this.getS3PartMetadata(id, part);
     debug(`[${id}] Received part ${partNumber} info body: \n%O\n headers: \n%O\n`, data, headers);
-
     return FsRequest.put(data.url, part.buffer, {
       cancelToken: this.cancelToken,
       timeout: this.timeout,
@@ -465,6 +469,26 @@ export class S3Uploader extends UploaderAbstract {
       return res;
     })
     .catch(err => {
+      const resp = err && err.response ? err.response : null;
+
+      /* istanbul ignore next */
+      if (resp && resp.status === 403) {
+        if (resp.data && resp.data.Error && resp.data.Error.code) {
+          let code = resp.data.Error.code;
+
+          if (Array.isArray(code)) {
+            code = code.pop();
+          }
+
+          switch (code) {
+            case 'RequestTimeTooSkewed':
+              return this.startPart(id, partNumber);
+            default:
+              return Promise.reject(new FilestackError('Cannot upload file', resp.data.Error, FilestackErrorType.REQUEST));
+          }
+        }
+      }
+
       // release memory
       part = null;
 
@@ -554,6 +578,25 @@ export class S3Uploader extends UploaderAbstract {
         return this.uploadNextChunk(id, partNumber, chunkSize);
       })
       .catch(err => {
+        const resp = err && err.response ? err.response : null;
+        /* istanbul ignore next */
+        if (resp && resp.status === 403) {
+          if (resp.data && resp.data.Error && resp.data.Error.code) {
+            let code = resp.data.Error.code;
+
+            if (Array.isArray(code)) {
+              code = code.pop();
+            }
+
+            switch (code) {
+              case 'RequestTimeTooSkewed':
+                return this.startPart(id, partNumber);
+              default:
+                return Promise.reject(new FilestackError('Cannot upload file', resp.data.Error, FilestackErrorType.REQUEST));
+            }
+          }
+        }
+
         // reset progress on failed upload
         this.onProgressUpdate(id, partNumber, part.offset);
         const nextChunkSize = chunkSize / 2;

@@ -15,6 +15,7 @@
  * limitations under the License.
  */
 import * as stream from 'stream';
+
 import { isObject } from './utils';
 
 /**

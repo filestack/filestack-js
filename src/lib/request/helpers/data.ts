@@ -18,6 +18,7 @@ import { isURLSearchParams, isObject, isStream, isFormData, isArrayBuffer, isFil
 import { getVersion, uniqueId } from './../../utils';
 import { FsRequestOptions, FsResponse } from './../types';
 import { set } from './headers';
+import * as parser from 'fast-xml-parser';
 import Debug from 'debug';
 
 const debug = Debug('fs:request:data');
@@ -74,9 +75,9 @@ export const filestackHeaders = (config: FsRequestOptions) => {
  *
  * @param response
  */
-export const parseResponse = (response: FsResponse): FsResponse => {
+export const parseResponse = async (response: FsResponse): Promise<FsResponse> => {
   if (!response.headers || !response.headers['content-type']) {
-    return response;
+    return Promise.resolve(response);
   }
 
   const contentType = response.headers['content-type'];
@@ -91,10 +92,22 @@ export const parseResponse = (response: FsResponse): FsResponse => {
     if (isBuffer(response.data)) {
       response.data = bufferToString(response.data);
     }
-    // if its not a buffer its probably plain text
+  } else if (/application\/xml/.test(contentType)) {
+    let data = response.data;
+
+    if (isBuffer(response.data)) {
+      data = bufferToString(response.data);
+    }
+
+    if (parser.validate(data) === true) {
+      response.data = parser.parse(data, {
+        ignoreAttributes : true,
+        trimValues: true,
+      });
+    }
   }
 
-  return response;
+  return Promise.resolve(response);
 };
 
 function bufferToString(buffer) {

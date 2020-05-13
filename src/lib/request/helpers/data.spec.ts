@@ -36,7 +36,7 @@ describe('Request/Helpers/Data', () => {
   });
 
   describe('parse response', () => {
-    it('should return equal response data', () => {
+    it('should return equal response data', async () => {
       const response = {
         status: 200,
         statusText: 'ok',
@@ -46,10 +46,10 @@ describe('Request/Helpers/Data', () => {
           url: 'https://filestack.com',
         },
       };
-      expect(parseResponse(response)).toEqual(response);
+      expect(await parseResponse(response)).toEqual(response);
     });
 
-    it('should return response with application/json and data stringify', () => {
+    it('should return response with application/json and data stringify', async () => {
       const response = {
         status: 200,
         statusText: 'ok',
@@ -61,10 +61,10 @@ describe('Request/Helpers/Data', () => {
           url: 'https://filestack.com',
         },
       };
-      expect(parseResponse(response)).toEqual(response);
+      expect(await parseResponse(response)).toEqual(response);
     });
 
-    it('should return response with application/json and json data ', () => {
+    it('should return response with application/json and json data ', async () => {
       const response = {
         status: 200,
         statusText: 'ok',
@@ -76,10 +76,10 @@ describe('Request/Helpers/Data', () => {
           url: 'https://filestack.com',
         },
       };
-      expect(parseResponse(response)).toEqual(response);
+      expect(await parseResponse(response)).toEqual(response);
     });
 
-    it('should return text/plain response with ArrayBuffer ', () => {
+    it('should return text/plain response with ArrayBuffer ', async () => {
       const response = {
         status: 200,
         statusText: 'ok',
@@ -91,7 +91,35 @@ describe('Request/Helpers/Data', () => {
           url: 'https://filestack.com',
         },
       };
-      expect(parseResponse(response)).toEqual(response);
+      expect(await parseResponse(response)).toEqual(response);
+    });
+
+    it('should parse application/xml response to json', async () => {
+      const response = {
+        status: 200,
+        statusText: 'ok',
+        headers: {
+          'content-type': 'application/xml',
+        },
+        data: Buffer.from('<?xml version="1.0" encoding="UTF-8"?><Error><code>RequestTimeTooSkewed</code><Message>The difference between the request time and the current time is toolarge.</Message><RequestTime>20191102T153031Z</RequestTime><ServerTime>2019-11-02T15:56:35Z</ServerTime><MaxAllowedSkewMilliseconds>900000</MaxAllowedSkewMilliseconds><RequestId>6C8855BC97D17A1B</RequestId><HostId>3bwhtSpY9tAypFr9L6V+W6UAxFUyk7mK+VQGhIu4Bxj0t7jhQWMEEinW4YHpi8Q9qONnx1CEHKE=</HostId></Error>'),
+        config: {
+          url: 'https://filestack.com',
+        },
+      };
+
+      const res = await parseResponse(response);
+
+      return expect(res.data).toEqual({
+        Error: {
+          code: 'RequestTimeTooSkewed',
+          Message: 'The difference between the request time and the current time is toolarge.',
+          RequestTime: '20191102T153031Z',
+          ServerTime: '2019-11-02T15:56:35Z',
+          MaxAllowedSkewMilliseconds: 900000,
+          RequestId: '6C8855BC97D17A1B',
+          HostId: '3bwhtSpY9tAypFr9L6V+W6UAxFUyk7mK+VQGhIu4Bxj0t7jhQWMEEinW4YHpi8Q9qONnx1CEHKE=',
+        },
+      });
     });
   });
 });
