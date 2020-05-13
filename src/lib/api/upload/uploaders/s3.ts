@@ -471,6 +471,7 @@ export class S3Uploader extends UploaderAbstract {
     .catch(err => {
       const resp = err && err.response ? err.response : null;
 
+      /* istanbul ignore next */
       if (resp && resp.status === 403) {
         if (resp.data && resp.data.Error && resp.data.Error.code) {
           let code = resp.data.Error.code;
@@ -577,6 +578,25 @@ export class S3Uploader extends UploaderAbstract {
         return this.uploadNextChunk(id, partNumber, chunkSize);
       })
       .catch(err => {
+        const resp = err && err.response ? err.response : null;
+        /* istanbul ignore next */
+        if (resp && resp.status === 403) {
+          if (resp.data && resp.data.Error && resp.data.Error.code) {
+            let code = resp.data.Error.code;
+
+            if (Array.isArray(code)) {
+              code = code.pop();
+            }
+
+            switch (code) {
+              case 'RequestTimeTooSkewed':
+                return this.startPart(id, partNumber);
+              default:
+                return Promise.reject(new FilestackError('Cannot upload file', resp.data.Error, FilestackErrorType.REQUEST));
+            }
+          }
+        }
+
         // reset progress on failed upload
         this.onProgressUpdate(id, partNumber, part.offset);
         const nextChunkSize = chunkSize / 2;
