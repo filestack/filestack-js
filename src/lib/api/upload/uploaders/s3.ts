@@ -440,7 +440,6 @@ export class S3Uploader extends UploaderAbstract {
 
     const { data, headers } = await this.getS3PartMetadata(id, part);
     debug(`[${id}] Received part ${partNumber} info body: \n%O\n headers: \n%O\n`, data, headers);
-
     return FsRequest.put(data.url, part.buffer, {
       cancelToken: this.cancelToken,
       timeout: this.timeout,
@@ -470,6 +469,25 @@ export class S3Uploader extends UploaderAbstract {
       return res;
     })
     .catch(err => {
+      const resp = err && err.response ? err.response : null;
+
+      if (resp && resp.status === 403) {
+        if (resp.data && resp.data.Error && resp.data.Error.code) {
+          let code = resp.data.Error.code;
+
+          if (Array.isArray(code)) {
+            code = code.pop();
+          }
+
+          switch (code) {
+            case 'RequestTimeTooSkewed':
+              return this.startPart(id, partNumber);
+            default:
+              return Promise.reject(new FilestackError('Cannot upload file', resp.data.Error, FilestackErrorType.REQUEST));
+          }
+        }
+      }
+
       // release memory
       part = null;
 
