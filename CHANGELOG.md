@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.15.0](https://github.com/filestack/filestack-js/compare/v3.14.0...v3.15.0) (2020-05-14)
+
+
+### Features
+
+* **picker:** Fix picker problems with cropFiles, erorrHandlers, add better mime detection ([9dbe806](https://github.com/filestack/filestack-js/commit/9dbe8061b0db524a14766b71c9d018ad62ad93a5))
+* **pickerOptions:** add support email to picker options ([09d40b0](https://github.com/filestack/filestack-js/commit/09d40b06e0e8524a5b4a770694616b3a38931f45))
+
+
+### Bug Fixes
+
+* **mimetype:** Update mimetype detection function ([#356](https://github.com/filestack/filestack-js/issues/356)) ([bf4146d](https://github.com/filestack/filestack-js/commit/bf4146d9a4d0cf605d34424f510ca00ddfe6b8d6))
+
 ## [3.14.0](https://github.com/filestack/filestack-js/compare/v3.13.2...v3.14.0) (2020-04-21)
 
 ### [3.13.2](https://github.com/filestack/filestack-js/compare/v3.13.1...v3.13.2) (2020-04-07)
