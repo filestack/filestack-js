@@ -467,6 +467,10 @@ export interface PickerOptions {
    */
   customText?: PickerCustomText;
   /**
+   * set support email to display in case of error
+   */
+  supportEmail?: string;
+  /**
    * When true removes the hash prefix on stored files.
    */
   disableStorageKey?: boolean;

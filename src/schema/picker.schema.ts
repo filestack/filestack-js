@@ -113,6 +113,9 @@ export const PickerParamsSchema = {
       minimum: 1,
       maximum: 20,
     },
+    supportEmail: {
+      type: 'string',
+    },
     customSourceContainer: {
       type: 'string',
     },
