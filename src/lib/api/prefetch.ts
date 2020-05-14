@@ -93,9 +93,9 @@ export class Prefetch {
       paramsToSend.security = { policy: this.session.policy, signature: this.session.signature };
     }
 
-    if (this.session.prefetch && events) {
-      return FsRequest.post(`${this.session.urls.uploadApiUrl}/prefetch`, { ...paramsToSend, events }).then(() => this.session.prefetch);
-    }
+    // if (this.session.prefetch && events) {
+    //   return FsRequest.post(`${this.session.urls.uploadApiUrl}/prefetch`, { ...paramsToSend, events }).then(() => this.session.prefetch);
+    // }
 
     // we should always ask for this setting for picker
     if (!settings) {
@@ -103,7 +103,7 @@ export class Prefetch {
     } else {
       settings = settings.concat(['inapp_browser']);
       // make arrray unique
-      settings = settings.filter((v, i, a) => settings.indexOf(v) === i);
+      settings = settings.filter((v, i) => settings.indexOf(v) === i);
     }
 
     let pickerOptionsToSend;

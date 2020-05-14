@@ -69,7 +69,7 @@ export class XhrAdapter implements AdapterInterface {
     request.timeout = config.timeout;
 
     return new Promise<FsResponse>((resolve, reject) => {
-      request.onreadystatechange = () => {
+      request.onreadystatechange = async () => {
         if (!request || request.readyState !== 4) {
           return;
         }
@@ -91,7 +91,7 @@ export class XhrAdapter implements AdapterInterface {
         };
 
         request = null;
-        response = parseResponse(response);
+        response = await parseResponse(response);
 
         if (500 <= response.status && response.status <= 599) {
           // server error throw

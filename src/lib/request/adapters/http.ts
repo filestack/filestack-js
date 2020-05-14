@@ -231,12 +231,12 @@ export class HttpAdapter implements AdapterInterface {
           return reject(new FsRequestError(err.message, config, null, FsRequestErrorCode.NETWORK));
         });
 
-        stream.on('end', () => {
+        stream.on('end', async () => {
           // check if there is any response data inside
           if (res.statusCode !== 204) {
             // prepare response
             response.data = Buffer.concat(responseBuffer);
-            response = parseResponse(response);
+            response = await parseResponse(response);
           } else {
             response.data = null;
           }

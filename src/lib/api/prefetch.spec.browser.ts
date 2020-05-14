@@ -225,45 +225,4 @@ describe('Prefetch', () => {
 
     scope.done();
   });
-
-  it('should send only events when config is already prefetched', async () => {
-    const sessionCopy =  { ...testSession };
-    const mockPref = jest.fn() .mockImplementation(() => ({}));
-
-    scope.post('/prefetch').twice().reply(200, (_, data) => mockPref(data));
-
-    const prefetch = new Prefetch(sessionCopy);
-    const toSend = {
-      events: [PrefetchEvents.PICKER],
-      pickerOptions: {
-        uploadInBackground: true,
-      },
-    };
-
-    await prefetch.getConfig(toSend);
-
-    // add one more options request for second request
-    scope
-    .options(/.*/)
-    .reply(204);
-
-    await prefetch.getConfig(toSend);
-
-    expect(mockPref).toHaveBeenCalledTimes(2);
-    expect(mockPref).toHaveBeenCalledWith({
-      apikey: testApiKey,
-      events: [PrefetchEvents.PICKER],
-      settings: ['inapp_browser'],
-      picker_config: {
-        uploadInBackground: true,
-      },
-    });
-
-    expect(mockPref).toHaveBeenCalledWith({
-      apikey: testApiKey,
-      events: [PrefetchEvents.PICKER],
-    });
-
-    scope.done();
-  });
 });

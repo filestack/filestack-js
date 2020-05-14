@@ -21,6 +21,86 @@ import { Map } from './extensions';
 import fileType from 'file-type';
 import * as isutf8 from 'isutf8';
 
+// more info https://gist.github.com/AshHeskes/6038140
+const extensionToMime = {
+  'text/vnd.dvb.subtitle': 'sub',
+  'application/x-msmetafile': 'wmz',
+  'application/x-msi': 'msi',
+  'application/x-ms': 'ms',
+  'application/atom+xml': 'atom',
+  'application/json': ['json', 'map', 'topojson'],
+  'application/ld+json': 'jsonld',
+  'application/rss+xml': 'rss',
+  'application/vnd.geo+json': 'geojson',
+  'application/xml': ['rdf', 'xml'],
+  'application/javascript': 'js',
+  'application/manifest+json': 'webmanifest',
+  'application/x-web-app-manifest+json': 'webapp',
+  'text/cache-manifest': 'appcache',
+  'image/x-icon': ['cur', 'ico'],
+  'application/msword': 'doc',
+  'application/vnd.ms-excel': 'xls',
+  'application/vnd.ms-powerpoint': 'ppt',
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document': 'docx',
+  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': 'xlsx',
+  'application/vnd.openxmlformats-officedocument.presentationml.presentation': 'pptx',
+  'application/vnd.debian.binary-package': 'deb',
+  'application/font-woff': 'woff',
+  'application/font-woff2': 'woff2',
+  'application/vnd.ms-fontobject': 'eot',
+  'application/x-font-ttf': ['ttc', 'ttf'],
+  'font/opentype': 'otf',
+  'application/java-archive': ['ear', 'jar', 'war'],
+  'application/mac-binhex40': 'hqx',
+  'application/octet-stream': ['bin', 'deb', 'dll', 'dmg', 'img', 'iso', 'msi', 'msm', 'msp', 'safariextz'],
+  'application/postscript': ['ai', 'eps', 'ps'],
+  'application/rtf': 'rtf',
+  'application/vnd.google-earth.kml+xml': 'kml',
+  'application/vnd.google-earth.kmz': 'kmz',
+  'application/vnd.wap.wmlc': 'wmlc',
+  'application/x-7z-compressed': '7z',
+  'application/x-bb-appworld': 'bbaw',
+  'application/x-bittorrent': 'torrent',
+  'application/x-chrome-extension': 'crx',
+  'application/x-cocoa': 'cco',
+  'application/x-java-archive-diff': 'jardiff',
+  'application/x-java-jnlp-file': 'jnlp',
+  'application/x-makeself': 'run',
+  'application/x-cd-image': 'iso',
+  'application/x-opera-extension': 'oex',
+  'application/x-perl': ['pl', 'pm'],
+  'application/x-pilot': ['pdb', 'prc'],
+  'application/x-rar-compressed': 'rar',
+  'application/x-redhat-package-manager': 'rpm',
+  'application/x-sea': 'sea',
+  'application/x-shockwave-flash': 'swf',
+  'application/x-stuffit': 'sit',
+  'application/x-tcl': ['tcl', 'tk'],
+  'application/x-x509-ca-cert': ['crt', 'der', 'pem'],
+  'application/x-xpinstall': 'xpi',
+  'application/x-ms-dos-executable': 'exe',
+  'application/xhtml+xml': 'xhtml',
+  'application/xslt+xml': 'xsl',
+  'application/zip': 'zip',
+  'text/css': 'css',
+  'text/csv': 'csv',
+  'text/html': ['htm', 'html', 'shtml'],
+  'text/markdown': 'md',
+  'text/mathml': 'mml',
+  'text/plain': 'txt',
+  'text/vcard': ['vcard', 'vcf'],
+  'text/vnd.rim.location.xloc': 'xloc',
+  'text/vnd.sun.j2me.app-descriptor': 'jad',
+  'text/vnd.wap.wml': 'wml',
+  'text/vtt': 'vtt',
+  'text/x-component': 'htc',
+  'application/x-desktop': 'desktop',
+  'text/x-markdown': 'md',
+  'application/x-typescript': 'ts',
+  'application/x-java-archive': 'jar',
+  'application/x-sharedlib': 'so',
+};
+
 /**
  * Resolve cdn url based on handle type
  *
@@ -104,8 +184,7 @@ export const uniqueId = (len: number = 10): string => {
 export const getMimetype = (file: Uint8Array | Buffer, name?: string): string => {
   let type = fileType(file);
 
-  // check x-ms and x-msi by extension
-  if (type && type.mime !== 'application/x-ms' && type.mime !== 'application/x-msi') {
+  if (type && ['text/plain', 'application/octet-stream', 'application/x-ms', 'application/x-msi'].indexOf(type.mime) === -1) {
     return type.mime;
   }
 
@@ -209,7 +288,7 @@ export const cleanUpCallbacks = (obj: any) => {
     return obj;
   }
 
-  Object.keys(obj).forEach((k) => {
+  Object.keys(obj).forEach(k => {
     if (typeof obj[k] === 'function') {
       obj[k] = undefined;
     }
