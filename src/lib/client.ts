@@ -98,7 +98,7 @@ export class Client extends EventEmitter {
   private cloud: CloudClient;
   private prefetchInstance: Prefetch;
 
-  private forwardErrors: boolean = false;
+  private forwardErrors: boolean = true;
 
   constructor(apikey: string, options?: ClientOptions) {
     super();
