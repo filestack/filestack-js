@@ -286,7 +286,7 @@ describe('cloud', () => {
         appurl: 'http://localhost/?fs-tab=init',
         clouds,
         token: null,
-        mimetypes: ['image/*'],
+        accept: ['image/*'],
       });
     });
 
@@ -310,7 +310,7 @@ describe('cloud', () => {
         appurl: 'http://localhost/?fs-tab=init',
         clouds,
         token: null,
-        mimetypes: ['image/*'],
+        accept: ['image/*'],
       });
     });
   });

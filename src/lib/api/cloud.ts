@@ -123,7 +123,7 @@ export class CloudClient {
         accept = [accept];
       }
       // filtering mimetypes in clouds
-      payload.mimetypes = accept;
+      payload.accept = accept;
     }
 
     if (this.isInAppBrowser) {
