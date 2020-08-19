@@ -212,6 +212,7 @@ describe('cloud', () => {
           settings: {
             inapp_browser: true,
           },
+          pickerOptions: {},
         },
       }));
 
@@ -231,6 +232,7 @@ describe('cloud', () => {
           settings: {
             inapp_browser: true,
           },
+          pickerOptions: {},
         },
       }));
 
@@ -249,6 +251,7 @@ describe('cloud', () => {
           settings: {
             inapp_browser: true,
           },
+          pickerOptions: {},
         },
       }));
 
@@ -260,6 +263,54 @@ describe('cloud', () => {
         appurl: 'http://localhost/?fs-tab=init',
         clouds,
         token: null,
+      });
+    });
+
+    it('should send pass mimetypes to backend as string', async () => {
+      const clouds = { test: true };
+
+      const client = new CloudClient(Object.assign({}, testSession, {
+        prefetch: {
+          settings: {
+            inapp_browser: true,
+          },
+          pickerOptions: {},
+        },
+      }));
+
+      const res = await client.list({ ...clouds }, {}, 'image/*');
+
+      expect(res).toEqual({
+        apikey: testApiKey,
+        flow: 'web',
+        appurl: 'http://localhost/?fs-tab=init',
+        clouds,
+        token: null,
+        accept: ['image/*'],
+      });
+    });
+
+    it('should send pass mimetypes to backend as array', async () => {
+      const clouds = { test: true };
+
+      const client = new CloudClient(Object.assign({}, testSession, {
+        prefetch: {
+          settings: {
+            inapp_browser: true,
+          },
+          pickerOptions: {},
+        },
+      }));
+
+      const res = await client.list({ ...clouds }, {}, ['image/*']);
+
+      expect(res).toEqual({
+        apikey: testApiKey,
+        flow: 'web',
+        appurl: 'http://localhost/?fs-tab=init',
+        clouds,
+        token: null,
+        accept: ['image/*'],
       });
     });
   });
@@ -275,6 +326,7 @@ describe('cloud', () => {
         settings: {
           inapp_browser: true,
         },
+        pickerOptions: {},
       },
     }));
 

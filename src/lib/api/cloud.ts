@@ -110,13 +110,21 @@ export class CloudClient {
     return false;
   }
 
-  list(clouds: any, cancelTokenInput?: any) {
+  list(clouds: any, cancelTokenInput?: any, accept?: string[] | string) {
     const payload: any = {
       apikey: this.session.apikey,
       clouds,
       flow: 'web',
       token: this.token,
     };
+
+    if (accept) {
+      if (!Array.isArray(accept)) {
+        accept = [accept];
+      }
+      // filtering mimetypes in clouds
+      payload.accept = accept;
+    }
 
     if (this.isInAppBrowser) {
       payload.appurl = this.currentAppUrl();
