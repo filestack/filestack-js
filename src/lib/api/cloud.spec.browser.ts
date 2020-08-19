@@ -19,6 +19,7 @@ import { config } from './../../config';
 import { CloudClient, PICKER_KEY } from './cloud';
 import * as utils from './../utils';
 import * as nock from 'nock';
+import { Store, STORE_TYPE } from '../utils/store';
 
 const testApiKey = 'API_KEY';
 const testTokSession = 'TOK_SESSION';
@@ -219,9 +220,10 @@ describe('cloud', () => {
       const token = 'test';
       client.token = token;
 
-      expect(sessionStorage.getItem(PICKER_KEY)).toEqual(token);
+      const store = new Store();
 
-      sessionStorage.setItem(PICKER_KEY, undefined);
+      expect(store.getItem(PICKER_KEY, STORE_TYPE.SESSION)).toEqual(token);
+      store.setItem(PICKER_KEY, undefined, STORE_TYPE.SESSION);
     });
 
     it('should get token from sessionStore when inapp browser is detected', async () => {
@@ -236,11 +238,13 @@ describe('cloud', () => {
         },
       }));
 
+      const store = new Store();
+
       const token = 'test';
-      sessionStorage.setItem(PICKER_KEY, token);
+      store.setItem(PICKER_KEY, token, STORE_TYPE.SESSION);
 
       expect(client.token).toEqual(token);
-      sessionStorage.setItem(PICKER_KEY, undefined);
+      store.setItem(PICKER_KEY, undefined, STORE_TYPE.SESSION);
     });
 
     it('should send appurl in list action', async () => {

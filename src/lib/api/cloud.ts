@@ -21,6 +21,7 @@ import { ClientOptions, Session } from '../client';
 import { FilestackError } from './../../filestack_error';
 import { UploadTags } from './upload/file';
 import { FsRequest, FsCancelToken } from '../request';
+import { Store, STORE_TYPE } from './../utils/store';
 
 /**
  * @private
@@ -58,8 +59,18 @@ export class CloudClient {
    */
   private _token: string;
 
+  /**
+   * Store adapter instance
+   *
+   * @private
+   * @type {Store}
+   * @memberof CloudClient
+   */
+  private storeAdapter: Store;
+
   constructor(session: Session, options?: ClientOptions) {
     this.session = session;
+    this.storeAdapter = new Store();
 
     this.cloudApiUrl = session.urls.cloudApiUrl;
 
@@ -70,12 +81,12 @@ export class CloudClient {
 
   get token() {
     if (this.cache) {
-      const token = localStorage.getItem(PICKER_KEY);
+      const token = this.storeAdapter.getItem(PICKER_KEY, STORE_TYPE.LOCAL);
       if (token) return token;
     }
 
     if (this.isInAppBrowser) {
-      return sessionStorage.getItem(PICKER_KEY);
+      return this.storeAdapter.getItem(PICKER_KEY, STORE_TYPE.SESSION);
     }
 
     return this._token;
@@ -83,11 +94,11 @@ export class CloudClient {
 
   set token(key) {
     if (this.cache) {
-      localStorage.setItem(PICKER_KEY, key);
+      this.storeAdapter.setItem(PICKER_KEY, key, STORE_TYPE.LOCAL);
     }
 
     if (this.isInAppBrowser) {
-      sessionStorage.setItem(PICKER_KEY, key);
+      this.storeAdapter.setItem(PICKER_KEY, key, STORE_TYPE.SESSION);
     }
 
     this._token = key;
@@ -217,11 +228,11 @@ export class CloudClient {
     } else {
       if (this.cache) {
         // No name means logout of ALL clouds. Clear local session.
-        localStorage.removeItem(PICKER_KEY);
+        this.storeAdapter.removeItem(PICKER_KEY, STORE_TYPE.LOCAL);
       }
 
       if (this.isInAppBrowser) {
-        sessionStorage.removeItem(PICKER_KEY);
+        this.storeAdapter.removeItem(PICKER_KEY, STORE_TYPE.SESSION);
       }
     }
 
