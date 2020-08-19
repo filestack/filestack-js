@@ -681,7 +681,7 @@ export class S3Uploader extends UploaderAbstract {
     debug(`[${id}] Etags %O`, parts);
 
     return FsRequest.post(
-      `${this.getUrl()}/multipart/complete`,
+      `${this.getUploadUrl(id)}/multipart/complete`,
       {
         ...this.getDefaultFields(id, ['apikey', 'policy', 'signature', 'uri', 'region', 'upload_id', 'fii'], true),
         // method specific keys
