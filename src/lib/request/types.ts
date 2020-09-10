@@ -14,6 +14,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { FsCancelToken } from './token';
+
 export enum FsHttpMethod {
   GET = 'GET',
   DELETE = 'DELETE',
@@ -30,11 +32,6 @@ export interface FsRetryConfig {
   onRetry?: (requestConfig: any) => void;
   retryMaxTime?: number;
   retryFactor?: number;
-}
-
-export interface FsTokenInterface {
-  cancel: (reason?: string | Error) => void;
-  getSource: () => Promise<any>;
 }
 
 export interface FsAuthConfig {
@@ -69,7 +66,7 @@ export interface FsRequestOptions {
   filestackHeaders?: boolean;
   headers?: FsRequestHeaders;
   timeout?: number;
-  cancelToken?: FsTokenInterface;
+  cancelToken?: FsCancelToken;
   retry?: FsRetryConfig;
   onProgress?: (pr: ProgressEvent) => any;
   auth?: FsAuthConfig;

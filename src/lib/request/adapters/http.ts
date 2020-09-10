@@ -179,6 +179,26 @@ export class HttpAdapter implements AdapterInterface {
           data: {},
         };
 
+        let cancelListener;
+
+        if (config.cancelToken) {
+          cancelListener = config.cancelToken.once('cancel', (reason) => {
+            // do nothing if promise is resolved by system
+            if (reason && reason.message === CANCEL_CLEAR) {
+              return;
+            }
+
+            /* istanbul ignore next: if request is done cancel token should not throw any error */
+            if (req) {
+              req.abort();
+              req = null;
+            }
+
+            debug('Request canceled by user %s, config: %O', reason, config);
+            return reject(new FsRequestError(`Request aborted. Reason: ${reason}`, config, null, FsRequestErrorCode.ABORTED));
+          });
+        }
+
         // we need to follow redirect so make same request with new location
         if ([301, 302].indexOf(res.statusCode) > -1) {
           debug('Redirect received %s', res.statusCode);
@@ -208,7 +228,7 @@ export class HttpAdapter implements AdapterInterface {
 
           // clear cancel token to avoid memory leak
           if (config.cancelToken) {
-            config.cancelToken.cancel(CANCEL_CLEAR);
+            config.cancelToken.removeListener(cancelListener);
           }
 
           return resolve(this.request(Object.assign({}, config, { url })));
@@ -260,28 +280,6 @@ export class HttpAdapter implements AdapterInterface {
           return resolve(response);
         });
       });
-
-      if (config.cancelToken) {
-        config.cancelToken
-          .getSource()
-          .then(reason => {
-            // do nothing if promise is resolved by system
-            if (reason && reason.message === CANCEL_CLEAR) {
-              return;
-            }
-
-            /* istanbul ignore next: if request is done cancel token should not throw any error */
-            if (req) {
-              req.abort();
-              req = null;
-            }
-
-            debug('Request canceled by user %s, config: %O', reason, config);
-            return reject(new FsRequestError(`Request aborted. Reason: ${reason}`, config, null, FsRequestErrorCode.ABORTED));
-          })
-          /* istanbul ignore next: only for safety */
-          .catch(() => {/* empty */});
-      }
 
       if (config.timeout) {
         req.setTimeout(config.timeout, () => {
