@@ -46,11 +46,7 @@ export const b64 = (data: string, safeUrl: boolean = false): string => {
  * Return currently used filestack-js sdk version
  */
 export const getVersion = () => {
-  const rootArr = __dirname.split('/');
-  const fsIndex = rootArr.findIndex((e) => e === 'filestack-js');
-  const rootDir = rootArr.splice(0, fsIndex + 1).join('/');
-
-  return `JS-${require(`${rootDir}/package.json`).version}`;
+  return 'JS-@{VERSION}';
 };
 
 /**
