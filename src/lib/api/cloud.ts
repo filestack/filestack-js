@@ -244,10 +244,11 @@ export class CloudClient {
     });
   }
 
-  metadata(url: string) {
+  metadata(url: string, headers?: {[key: string]: string}) {
     const payload: any = {
       apikey: this.session.apikey,
       url,
+      headers,
     };
 
     if (this.session.policy && this.session.signature) {
