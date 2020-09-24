@@ -470,6 +470,12 @@ export interface MinifyJsParams {
   targets?: null | string;
 }
 
+export interface WatermarkParams {
+  file: string;
+  size: number;
+  position: string | string[];
+}
+
 const handleRegexp = /^[\w\-]{20}|wf:\/\/[\w\-\/]{106}$/;
 
 /**
@@ -628,7 +634,7 @@ export class Filelink {
       throw new FilestackError('External sources requires apikey to handle transforms');
     }
 
-    if (!isExternal && typeof this.source === 'string' && (!handleRegexp.test(this.source) && this.source.indexOf('filestackcontent') === -1)) {
+    if (!isExternal && typeof this.source === 'string' && !handleRegexp.test(this.source) && this.source.indexOf('filestackcontent') === -1) {
       throw new FilestackError('Invalid filestack source provided');
     }
   }
@@ -1260,6 +1266,18 @@ export class Filelink {
   }
 
   /**
+   * Adds watermark transformation
+   *
+   * @see https://www.filestack.com/docs/api/processing/#watermark
+   * @param {WatermarkParams} params
+   * @returns this
+   * @memberof Filelink
+   */
+  watermark(params: WatermarkParams) {
+    return this.addTask('watermark', params);
+  }
+
+  /**
    * Adds URLScreenshot transformation
    *
    * @see https://www.filestack.com/docs/api/processing/#urlscreenshot
@@ -1413,7 +1431,7 @@ export class Filelink {
   private generateTransformString(): string {
     let transforms = [];
 
-    this.transforms.forEach((el) => {
+    this.transforms.forEach(el => {
       transforms.push(this.optionToString(el.name, el.params));
     });
 
@@ -1443,7 +1461,7 @@ export class Filelink {
       return key;
     }
 
-    Object.keys(values).forEach((i) => {
+    Object.keys(values).forEach(i => {
       if (Array.isArray(values[i])) {
         optionsString.push(`${i}:${this.arrayToString(values[i])}`);
         return;
@@ -1483,7 +1501,7 @@ export class Filelink {
    * @param arr - any array
    */
   private arrayToString(arr: any[]): string {
-    const toReturn = arr.map((el) => {
+    const toReturn = arr.map(el => {
       if (Array.isArray(el)) {
         return this.arrayToString(el);
       }
@@ -1506,5 +1524,5 @@ export class Filelink {
       obj[item[nameKey]] = item[dataKey];
       return obj;
     }, {});
-  }
+  };
 }

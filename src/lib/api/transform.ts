@@ -27,7 +27,10 @@ const toSnakeCase = (original: { [index: string]: any }): { [index: string]: any
   const keys = Object.keys(original);
 
   for (let i = 0; i < keys.length; i++) {
-    let newKey = keys[i].split(/(?=[A-Z])/).join('_').toLowerCase();
+    let newKey = keys[i]
+      .split(/(?=[A-Z])/)
+      .join('_')
+      .toLowerCase();
 
     if (typeof original[keys[i]] === 'object' && !Array.isArray(original[keys[i]])) {
       snakeCased[newKey] = toSnakeCase(original[keys[i]]);
@@ -128,18 +131,18 @@ export enum ECropfacesType {
  * Convert to format
  */
 export enum EVideoTypes {
-    h264 = 'h264',
-    h264_hi = 'h264.hi',
-    webm = 'webm',
-    'webm-hi' = 'webm.hi',
-    ogg = 'ogg',
-    'ogg-hi' = 'ogg.hi',
-    'hls-variant' = 'hls.variant',
-    mp3 = 'mp3',
-    oga = 'oga',
-    m4a = 'm4a',
-    aac = 'aac',
-    hls = 'hls.variant.audio',
+  h264 = 'h264',
+  h264_hi = 'h264.hi',
+  webm = 'webm',
+  'webm-hi' = 'webm.hi',
+  ogg = 'ogg',
+  'ogg-hi' = 'ogg.hi',
+  'hls-variant' = 'hls.variant',
+  mp3 = 'mp3',
+  oga = 'oga',
+  m4a = 'm4a',
+  aac = 'aac',
+  hls = 'hls.variant.audio',
 }
 
 export enum EUrlscreenshotAgent {
@@ -195,10 +198,10 @@ export interface TransformOptions {
   tags?: boolean;
   sfw?: boolean;
   store?: {
-    filename?: string,
-    location?: string,
-    path?: string,
-    container?: string,
+    filename?: string;
+    location?: string;
+    path?: string;
+    container?: string;
     region?: string;
     access?: string;
     base64decode?: boolean;
@@ -210,19 +213,21 @@ export interface TransformOptions {
     align?: EAlignFacesOptions;
   };
   crop?: {
-    dim: [number, number, number, number]
+    dim: [number, number, number, number];
   };
   rotate?: {
     deg: number | string;
     color?: string;
     background?: string;
   };
-  detect_faces?: {
-    minsize?: number;
-    maxsize?: number;
-    color?: string;
-    export?: boolean;
-  } | true;
+  detect_faces?:
+    | {
+        minsize?: number;
+        maxsize?: number;
+        color?: string;
+        export?: boolean;
+      }
+    | true;
   crop_faces?: {
     mode?: ECropfacesType;
     width?: number;
@@ -248,63 +253,89 @@ export interface TransformOptions {
     blur?: number;
     type?: EShapeType;
   };
-  rounded_corners?: {
-    radius?: number;
-    blur?: number;
-    background?: string;
-  } | true;
+  rounded_corners?:
+    | {
+        radius?: number;
+        blur?: number;
+        background?: string;
+      }
+    | true;
   vignette?: {
     amount?: number;
     blurmode?: EBlurMode;
     background?: string;
   };
-  polaroid?: {
-    color?: string;
-    rotate?: number;
-    background?: string;
-  } | true;
-  torn_edges?: {
-    spread?: [number, number];
-    background?: string;
-  } | true;
-  shadow?: {
-    blur?: number;
-    opacity?: number;
-    vector?: [number, number];
-    color?: string;
-    background?: string;
-  } | true;
-  circle?: {
-    background?: string;
-  } | true;
-  border?: {
-    width?: number;
-    color?: string;
-    background?: string;
-  } | true;
-  sharpen?: {
-    amount: number;
-  } | true;
-  blur?: {
-    amount: number;
-  } | true;
-  blackwhite?: {
-    threshold: number;
-  } | true;
-  sepia?: {
-    tone: number;
-  } | true;
-  pixelate?: {
-    amount: number;
-  } | true;
-  oil_paint?: {
-    amount: number;
-  } | true;
-  modulate?: {
-    brightness?: number;
-    hue?: number;
-    saturation?: number;
-  } | true;
+  polaroid?:
+    | {
+        color?: string;
+        rotate?: number;
+        background?: string;
+      }
+    | true;
+  torn_edges?:
+    | {
+        spread?: [number, number];
+        background?: string;
+      }
+    | true;
+  shadow?:
+    | {
+        blur?: number;
+        opacity?: number;
+        vector?: [number, number];
+        color?: string;
+        background?: string;
+      }
+    | true;
+  circle?:
+    | {
+        background?: string;
+      }
+    | true;
+  border?:
+    | {
+        width?: number;
+        color?: string;
+        background?: string;
+      }
+    | true;
+  sharpen?:
+    | {
+        amount: number;
+      }
+    | true;
+  blur?:
+    | {
+        amount: number;
+      }
+    | true;
+  blackwhite?:
+    | {
+        threshold: number;
+      }
+    | true;
+  sepia?:
+    | {
+        tone: number;
+      }
+    | true;
+  pixelate?:
+    | {
+        amount: number;
+      }
+    | true;
+  oil_paint?:
+    | {
+        amount: number;
+      }
+    | true;
+  modulate?:
+    | {
+        brightness?: number;
+        hue?: number;
+        saturation?: number;
+      }
+    | true;
   partial_pixelate?: {
     amount?: number;
     blur?: number;
@@ -322,21 +353,25 @@ export interface TransformOptions {
     width?: number;
     height?: number;
     color?: string;
-    fit?: EFitOptions,
+    fit?: EFitOptions;
     files: [string];
   };
-  upscale?: {
-    upscale?: boolean;
-    noise?: ENoiseType;
-    style?: EStyleType;
-  } | true;
-  ascii?: {
-    background?: string;
-    foreground?: string;
-    colored?: boolean;
-    size?: number;
-    reverse?: boolean;
-  } | true;
+  upscale?:
+    | {
+        upscale?: boolean;
+        noise?: ENoiseType;
+        style?: EStyleType;
+      }
+    | true;
+  ascii?:
+    | {
+        background?: string;
+        foreground?: string;
+        colored?: boolean;
+        size?: number;
+        reverse?: boolean;
+      }
+    | true;
   quality?: {
     value: number;
   };
@@ -394,22 +429,31 @@ export interface TransformOptions {
     watermark_width?: number;
     watermark_height?: number;
   };
-  urlscreenshot?: {
-    agent?: EUrlscreenshotAgent;
-    width?: number;
-    height?: number;
-    mode?: EUrlscreenshotMode;
-    delay?: number;
-    orientation?: EUrlscreenshotOrientation;
-    device?: string;
-  } | true;
-  pdfinfo?: {
-    colorinfo?: boolean
-  } | true;
+  urlscreenshot?:
+    | {
+        agent?: EUrlscreenshotAgent;
+        width?: number;
+        height?: number;
+        mode?: EUrlscreenshotMode;
+        delay?: number;
+        orientation?: EUrlscreenshotOrientation;
+        device?: string;
+      }
+    | true;
+  pdfinfo?:
+    | {
+        colorinfo?: boolean;
+      }
+    | true;
   pdfconvert?: {
-    pageorientation?: string
-    pageformat?: string
-    pages?: (string | number)[]
+    pageorientation?: string;
+    pageformat?: string;
+    pages?: (string | number)[];
+  };
+  watermark?: {
+    file: string;
+    size: number;
+    position: string | string[];
   };
 }
 

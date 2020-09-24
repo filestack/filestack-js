@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 export const TransformSchema = {
-  '$schema': 'http://json-schema.org/draft-07/schema#',
+  $schema: 'http://json-schema.org/draft-07/schema#',
   title: 'Filestack Transformations',
   description: 'Filestack transformations parameters',
   type: 'object',
@@ -35,17 +35,20 @@ export const TransformSchema = {
     },
     compress: {
       additionalProperties: false,
-      oneOf: [{
-        type: 'boolean',
-      }, {
-        type: 'object',
-        properties: {
-          metadata: {
-            type: 'boolean',
-            default: false,
+      oneOf: [
+        {
+          type: 'boolean',
+        },
+        {
+          type: 'object',
+          properties: {
+            metadata: {
+              type: 'boolean',
+              default: false,
+            },
           },
         },
-      }],
+      ],
     },
     flop: {
       type: 'boolean',
@@ -53,18 +56,21 @@ export const TransformSchema = {
     },
     enhance: {
       default: true,
-      oneOf: [{
-        type: 'boolean',
-      }, {
-        type: 'object',
-        additionalProperties: false,
-        properties: {
-          preset: {
-            type: 'string',
-            enum: ['auto', 'vivid', 'beautify', 'beautify_plus', 'fix_dark', 'fix_noise', 'fix_tint', 'outdoor', 'fireworks'],
+      oneOf: [
+        {
+          type: 'boolean',
+        },
+        {
+          type: 'object',
+          additionalProperties: false,
+          properties: {
+            preset: {
+              type: 'string',
+              enum: ['auto', 'vivid', 'beautify', 'beautify_plus', 'fix_dark', 'fix_noise', 'fix_tint', 'outdoor', 'fireworks'],
+            },
           },
         },
-      }],
+      ],
     },
     redeye: {
       type: 'boolean',
@@ -121,11 +127,11 @@ export const TransformSchema = {
           enum: ['clip', 'scale', 'crop'],
         },
         background: {
-          '$ref': 'colorDef',
+          $ref: 'colorDef',
           default: 'transparent',
         },
         align: {
-          '$ref': 'positionDef',
+          $ref: 'positionDef',
           default: 'center',
         },
       },
@@ -136,23 +142,7 @@ export const TransformSchema = {
         type: 'array',
         items: {
           type: 'string',
-          enum: [
-            'filename',
-            'mimetype',
-            'size',
-            'width',
-            'height',
-            'writeable',
-            'path',
-            'container',
-            'cloud',
-            'exif',
-            'source_url',
-            'md5',
-            'sha256',
-            'sha1',
-            'sha512',
-          ],
+          enum: ['filename', 'mimetype', 'size', 'width', 'height', 'writeable', 'path', 'container', 'cloud', 'exif', 'source_url', 'md5', 'sha256', 'sha1', 'sha512'],
         },
         minItems: 0,
         uniqueItems: true,
@@ -175,20 +165,17 @@ export const TransformSchema = {
         },
         fit: {
           type: 'string',
-          enum: ['clip', 'crop', 'scale' ,'max'],
+          enum: ['clip', 'crop', 'scale', 'max'],
           default: 'clip',
         },
         align: {
-          '$ref': 'positionDef',
+          $ref: 'positionDef',
           default: 'center',
         },
       },
       // required: ['width', 'height'],
       additionalProperties: false,
-      anyOf: [
-        { required: ['width'] },
-        { required: ['height'] },
-      ],
+      anyOf: [{ required: ['width'] }, { required: ['height'] }],
     },
     crop: {
       type: 'object',
@@ -197,23 +184,28 @@ export const TransformSchema = {
           type: 'array',
           additionalItems: false,
           minItems: 4,
-          items: [{
-            type: 'integer',
-            minimum: 0,
-            maximum: 100000,
-          }, {
-            type: 'integer',
-            minimum: 0,
-            maximum: 100000,
-          }, {
-            type: 'integer',
-            minimum: 1,
-            maximum: 100000,
-          }, {
-            type: 'integer',
-            minimum: 1,
-            maximum: 100000,
-          }],
+          items: [
+            {
+              type: 'integer',
+              minimum: 0,
+              maximum: 100000,
+            },
+            {
+              type: 'integer',
+              minimum: 0,
+              maximum: 100000,
+            },
+            {
+              type: 'integer',
+              minimum: 1,
+              maximum: 100000,
+            },
+            {
+              type: 'integer',
+              minimum: 1,
+              maximum: 100000,
+            },
+          ],
         },
       },
       required: ['dim'],
@@ -222,533 +214,602 @@ export const TransformSchema = {
       type: 'object',
       properties: {
         deg: {
-          oneOf: [{
-            type: 'string',
-            enum: ['exif'],
-          }, {
-            type: 'number',
-            minimum: 0,
-            maximum: 359,
-          }],
+          oneOf: [
+            {
+              type: 'string',
+              enum: ['exif'],
+            },
+            {
+              type: 'number',
+              minimum: 0,
+              maximum: 359,
+            },
+          ],
         },
         exif: {
           type: 'boolean',
         },
         background: {
-          '$ref': 'colorDef',
+          $ref: 'colorDef',
           default: 'FFFFFFFF',
         },
       },
       additionalProperties: false,
     },
     detect_faces: {
-      oneOf: [{
-        type: 'boolean',
-      }, {
-        type: 'object',
-        properties: {
-          maxsize: {
-            type: 'number',
-            minimum: 0,
-            maximum: 10000,
-            default: 0.35,
-          },
-          minsize: {
-            type: 'number',
-            minimum: 0,
-            maximum: 10000,
-            default: 0.35,
-          },
-          export: {
-            type: 'boolean',
-          },
-          color: {
-            '$ref': 'colorDef',
-            default: '000000FF',
-          },
+      oneOf: [
+        {
+          type: 'boolean',
         },
-        additionalProperties: false,
-      }],
+        {
+          type: 'object',
+          properties: {
+            maxsize: {
+              type: 'number',
+              minimum: 0,
+              maximum: 10000,
+              default: 0.35,
+            },
+            minsize: {
+              type: 'number',
+              minimum: 0,
+              maximum: 10000,
+              default: 0.35,
+            },
+            export: {
+              type: 'boolean',
+            },
+            color: {
+              $ref: 'colorDef',
+              default: '000000FF',
+            },
+          },
+          additionalProperties: false,
+        },
+      ],
     },
     crop_faces: {
-      oneOf: [{
-        type: 'boolean',
-      }, {
-        type: 'object',
-        properties: {
-          faces: {
-            default: 1,
-            '$ref': 'facesDef',
-          },
-          width: {
-            type: 'number',
-            minimum: 1,
-            maximum: 10000,
-          },
-          height: {
-            type: 'number',
-            minimum: 1,
-            maximum: 10000,
-          },
-          maxsize: {
-            type: 'number',
-            minimum: 0,
-            maximum: 10000,
-            default: 0.35,
-          },
-          minsize: {
-            type: 'number',
-            minimum: 0,
-            maximum: 10000,
-            default: 0.35,
-          },
-          buffer: {
-            type: 'integer',
-            minimum: 0,
-            maximum: 10000,
-          },
-          mode: {
-            type: 'string',
-            enum: ['crop', 'thumb', 'fill'],
-            default: 'thumb',
-          },
+      oneOf: [
+        {
+          type: 'boolean',
         },
-        additionalProperties: false,
-      }],
+        {
+          type: 'object',
+          properties: {
+            faces: {
+              default: 1,
+              $ref: 'facesDef',
+            },
+            width: {
+              type: 'number',
+              minimum: 1,
+              maximum: 10000,
+            },
+            height: {
+              type: 'number',
+              minimum: 1,
+              maximum: 10000,
+            },
+            maxsize: {
+              type: 'number',
+              minimum: 0,
+              maximum: 10000,
+              default: 0.35,
+            },
+            minsize: {
+              type: 'number',
+              minimum: 0,
+              maximum: 10000,
+              default: 0.35,
+            },
+            buffer: {
+              type: 'integer',
+              minimum: 0,
+              maximum: 10000,
+            },
+            mode: {
+              type: 'string',
+              enum: ['crop', 'thumb', 'fill'],
+              default: 'thumb',
+            },
+          },
+          additionalProperties: false,
+        },
+      ],
     },
     pixelate_faces: {
-      oneOf: [{
-        type: 'boolean',
-      }, {
-        type: 'object',
-        properties: {
-          faces: {
-            '$ref': 'facesDef',
-            default: 'all',
-          },
-          maxsize: {
-            type: 'number',
-            minimum: 0,
-            maximum: 10000,
-            default: 0.35,
-          },
-          minsize: {
-            type: 'number',
-            minimum: 0,
-            maximum: 10000,
-            default: 0.35,
-          },
-          buffer: {
-            type: 'integer',
-            minimum: 0,
-            maximum: 10000,
-          },
-          amount: {
-            type: 'integer',
-            minimum: 2,
-            maximum: 100,
-            default: 10,
-          },
-          blur: {
-            type: 'number',
-            minimum: 0,
-            maximum: 20,
-            default: 4,
-          },
-          type: {
-            type: 'string',
-            enum: ['rect', 'oval'],
-            default: 'rect',
-          },
+      oneOf: [
+        {
+          type: 'boolean',
         },
-        additionalProperties: false,
-      }],
+        {
+          type: 'object',
+          properties: {
+            faces: {
+              $ref: 'facesDef',
+              default: 'all',
+            },
+            maxsize: {
+              type: 'number',
+              minimum: 0,
+              maximum: 10000,
+              default: 0.35,
+            },
+            minsize: {
+              type: 'number',
+              minimum: 0,
+              maximum: 10000,
+              default: 0.35,
+            },
+            buffer: {
+              type: 'integer',
+              minimum: 0,
+              maximum: 10000,
+            },
+            amount: {
+              type: 'integer',
+              minimum: 2,
+              maximum: 100,
+              default: 10,
+            },
+            blur: {
+              type: 'number',
+              minimum: 0,
+              maximum: 20,
+              default: 4,
+            },
+            type: {
+              type: 'string',
+              enum: ['rect', 'oval'],
+              default: 'rect',
+            },
+          },
+          additionalProperties: false,
+        },
+      ],
     },
     blur_faces: {
-      oneOf: [{
-        type: 'boolean',
-      }, {
-        type: 'object',
-        properties: {
-          faces: {
-            '$ref': 'facesDef',
-            default: 'all',
-          },
-          maxsize: {
-            type: 'number',
-            minimum: 0,
-            maximum: 10000,
-            default: 0.35,
-          },
-          minsize: {
-            type: 'number',
-            minimum: 0,
-            maximum: 10000,
-            default: 0.35,
-          },
-          buffer: {
-            type: 'integer',
-            minimum: 0,
-            maximum: 10000,
-          },
-          amount: {
-            type: 'number',
-            minimum: 0,
-            maximum: 10,
-            default: 10,
-          },
-          blur: {
-            type: 'number',
-            minimum: 0,
-            maximum: 20,
-            default: 4,
-          },
-          type: {
-            type: 'string',
-            enum: ['rect', 'oval'],
-            default: 'rect',
-          },
+      oneOf: [
+        {
+          type: 'boolean',
         },
-        additionalProperties: false,
-      }],
+        {
+          type: 'object',
+          properties: {
+            faces: {
+              $ref: 'facesDef',
+              default: 'all',
+            },
+            maxsize: {
+              type: 'number',
+              minimum: 0,
+              maximum: 10000,
+              default: 0.35,
+            },
+            minsize: {
+              type: 'number',
+              minimum: 0,
+              maximum: 10000,
+              default: 0.35,
+            },
+            buffer: {
+              type: 'integer',
+              minimum: 0,
+              maximum: 10000,
+            },
+            amount: {
+              type: 'number',
+              minimum: 0,
+              maximum: 10,
+              default: 10,
+            },
+            blur: {
+              type: 'number',
+              minimum: 0,
+              maximum: 20,
+              default: 4,
+            },
+            type: {
+              type: 'string',
+              enum: ['rect', 'oval'],
+              default: 'rect',
+            },
+          },
+          additionalProperties: false,
+        },
+      ],
     },
     rounded_corners: {
-      oneOf: [{
-        type: 'boolean',
-      }, {
-        type: 'object',
-        properties: {
-          radius: {
-            oneOf: [{
-              type: 'integer',
-              minimum: 1,
-              maximum: 10000,
-            }, {
-              type: 'string',
-              enum: ['max'],
-            }],
-          },
-          blur: {
-            type: 'number',
-            minimum: 0,
-            maximum: 20,
-            default: 0.3,
-          },
-          background: {
-            '$ref': 'colorDef',
-          },
+      oneOf: [
+        {
+          type: 'boolean',
         },
-        additionalProperties: false,
-      }],
+        {
+          type: 'object',
+          properties: {
+            radius: {
+              oneOf: [
+                {
+                  type: 'integer',
+                  minimum: 1,
+                  maximum: 10000,
+                },
+                {
+                  type: 'string',
+                  enum: ['max'],
+                },
+              ],
+            },
+            blur: {
+              type: 'number',
+              minimum: 0,
+              maximum: 20,
+              default: 0.3,
+            },
+            background: {
+              $ref: 'colorDef',
+            },
+          },
+          additionalProperties: false,
+        },
+      ],
     },
     vignette: {
-      oneOf: [{
-        type: 'boolean',
-      }, {
-        type: 'object',
-        properties: {
-          amount: {
-            type: 'integer',
-            minimum: 0,
-            maximum: 100,
-            default: 20,
-          },
-          blurmode: {
-            type: 'string',
-            enum: ['gaussian', 'linear'],
-            default: 'gaussian',
-          },
-          background: {
-            '$ref': 'colorDef',
-          },
+      oneOf: [
+        {
+          type: 'boolean',
         },
-        additionalProperties: false,
-      }],
+        {
+          type: 'object',
+          properties: {
+            amount: {
+              type: 'integer',
+              minimum: 0,
+              maximum: 100,
+              default: 20,
+            },
+            blurmode: {
+              type: 'string',
+              enum: ['gaussian', 'linear'],
+              default: 'gaussian',
+            },
+            background: {
+              $ref: 'colorDef',
+            },
+          },
+          additionalProperties: false,
+        },
+      ],
     },
     polaroid: {
-      oneOf: [{
-        type: 'boolean',
-      }, {
-        type: 'object',
-        properties: {
-          rotate: {
-            type: 'integer',
-            minimum: 0,
-            maximum: 359,
-          },
-          color: {
-            '$ref': 'colorDef',
-            default: 'snow',
-          },
-          background: {
-            '$ref': 'colorDef',
-          },
+      oneOf: [
+        {
+          type: 'boolean',
         },
-        additionalProperties: false,
-      }],
+        {
+          type: 'object',
+          properties: {
+            rotate: {
+              type: 'integer',
+              minimum: 0,
+              maximum: 359,
+            },
+            color: {
+              $ref: 'colorDef',
+              default: 'snow',
+            },
+            background: {
+              $ref: 'colorDef',
+            },
+          },
+          additionalProperties: false,
+        },
+      ],
     },
     torn_edges: {
-      oneOf: [{
-        type: 'boolean',
-      }, {
-        type: 'object',
-        properties: {
-          spread: {
-            type: 'array',
-            additionalItems: false,
-            minItems: 2,
-            items: [{
-              type: 'integer',
-              minimum: 1,
-              maximum: 10000,
-              default: 1,
-            }, {
-              type: 'integer',
-              minimum: 1,
-              maximum: 10000,
-              default: 10,
-            }],
-          },
-          background: {
-            '$ref': 'colorDef',
-          },
+      oneOf: [
+        {
+          type: 'boolean',
         },
-        additionalProperties: false,
-      }],
+        {
+          type: 'object',
+          properties: {
+            spread: {
+              type: 'array',
+              additionalItems: false,
+              minItems: 2,
+              items: [
+                {
+                  type: 'integer',
+                  minimum: 1,
+                  maximum: 10000,
+                  default: 1,
+                },
+                {
+                  type: 'integer',
+                  minimum: 1,
+                  maximum: 10000,
+                  default: 10,
+                },
+              ],
+            },
+            background: {
+              $ref: 'colorDef',
+            },
+          },
+          additionalProperties: false,
+        },
+      ],
     },
     shadow: {
-      oneOf: [{
-        type: 'boolean',
-      }, {
-        type: 'object',
-        properties: {
-          blur: {
-            type: 'number',
-            minimum: 0,
-            maximum: 20,
-            default: 100,
-          },
-          opacity: {
-            type: 'integer',
-            minimum: 0,
-            maximum: 100,
-            default: 60,
-          },
-          vector: {
-            type: 'array',
-            additionalItems: false,
-            minItems: 2,
-            items: [{
-              type: 'integer',
-              minimum: -1000,
-              maximum: 1000,
-              default: 4,
-            }, {
-              type: 'integer',
-              minimum: -1000,
-              maximum: 1000,
-              default: 4,
-            }],
-          },
-          color: {
-            '$ref': 'colorDef',
-          },
-          background: {
-            '$ref': 'colorDef',
-          },
+      oneOf: [
+        {
+          type: 'boolean',
         },
-        additionalProperties: false,
-      }],
+        {
+          type: 'object',
+          properties: {
+            blur: {
+              type: 'number',
+              minimum: 0,
+              maximum: 20,
+              default: 100,
+            },
+            opacity: {
+              type: 'integer',
+              minimum: 0,
+              maximum: 100,
+              default: 60,
+            },
+            vector: {
+              type: 'array',
+              additionalItems: false,
+              minItems: 2,
+              items: [
+                {
+                  type: 'integer',
+                  minimum: -1000,
+                  maximum: 1000,
+                  default: 4,
+                },
+                {
+                  type: 'integer',
+                  minimum: -1000,
+                  maximum: 1000,
+                  default: 4,
+                },
+              ],
+            },
+            color: {
+              $ref: 'colorDef',
+            },
+            background: {
+              $ref: 'colorDef',
+            },
+          },
+          additionalProperties: false,
+        },
+      ],
     },
     circle: {
-      oneOf: [{
-        type: 'boolean',
-      }, {
-        type: 'object',
-        properties: {
-          background: {
-            '$ref': 'colorDef',
-          },
+      oneOf: [
+        {
+          type: 'boolean',
         },
-        additionalProperties: false,
-      }],
+        {
+          type: 'object',
+          properties: {
+            background: {
+              $ref: 'colorDef',
+            },
+          },
+          additionalProperties: false,
+        },
+      ],
     },
     border: {
-      oneOf: [{
-        type: 'boolean',
-      }, {
-        type: 'object',
-        properties: {
-          color: {
-            '$ref': 'colorDef',
-          },
-          background: {
-            '$ref': 'colorDef',
-          },
-          width: {
-            type: 'integer',
-            minimum: 0,
-            maximum: 1000,
-          },
+      oneOf: [
+        {
+          type: 'boolean',
         },
-        additionalProperties: false,
-      }],
+        {
+          type: 'object',
+          properties: {
+            color: {
+              $ref: 'colorDef',
+            },
+            background: {
+              $ref: 'colorDef',
+            },
+            width: {
+              type: 'integer',
+              minimum: 0,
+              maximum: 1000,
+            },
+          },
+          additionalProperties: false,
+        },
+      ],
     },
     sharpen: {
-      oneOf: [{
-        type: 'boolean',
-      }, {
-        type: 'object',
-        properties: {
-          amount: {
-            type: 'integer',
-            minimum: 0,
-            maximum: 20,
-            default: 2,
-          },
+      oneOf: [
+        {
+          type: 'boolean',
         },
-        additionalProperties: false,
-      }],
+        {
+          type: 'object',
+          properties: {
+            amount: {
+              type: 'integer',
+              minimum: 0,
+              maximum: 20,
+              default: 2,
+            },
+          },
+          additionalProperties: false,
+        },
+      ],
     },
     blur: {
-      oneOf: [{
-        type: 'boolean',
-      }, {
-        type: 'object',
-        properties: {
-          amount: {
-            type: 'integer',
-            minimum: 0,
-            maximum: 20,
-            default: 2,
-          },
+      oneOf: [
+        {
+          type: 'boolean',
         },
-        additionalProperties: false,
-      }],
+        {
+          type: 'object',
+          properties: {
+            amount: {
+              type: 'integer',
+              minimum: 0,
+              maximum: 20,
+              default: 2,
+            },
+          },
+          additionalProperties: false,
+        },
+      ],
     },
     blackwhite: {
-      oneOf: [{
-        type: 'boolean',
-      }, {
-        type: 'object',
-        properties: {
-          threshold: {
-            type: 'integer',
-            minimum: 0,
-            maximum: 100,
-            default: 50,
-          },
+      oneOf: [
+        {
+          type: 'boolean',
         },
-        additionalProperties: false,
-      }],
+        {
+          type: 'object',
+          properties: {
+            threshold: {
+              type: 'integer',
+              minimum: 0,
+              maximum: 100,
+              default: 50,
+            },
+          },
+          additionalProperties: false,
+        },
+      ],
     },
     sepia: {
-      oneOf: [{
-        type: 'boolean',
-      }, {
-        type: 'object',
-        properties: {
-          tone: {
-            type: 'integer',
-            minimum: 0,
-            maximum: 100,
-            default: 80,
-          },
+      oneOf: [
+        {
+          type: 'boolean',
         },
-        additionalProperties: false,
-      }],
+        {
+          type: 'object',
+          properties: {
+            tone: {
+              type: 'integer',
+              minimum: 0,
+              maximum: 100,
+              default: 80,
+            },
+          },
+          additionalProperties: false,
+        },
+      ],
     },
     pixelate: {
-      oneOf: [{
-        type: 'boolean',
-      }, {
-        type: 'object',
-        properties: {
-          amount: {
-            type: 'integer',
-            minimum: 2,
-            maximum: 100,
-            default: 2,
-          },
+      oneOf: [
+        {
+          type: 'boolean',
         },
-        additionalProperties: false,
-      }],
+        {
+          type: 'object',
+          properties: {
+            amount: {
+              type: 'integer',
+              minimum: 2,
+              maximum: 100,
+              default: 2,
+            },
+          },
+          additionalProperties: false,
+        },
+      ],
     },
     oil_paint: {
-      oneOf: [{
-        type: 'boolean',
-      }, {
-        type: 'object',
-        properties: {
-          amount: {
-            type: 'integer',
-            minimum: 2,
-            maximum: 100,
-            default: 2,
-          },
+      oneOf: [
+        {
+          type: 'boolean',
         },
-        additionalProperties: false,
-      }],
+        {
+          type: 'object',
+          properties: {
+            amount: {
+              type: 'integer',
+              minimum: 2,
+              maximum: 100,
+              default: 2,
+            },
+          },
+          additionalProperties: false,
+        },
+      ],
     },
     modulate: {
-      oneOf: [{
-        type: 'boolean',
-      }, {
-        type: 'object',
-        properties: {
-          brightness: {
-            type: 'integer',
-            minimum: 0,
-            maximum: 10000,
-            default: 100,
-          },
-          saturation: {
-            type: 'integer',
-            minimum: 0,
-            maximum: 10000,
-            default: 100,
-          },
-          hue: {
-            type: 'integer',
-            minimum: 0,
-            maximum: 359,
-            default: 0,
-          },
+      oneOf: [
+        {
+          type: 'boolean',
         },
-        additionalProperties: false,
-      }],
+        {
+          type: 'object',
+          properties: {
+            brightness: {
+              type: 'integer',
+              minimum: 0,
+              maximum: 10000,
+              default: 100,
+            },
+            saturation: {
+              type: 'integer',
+              minimum: 0,
+              maximum: 10000,
+              default: 100,
+            },
+            hue: {
+              type: 'integer',
+              minimum: 0,
+              maximum: 359,
+              default: 0,
+            },
+          },
+          additionalProperties: false,
+        },
+      ],
     },
     ascii: {
-      oneOf: [{
-        type: 'boolean',
-      }, {
-        type: 'object',
-        properties: {
-          foreground: {
-            '$ref': 'colorDef',
-            default: '000000FF',
-          },
-          background: {
-            '$ref': 'colorDef',
-            default: 'FFFFFFFF',
-          },
-          colored: {
-            type: 'boolean',
-            default: false,
-          },
-          size: {
-            type: 'integer',
-            minimum: 10,
-            maximum: 100,
-            default: 100,
-          },
-          reverse: {
-            type: 'boolean',
-            default: false,
-          },
+      oneOf: [
+        {
+          type: 'boolean',
         },
-        additionalProperties: false,
-      }],
+        {
+          type: 'object',
+          properties: {
+            foreground: {
+              $ref: 'colorDef',
+              default: '000000FF',
+            },
+            background: {
+              $ref: 'colorDef',
+              default: 'FFFFFFFF',
+            },
+            colored: {
+              type: 'boolean',
+              default: false,
+            },
+            size: {
+              type: 'integer',
+              minimum: 10,
+              maximum: 100,
+              default: 100,
+            },
+            reverse: {
+              type: 'boolean',
+              default: false,
+            },
+          },
+          additionalProperties: false,
+        },
+      ],
     },
     collage: {
       type: 'object',
@@ -756,9 +817,11 @@ export const TransformSchema = {
         files: {
           type: 'array',
           minItems: 1,
-          items: [{
-            type: 'string',
-          }],
+          items: [
+            {
+              type: 'string',
+            },
+          ],
         },
         margin: {
           type: 'integer',
@@ -777,7 +840,7 @@ export const TransformSchema = {
           maximum: 10000,
         },
         color: {
-          '$ref': 'colorDef',
+          $ref: 'colorDef',
           default: 'FFFFFFFF',
         },
         fit: {
@@ -793,75 +856,81 @@ export const TransformSchema = {
       additionalProperties: false,
     },
     urlscreenshot: {
-      oneOf: [{
-        type: 'boolean',
-      }, {
-        type: 'object',
-        properties: {
-          agent: {
-            type : 'string',
-            enum: ['desktop', 'mobile'],
-            default: 'desktop',
-          },
-          width: {
-            type: 'integer',
-            minimum: 1,
-            maximum: 1920,
-            default: 1024,
-          },
-          height: {
-            type: 'integer',
-            minimum: 1,
-            maximum: 8000,
-            default: 768,
-          },
-          mode: {
-            type: 'string',
-            enum: ['all', 'window'],
-            default: 'all',
-          },
-          delay: {
-            type: 'integer',
-            minimum: 0,
-            maximum: 20000,
-            default: 1000,
-          },
-          orientation: {
-            type: 'string',
-            enum: ['portrait', 'landscape'],
-            default: 'portrait',
-          },
-          device: {
-            type: 'string',
-            default: '',
-          },
+      oneOf: [
+        {
+          type: 'boolean',
         },
-        additionalProperties: false,
-      }],
+        {
+          type: 'object',
+          properties: {
+            agent: {
+              type: 'string',
+              enum: ['desktop', 'mobile'],
+              default: 'desktop',
+            },
+            width: {
+              type: 'integer',
+              minimum: 1,
+              maximum: 1920,
+              default: 1024,
+            },
+            height: {
+              type: 'integer',
+              minimum: 1,
+              maximum: 8000,
+              default: 768,
+            },
+            mode: {
+              type: 'string',
+              enum: ['all', 'window'],
+              default: 'all',
+            },
+            delay: {
+              type: 'integer',
+              minimum: 0,
+              maximum: 20000,
+              default: 1000,
+            },
+            orientation: {
+              type: 'string',
+              enum: ['portrait', 'landscape'],
+              default: 'portrait',
+            },
+            device: {
+              type: 'string',
+              default: '',
+            },
+          },
+          additionalProperties: false,
+        },
+      ],
     },
     upscale: {
-      oneOf: [{
-        type: 'boolean',
-      }, {
-        type: 'object',
-        properties: {
-          noise: {
-            type: 'string',
-            enum: ['none', 'low', 'medium', 'high'],
-            default: 'none',
-          },
-          upscale: {
-            type: 'boolean',
-            default: true,
-          },
-          style: {
-            type: 'string',
-            enum: ['artwork', 'photo'],
-            default: 'photo',
-          },
+      oneOf: [
+        {
+          type: 'boolean',
         },
-        additionalProperties: false,
-      }],
+        {
+          type: 'object',
+          properties: {
+            noise: {
+              type: 'string',
+              enum: ['none', 'low', 'medium', 'high'],
+              default: 'none',
+            },
+            upscale: {
+              type: 'boolean',
+              default: true,
+            },
+            style: {
+              type: 'string',
+              enum: ['artwork', 'photo'],
+              default: 'photo',
+            },
+          },
+          additionalProperties: false,
+        },
+      ],
     },
     output: {
       type: 'object',
@@ -885,15 +954,18 @@ export const TransformSchema = {
           type: 'boolean',
         },
         quality: {
-          oneOf: [{
-            type: 'string',
-            enum: ['input'],
-          }, {
-            type: 'integer',
-            minimum: 1,
-            maximum: 100,
-            default: 95,
-          }],
+          oneOf: [
+            {
+              type: 'string',
+              enum: ['input'],
+            },
+            {
+              type: 'integer',
+              minimum: 1,
+              maximum: 100,
+              default: 95,
+            },
+          ],
         },
         secure: {
           type: 'boolean',
@@ -913,7 +985,7 @@ export const TransformSchema = {
           default: 'rgb',
         },
         background: {
-          '$ref': 'colorDef',
+          $ref: 'colorDef',
         },
         pageformat: {
           type: 'string',
@@ -926,23 +998,26 @@ export const TransformSchema = {
       },
     },
     pjpg: {
-      oneOf: [{
-        type: 'boolean',
-      }, {
-        type: 'object',
-        additionalProperties: false,
-        properties: {
-          quality: {
-            type: 'integer',
-            minimum: 0,
-            maximum: 100,
-          },
-          metadata: {
-            type: 'boolean',
-            default: false,
+      oneOf: [
+        {
+          type: 'boolean',
+        },
+        {
+          type: 'object',
+          additionalProperties: false,
+          properties: {
+            quality: {
+              type: 'integer',
+              minimum: 0,
+              maximum: 100,
+            },
+            metadata: {
+              type: 'boolean',
+              default: false,
+            },
           },
         },
-      }],
+      ],
     },
     quality: {
       type: 'object',
@@ -956,16 +1031,19 @@ export const TransformSchema = {
       },
     },
     cache: {
-      oneOf: [{
-        type: 'boolean',
-      }, {
-        type: 'object',
-        properties: {
-          expiry: {
-            type: 'integer',
+      oneOf: [
+        {
+          type: 'boolean',
+        },
+        {
+          type: 'object',
+          properties: {
+            expiry: {
+              type: 'integer',
+            },
           },
         },
-      }],
+      ],
     },
     video_convert: {
       type: 'object',
@@ -1075,7 +1153,7 @@ export const TransformSchema = {
           type: 'string',
         },
         location: {
-          '$ref': 'locationsDef',
+          $ref: 'locationsDef',
         },
         path: {
           type: 'string',
@@ -1091,40 +1169,43 @@ export const TransformSchema = {
       },
     },
     store: {
-      oneOf: [{
-        type: 'boolean',
-      }, {
-        type: 'object',
-        additionalProperties: false,
-        properties: {
-          filename: {
-            type: 'string',
-          },
-          location: {
-            '$ref': 'locationsDef',
-          },
-          path: {
-            type: 'string',
-          },
-          container: {
-            type: 'string',
-          },
-          region: {
-            '$ref': 'regionsDef',
-          },
-          access: {
-            type: 'string',
-            enum: ['public', 'private'],
-            default: 'private',
-          },
-          base64decode: {
-            type: 'boolean',
-          },
-          workflows: {
-            '$ref': 'workflowsDef',
+      oneOf: [
+        {
+          type: 'boolean',
+        },
+        {
+          type: 'object',
+          additionalProperties: false,
+          properties: {
+            filename: {
+              type: 'string',
+            },
+            location: {
+              $ref: 'locationsDef',
+            },
+            path: {
+              type: 'string',
+            },
+            container: {
+              type: 'string',
+            },
+            region: {
+              $ref: 'regionsDef',
+            },
+            access: {
+              type: 'string',
+              enum: ['public', 'private'],
+              default: 'private',
+            },
+            base64decode: {
+              type: 'boolean',
+            },
+            workflows: {
+              $ref: 'workflowsDef',
+            },
           },
         },
-      }],
+      ],
     },
     watermark: {
       type: 'object',
@@ -1138,19 +1219,17 @@ export const TransformSchema = {
           maximum: 500,
         },
         position: {
-          '$ref': 'positionDef',
+          $ref: 'positionDef',
         },
       },
-      required: [
-        'file',
-      ],
+      required: ['file'],
       additionalProperties: false,
     },
     partial_blur: {
       type: 'object',
       properties: {
         objects: {
-          '$ref': 'objectsDef',
+          $ref: 'objectsDef',
         },
         amount: {
           type: 'number',
@@ -1173,7 +1252,7 @@ export const TransformSchema = {
       type: 'object',
       properties: {
         objects: {
-          '$ref': 'objectsDef',
+          $ref: 'objectsDef',
         },
         amount: {
           type: 'number',
@@ -1206,16 +1285,19 @@ export const TransformSchema = {
       required: ['policy', 'signature'],
     },
     pdfinfo: {
-      oneOf: [{
-        type: 'boolean',
-      }, {
-        type: 'object',
-        properties: {
-          colorinfo: {
-            type: 'boolean',
+      oneOf: [
+        {
+          type: 'boolean',
+        },
+        {
+          type: 'object',
+          properties: {
+            colorinfo: {
+              type: 'boolean',
+            },
           },
         },
-      }],
+      ],
     },
     pdfconvert: {
       type: 'object',
@@ -1226,19 +1308,23 @@ export const TransformSchema = {
           enum: ['portrait', 'landscape'],
         },
         pageformat: {
-          '$ref': 'pageFormatDef',
+          $ref: 'pageFormatDef',
         },
         pages: {
-          '$ref': 'pageRangeDef',
+          $ref: 'pageRangeDef',
         },
       },
-      anyOf: [{
-        required: ['pageorientation'],
-      }, {
-        required: ['pageformat'],
-      }, {
-        required: ['pages'],
-      }],
+      anyOf: [
+        {
+          required: ['pageorientation'],
+        },
+        {
+          required: ['pageformat'],
+        },
+        {
+          required: ['pages'],
+        },
+      ],
     },
     fallback: {
       type: 'object',
@@ -1301,6 +1387,18 @@ export const TransformSchema = {
         },
         targets: {
           type: 'string',
+        },
+      },
+      watermark: {
+        file: 'string',
+        size: {
+          type: 'integer',
+          minimum: 0,
+          maximum: 500,
+        },
+        position: {
+          $ref: 'positionDef',
+          default: 'center',
         },
       },
     },
