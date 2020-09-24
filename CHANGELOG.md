@@ -2,20 +2,6 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
-## [3.17.0](https://github.com/filestack/filestack-js/compare/v3.16.0...v3.17.0) (2020-08-24)
-
-
-### Features
-
-* **clouds:** add mimetype filtering in clouds ([#375](https://github.com/filestack/filestack-js/issues/375)) ([5acd6b4](https://github.com/filestack/filestack-js/commit/5acd6b4d71b253ce699353523e915c6d8aeddc35))
-* **clouds:** add store adapter for better localstore/sessionstore support ([#376](https://github.com/filestack/filestack-js/issues/376)) ([ecb922e](https://github.com/filestack/filestack-js/commit/ecb922ed8e66e7e1250b21f5da2af9b68308da83))
-* **picker:** bump picker version to 1.17.0 ([6078164](https://github.com/filestack/filestack-js/commit/6078164d40bdd64a04c8e6c356da1d6d7e1d14b2))
-
-
-### Bug Fixes
-
-* **s3/complete:** fix target for complete request ([#371](https://github.com/filestack/filestack-js/issues/371)) ([9536c27](https://github.com/filestack/filestack-js/commit/9536c27aa6731e995a70b73b3cc7a5a9367419e2))
-
 ## [3.16.0](https://github.com/filestack/filestack-js/compare/v3.15.0...v3.16.0) (2020-07-09)
 
 
