@@ -30,14 +30,11 @@ describe('Request/Token', () => {
   });
 
   describe('source token', () => {
-    it('source token should return called', done => {
+    it('Cancel event should be called', done => {
       const token = new FsCancelToken();
-      const source = token.getSource();
       const cancelSpy = jest.fn().mockName('cancelSpy');
-      const cancelSpyCatch = jest.fn().mockName('cancelSpyCatch');
 
-      source.then(cancelSpy).catch(cancelSpyCatch);
-
+      token.once('cancel', cancelSpy);
       token.cancel();
 
       setTimeout(() => {
@@ -45,5 +42,19 @@ describe('Request/Token', () => {
         done();
       }, 10);
     });
+  });
+
+  it('Cancel event should be called with reason', done => {
+    const token = new FsCancelToken();
+    const cancelSpy = jest.fn().mockName('cancelSpy');
+    const cancelReason = 'test';
+
+    token.once('cancel', cancelSpy);
+    token.cancel(cancelReason);
+
+    setTimeout(() => {
+      expect(cancelSpy).toHaveBeenCalledWith(cancelReason);
+      done();
+    }, 10);
   });
 });
