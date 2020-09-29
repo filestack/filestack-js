@@ -299,7 +299,7 @@ export class Client extends EventEmitter {
    * @param security  Optional security override.
    * @param uploadTags Optional tags visible in webhooks.
    */
-  storeURL(url: string, storeParams?: StoreParams, token?: any, security?: Security, uploadTags?: UploadTags): Promise<Object> {
+  storeURL(url: string, storeParams?: StoreParams, token?: any, security?: Security, uploadTags?: UploadTags, headers?: {[key: string]: string}): Promise<Object> {
     return storeURL({
       session: this.session,
       url,
@@ -307,6 +307,7 @@ export class Client extends EventEmitter {
       token,
       security,
       uploadTags,
+      headers,
     });
   }
 
