@@ -14,44 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { FsTokenInterface } from './types';
 import { EventEmitter } from 'eventemitter3';
-
-// token
-const token = data => new Promise(resolve => data.listeners.push(resolve));
-
-const tokenSource = () => {
-  const data = {
-    reason: null,
-    listeners: [],
-  };
-
-  const cancel = reason => {
-    reason = reason || 'Aborted';
-
-    if (typeof reason === 'string') {
-      reason = new Error(reason);
-    }
-
-    data.reason = reason;
-
-    // Only for security reason
-    /* istanbul ignore next */
-    setTimeout(function() {
-      for (let i = 0; i < data.listeners.length; i++) {
-        if (typeof data.listeners[i] === 'function') {
-          data.listeners[i](reason);
-          data.listeners.splice(i, 1);
-        }
-      }
-    }, 0);
-  };
-
-  return {
-    cancel: cancel,
-    token: token(data),
-  };
-};
 
 /**
  * Filestack token that allow pause, resume or cancel given upload
@@ -59,18 +22,8 @@ const tokenSource = () => {
  * @export
  * @class FsToken
  * @extends {EventEmitter}
- * @implements {FsTokenInterface}
  */
-export class FsCancelToken implements FsTokenInterface {
-  private source: any;
-  private cancelMethod: any;
-
-  constructor() {
-    const cancelable = tokenSource();
-
-    this.source = cancelable.token;
-    this.cancelMethod = cancelable.cancel;
-  }
+export class FsCancelToken extends EventEmitter {
 
   /**
    * Cancel request action
@@ -79,16 +32,9 @@ export class FsCancelToken implements FsTokenInterface {
    * @memberof Token
    */
   public cancel(reason?: string | Error) {
-    this.cancelMethod(reason);
+    this.emit('cancel', reason);
+
+    this.removeAllListeners();
   }
 
-  /**
-   * Returns cancel token promise
-   *
-   * @returns
-   * @memberof Token
-   */
-  public getSource(): Promise<string> {
-    return this.source;
-  }
 }
