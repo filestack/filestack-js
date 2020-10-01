@@ -132,6 +132,12 @@ export const getMimetype = (file: Uint8Array | Buffer, name?: string): string =>
   }
   // this is only fallback, omit it in coverage
   /* istanbul ignore next */
+
+  // if we cant find types by extensions and we have magic bytes fallback to it
+  if (type) {
+    return type.mime;
+  }
+
   return 'application/octet-stream';
 };
 
