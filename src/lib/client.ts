@@ -298,6 +298,7 @@ export class Client extends EventEmitter {
    * @param token     Optional control token to call .cancel()
    * @param security  Optional security override.
    * @param uploadTags Optional tags visible in webhooks.
+   * @param headers    Optional headers to send
    */
   storeURL(url: string, storeParams?: StoreParams, token?: any, security?: Security, uploadTags?: UploadTags, headers?: {[key: string]: string}): Promise<Object> {
     return storeURL({
