@@ -21,6 +21,7 @@ import { Session, Security, Client } from './../client';
 import { PickerOptions } from './../picker';
 import { FsRequest } from '../request';
 import { cleanUpCallbacks } from './../utils';
+import cloneDeep from 'lodash.clonedeep';
 
 // const debug = Debug('fs:prefetch');
 
@@ -108,7 +109,7 @@ export class Prefetch {
 
     let pickerOptionsToSend;
     if (pickerOptions && Object.keys(pickerOptions).length) {
-      pickerOptionsToSend = cleanUpCallbacks({ ...pickerOptions });
+      pickerOptionsToSend = cleanUpCallbacks(cloneDeep({ ...pickerOptions }));
     }
 
     paramsToSend = {

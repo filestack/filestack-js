@@ -69,6 +69,21 @@ export class XhrAdapter implements AdapterInterface {
     request.timeout = config.timeout;
 
     return new Promise<FsResponse>((resolve, reject) => {
+      let cancelListener;
+
+      if (config.cancelToken) {
+        cancelListener = config.cancelToken.once('cancel', (reason) => {
+          /* istanbul ignore next: if request is done cancel token should not throw any error */
+          if (request) {
+            request.abort();
+            request = null;
+          }
+
+          debug('Request canceled by user %s, config: %O', reason, config);
+          return reject(new FsRequestError(`Request aborted. Reason: ${reason}`, config, null, FsRequestErrorCode.ABORTED));
+        });
+      }
+
       request.onreadystatechange = async () => {
         if (!request || request.readyState !== 4) {
           return;
@@ -104,7 +119,7 @@ export class XhrAdapter implements AdapterInterface {
 
         // clear cancel token to avoid memory leak
         if (config.cancelToken) {
-          config.cancelToken.cancel(CANCEL_CLEAR);
+          config.cancelToken.removeListener(cancelListener);
         }
 
         return resolve(response);
@@ -156,28 +171,6 @@ export class XhrAdapter implements AdapterInterface {
           debug('Bind to progress event');
           request.addEventListener('progress', config.onProgress);
         }
-      }
-
-      if (config.cancelToken) {
-        config.cancelToken
-          .getSource()
-          .then(reason => {
-            // do nothing if promise is resolved by system
-            if (reason && reason.message === CANCEL_CLEAR) {
-              return;
-            }
-
-            /* istanbul ignore next: if request is done cancel token should not throw any error */
-            if (request) {
-              request.abort();
-              request = null;
-            }
-
-            debug('Request canceled by user %s, config: %O', reason, config);
-            return reject(new FsRequestError(`Request aborted. Reason: ${reason}`, config, null, FsRequestErrorCode.ABORTED));
-          })
-          /* istanbul ignore next: only for safety */
-          .catch(() => {/* empty */});
       }
 
       if (data === undefined) {

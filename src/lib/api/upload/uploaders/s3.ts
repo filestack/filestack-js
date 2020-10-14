@@ -91,8 +91,10 @@ export class S3Uploader extends UploaderAbstract {
    * @memberof S3Uploader
    */
   public abort(msg?: string): void {
-    this.cancelToken.cancel(msg || 'Aborted by user');
+    this.partsQueue.pause();
     this.partsQueue.clear();
+
+    this.cancelToken.cancel(msg || 'Aborted by user');
   }
 
   /**
