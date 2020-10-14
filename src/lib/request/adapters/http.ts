@@ -153,7 +153,31 @@ export class HttpAdapter implements AdapterInterface {
     debug('Starting %s request with options %O', isHttpsRequest ? 'https' : 'http', options);
 
     return new Promise<FsResponse>((resolve, reject): any => {
-      let req = agent.request(options, res => {
+      let req;
+      let cancelListener;
+
+      if (config.cancelToken) {
+        cancelListener = config.cancelToken.on('cancel', (reason) => {
+          // cleanup handler
+          cancelListener = null;
+
+          // do nothing if promise is resolved by system
+          if (reason && reason.message === CANCEL_CLEAR) {
+            return;
+          }
+
+          /* istanbul ignore next: if request is done cancel token should not throw any error */
+          if (req) {
+            req.abort();
+            req = null;
+          }
+
+          debug('Request canceled by user %s, config: %O', reason, config);
+          return reject(new FsRequestError(`Request aborted. Reason: ${reason}`, config, null, FsRequestErrorCode.ABORTED));
+        });
+      }
+
+      req = agent.request(options, res => {
         /* istanbul ignore next: just be sure that response will not be called after request is aborted */
         if (!req || req.aborted) {
           return reject(new FsRequestError('Request aborted', config));
@@ -178,26 +202,6 @@ export class HttpAdapter implements AdapterInterface {
           config,
           data: {},
         };
-
-        let cancelListener;
-
-        if (config.cancelToken) {
-          cancelListener = config.cancelToken.once('cancel', (reason) => {
-            // do nothing if promise is resolved by system
-            if (reason && reason.message === CANCEL_CLEAR) {
-              return;
-            }
-
-            /* istanbul ignore next: if request is done cancel token should not throw any error */
-            if (req) {
-              req.abort();
-              req = null;
-            }
-
-            debug('Request canceled by user %s, config: %O', reason, config);
-            return reject(new FsRequestError(`Request aborted. Reason: ${reason}`, config, null, FsRequestErrorCode.ABORTED));
-          });
-        }
 
         // we need to follow redirect so make same request with new location
         if ([301, 302].indexOf(res.statusCode) > -1) {
@@ -226,11 +230,6 @@ export class HttpAdapter implements AdapterInterface {
 
           debug('Redirecting request to %s (hoop-count: %d)', url, this.redirectHoops);
 
-          // clear cancel token to avoid memory leak
-          if (config.cancelToken) {
-            config.cancelToken.removeListener(cancelListener);
-          }
-
           return resolve(this.request(Object.assign({}, config, { url })));
         }
 
@@ -248,10 +247,20 @@ export class HttpAdapter implements AdapterInterface {
             return;
           }
 
+          // clear cancel token to avoid memory leak
+          if (cancelListener) {
+            config.cancelToken.removeListener(cancelListener);
+          }
+
           return reject(new FsRequestError(err.message, config, null, FsRequestErrorCode.NETWORK));
         });
 
         stream.on('end', async () => {
+          // clear cancel token to avoid memory leak
+          if (cancelListener) {
+            config.cancelToken.removeListener(cancelListener);
+          }
+
           // check if there is any response data inside
           if (res.statusCode !== 204) {
             // prepare response
@@ -282,13 +291,24 @@ export class HttpAdapter implements AdapterInterface {
       });
 
       if (config.timeout) {
+        console.log(config.timeout);
         req.setTimeout(config.timeout, () => {
+          console.log('socket timeouted===========');
           req.abort();
+
+          if (cancelListener) {
+            config.cancelToken.removeListener(cancelListener);
+          }
+
           return reject(new FsRequestError('Request timeout', config, null, FsRequestErrorCode.TIMEOUT));
         });
       }
 
       req.on('error', err => {
+        if (cancelListener) {
+          config.cancelToken.removeListener(cancelListener);
+        }
+
         if (!req || req.aborted) {
           return;
         }

@@ -48,7 +48,7 @@ export const PickerParamsSchema = {
       type: 'array',
       items: [
         {
-          type: 'string',
+          type: ['string', 'object'],
           additionalProperties: false,
           enum: [
             'local_file_system',

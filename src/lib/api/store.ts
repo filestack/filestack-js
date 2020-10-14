@@ -29,6 +29,7 @@ export type StoreUrlParams = {
   token?: any;
   security?: Security;
   uploadTags?: UploadTags;
+  headers?: {[key: string]: string},
 };
 
 /**
@@ -48,6 +49,7 @@ export const storeURL = ({
   token,
   security,
   uploadTags,
+  headers,
 }: StoreUrlParams): Promise<any> => {
   if (!url || typeof url !== 'string') {
     return Promise.reject(new FilestackError('url is required for storeURL'));
@@ -80,11 +82,20 @@ export const storeURL = ({
     options.cancelToken = cancelToken;
   }
 
+  let sources: any = [ url ];
+
+  if (headers) {
+    sources = [{
+      source: url,
+      headers,
+    }];
+  }
+
   return FsRequest.post(`${session.urls.processUrl}/process`, {
     apikey: session.apikey,
-    sources: [ url ],
+    sources,
     tasks: filelink.getTasks(),
-    upload_tags: uploadTags ? uploadTags : undefined,
+    upload_tags: uploadTags,
   }, options).then((res) => {
     if (res.data && res.data.handle) {
       if (res.data.upload_tags) {
