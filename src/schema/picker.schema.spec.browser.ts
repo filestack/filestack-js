@@ -52,6 +52,10 @@ describe('Picker Params Schema', () => {
     assertFail(validate({ fromSources: ['wrong_source'] }));
   });
 
+  it('should validate fromSources param type object', () => {
+    assert.ok(validate({ fromSources: ['url', { test: 123 }, { test: () => console.log }] }));
+  });
+
   it('should validate container param', () => {
     assert.ok(validate({ container: 'test' }));
 
