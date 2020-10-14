@@ -41,6 +41,10 @@ const config =  {
       },
     ],
   },
+  performance: {
+    maxEntrypointSize: 255000,
+    maxAssetSize: 255000
+  },
   plugins: [
     new CleanWebpackPlugin(),
     new webpack.BannerPlugin({ banner }),
