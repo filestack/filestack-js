@@ -627,21 +627,21 @@ export const adaptersHttpAbstract = (adapter: any, adapterName: string) => {
         const token = new FsCancelToken();
 
         const options = {
-          url: url,
+          url: `${url}/timeout`,
           method: FsHttpMethod.GET,
           cancelToken: token,
         };
 
         scope
-          .get('/')
+          .get('/timeout')
           .delay(2000)
-          .reply(200, 'ok', {
-            'Content-type': 'application/json',
+          .reply(201, 'ok', {
+            'content-type': 'application/json',
           });
 
         setTimeout(() => {
           token.cancel();
-        }, 100);
+        }, 150);
 
         try {
           const requestAdapter = new adapter();
