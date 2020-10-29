@@ -21,6 +21,7 @@ import { getValidator } from './../schema/validator';
 import { resolveHost, b64 } from './utils';
 import { FilestackError, FilestackErrorType } from './../filestack_error';
 import Debug from 'debug';
+import { WorkflowConfig } from './api/upload/types';
 
 const debug = Debug('fs:filelink');
 
@@ -176,6 +177,7 @@ export interface StoreBaseParams {
 export type StoreParams = StoreBaseParams & {
   filename?: string;
   base64decode?: boolean;
+  workflows?: (string | WorkflowConfig)[];
 };
 
 export interface AnimationParams {
@@ -628,7 +630,7 @@ export class Filelink {
       throw new FilestackError('External sources requires apikey to handle transforms');
     }
 
-    if (!isExternal && typeof this.source === 'string' && (!handleRegexp.test(this.source) && this.source.indexOf('filestackcontent') === -1)) {
+    if (!isExternal && typeof this.source === 'string' && !handleRegexp.test(this.source) && this.source.indexOf('filestackcontent') === -1) {
       throw new FilestackError('Invalid filestack source provided');
     }
   }
@@ -1413,7 +1415,7 @@ export class Filelink {
   private generateTransformString(): string {
     let transforms = [];
 
-    this.transforms.forEach((el) => {
+    this.transforms.forEach(el => {
       transforms.push(this.optionToString(el.name, el.params));
     });
 
@@ -1443,7 +1445,7 @@ export class Filelink {
       return key;
     }
 
-    Object.keys(values).forEach((i) => {
+    Object.keys(values).forEach(i => {
       if (Array.isArray(values[i])) {
         optionsString.push(`${i}:${this.arrayToString(values[i])}`);
         return;
@@ -1483,7 +1485,7 @@ export class Filelink {
    * @param arr - any array
    */
   private arrayToString(arr: any[]): string {
-    const toReturn = arr.map((el) => {
+    const toReturn = arr.map(el => {
       if (Array.isArray(el)) {
         return this.arrayToString(el);
       }
@@ -1506,5 +1508,5 @@ export class Filelink {
       obj[item[nameKey]] = item[dataKey];
       return obj;
     }, {});
-  }
+  };
 }
