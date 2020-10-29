@@ -41,14 +41,7 @@ export type StoreUrlParams = {
  * @param security
  * @param uploadTags
  */
-export const storeURL = ({
-  session,
-  url,
-  storeParams,
-  token,
-  security,
-  uploadTags,
-}: StoreUrlParams): Promise<any> => {
+export const storeURL = ({ session, url, storeParams, token, security, uploadTags }: StoreUrlParams): Promise<any> => {
   if (!url || typeof url !== 'string') {
     return Promise.reject(new FilestackError('url is required for storeURL'));
   }
@@ -59,9 +52,10 @@ export const storeURL = ({
     return Promise.reject(new FilestackError(`Invalid store params`, validateRes.errors));
   }
 
-  session.policy = security && security.policy || session.policy;
-  session.signature = security && security.signature || session.signature;
+  session.policy = (security && security.policy) || session.policy;
+  session.signature = (security && security.signature) || session.signature;
 
+  // @todo workflows, waiting for bravo support
   const filelink = new Filelink(url, session.apikey);
   filelink.store(storeParams);
 
@@ -80,12 +74,16 @@ export const storeURL = ({
     options.cancelToken = cancelToken;
   }
 
-  return FsRequest.post(`${session.urls.processUrl}/process`, {
-    apikey: session.apikey,
-    sources: [ url ],
-    tasks: filelink.getTasks(),
-    upload_tags: uploadTags ? uploadTags : undefined,
-  }, options).then((res) => {
+  return FsRequest.post(
+    `${session.urls.processUrl}/process`,
+    {
+      apikey: session.apikey,
+      sources: [url],
+      tasks: filelink.getTasks(),
+      upload_tags: uploadTags ? uploadTags : undefined,
+    },
+    options,
+  ).then(res => {
     if (res.data && res.data.handle) {
       if (res.data.upload_tags) {
         res.data.uploadTags = res.data.upload_tags;
