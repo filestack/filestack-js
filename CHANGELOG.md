@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.19.0](https://github.com/filestack/filestack-js/compare/v3.18.0...v3.19.0) (2020-11-03)
+
+
+### Features
+
+* **picker:** add custom source to picker - v 1.19.0 ([9038607](https://github.com/filestack/filestack-js/commit/903860701438053d0a7ef51cd7dd42053f62baa2))
+
 ## [3.18.0](https://github.com/filestack/filestack-js/compare/v3.17.0...v3.18.0) (2020-10-01)
 
 
