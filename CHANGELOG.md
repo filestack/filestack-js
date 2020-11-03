@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.18.0](https://github.com/filestack/filestack-js/compare/v3.17.0...v3.18.0) (2020-10-01)
+
+
+### Features
+
+* **miemtypes:** add key extension to list ([a12b477](https://github.com/filestack/filestack-js/commit/a12b4775c42fe69adee7f6056f450d4ac233779b))
+* **mimetypes:** check apple mimetypes based on extensions ([#386](https://github.com/filestack/filestack-js/issues/386)) ([08f1154](https://github.com/filestack/filestack-js/commit/08f11548b8fa987698fc2150c7e9e3fc5dcedfd1))
+* **picker:** bump picker version to 18 (multiple bugfixes) ([a304076](https://github.com/filestack/filestack-js/commit/a30407661046345bd60dcaf19346c222e00077be))
+* **utils:** Replace 'getVersion' function's return statement to use static constant instead of dynamic require. ([77fa52d](https://github.com/filestack/filestack-js/commit/77fa52d3ce7c8488852f0b8e71650ff5c39c1319))
+
+
+### Bug Fixes
+
+* **cancelToken:** move cancel token to event emmiter ([#384](https://github.com/filestack/filestack-js/issues/384)) ([b1cada8](https://github.com/filestack/filestack-js/commit/b1cada8cf7fefa0664774b79e66e1afef7fa01a7))
+* **mimetypes:** if we have mimetype and we cant find excluded type by extension fallback to magic by ([20cfa49](https://github.com/filestack/filestack-js/commit/20cfa49472163f90a7fd96c76d9231445d0a5948))
+* **prefetch:** clone deep config before send to avoid referances ([#388](https://github.com/filestack/filestack-js/issues/388)) ([7f3c153](https://github.com/filestack/filestack-js/commit/7f3c1536e3ca745b59597d724eefe123617b17ef))
+
 ## [3.17.0](https://github.com/filestack/filestack-js/compare/v3.16.0...v3.17.0) (2020-08-24)
 
 

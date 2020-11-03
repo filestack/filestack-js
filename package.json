@@ -1,6 +1,6 @@
 {
   "name": "filestack-js",
-  "version": "3.17.0",
+  "version": "3.18.0",
   "description": "Official JavaScript library for Filestack",
   "main": "build/main/index.js",
   "module": "build/module/index.js",
@@ -9,7 +9,7 @@
   "unpkg": "build/browser/filestack.min.js",
   "repository": "https://github.com/filestack/filestack-js",
   "author": "Filestack <filestack.com>",
-  "license": "Apache-2.0",
+  "license": "MIT",
   "files": [
     "src",
     "build"
