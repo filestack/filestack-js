@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { resolveCdnUrl, resolveHost, removeEmpty, uniqueTime, uniqueId, md5, sanitizeName, filterObject, b64, getVersion, cleanUpCallbacks } from './index';
+import { resolveCdnUrl, resolveHost, removeEmpty, uniqueTime, uniqueId, md5, extensionToMime, sanitizeName, filterObject, b64, getVersion, cleanUpCallbacks } from './index';
 import { config } from '../../config';
 const v = require('../../../../package.json').version;
 
@@ -179,6 +179,34 @@ describe('utils:index', () => {
 
     it('should not throw on empty filtered object', () => {
       expect(filterObject({}, ['test'])).toEqual({});
+    });
+  });
+
+  describe('extensionToMime', () => {
+    it('should return mimetype if mime is passed', () => {
+      expect(extensionToMime('')).toEqual(undefined);
+    });
+
+    it('should return same mime is passed', () => {
+      expect(extensionToMime('image/png')).toEqual('image/png');
+      expect(extensionToMime('image/jpg')).toEqual('image/jpg');
+      expect(extensionToMime('application/pdf')).toEqual('application/pdf');
+    });
+
+    it('it should return correct mimes for ext', () => {
+      expect(extensionToMime('.png')).toEqual('image/png');
+      expect(extensionToMime('.jpg')).toEqual('image/jpeg');
+      expect(extensionToMime('.pdf')).toEqual('application/pdf');
+
+      expect(extensionToMime('.key')).toEqual('application/vnd.apple.keynote');
+      expect(extensionToMime('.zip')).toEqual('application/zip');
+      expect(extensionToMime('.numbers')).toEqual('application/vnd.apple.numbers');
+    });
+
+    it('it should extract extensions form filename or ext with dot', () => {
+      expect(extensionToMime('test.png')).toEqual('image/png');
+      expect(extensionToMime('test.jpg')).toEqual('image/jpeg');
+      expect(extensionToMime('test.pdf')).toEqual('application/pdf');
     });
   });
 
