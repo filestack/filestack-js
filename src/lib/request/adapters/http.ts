@@ -291,9 +291,7 @@ export class HttpAdapter implements AdapterInterface {
       });
 
       if (config.timeout) {
-        console.log(config.timeout);
         req.setTimeout(config.timeout, () => {
-          console.log('socket timeouted===========');
           req.abort();
 
           if (cancelListener) {

@@ -22,7 +22,7 @@ import { FilestackError } from './../filestack_error';
 import { metadata, MetadataOptions, remove, retrieve, RetrieveOptions } from './api/file';
 import { transform, TransformOptions } from './api/transform';
 import { storeURL } from './api/store';
-import { resolveHost, getVersion } from './utils';
+import * as Utils from './utils';
 import { Upload, InputFile, UploadOptions, StoreUploadOptions, UploadTags } from './api/upload';
 import { preview, PreviewOptions } from './api/preview';
 import { CloudClient } from './api/cloud';
@@ -100,6 +100,16 @@ export class Client extends EventEmitter {
 
   private forwardErrors: boolean = true;
 
+  /**
+   * Returns filestack utils
+   *
+   * @readonly
+   * @memberof Client
+   */
+  get utils() {
+    return Utils;
+  }
+
   constructor(apikey: string, options?: ClientOptions) {
     super();
 
@@ -111,7 +121,7 @@ export class Client extends EventEmitter {
     /* istanbul ignore next */
     Sentry.configureScope(scope => {
       scope.setTag('apikey', apikey);
-      scope.setTag('sdk-version', getVersion());
+      scope.setTag('sdk-version', Utils.getVersion());
       scope.setExtra('clientOptions', options);
     });
 
@@ -171,7 +181,7 @@ export class Client extends EventEmitter {
     }
 
     this.session.cname = cname;
-    this.session.urls = resolveHost(this.session.urls, cname);
+    this.session.urls = Utils.resolveHost(this.session.urls, cname);
   }
 
   /**

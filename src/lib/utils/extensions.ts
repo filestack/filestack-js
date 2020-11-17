@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-export const Map = {
+export const ExtensionsMap = {
   'application/andrew-inset': ['ez'],
   'application/applixware': ['aw'],
   'application/atom+xml': ['atom'],

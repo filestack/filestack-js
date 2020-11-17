@@ -17,7 +17,7 @@
 
 import { Session } from '../client';
 import { Hosts } from './../../config';
-import { Map } from './extensions';
+import { ExtensionsMap } from './extensions';
 import fileType from 'file-type';
 import * as isutf8 from 'isutf8';
 
@@ -111,14 +111,10 @@ export const getMimetype = (file: Uint8Array | Buffer, name?: string): string =>
   }
 
   if (name && name.indexOf('.') > -1) {
-    const ext = name.split('.').pop();
-    const keys = Object.keys(Map);
-    const mapLen = keys.length;
+    const mime = extensionToMime(name);
 
-    for (let i = 0; i < mapLen; i++) {
-      if (Map[keys[i]].indexOf(ext) > -1) {
-        return keys[i];
-      }
+    if (mime) {
+      return mime;
     }
   }
 
@@ -139,6 +135,37 @@ export const getMimetype = (file: Uint8Array | Buffer, name?: string): string =>
   }
 
   return 'application/octet-stream';
+};
+
+/**
+ * Change extension to according mimetype using ext=>mimetype map
+ *
+ * @param ext - string
+ * @return string|boolean
+ */
+export const extensionToMime = (ext: string) => {
+  if (!ext || ext.length === 0) {
+    return;
+  }
+
+  if (ext.split('/').length === 2) {
+    return ext;
+  }
+
+  if (ext.indexOf('.') > -1) {
+    ext = ext.split('.').pop();
+  }
+
+  const keys = Object.keys(ExtensionsMap);
+  const mapLen = keys.length;
+
+  for (let i = 0; i < mapLen; i++) {
+    if (ExtensionsMap[keys[i]].indexOf(ext) > -1) {
+      return keys[i];
+    }
+  }
+
+  return;
 };
 
 /**
