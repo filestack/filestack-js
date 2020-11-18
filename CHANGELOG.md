@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.20.0](https://github.com/filestack/filestack-js/compare/v3.19.0...v3.20.0) (2020-11-18)
+
+
+### Features
+
+* **picker:** bump picker version ([4b155b3](https://github.com/filestack/filestack-js/commit/4b155b359b1b939ec80ad224703e194effc4a791))
+* **utils:** add converting extension to mimetype ([#400](https://github.com/filestack/filestack-js/issues/400)) ([669e178](https://github.com/filestack/filestack-js/commit/669e178ef9d6cbd4d2303cec0f8cbbbf208b50fd))
+
+
+### Bug Fixes
+
+* **sentry:** update sentry errors ([5a53ddd](https://github.com/filestack/filestack-js/commit/5a53ddd75db9c41396b1c2d9c23dab5784ca2419))
+
 ## [3.19.0](https://github.com/filestack/filestack-js/compare/v3.18.0...v3.19.0) (2020-11-03)
 
 
