@@ -21,7 +21,7 @@ const figureOutFileMimetype = (filePath) => {
   return 'application/octet-stream';
 };
 
-const pushOneFileToS3 = (basePath, to) => {
+const pushOneFileToS3 = (basePath, to, cacheControllDays = 1) => {
   return new Promise(async (resolve, reject) => {
     file = Path.basename(basePath);
 
@@ -33,6 +33,7 @@ const pushOneFileToS3 = (basePath, to) => {
       Bucket: to.bucket,
       Key: uploadKey,
       Body: content,
+      CacheControl: `max-age=${cacheControll * 60 * 60 * 24}` || 'max-age=86400',
       ContentType: figureOutFileMimetype(basePath),
     };
 
@@ -77,13 +78,13 @@ const canDeploy = () => {
   return true;
 }
 
-const upload = async (bucket, path) => {
+const upload = async (bucket, path, cacheControll) => {
   return runOnEachFile(
     browserBuildDir,
     {
       realpath: true,
     },
-    (file, incOptions) => pushOneFileToS3(file, incOptions),
+    (file, incOptions) => pushOneFileToS3(file, incOptions, cacheControll),
     { bucket, path },
   );
 };
@@ -98,21 +99,33 @@ const upload = async (bucket, path) => {
   if (args.indexOf('--latest') > -1) {
     console.log(`publish latest version ${major}.x.x`);
     if (canDeploy()) {
-      paths.push(`filestack-js/${major}.x.x`);
+      paths.push({
+        bucket,
+        path: `filestack-js/${major}.x.x`,
+        cacheControll: 1,
+      });
     }
   }
 
   if (args.indexOf('--current') > -1) {
     console.log(`publish current version ${version}`);
     if (canDeploy()) {
-      paths.push(`filestack-js/${version}`)
+      paths.push({
+        bucket,
+        path: `filestack-js/${version}`,
+        cacheControll: 30
+      });
     }
   }
 
   if (args.indexOf('--beta') > -1) {
     console.log(`publish beta version`);
-    paths.push(`filestack-js/beta`)
+    paths.push({
+      bucket,
+      path: `filestack-js/beta`,
+      cacheControll: 0
+    })
   }
 
-  Promise.all(paths.map((p) => upload(bucket, p))).then((res) => console.log(res))
+  Promise.all(paths.map((data) => upload(data.bucket, data.path, data.cacheControll))).then((res) => console.log(res))
 })();
