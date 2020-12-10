@@ -124,6 +124,14 @@ export enum ECropfacesType {
   fill = 'fill',
 }
 
+/**
+ * SmartCrop mode options enum
+ */
+export enum ESmartCropMode {
+  fit = 'fit',
+  auto = 'auto',
+}
+
 export enum EImageWatermarkPosition {
   top = 'top',
   middle = 'middle',
@@ -198,11 +206,22 @@ export interface TransformOptions {
   flip?: boolean;
   compress?: boolean;
   flop?: boolean;
+  no_metadata?: boolean;
+  pjpg?: {
+    quality: number;
+    metadata: boolean;
+  };
+  smart_crop?: {
+    mode?: ESmartCropMode
+    width: number;
+    height: number;
+  };
   watermark?: {
     files: string;
     size?: number;
     position?: EImageWatermarkPosition | EImageWatermarkPosition[];
   };
+  imagesize?: boolean;
   enchance?: boolean;
   redeye?: boolean;
   monochrome?: boolean;

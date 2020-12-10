@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { Filelink, ShapeType, VideoAccessMode, AnimationParams, FitOptions, Align, WatermarkParams, ImageWatermarkPosition } from './filelink';
+import { Filelink, ShapeType, VideoAccessMode, AnimationParams, FitOptions, Align, WatermarkParams, ImageWatermarkPosition, SmartCropParams, SmartCropMode, ProgressiveJpgParams } from './filelink';
 import { TransformSchema } from './../schema/transforms.schema';
 import * as validator from '../schema';
 
@@ -250,6 +250,37 @@ describe('Different tasks', () => {
   it('should be able to add flop', () => {
     filelink.flop();
     expect(filelink.toString()).toBe('https://cdn.filestackcontent.com/DEFAULT_API_KEY/flop/5aYkEQJSQCmYShsoCnZN');
+  });
+
+  it('should be able to add imagesize', () => {
+    filelink.imagesize();
+    expect(filelink.toString()).toBe('https://cdn.filestackcontent.com/DEFAULT_API_KEY/imagesize/5aYkEQJSQCmYShsoCnZN');
+  });
+
+  it('should be able to add no_metadata', () => {
+    filelink.noMetadata();
+    expect(filelink.toString()).toBe('https://cdn.filestackcontent.com/DEFAULT_API_KEY/no_metadata/5aYkEQJSQCmYShsoCnZN');
+  });
+
+  it('should be able to add pjpg', () => {
+    const params: ProgressiveJpgParams = {
+      quality: 50,
+      metadata: false,
+    };
+
+    filelink.pjpg(params);
+    expect(filelink.toString()).toBe('https://cdn.filestackcontent.com/DEFAULT_API_KEY/pjpg=quality:50,metadata:false/5aYkEQJSQCmYShsoCnZN');
+  });
+
+  it('should be able to add smart_crop', () => {
+    const params: SmartCropParams = {
+      mode: SmartCropMode.auto,
+      width: 1000,
+      height: 1000,
+    };
+
+    filelink.smartCrop(params);
+    expect(filelink.toString()).toBe('https://cdn.filestackcontent.com/DEFAULT_API_KEY/smart_crop=mode:auto,width:1000,height:1000/5aYkEQJSQCmYShsoCnZN');
   });
 
   it('should be able to add watermark', () => {

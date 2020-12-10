@@ -114,6 +114,14 @@ export enum ImageWatermarkPosition {
 }
 
 /**
+ * SmartCrop options enum
+ */
+export enum SmartCropMode {
+  face = 'face',
+  auto = 'auto',
+}
+
+/**
  * Convert to format
  */
 export enum VideoTypes {
@@ -301,6 +309,17 @@ export interface WatermarkParams {
   file: string;
   size?: number;
   position?: ImageWatermarkPosition | ImageWatermarkPosition[];
+}
+
+export interface ProgressiveJpgParams {
+  quality: number;
+  metadata: boolean;
+}
+
+export interface SmartCropParams {
+  mode: SmartCropMode;
+  width: number;
+  height: number;
 }
 
 export interface SharpenParams {
@@ -802,6 +821,50 @@ export class Filelink {
    */
   flop() {
     return this.addTask('flop', true);
+  }
+
+  /**
+   * Adds imagesize transformation
+   *
+   * @see https://www.filestack.com/docs/api/processing/#image-size
+   * @returns this
+   * @memberof Filelink
+   */
+  imagesize() {
+    return this.addTask('imagesize', true);
+  }
+
+  /**
+   * Adds noMetadata transformation
+   *
+   * @see https://www.filestack.com/docs/api/processing/#strip-metadata
+   * @returns this
+   * @memberof Filelink
+   */
+  noMetadata() {
+    return this.addTask('no_metadata', true);
+  }
+
+  /**
+   * Adds Progressive JPEG transformation
+   *
+   * @see https://www.filestack.com/docs/api/processing/#progressive-jpeg
+   * @returns this
+   * @memberof Filelink
+   */
+  pjpg(params: ProgressiveJpgParams) {
+    return this.addTask('pjpg', params);
+  }
+
+  /**
+   * Adds imagesize transformation
+   *
+   * @see https://www.filestack.com/docs/api/processing/#smart-crop
+   * @returns this
+   * @memberof Filelink
+   */
+  smartCrop(params: SmartCropParams) {
+    return this.addTask('smart_crop', params);
   }
 
   /**
@@ -1535,5 +1598,5 @@ export class Filelink {
       obj[item[nameKey]] = item[dataKey];
       return obj;
     }, {});
-  };
+  }
 }
