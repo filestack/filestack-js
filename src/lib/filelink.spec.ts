@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { Filelink, ShapeType, VideoAccessMode, AnimationParams, FitOptions, Align } from './filelink';
+import { Filelink, ShapeType, VideoAccessMode, AnimationParams, FitOptions, Align, WatermarkParams, ImageWatermarkPosition } from './filelink';
 import { TransformSchema } from './../schema/transforms.schema';
 import * as validator from '../schema';
 
@@ -250,6 +250,19 @@ describe('Different tasks', () => {
   it('should be able to add flop', () => {
     filelink.flop();
     expect(filelink.toString()).toBe('https://cdn.filestackcontent.com/DEFAULT_API_KEY/flop/5aYkEQJSQCmYShsoCnZN');
+  });
+
+  it('should be able to add watermark', () => {
+    const params: WatermarkParams = {
+      file: 'http://welcome-swiss.com/wp-content/uploads/2015/12/Swiss-landscape.jpg',
+      size: 20,
+      position: ImageWatermarkPosition.top,
+    };
+
+    filelink.watermark(params);
+    expect(filelink.toString()).toBe(
+      'https://cdn.filestackcontent.com/DEFAULT_API_KEY/watermark=file:http://welcome-swiss.com/wp-content/uploads/2015/12/Swiss-landscape.jpg,size:20,position:top/5aYkEQJSQCmYShsoCnZN'
+    );
   });
 
   it('should be able to enhance', () => {

@@ -124,6 +124,15 @@ export enum ECropfacesType {
   fill = 'fill',
 }
 
+export enum EImageWatermarkPosition {
+  top = 'top',
+  middle = 'middle',
+  bottom = 'bottom',
+  left = 'left',
+  center = 'center',
+  right = 'right',
+}
+
 /**
  * Convert to format
  */
@@ -181,6 +190,7 @@ export enum EVideoAccessMode {
   crop = 'crop',
 }
 
+
 /**
  * @see https://www.filestack.com/docs/image-transformations
  */
@@ -188,6 +198,11 @@ export interface TransformOptions {
   flip?: boolean;
   compress?: boolean;
   flop?: boolean;
+  watermark?: {
+    files: string;
+    size?: number;
+    position?: EImageWatermarkPosition | EImageWatermarkPosition[];
+  };
   enchance?: boolean;
   redeye?: boolean;
   monochrome?: boolean;

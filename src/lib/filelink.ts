@@ -102,6 +102,18 @@ export enum CropfacesType {
 }
 
 /**
+ * Watermark postion options enum
+ */
+export enum ImageWatermarkPosition {
+  top = 'top',
+  middle = 'middle',
+  bottom = 'bottom',
+  left = 'left',
+  center = 'center',
+  right = 'right',
+}
+
+/**
  * Convert to format
  */
 export enum VideoTypes {
@@ -283,6 +295,12 @@ export interface BorderParams {
 
 export interface CompressParams {
   metadata?: boolean;
+}
+
+export interface WatermarkParams {
+  file: string;
+  size?: number;
+  position?: ImageWatermarkPosition | ImageWatermarkPosition[];
 }
 
 export interface SharpenParams {
@@ -628,7 +646,7 @@ export class Filelink {
       throw new FilestackError('External sources requires apikey to handle transforms');
     }
 
-    if (!isExternal && typeof this.source === 'string' && (!handleRegexp.test(this.source) && this.source.indexOf('filestackcontent') === -1)) {
+    if (!isExternal && typeof this.source === 'string' && !handleRegexp.test(this.source) && this.source.indexOf('filestackcontent') === -1) {
       throw new FilestackError('Invalid filestack source provided');
     }
   }
@@ -784,6 +802,17 @@ export class Filelink {
    */
   flop() {
     return this.addTask('flop', true);
+  }
+
+  /**
+   * Adds watermart transformation
+   *
+   * @see https://www.filestack.com/docs/api/processing/#watermark
+   * @returns this
+   * @memberof Filelink
+   */
+  watermark(params: WatermarkParams) {
+    return this.addTask('watermark', params);
   }
 
   /**
@@ -1413,7 +1442,7 @@ export class Filelink {
   private generateTransformString(): string {
     let transforms = [];
 
-    this.transforms.forEach((el) => {
+    this.transforms.forEach(el => {
       transforms.push(this.optionToString(el.name, el.params));
     });
 
@@ -1443,7 +1472,7 @@ export class Filelink {
       return key;
     }
 
-    Object.keys(values).forEach((i) => {
+    Object.keys(values).forEach(i => {
       if (Array.isArray(values[i])) {
         optionsString.push(`${i}:${this.arrayToString(values[i])}`);
         return;
@@ -1483,7 +1512,7 @@ export class Filelink {
    * @param arr - any array
    */
   private arrayToString(arr: any[]): string {
-    const toReturn = arr.map((el) => {
+    const toReturn = arr.map(el => {
       if (Array.isArray(el)) {
         return this.arrayToString(el);
       }
@@ -1506,5 +1535,5 @@ export class Filelink {
       obj[item[nameKey]] = item[dataKey];
       return obj;
     }, {});
-  }
+  };
 }
