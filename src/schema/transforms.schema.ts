@@ -90,18 +90,6 @@ export const TransformSchema = {
       type: 'boolean',
       additionalProperties: false,
     },
-    pjpg: {
-      quality: {
-        type: 'integer',
-        minimum: 0,
-        maximum: 100,
-      },
-      metadata: {
-        type: 'boolean',
-        default: false,
-      },
-      additionalProperties: false,
-    },
     smart_crop: {
       width: {
         type: 'integer',
