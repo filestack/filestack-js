@@ -30,6 +30,7 @@ export type StoreUrlParams = {
   security?: Security;
   uploadTags?: UploadTags;
   headers?: {[key: string]: string},
+  workflowIds?: string[]
 };
 
 /**
@@ -50,6 +51,7 @@ export const storeURL = ({
   security,
   uploadTags,
   headers,
+  workflowIds,
 }: StoreUrlParams): Promise<any> => {
   if (!url || typeof url !== 'string') {
     return Promise.reject(new FilestackError('url is required for storeURL'));
@@ -89,6 +91,12 @@ export const storeURL = ({
       source: url,
       headers,
     }];
+  }
+
+  if (workflowIds && workflowIds.length > 0) {
+    workflowIds.forEach((workflowId: string) => {
+      filelink.addTask('run_workflow', { id: workflowId });
+    });
   }
 
   return FsRequest.post(`${session.urls.processUrl}/process`, {

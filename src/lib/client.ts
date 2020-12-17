@@ -310,7 +310,7 @@ export class Client extends EventEmitter {
    * @param uploadTags Optional tags visible in webhooks.
    * @param headers    Optional headers to send
    */
-  storeURL(url: string, storeParams?: StoreParams, token?: any, security?: Security, uploadTags?: UploadTags, headers?: {[key: string]: string}): Promise<Object> {
+  storeURL(url: string, storeParams?: StoreParams, token?: any, security?: Security, uploadTags?: UploadTags, headers?: {[key: string]: string}, workflowIds?: string[]): Promise<Object> {
     return storeURL({
       session: this.session,
       url,
@@ -319,6 +319,7 @@ export class Client extends EventEmitter {
       security,
       uploadTags,
       headers,
+      workflowIds,
     });
   }
 
