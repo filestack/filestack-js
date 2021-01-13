@@ -198,7 +198,6 @@ export enum EVideoAccessMode {
   crop = 'crop',
 }
 
-
 /**
  * @see https://www.filestack.com/docs/image-transformations
  */

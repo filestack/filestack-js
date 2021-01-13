@@ -292,7 +292,7 @@ describe('Different tasks', () => {
 
     filelink.watermark(params);
     expect(filelink.toString()).toBe(
-      'https://cdn.filestackcontent.com/DEFAULT_API_KEY/watermark=file:http://welcome-swiss.com/wp-content/uploads/2015/12/Swiss-landscape.jpg,size:20,position:top/5aYkEQJSQCmYShsoCnZN'
+      'https://cdn.filestackcontent.com/DEFAULT_API_KEY/watermark=file:\"http://welcome-swiss.com/wp-content/uploads/2015/12/Swiss-landscape.jpg\",size:20,position:top/5aYkEQJSQCmYShsoCnZN'
     );
   });
 
