@@ -125,6 +125,23 @@ export enum ECropfacesType {
 }
 
 /**
+ * SmartCrop mode options enum
+ */
+export enum ESmartCropMode {
+  fit = 'fit',
+  auto = 'auto',
+}
+
+export enum EImageWatermarkPosition {
+  top = 'top',
+  middle = 'middle',
+  bottom = 'bottom',
+  left = 'left',
+  center = 'center',
+  right = 'right',
+}
+
+/**
  * Convert to format
  */
 export enum EVideoTypes {
@@ -181,6 +198,7 @@ export enum EVideoAccessMode {
   crop = 'crop',
 }
 
+
 /**
  * @see https://www.filestack.com/docs/image-transformations
  */
@@ -188,6 +206,22 @@ export interface TransformOptions {
   flip?: boolean;
   compress?: boolean;
   flop?: boolean;
+  no_metadata?: boolean;
+  pjpg?: {
+    quality: number;
+    metadata: boolean;
+  };
+  smart_crop?: {
+    mode?: ESmartCropMode
+    width: number;
+    height: number;
+  };
+  watermark?: {
+    files: string;
+    size?: number;
+    position?: EImageWatermarkPosition | EImageWatermarkPosition[];
+  };
+  imagesize?: boolean;
   enchance?: boolean;
   redeye?: boolean;
   monochrome?: boolean;

@@ -102,6 +102,26 @@ export enum CropfacesType {
 }
 
 /**
+ * Watermark postion options enum
+ */
+export enum ImageWatermarkPosition {
+  top = 'top',
+  middle = 'middle',
+  bottom = 'bottom',
+  left = 'left',
+  center = 'center',
+  right = 'right',
+}
+
+/**
+ * SmartCrop options enum
+ */
+export enum SmartCropMode {
+  face = 'face',
+  auto = 'auto',
+}
+
+/**
  * Convert to format
  */
 export enum VideoTypes {
@@ -283,6 +303,23 @@ export interface BorderParams {
 
 export interface CompressParams {
   metadata?: boolean;
+}
+
+export interface WatermarkParams {
+  file: string;
+  size?: number;
+  position?: ImageWatermarkPosition | ImageWatermarkPosition[];
+}
+
+export interface ProgressiveJpgParams {
+  quality: number;
+  metadata: boolean;
+}
+
+export interface SmartCropParams {
+  mode: SmartCropMode;
+  width: number;
+  height: number;
 }
 
 export interface SharpenParams {
@@ -628,7 +665,7 @@ export class Filelink {
       throw new FilestackError('External sources requires apikey to handle transforms');
     }
 
-    if (!isExternal && typeof this.source === 'string' && (!handleRegexp.test(this.source) && this.source.indexOf('filestackcontent') === -1)) {
+    if (!isExternal && typeof this.source === 'string' && !handleRegexp.test(this.source) && this.source.indexOf('filestackcontent') === -1) {
       throw new FilestackError('Invalid filestack source provided');
     }
   }
@@ -784,6 +821,61 @@ export class Filelink {
    */
   flop() {
     return this.addTask('flop', true);
+  }
+
+  /**
+   * Adds imagesize transformation
+   *
+   * @see https://www.filestack.com/docs/api/processing/#image-size
+   * @returns this
+   * @memberof Filelink
+   */
+  imagesize() {
+    return this.addTask('imagesize', true);
+  }
+
+  /**
+   * Adds noMetadata transformation
+   *
+   * @see https://www.filestack.com/docs/api/processing/#strip-metadata
+   * @returns this
+   * @memberof Filelink
+   */
+  noMetadata() {
+    return this.addTask('no_metadata', true);
+  }
+
+  /**
+   * Adds Progressive JPEG transformation
+   *
+   * @see https://www.filestack.com/docs/api/processing/#progressive-jpeg
+   * @returns this
+   * @memberof Filelink
+   */
+  pjpg(params: ProgressiveJpgParams) {
+    return this.addTask('pjpg', params);
+  }
+
+  /**
+   * Adds imagesize transformation
+   *
+   * @see https://www.filestack.com/docs/api/processing/#smart-crop
+   * @returns this
+   * @memberof Filelink
+   */
+  smartCrop(params: SmartCropParams) {
+    return this.addTask('smart_crop', params);
+  }
+
+  /**
+   * Adds watermart transformation
+   *
+   * @see https://www.filestack.com/docs/api/processing/#watermark
+   * @returns this
+   * @memberof Filelink
+   */
+  watermark(params: WatermarkParams) {
+    return this.addTask('watermark', params);
   }
 
   /**
@@ -1413,7 +1505,7 @@ export class Filelink {
   private generateTransformString(): string {
     let transforms = [];
 
-    this.transforms.forEach((el) => {
+    this.transforms.forEach(el => {
       transforms.push(this.optionToString(el.name, el.params));
     });
 
@@ -1443,7 +1535,7 @@ export class Filelink {
       return key;
     }
 
-    Object.keys(values).forEach((i) => {
+    Object.keys(values).forEach(i => {
       if (Array.isArray(values[i])) {
         optionsString.push(`${i}:${this.arrayToString(values[i])}`);
         return;
@@ -1483,7 +1575,7 @@ export class Filelink {
    * @param arr - any array
    */
   private arrayToString(arr: any[]): string {
-    const toReturn = arr.map((el) => {
+    const toReturn = arr.map(el => {
       if (Array.isArray(el)) {
         return this.arrayToString(el);
       }

@@ -90,6 +90,23 @@ export const TransformSchema = {
       type: 'boolean',
       additionalProperties: false,
     },
+    smart_crop: {
+      width: {
+        type: 'integer',
+        minimum: 0,
+        maximum: 10000,
+      },
+      height: {
+        type: 'integer',
+        minimum: 0,
+        maximum: 10000,
+      },
+      mode: {
+        type: 'string',
+        default: 'auto',
+        enum: ['face', 'auto'],
+      },
+    },
     animate: {
       type: 'object',
       properties: {
@@ -97,7 +114,7 @@ export const TransformSchema = {
           type: 'integer',
           minimum: 0,
           maximum: 10000,
-          default: 100,
+          default: 1000,
         },
         loop: {
           type: 'integer',
