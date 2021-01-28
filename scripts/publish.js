@@ -21,7 +21,7 @@ const figureOutFileMimetype = (filePath) => {
   return 'application/octet-stream';
 };
 
-const pushOneFileToS3 = (basePath, to, cacheControllDays = 1) => {
+const pushOneFileToS3 = (basePath, to, cacheControll = 1) => {
   return new Promise(async (resolve, reject) => {
     file = Path.basename(basePath);
 
