@@ -16,7 +16,9 @@
  */
 
 import { Security, Session } from '../client';
+import { Filelink } from './../filelink';
 import { removeEmpty } from '../utils';
+import { FsResponse } from './../request/types';
 import { FilestackError } from './../../filestack_error';
 import { getValidator, MetadataParamsSchema, RetrieveParamsSchema } from './../../schema';
 import { FsRequest, FsHttpMethod } from '../request';
@@ -105,10 +107,29 @@ export const metadata = (session: Session, handle?: string, opts?: MetadataOptio
 
   const baseURL = `${session.urls.fileApiUrl}/${handle}/metadata`;
   return new Promise((resolve, reject) => {
-    FsRequest.get(baseURL, { params: removeEmpty(options), filestackHeaders: false, })
+    FsRequest.get(baseURL, { params: removeEmpty(options), filestackHeaders: false })
       .then(res => resolve({ ...res.data, handle }))
       .catch(reject);
   });
+};
+
+/**
+ * Download file to blob or buffer format
+ *
+ * @param session
+ * @param handle
+ */
+export const download = (session: Session, handle: string,  security?: Security): Promise<FsResponse> => {
+  const fl = new Filelink(handle, session.apikey);
+
+  const policy = (security && security.policy) || session.policy;
+  const signature = (security && security.signature) || session.signature;
+
+  if (policy && signature) {
+    fl.security({ signature, policy });
+  }
+
+  return FsRequest.dispatch(fl.toString(), { method: FsHttpMethod.GET, blobResponse: true });
 };
 
 export interface RetrieveOptions {
@@ -123,6 +144,7 @@ export interface RetrieveOptions {
  * Returns file information
  *
  * @private
+ * @deprecated
  * @param session
  * @param handle
  * @param options
@@ -132,6 +154,8 @@ export const retrieve = (session: Session, handle: string, options: RetrieveOpti
   if (!handle || handle.length === 0 || typeof handle !== 'string') {
     throw new FilestackError('File handle is required');
   }
+
+  console.info('Retrieve method is deprecated and it will be removed. Please use metadata or download');
 
   const validateRes = getValidator(RetrieveParamsSchema)(options);
 
