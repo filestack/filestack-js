@@ -11,6 +11,10 @@ const git = require('git-state');
 
 const s3 = new AWS.S3();
 const DEPLOY_BRANCH = 'master';
+const repositoryExists = git.isGitSync(path);
+const currentBranch = git.checkSync(path);
+
+console.log('CURRENT BRANCH IS: ', currentBranch);
 
 const figureOutFileMimetype = (filePath) => {
   const type = mime.lookup(Path.extname(filePath));
@@ -50,13 +54,10 @@ const pushOneFileToS3 = (basePath, to, cacheControllDays = 1) => {
 
 const canDeploy = () => {
   const path = './';
-  const repositoryExists = git.isGitSync(path);
 
   if (!repositoryExists) {
     throw new Error('Cannot read repository')
   }
-
-  const currentBranch = git.checkSync(path);
 
   // if we cant get info about branch stop deploy
   if (!currentBranch) {
