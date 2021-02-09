@@ -110,20 +110,13 @@ export class Client extends EventEmitter {
     return Utils;
   }
 
-  constructor(apikey: string, options?: ClientOptions) {
+  constructor(apikey: string, private options?: ClientOptions) {
     super();
 
     /* istanbul ignore if */
     if (options && options.forwardErrors) {
       this.forwardErrors = options.forwardErrors;
     }
-
-    /* istanbul ignore next */
-    Sentry.configureScope(scope => {
-      scope.setTag('apikey', apikey);
-      scope.setTag('sdk-version', Utils.getVersion());
-      scope.setExtra('clientOptions', options);
-    });
 
     if (!apikey || typeof apikey !== 'string' || apikey.length === 0) {
       throw new Error('An apikey is required to initialize the Filestack client');
@@ -439,6 +432,9 @@ export class Client extends EventEmitter {
     upload.on('error', e => {
       if (this.forwardErrors) {
         Sentry.withScope(scope => {
+          scope.setTag('apikey', this.session.apikey);
+          scope.setTag('sdk-version', Utils.getVersion());
+          scope.setExtra('clientOptions', this.options);
           scope.setExtras({ uploadOptions: options, storeOptions, details: e.details });
           e.message = `FS-${e.message}`;
 
@@ -500,6 +496,9 @@ export class Client extends EventEmitter {
     /* istanbul ignore next */
     upload.on('error', e => {
       Sentry.withScope(scope => {
+        scope.setTag('apikey', this.session.apikey);
+        scope.setTag('sdk-version', Utils.getVersion());
+        scope.setExtra('clientOptions', this.options);
         scope.setExtras(e.details);
         scope.setExtras({ uploadOptions: options, storeOptions });
         Sentry.captureException(e);
