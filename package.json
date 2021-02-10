@@ -30,8 +30,8 @@
     "docs:publish": "npm run docs && gh-pages -d build/docs",
     "release": "standard-version",
     "prepare": "npm run build",
-    "publish:beta": "npm run build && node scripts/publish.js --beta",
-    "publish": "npm run docs:publish && node scripts/publish.js --current --latest",
+    "publish:s3:beta": "npm run build && node scripts/publish.js --beta",
+    "publish:s3": "npm run docs:publish && node scripts/publish.js --current --latest",
     "cache:clean": "node scripts/cache.js --current --latest",
     "cache:clean:beta": "node scripts/cache.js --beta",
     "examples": "npm run build && node ./examples/examples.js"
