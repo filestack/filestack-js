@@ -303,7 +303,7 @@ export class Client extends EventEmitter {
    * @param uploadTags Optional tags visible in webhooks.
    * @param headers    Optional headers to send
    */
-  storeURL(url: string, storeParams?: StoreParams, token?: any, security?: Security, uploadTags?: UploadTags, headers?: {[key: string]: string}): Promise<Object> {
+  storeURL(url: string, storeParams?: StoreParams, token?: any, security?: Security, uploadTags?: UploadTags, headers?: { [key: string]: string }): Promise<Object> {
     return storeURL({
       session: this.session,
       url,
@@ -432,9 +432,9 @@ export class Client extends EventEmitter {
     upload.on('error', e => {
       if (this.forwardErrors) {
         Sentry.withScope(scope => {
-          scope.setTag('apikey', this.session.apikey);
-          scope.setTag('sdk-version', Utils.getVersion());
-          scope.setExtra('clientOptions', this.options);
+          scope.setTag('filestack-apikey', this.session.apikey);
+          scope.setTag('filestack-version', Utils.getVersion());
+          scope.setExtra('filestack-options', this.options);
           scope.setExtras({ uploadOptions: options, storeOptions, details: e.details });
           e.message = `FS-${e.message}`;
 
@@ -496,9 +496,9 @@ export class Client extends EventEmitter {
     /* istanbul ignore next */
     upload.on('error', e => {
       Sentry.withScope(scope => {
-        scope.setTag('apikey', this.session.apikey);
-        scope.setTag('sdk-version', Utils.getVersion());
-        scope.setExtra('clientOptions', this.options);
+        scope.setTag('filestack-apikey', this.session.apikey);
+        scope.setTag('filestack-version', Utils.getVersion());
+        scope.setExtra('filestack-options', this.options);
         scope.setExtras(e.details);
         scope.setExtras({ uploadOptions: options, storeOptions });
         Sentry.captureException(e);
