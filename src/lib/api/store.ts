@@ -93,11 +93,7 @@ export const storeURL = ({
     }];
   }
 
-  if (workflowIds && workflowIds.length > 0) {
-    workflowIds.forEach((workflowId: string) => {
-      filelink.addTask('run_workflow', { id: workflowId });
-    });
-  }
+  filelink.addTask('store', { workflows: workflowIds });
 
   return FsRequest.post(`${session.urls.processUrl}/process`, {
     apikey: session.apikey,
