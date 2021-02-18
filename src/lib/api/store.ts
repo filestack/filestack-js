@@ -93,7 +93,9 @@ export const storeURL = ({
     }];
   }
 
-  filelink.addTask('store', { workflows: workflowIds });
+  if (workflowIds) {
+    filelink.addTask('store', { workflows: workflowIds });
+  }
 
   return FsRequest.post(`${session.urls.processUrl}/process`, {
     apikey: session.apikey,
