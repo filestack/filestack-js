@@ -93,7 +93,7 @@ export const storeURL = ({
     }];
   }
 
-  if (workflowIds) {
+  if (workflowIds && workflowIds.length > 0) {
     filelink.addTask('store', { workflows: workflowIds });
   }
 
