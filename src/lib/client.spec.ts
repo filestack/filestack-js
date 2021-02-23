@@ -145,7 +145,9 @@ describe('client', () => {
     const options = {};
     const token = {};
     const uploadTags = { test: '123' };
-    await client.storeURL(url, options, token, defaultSecurity, uploadTags);
+    const headers = { 'test': '123' };
+    const workflowIds = ['123', '321'];
+    await client.storeURL(url, options, token, defaultSecurity, uploadTags,headers, workflowIds);
 
     expect(storeURL).toHaveBeenCalledWith({
       session: defaultSession,
@@ -154,6 +156,8 @@ describe('client', () => {
       token,
       security: defaultSecurity,
       uploadTags,
+      headers,
+      workflowIds,
     });
   });
 
