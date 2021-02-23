@@ -19,7 +19,7 @@
   <a href="https://static.filestackapi.com/filestack-js/3.x.x/filestack.min.js"><img src="https://img.badgesize.io/https://static.filestackapi.com/filestack-js/3.x.x/filestack.min.js?color=green" /></a>
   <img src="https://img.shields.io/badge/module%20formats-umd%2C%20esm%2C%20cjs-green.svg" />
   <br/>
-  <img src="https://badges.herokuapp.com/browsers?labels=none&googlechrome=latest&firefox=latest&microsoftedge=latest&iexplore=11&safari=latest&iphone=latest" />
+  <img src="https://badges.herokuapp.com/browsers?labels=none&googlechrome=latest&firefox=latest&microsoftedge=latest&edge=latest&safari=latest&iphone=latest" />
 </p>
 <hr/>
 
@@ -174,6 +174,7 @@ Please see our examples above to learn more about customizing the picker for you
 ## Polyfills
 
 If you target IE11 or iOS before 8.0 you will need to add additional polyfills to your page or application.
+(We are no longer support IE11 and older browser, so it can stop working on this browser)
 
 Polyfills we recommend:**
 
