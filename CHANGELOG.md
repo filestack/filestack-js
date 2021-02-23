@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.21.1](https://github.com/filestack/filestack-js/compare/v3.21.0...v3.21.1) (2021-01-25)
+
+
+### Bug Fixes
+
+* **picker:** fix accept option in picker, bump version to 1.20.1 ([7e48a30](https://github.com/filestack/filestack-js/commit/7e48a307f898a40f131e2b72c188adc3c259bab5))
+
 ## [3.21.0](https://github.com/filestack/filestack-js/compare/v3.20.0...v3.21.0) (2021-01-13)
 
 

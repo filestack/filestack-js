@@ -44,6 +44,10 @@ export class XhrAdapter implements AdapterInterface {
 
     let request = new XMLHttpRequest();
 
+    if (config.blobResponse) {
+      request.responseType = 'blob';
+    }
+
     // HTTP basic authentication
     if (config.auth) {
       if (!config.auth.username || config.auth.username.length === 0 || !config.auth.password || config.auth.password.length === 0) {

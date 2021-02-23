@@ -65,6 +65,7 @@ export interface FsRequestOptions {
   params?: FsRequestParams;
   filestackHeaders?: boolean;
   headers?: FsRequestHeaders;
+  blobResponse?: boolean; // blob response only for browsers
   timeout?: number;
   cancelToken?: FsCancelToken;
   retry?: FsRetryConfig;
