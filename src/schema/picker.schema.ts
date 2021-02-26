@@ -252,6 +252,9 @@ export const PickerParamsSchema = {
     onUploadDone: {
       format: 'callback',
     },
+    onFileCropped: {
+      format: 'callback',
+    },
     storeTo: {
       additionalProperties: false,
       type: 'object',
@@ -324,11 +327,22 @@ export const PickerParamsSchema = {
         '.*': { type: 'string' },
       },
     },
+    cropFiles: {
+      type: 'array',
+      minItems: 1,
+    },
+    loadCss: {
+      type: 'string',
+    },
+    failOverMaxFiles: {
+      type: 'boolean',
+    },
     dropPane: {
       type: 'object',
       properties: {
         cropFiles: {
-          type: 'boolean',
+          type: 'array',
+          minItems: 1,
         },
         customText: {
           type: 'string',
