@@ -64,17 +64,7 @@ const canDeploy = () => {
     throw new Error('Cant get info about branch');
   }
 
-  if (currentBranch.dirty > 0) {
-    throw new Error('Current Branch is dirty');
-  }
-
-  if (currentBranch.branch !== DEPLOY_BRANCH) {
-    throw new Error(`You cannot deploy application from: ${currentBranch.branch} branch. Use ${DEPLOY_BRANCH}`);
-  }
-
-  if (currentBranch.ahead > 0) {
-    throw new Error(`Branch is ${currentBranch.ahead} commits ahead`);
-  }
+  console.log('CURRENT_BRANCH_INFO', currentBranch);
 
   return true;
 }
