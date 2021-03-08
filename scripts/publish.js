@@ -38,7 +38,7 @@ const pushOneFileToS3 = (basePath, to, cacheControll = 1) => {
       Bucket: to.bucket,
       Key: uploadKey,
       Body: content,
-      CacheControl: `max-age=${cacheControllDays * 60 * 60 * 24}` || 'max-age=86400',
+      CacheControl: `max-age=${cacheControll * 60 * 60 * 24}` || 'max-age=86400',
       ContentType: figureOutFileMimetype(basePath),
     };
 
