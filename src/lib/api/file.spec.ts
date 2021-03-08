@@ -31,13 +31,13 @@
  * limitations under the License.
  */
 
-import { retrieve, remove, metadata } from './file';
+import { retrieve, remove, metadata, download } from './file';
 import { FsRequest } from './../request';
 import { Session } from '../client';
 import { config } from './../../config';
 
 jest.mock('./../request');
-jest.mock('./../filelink');
+// jest.mock('./../filelink');
 
 const mockedSession: Session = {
   apikey: 'fakeApikey',
@@ -92,6 +92,19 @@ describe('FileAPI', () => {
       const resp = await metadata(mockedSession, 'fakeHandle', {}, fakeSecurity);
 
       expect(resp).toEqual({ handle: 'fakeHandle' });
+    });
+  });
+
+  describe('Download', () => {
+    it('should return buffer on download request', async () => {
+      const testResp = Buffer.from('123');
+      const methodMocked = jest.fn(() => Promise.resolve(testResp));
+
+      // @ts-ignore
+      FsRequest.dispatch.mockImplementation(methodMocked);
+      const resp = await download(mockedSession, 'gNDNCDWNTKqoGFISdd2A');
+
+      expect(resp).toEqual(testResp);
     });
   });
 

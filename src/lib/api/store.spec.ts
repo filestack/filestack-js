@@ -31,7 +31,10 @@ const mockedSession: Session = {
   urls: config.urls,
 };
 
+const workflowIds = ['123', '321'];
+
 const storeTaskDef = [{ name: 'store', params: {} }];
+const storeTaskDefWithWorkflows = [{ name: 'store', params: {} }];
 const sourceToStore = 'urlToStore';
 
 describe('StoreURL', () => {
@@ -155,6 +158,20 @@ describe('StoreURL', () => {
       session: mockedSession,
       url: sourceToStore,
     })).rejects.toEqual(expect.any(FilestackError));
+  });
+
+  it('should be able to run storeUrl with workflows', async () => {
+    await storeURL({
+      session: mockedSession,
+      url: sourceToStore,
+      workflowIds,
+    });
+
+    expect(FsRequest.post).toHaveBeenCalledWith(`${mockedSession.urls.processUrl}/process`, {
+      apikey: mockedSession.apikey,
+      sources: [ sourceToStore ],
+      tasks: storeTaskDefWithWorkflows,
+    }, {});
   });
 
 });
