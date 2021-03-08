@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.22.1](https://github.com/filestack/filestack-js/compare/v3.22.0...v3.22.1) (2021-03-08)
+
+
+### Bug Fixes
+
+* **deploy:** fix deployment script ([#424](https://github.com/filestack/filestack-js/issues/424)) ([89683cf](https://github.com/filestack/filestack-js/commit/89683cf8950ac8749df21727088796b80e1d7c82))
+
 ## [3.22.0](https://github.com/filestack/filestack-js/compare/v3.21.1...v3.22.0) (2021-03-08)
 
 
