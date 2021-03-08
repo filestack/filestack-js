@@ -15,34 +15,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-const nock = require('nock');
+// const nock = require('nock');
 import { FsRequest } from './../src/lib/request/index';
-import { FsCancelToken } from './../src/lib/request/token';
+// import { FsCancelToken } from './../src/lib/request/token';
 
-nock('http://www.filestacktest.com')
-  .get('/123')
-  .once()
-  // .delay(1000)
-  .reply(404, '<html></html>', { 'content-type': 'text/plain' })
-  .get('/123')
-  .reply(200, '<html></html>', { 'content-type': 'text/plain' });
+// nock('http://www.filestacktest.com')
+//   .get('/123')
+//   .once()
+//   // .delay(1000)
+//   .reply(404, '<html></html>', { 'content-type': 'text/plain' })
+//   .get('/123')
+//   .reply(200, '<html></html>', { 'content-type': 'text/plain' });
 
-const token = new FsCancelToken();
+// const token = new FsCancelToken();
 
 // setTimeout(() => {
 //   token.cancel();
 // }, 1000);
 
-FsRequest.get('http://www.filestacktest.com/123', {
-  cancelToken: token,
-  timeout: 500,
-  retry: {
-    retry: 2,
-    retryFactor: 2,
-    retryMaxTime: 1500,
-  },
+FsRequest.get('https://cdn.filestackcontent.com/llIbWqvRX25JPxCBqkoV', {
+  // cancelToken: token,
+  // timeout: 500,
 }).then((resp) => {
-  console.log('Response:', resp);
+  console.log('Response:', resp.data);
+  console.log(resp.data.file.length);
 }).catch((e) => {
   console.error('Catch Errror', e);
 });

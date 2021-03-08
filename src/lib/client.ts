@@ -19,7 +19,7 @@ import { EventEmitter } from 'eventemitter3';
 import * as Sentry from '@sentry/minimal';
 import { config, Hosts } from '../config';
 import { FilestackError } from './../filestack_error';
-import { metadata, MetadataOptions, remove, retrieve, RetrieveOptions } from './api/file';
+import { metadata, MetadataOptions, remove, retrieve, RetrieveOptions, download } from './api/file';
 import { transform, TransformOptions } from './api/transform';
 import { storeURL } from './api/store';
 import * as Utils from './utils';
@@ -27,6 +27,7 @@ import { Upload, InputFile, UploadOptions, StoreUploadOptions, UploadTags } from
 import { preview, PreviewOptions } from './api/preview';
 import { CloudClient } from './api/cloud';
 import { Prefetch, PrefetchResponse, PrefetchOptions } from './api/prefetch';
+import { FsResponse } from './request/types';
 import { StoreParams } from './filelink';
 
 import { picker, PickerInstance, PickerOptions } from './picker';
@@ -302,8 +303,9 @@ export class Client extends EventEmitter {
    * @param security  Optional security override.
    * @param uploadTags Optional tags visible in webhooks.
    * @param headers    Optional headers to send
+   * @param workflowIds    Optional workflowIds to send
    */
-  storeURL(url: string, storeParams?: StoreParams, token?: any, security?: Security, uploadTags?: UploadTags, headers?: { [key: string]: string }): Promise<Object> {
+  storeURL(url: string, storeParams?: StoreParams, token?: any, security?: Security, uploadTags?: UploadTags, headers?: {[key: string]: string}, workflowIds?: string[]): Promise<Object> {
     return storeURL({
       session: this.session,
       url,
@@ -312,6 +314,7 @@ export class Client extends EventEmitter {
       security,
       uploadTags,
       headers,
+      workflowIds,
     });
   }
 
@@ -336,6 +339,7 @@ export class Client extends EventEmitter {
    * ```
    *
    * @see [File API - Download](https://www.filestack.com/docs/api/file#download)
+   * @deprecated use metadata or download methods instead
    * @param handle    Valid file handle
    * @param options   RetrieveOptions
    * @param security  Optional security override.
@@ -344,6 +348,31 @@ export class Client extends EventEmitter {
   retrieve(handle: string, options?: RetrieveOptions, security?: Security): Promise<Object | Blob> {
     /* istanbul ignore next */
     return retrieve(this.session, handle, options, security);
+  }
+
+  /**
+   * Download file by handle
+   *
+   *
+   * ### Browser Example
+   *
+   * ```js
+   * client.download('fileHandle').then((response) => {
+   * const img = new Image();
+   * img.src = URL.createObjectURL(res.data)
+   * document.body.appendChild(img);
+   * }).catch((err) => {
+   *  console.error(err);
+   * })
+   * ```
+   *
+   * @see [File API - Download](https://www.filestack.com/docs/api/file#download)
+   * @param handle    Valid file handle
+   * @throws          Error
+   */
+  download(handle: string, security?: Security): Promise<FsResponse> {
+    /* istanbul ignore next */
+    return download(this.session, handle, security);
   }
 
   /**

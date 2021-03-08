@@ -11,6 +11,10 @@ const git = require('git-state');
 
 const s3 = new AWS.S3();
 const DEPLOY_BRANCH = 'master';
+const repositoryExists = git.isGitSync(path);
+const currentBranch = git.checkSync(path);
+
+console.log('CURRENT BRANCH IS: ', currentBranch);
 
 const figureOutFileMimetype = (filePath) => {
   const type = mime.lookup(Path.extname(filePath));
@@ -21,7 +25,7 @@ const figureOutFileMimetype = (filePath) => {
   return 'application/octet-stream';
 };
 
-const pushOneFileToS3 = (basePath, to, cacheControllDays = 1) => {
+const pushOneFileToS3 = (basePath, to, cacheControll = 1) => {
   return new Promise(async (resolve, reject) => {
     file = Path.basename(basePath);
 
@@ -33,7 +37,7 @@ const pushOneFileToS3 = (basePath, to, cacheControllDays = 1) => {
       Bucket: to.bucket,
       Key: uploadKey,
       Body: content,
-      CacheControl: `max-age=${cacheControll * 60 * 60 * 24}` || 'max-age=86400',
+      CacheControl: `max-age=${cacheControllDays * 60 * 60 * 24}` || 'max-age=86400',
       ContentType: figureOutFileMimetype(basePath),
     };
 
@@ -50,30 +54,17 @@ const pushOneFileToS3 = (basePath, to, cacheControllDays = 1) => {
 
 const canDeploy = () => {
   const path = './';
-  const repositoryExists = git.isGitSync(path);
 
   if (!repositoryExists) {
     throw new Error('Cannot read repository')
   }
-
-  const currentBranch = git.checkSync(path);
 
   // if we cant get info about branch stop deploy
   if (!currentBranch) {
     throw new Error('Cant get info about branch');
   }
 
-  if (currentBranch.dirty > 0) {
-    throw new Error('Current Branch is dirty');
-  }
-
-  if (currentBranch.branch !== DEPLOY_BRANCH) {
-    throw new Error(`You cannot deploy application from: ${currentBranch.branch} branch. Use ${DEPLOY_BRANCH}`);
-  }
-
-  if (currentBranch.ahead > 0) {
-    throw new Error(`Branch is ${currentBranch.ahead} commits ahead`);
-  }
+  console.log('CURRENT_BRANCH_INFO', currentBranch);
 
   return true;
 }
