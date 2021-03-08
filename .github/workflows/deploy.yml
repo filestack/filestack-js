@@ -24,8 +24,6 @@ jobs:
       run: npm install
     - name: Run tests
       run: npm test
-    - name: Update code cov report
-      run: npm run test:codecov
     - name: Prepare docs
       run: npm run docs
     - name: Publish package to cdn
@@ -38,6 +36,8 @@ jobs:
       run: npm publish --access public
       env:
         NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+    - name: Update code cov report
+      run: npm run test:codecov
     - name: Deploy docs
       uses: crazy-max/ghaction-github-pages@v2
       with:

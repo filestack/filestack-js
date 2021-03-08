@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.22.0](https://github.com/filestack/filestack-js/compare/v3.21.1...v3.22.0) (2021-03-08)
+
+
+### Features
+
+* **download:** Add download file method ([#415](https://github.com/filestack/filestack-js/issues/415)) ([5ed6afd](https://github.com/filestack/filestack-js/commit/5ed6afddf56eae0910420de1f0244b6d3131398a))
+* **picker:** bump picker version to 1.21.0 ([162673f](https://github.com/filestack/filestack-js/commit/162673f70d5992df8a0ed1bfd3204173a296416d))
+
+
+### Bug Fixes
+
+* **pickerschema:** update missing picker options ([5ab80b5](https://github.com/filestack/filestack-js/commit/5ab80b50abd123de0c3f1baf8876f7e621b0a4b8))
+* **publish:** fix error in publis script ([#410](https://github.com/filestack/filestack-js/issues/410)) ([3170f29](https://github.com/filestack/filestack-js/commit/3170f295608f6da912746b59e624426de8d6f016))
+* **sentry:** remove discouraged configureScope ([#417](https://github.com/filestack/filestack-js/issues/417)) ([e20cc10](https://github.com/filestack/filestack-js/commit/e20cc108a099f38540b4c489383aeafd7c5e6a56))
+* **storeurl:** support for workflows to storeURL ([#406](https://github.com/filestack/filestack-js/issues/406)) ([2e8ba7c](https://github.com/filestack/filestack-js/commit/2e8ba7ce7375f1138963e9450400955caba05efd))
+
 ### [3.21.1](https://github.com/filestack/filestack-js/compare/v3.21.0...v3.21.1) (2021-01-25)
 
 

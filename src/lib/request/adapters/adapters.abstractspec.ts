@@ -690,7 +690,7 @@ export const adaptersHttpAbstract = (adapter: any, adapterName: string) => {
         return expect(requestAdapter.request(options)).rejects.toEqual(expect.any(FsRequestError));
       });
 
-      it('Should throw an FilestackError on socket abort with FsRequestErrorCode.TIMEOUTED code', async () => {
+      it.skip('Should throw an FilestackError on socket abort with FsRequestErrorCode.TIMEOUTED code', async () => {
         const options = {
           url: url,
           method: FsHttpMethod.GET,
@@ -784,7 +784,7 @@ export const adaptersHttpAbstract = (adapter: any, adapterName: string) => {
         scope.done();
       });
 
-      it('Should abort request on timeout', async () => {
+      it.skip('Should abort request on timeout', async () => {
         const options = {
           url: url,
           method: FsHttpMethod.GET,

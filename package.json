@@ -1,6 +1,6 @@
 {
   "name": "filestack-js",
-  "version": "3.21.1",
+  "version": "3.22.0",
   "description": "Official JavaScript library for Filestack",
   "main": "build/main/index.js",
   "module": "build/module/index.js",
@@ -31,7 +31,7 @@
     "release": "standard-version",
     "prepare": "npm run build",
     "publish:s3:beta": "npm run build && node scripts/publish.js --beta",
-    "publish:s3": "npm run docs:publish && node scripts/publish.js --current --latest",
+    "publish:s3": "node scripts/publish.js --current --latest",
     "cache:clean": "node scripts/cache.js --current --latest",
     "cache:clean:beta": "node scripts/cache.js --beta",
     "examples": "npm run build && node ./examples/examples.js"

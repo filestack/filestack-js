@@ -1,8 +1,7 @@
-name: filestack-js
+name: filestack-js-beta
 on:
-  create:
-    tags:
-      - v*
+  push:
+    branches: [ develop ]
 jobs:
   build:
     runs-on: ubuntu-latest

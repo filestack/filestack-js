@@ -37,7 +37,6 @@ gulp.task('typescript:modules', () => {
 
 gulp.task('build:webpack:umd', () => {
   const conf = webpackCfg.umd;
-  console.log();
   return gulp.src(conf.entry)
   .pipe(webpack(conf))
   .pipe(gulp.dest(conf.output.path));
