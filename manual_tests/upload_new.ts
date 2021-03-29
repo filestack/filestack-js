@@ -54,7 +54,8 @@ const createFile = (size = 10 * 1024 * 1024) => Buffer.alloc(size).fill('a');
 // }
 
 (async () => {
-  const file = await getFile(createFile());
+  const file = await getFile('./test_image.jpeg');
+  // const file = await getFile(createFile());
   // const file1 = await getFile(createFile());
   file.name = 'test.txt';
   console.log('Uploadinf file', file.size);

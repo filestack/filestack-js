@@ -16,6 +16,8 @@
  */
 import { md5, sanitizeName, SanitizeOptions } from './../../utils';
 
+const MAGIC_BYTES_LEN = 300;
+
 export interface UploadTags {
   [key: string]: string;
 }
@@ -214,6 +216,13 @@ export class File {
       buffer: slice,
       md5: md5Enabled ? md5(slice) : undefined,
     });
+  }
+
+  /**
+   * Returns magic bytes for file
+   */
+  public async getMagicBytes() {
+    return String.fromCharCode.apply(null, new Uint16Array(await this._file.slice(0, MAGIC_BYTES_LEN)));
   }
 
   /**

@@ -285,7 +285,7 @@ export class S3Uploader extends UploaderAbstract {
    * @returns {Promise<any>}
    * @memberof S3Uploader
    */
-  private startRequest(id: string): Promise<any> {
+  private async startRequest(id: string): Promise<any> {
     const payload = this.getPayloadById(id);
 
     if (payload.file.size === 0) {
@@ -294,12 +294,15 @@ export class S3Uploader extends UploaderAbstract {
     }
 
     debug(`[${id}] Make start request`);
+    const bytes = await payload.file.getMagicBytes();
+
     return FsRequest.post(
       `${this.getUrl()}/multipart/start`,
       {
         filename: payload.file.name,
         mimetype: payload.file.type,
         size: payload.file.size,
+        bytes: bytes.toString(),
         ...this.getDefaultFields(id, ['apikey', 'policy', 'signature', 'fii'], true),
       },
       {

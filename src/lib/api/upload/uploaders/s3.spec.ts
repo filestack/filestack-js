@@ -513,10 +513,13 @@ describe('Api/Upload/Uploaders/S3', () => {
         expect(res[0].handle).toEqual('test_handle');
 
         const testFile = getSmallTestFile();
+        const bytes = await testFile.getMagicBytes();
+
         expect(mockStart).toHaveBeenCalledWith({
           filename: testFile.name,
           mimetype: testFile.mimetype,
           size: testFile.size,
+          bytes,
           store: {
             location: DEFAULT_STORE_LOCATION,
           },
@@ -857,20 +860,23 @@ describe('Api/Upload/Uploaders/S3', () => {
     it('should upload file', async () => {
       const partSize = 1024 * 1024 * 7;
 
+      const testFile = getTestFile();
+
       const u = new S3Uploader({});
       u.setUrl(testHost);
       u.setApikey(testApikey);
       u.setPartSize(partSize);
-      u.addFile(getTestFile());
+      u.addFile(testFile);
 
       const res = await u.execute();
 
-      const testFile = getTestFile();
+      const bytes = await testFile.getMagicBytes();
 
       expect(mockStart).toHaveBeenCalledWith({
         filename: testFile.name,
         mimetype: testFile.mimetype,
         size: testFile.size,
+        bytes,
         store: {
           location: DEFAULT_STORE_LOCATION,
         },
@@ -941,11 +947,13 @@ describe('Api/Upload/Uploaders/S3', () => {
       const res = await u.execute();
 
       const testFile = getTestFile();
+      const bytes = await testFile.getMagicBytes();
 
       expect(mockStart).toHaveBeenCalledWith({
         filename: testFile.name,
         mimetype: testFile.mimetype,
         size: testFile.size,
+        bytes,
         store: {
           location: DEFAULT_STORE_LOCATION,
         },

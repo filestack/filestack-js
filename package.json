@@ -42,6 +42,7 @@
   "dependencies": {
     "@babel/runtime": "^7.8.4",
     "@filestack/loader": "^1.0.4",
+    "@sentry/minimal": "^6.2.1",
     "abab": "^2.0.3",
     "debug": "^4.1.1",
     "eventemitter3": "^4.0.0",
@@ -52,9 +53,7 @@
     "jsonschema": "^1.2.5",
     "lodash.clonedeep": "^4.5.0",
     "p-queue": "^4.0.0",
-    "spark-md5": "^3.0.0",
-    "ts-node": "^8.10.2",
-    "@sentry/minimal": "^6.2.1"
+    "spark-md5": "^3.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.8.4",
