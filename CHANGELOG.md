@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.23.0](https://github.com/filestack/filestack-js/compare/v3.22.1...v3.23.0) (2021-03-31)
+
+
+### Features
+
+* **acceptfn:** add acceptFn to picker schema ([f349094](https://github.com/filestack/filestack-js/commit/f349094c3c84c3600cd4844ca8d0c58fb78bcdf1))
+* **github:** add issue template ([b45ae45](https://github.com/filestack/filestack-js/commit/b45ae45de0cd3ae58b3079a52fe3ead9d45466aa))
+* **picker:** bump picker to v.1.21.1 ([00677a6](https://github.com/filestack/filestack-js/commit/00677a61ebc75ac83635dc365ceaaac5829f7a6f))
+
+
+### Bug Fixes
+
+* **nodejs/base64:** fix base64 upload ([815fbed](https://github.com/filestack/filestack-js/commit/815fbed140e76ffa410b6787b9fd7e31b412a81e))
+
 ### [3.22.1](https://github.com/filestack/filestack-js/compare/v3.22.0...v3.22.1) (2021-03-08)
 
 
