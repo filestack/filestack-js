@@ -44,6 +44,9 @@ export const PickerParamsSchema = {
         },
       ],
     },
+    acceptFn: {
+      format: 'callback',
+    },
     fromSources: {
       type: 'array',
       items: [

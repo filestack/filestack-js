@@ -156,6 +156,8 @@ export const extensionToMime = (ext: string) => {
     ext = ext.split('.').pop();
   }
 
+  ext = ext.toLocaleLowerCase();
+
   const keys = Object.keys(ExtensionsMap);
   const mapLen = keys.length;
 
