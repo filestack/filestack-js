@@ -7,7 +7,7 @@ window.addEventListener('DOMContentLoaded', function () {
   };
 
   document.querySelector('input').addEventListener('change', (event) => {
-    const files = event.target.files;
+    const files = event.target.files[0];
     const token = {};
     const cancel = document.getElementById('cancel');
     const pause = document.getElementById('pause');
