@@ -13,7 +13,7 @@ jobs:
         node-version: '14.x'
         registry-url: "https://registry.npmjs.org"
     - name: Install deps
-      run: npm install
+      run: npm install --ignore-scripts
     - name: Run tests
       run: npm test
     - name: Prepare docs
