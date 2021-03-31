@@ -99,7 +99,8 @@ export const getFile = (input: InputFile, sanitizeOptions?: SanitizeOptions): Pr
   }
 
   if (isFileBase(input)) {
-    input = Buffer.from(input, 'base64');
+    const matches = input.match(base64Regexp);
+    input = Buffer.from(matches[2], 'base64');
   }
 
   if (isFileBuffer(input)) {
