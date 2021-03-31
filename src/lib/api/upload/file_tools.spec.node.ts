@@ -22,6 +22,7 @@ jest.mock('fs');
 
 const mockedTestFile = Buffer.from('text text');
 const base64Svg = 'PHN2ZyBoZWlnaHQ9IjEwMCIgd2lkdGg9IjEwMCI+CiAgPGNpcmNsZSBjeD0iNTAiIGN5PSI1MCIgcj0iNDAiIHN0cm9rZT0iYmxhY2siIHN0cm9rZS13aWR0aD0iMyIgZmlsbD0icmVkIiAvPgogIFNvcnJ5LCB5b3VyIGJyb3dzZXIgZG9lcyBub3Qgc3VwcG9ydCBpbmxpbmUgU1ZHLiAgCjwvc3ZnPiA=';
+const base64SvgWithHeader = 'data:image/svg+xml;base64,PHN2ZyBoZWlnaHQ9IjEwMCIgd2lkdGg9IjEwMCI+CiAgPGNpcmNsZSBjeD0iNTAiIGN5PSI1MCIgcj0iNDAiIHN0cm9rZT0iYmxhY2siIHN0cm9rZS13aWR0aD0iMyIgZmlsbD0icmVkIiAvPgogIFNvcnJ5LCB5b3VyIGJyb3dzZXIgZG9lcyBub3Qgc3VwcG9ydCBpbmxpbmUgU1ZHLiAgCjwvc3ZnPiA=';
 
 describe('Api/Upload/FileTools', () => {
   describe('getFileNode', () => {
@@ -70,6 +71,15 @@ describe('Api/Upload/FileTools', () => {
       const file = await getFile({
         name: 'test.svg',
         file: base64Svg,
+      });
+
+      expect(file.mimetype).toEqual('image/svg+xml');
+    });
+
+    it('Should handle base64 encoded string with Header', async () => {
+      const file = await getFile({
+        name: 'test.svg',
+        file: base64SvgWithHeader,
       });
 
       expect(file.mimetype).toEqual('image/svg+xml');
