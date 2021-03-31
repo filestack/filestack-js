@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.23.1](https://github.com/filestack/filestack-js/compare/v3.23.0...v3.23.1) (2021-03-31)
+
+
+### Bug Fixes
+
+* **getfile:** fix get file for b64 encoded string ([dbc65b7](https://github.com/filestack/filestack-js/commit/dbc65b7db052fa6d6da46a51481639c6b39437a9))
+
 ## [3.23.0](https://github.com/filestack/filestack-js/compare/v3.22.1...v3.23.0) (2021-03-31)
 
 
