@@ -179,7 +179,7 @@ export const ExtensionsMap = {
   'audio/adpcm': ['adp'],
   'audio/basic': ['au', 'snd'],
   'audio/midi': ['mid', 'midi', 'kar', 'rmi'],
-  'audio/mp3': ['*mp3'],
+  'audio/mp3': ['mp3'],
   'audio/mp4': ['m4a', 'mp4a'],
   'audio/mpeg': ['mpga', 'mp2', 'mp2a', 'mp3', 'm2a', 'm3a'],
   'audio/ogg': ['oga', 'ogg', 'spx'],
