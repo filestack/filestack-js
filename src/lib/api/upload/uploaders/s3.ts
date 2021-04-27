@@ -560,7 +560,7 @@ export class S3Uploader extends UploaderAbstract {
       filestackHeaders: false,
       // for now we cant test progress callback from upload
       /* istanbul ignore next */
-      onProgress: (pr: ProgressEvent) => part.offset ? this.onProgressUpdate(id, partNumber, part.offset + pr.loaded) : null,
+      onProgress: (pr: ProgressEvent) => part ? this.onProgressUpdate(id, partNumber, part.offset + pr.loaded) : null,
     })
       .then(res => {
         this.onProgressUpdate(id, partNumber, part.offset + chunk.size);
