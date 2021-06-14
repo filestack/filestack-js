@@ -560,12 +560,11 @@ export class S3Uploader extends UploaderAbstract {
       filestackHeaders: false,
       // for now we cant test progress callback from upload
       /* istanbul ignore next */
-      onProgress: (pr: ProgressEvent) => this.onProgressUpdate(id, partNumber, part.offset + pr.loaded),
+      onProgress: (pr: ProgressEvent) => part ? this.onProgressUpdate(id, partNumber, part.offset + pr.loaded) : null,
     })
       .then(res => {
         this.onProgressUpdate(id, partNumber, part.offset + chunk.size);
         const newOffset = Math.min(part.offset + chunkSize, part.size);
-
         debug(`[${id}] S3 Chunk uploaded! offset: ${part.offset}, part ${partNumber}! response headers for ${partNumber}: \n%O\n`, res.headers);
         this.setPartData(id, partNumber, 'offset', newOffset);
 
@@ -577,6 +576,7 @@ export class S3Uploader extends UploaderAbstract {
         // release memory
         part = null;
         chunk = null;
+
         return this.uploadNextChunk(id, partNumber, chunkSize);
       })
       .catch(err => {
