@@ -14,17 +14,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-import PQueue from 'p-queue';
 import Debug from 'debug';
+import PQueue from 'p-queue';
 
+import { FilestackError, FilestackErrorType } from './../../../../filestack_error';
+import { FsCancelToken, FsRequest, FsRequestError, FsResponse } from './../../../request';
+import { shouldRetry } from './../../../request/helpers';
+import { filterObject, uniqueId, uniqueTime } from './../../../utils';
 import { File, FilePart, FilePartMetadata, FileState } from './../file';
 import { StoreUploadOptions } from './../types';
-import { FsRequest, FsResponse, FsRequestError, FsCancelToken } from './../../../request';
-import { uniqueTime, uniqueId, filterObject } from './../../../utils';
-import { UploaderAbstract, UploadMode, INTELLIGENT_CHUNK_SIZE, MIN_CHUNK_SIZE, DEFAULT_STORE_LOCATION } from './abstract';
-import { FilestackError, FilestackErrorType } from './../../../../filestack_error';
-import { shouldRetry } from './../../../request/helpers';
+import { DEFAULT_STORE_LOCATION, INTELLIGENT_CHUNK_SIZE, MIN_CHUNK_SIZE, UploaderAbstract, UploadMode } from './abstract';
 
 const debug = Debug('fs:upload:s3');
 
@@ -601,7 +600,7 @@ export class S3Uploader extends UploaderAbstract {
 
         // reset progress on failed upload
         this.onProgressUpdate(id, partNumber, part.offset);
-        const nextChunkSize = chunkSize / 2;
+        const nextChunkSize = Math.ceil(chunkSize / 2);
 
         if (nextChunkSize < MIN_CHUNK_SIZE) {
           debug(`[${id}] Minimal chunk size limit. Upload file failed!`);
