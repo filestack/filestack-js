@@ -237,6 +237,9 @@ export const PickerParamsSchema = {
     onFileSelected: {
       format: 'callback',
     },
+    onFileUploadCancel: {
+      format: 'callback',
+    },
     onFileUploadStarted: {
       format: 'callback',
     },

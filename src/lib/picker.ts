@@ -173,6 +173,10 @@ export interface PickerFileCallback {
   (file: PickerFileMetadata): void | Promise<any>;
 }
 
+export interface PickerFileCancelCallback {
+  (file: PickerFileMetadata): void;
+}
+
 export interface PickerFileErrorCallback {
   (file: PickerFileMetadata, error: Error): void;
 }
@@ -598,6 +602,10 @@ export interface PickerOptions {
    * ```
    */
   onFileSelected?: PickerFileCallback;
+  /**
+   * Called when a file upload has been canceled.
+   */
+  onFileUploadCancel?: PickerFileCancelCallback;
   /**
    * Called when a file begins uploading.
    */
