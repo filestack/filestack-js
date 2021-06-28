@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.24.0](https://github.com/filestack/filestack-js/compare/v3.23.2...v3.24.0) (2021-06-28)
+
+
+### Features
+
+* **picker:** add onFileUploadCancel callback ([c1e5bab](https://github.com/filestack/filestack-js/commit/c1e5bab3b4962fd81d6226c5d705650c6d0449f2))
+
 ### [3.23.2](https://github.com/filestack/filestack-js/compare/v3.23.1...v3.23.2) (2021-06-14)
 
 
