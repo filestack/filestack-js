@@ -64,6 +64,9 @@
 npm install filestack-js
 ```
 
+To get your free API key, sign up for a Filestack account here:
+[https://dev.filestack.com/signup/free](https://dev.filestack.com/signup/free).
+
 ## API Documentation
 
 [https://filestack.github.io/filestack-js/](https://filestack.github.io/filestack-js/)
