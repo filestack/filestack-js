@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.23.2](https://github.com/filestack/filestack-js/compare/v3.23.1...v3.23.2) (2021-06-14)
+
+
+### Bug Fixes
+
+* **examples:** fix uplad example ([160a1bd](https://github.com/filestack/filestack-js/commit/160a1bdc96ed298408048e8d9201c00c18eec1c6))
+* **picker:** fix problems with exif cleanup ([27774da](https://github.com/filestack/filestack-js/commit/27774da20dc2e523bdcff59cc67c976d3445a7ca))
+* **upload/onprogress:** add if statement for progress callback ([#435](https://github.com/filestack/filestack-js/issues/435)) ([2c61d53](https://github.com/filestack/filestack-js/commit/2c61d53a655e0eeb85dd430fc403147654ea370c))
+
 ### [3.23.1](https://github.com/filestack/filestack-js/compare/v3.23.0...v3.23.1) (2021-03-31)
 
 
