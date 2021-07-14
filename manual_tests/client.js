@@ -7,15 +7,15 @@ let options = {};
 const signature = process.env.SIGNATURE || null;
 const policy = process.env.POLICY || null;
 const cname = process.env.CNAME || null;
-const securityEnabled = process.env.SECURITY_ENABLED || false;
+const securityEnabled = process.env.SECURITY_ENABLED || (policy && signature)  || false;
 
 console.info(`FILESTACK-JS VERSION::::::: ${filestack.version}`)
 
-if (!signature || !policy) {
-  throw new Error('Signature and Policy are always required')
-}
-
 if (securityEnabled) {
+  if (!signature || !policy) {
+    throw new Error('Signature and Policy are always required')
+  }
+
   options.security = {
     signature,
     policy

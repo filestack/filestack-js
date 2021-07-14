@@ -62,8 +62,9 @@ export const DefinitionsSchema = {
     regionsDef: {
       id: '/regionsDef',
       type: 'string',
-      pattern: '^[a-zA-Z]{2}-[a-zA-z]{1,}-[1-9]$',
-      errorMessage: 'AWS Region Param is in invalid format',
+      // for now we decided to remove validation of regions (AWS + Rackspace)
+      // pattern: '^[a-zA-Z]{2}-[a-zA-z]{1,}-[1-9]$',
+      // errorMessage: 'AWS Region Param is in invalid format',
     },
     locationsDef: {
       id: '/locationsDef',
