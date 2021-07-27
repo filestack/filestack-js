@@ -76,7 +76,7 @@ export class XhrAdapter implements AdapterInterface {
       let cancelListener;
 
       if (config.cancelToken) {
-        cancelListener = config.cancelToken.once('cancel', (reason) => {
+        cancelListener = (reason) => {
           /* istanbul ignore next: if request is done cancel token should not throw any error */
           if (request) {
             request.abort();
@@ -85,7 +85,9 @@ export class XhrAdapter implements AdapterInterface {
 
           debug('Request canceled by user %s, config: %O', reason, config);
           return reject(new FsRequestError(`Request aborted. Reason: ${reason}`, config, null, FsRequestErrorCode.ABORTED));
-        });
+        };
+
+        config.cancelToken.once('cancel', cancelListener);
       }
 
       request.onreadystatechange = async () => {
@@ -123,7 +125,8 @@ export class XhrAdapter implements AdapterInterface {
 
         // clear cancel token to avoid memory leak
         if (config.cancelToken) {
-          config.cancelToken.removeListener(cancelListener);
+          config.cancelToken.removeListener('cancel', cancelListener);
+          cancelListener = null;
         }
 
         return resolve(response);

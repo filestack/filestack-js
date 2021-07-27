@@ -18,6 +18,7 @@
 export enum FilestackErrorType {
   VALIDATION = 'validation',
   REQUEST = 'request',
+  ABORTED = 'aborted',
   OTHER = 'other',
 }
 
