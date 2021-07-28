@@ -18,7 +18,7 @@ import Debug from 'debug';
 import PQueue from 'p-queue';
 
 import { FilestackError, FilestackErrorType } from './../../../../filestack_error';
-import { FsCancelToken, FsRequest, FsRequestError, FsResponse } from './../../../request';
+import { FsCancelToken, FsRequest, FsRequestError, FsRequestErrorCode, FsResponse } from './../../../request';
 import { shouldRetry } from './../../../request/helpers';
 import { filterObject, uniqueId, uniqueTime } from './../../../utils';
 import { File, FilePart, FilePartMetadata, FileState } from './../file';
@@ -331,7 +331,7 @@ export class S3Uploader extends UploaderAbstract {
         debug(`[${id}] Start request error %O`, err);
         this.setPayloadStatus(id, FileState.FAILED);
 
-        return Promise.reject(new FilestackError('Cannot upload file. Start request failed', this.getErrorDetails(err), FilestackErrorType.REQUEST));
+        return this.rejectUpload('Cannot upload file. Start request failed', err);
       });
   }
 
@@ -422,7 +422,7 @@ export class S3Uploader extends UploaderAbstract {
     }).catch(err => {
       this.setPayloadStatus(id, FileState.FAILED);
 
-      return Promise.reject(new FilestackError('Cannot get part metadata', this.getErrorDetails(err), FilestackErrorType.REQUEST));
+      return this.rejectUpload('Cannot get part metadata', err);
     });
   }
 
@@ -507,7 +507,7 @@ export class S3Uploader extends UploaderAbstract {
         return this.startPart(id, partNumber);
       }
 
-      return Promise.reject(new FilestackError('Cannot upload file part', this.getErrorDetails(err), FilestackErrorType.REQUEST));
+      return this.rejectUpload('Cannot upload file part', err);
     });
   }
 
@@ -616,7 +616,7 @@ export class S3Uploader extends UploaderAbstract {
         part = null;
         chunk = null;
 
-        return Promise.reject(new FilestackError('Cannot upload file part (FII)', this.getErrorDetails(err), FilestackErrorType.REQUEST));
+        return this.rejectUpload('Cannot upload file part (FII)', err);
       });
   }
 
@@ -653,7 +653,7 @@ export class S3Uploader extends UploaderAbstract {
         return res;
       })
       .catch(err => {
-        return Promise.reject(new FilestackError('Cannot commit file part metadata', this.getErrorDetails(err), FilestackErrorType.REQUEST));
+        return this.rejectUpload('Cannot commit file part metadata', err);
       });
   }
 
@@ -729,7 +729,7 @@ export class S3Uploader extends UploaderAbstract {
       .catch(err => {
         this.setPayloadStatus(id, FileState.FAILED);
 
-        return Promise.reject(new FilestackError('Cannot complete file', this.getErrorDetails(err), FilestackErrorType.REQUEST));
+        return this.rejectUpload('Cannot complete file', err);
       });
   }
 
@@ -860,7 +860,7 @@ export class S3Uploader extends UploaderAbstract {
    *
    * @param err
    */
-  private getErrorDetails(err: FsRequestError) {
+  private parseError(err: FsRequestError) {
     if (!err.response) {
       return {};
     }
@@ -870,5 +870,12 @@ export class S3Uploader extends UploaderAbstract {
       data: err.response.data,
       headers: err.response.headers,
     };
+  }
+
+  private rejectUpload(message: string, err: FsRequestError) {
+    if (err instanceof FsRequestError && err.code === FsRequestErrorCode.ABORTED) {
+      return Promise.reject(new FilestackError(message, { reason: err.message }, FilestackErrorType.ABORTED));
+    }
+    return Promise.reject(new FilestackError(message, this.parseError(err), FilestackErrorType.REQUEST));
   }
 }
