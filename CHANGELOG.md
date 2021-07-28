@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.24.1](https://github.com/filestack/filestack-js/compare/v3.24.0...v3.24.1) (2021-07-28)
+
+
+### Bug Fixes
+
+* **picker:** bump picker version for multiple fixes ([3e364e9](https://github.com/filestack/filestack-js/commit/3e364e976001bb510778b580ffb8599a1a97c847))
+* **request:** Large file upload memory leak ([#453](https://github.com/filestack/filestack-js/issues/453)) ([8f7f7a8](https://github.com/filestack/filestack-js/commit/8f7f7a88e695b477325cafa33d0738d9c5bdc872))
+* **schema-validation:** disable bucker region validation ([#448](https://github.com/filestack/filestack-js/issues/448)) ([70b7e38](https://github.com/filestack/filestack-js/commit/70b7e38e41a6c24e8e644ff5f918019a20840a0a))
+
 ## [3.24.0](https://github.com/filestack/filestack-js/compare/v3.23.2...v3.24.0) (2021-06-28)
 
 
