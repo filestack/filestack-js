@@ -372,6 +372,20 @@ export interface PickerOptions {
    */
   accept?: string | string[];
   /**
+   * Custom accept check function
+   * ```javascript
+   * acceptFn: (file, options) => {
+   *  return options.mimeFromMagicBytes(file.originalFile).then((res) => { // we can check mimetype from magic bytes
+   *    //console.log(options.mimeFromExtension(file.originalFile.name)); // or check extension from filestack extensions database
+   *    // throw new Error('Cannot accept that file') // we can throw exception to block file upload
+   *    // return Promise.reject('Cannot accept that file'') // or reject a promise
+   *    return Promise.resolve();
+   *  });
+   * }
+   * ```
+   */
+  acceptFn?: (PickerFileMetadata, PickerAcceptFnOptions) => Promise<string>;
+  /**
    * Prevent modal close on upload failure and allow users to retry.
    */
   allowManualRetry?: boolean;
@@ -706,6 +720,27 @@ export interface PickerTransformationOptions {
    * Global force crop option. Can be use ie with circle
    */
   force?: boolean;
+}
+
+export interface PickerAcceptFnOptions {
+  /**
+   * Provided accept string
+   */
+  accept: string[];
+  /**
+   * Accept string converted to mimetype
+   */
+  acceptMime: string[];
+  /**
+   * Mimetype based magic bytes
+   * {@link https://filestack.github.io/filestack-js/globals.html#getmimetype}
+   */
+  mimeFromMagicBytes: Promise<string>;
+  /**
+   * Mimetype based on file extension
+   * {@link https://filestack.github.io/filestack-js/globals.html#extensiontomime}
+   */
+  mimeFromExtension: string;
 }
 
 /**
