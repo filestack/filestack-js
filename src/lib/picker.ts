@@ -394,6 +394,7 @@ export interface PickerOptions {
    *  - onedrive
    *  - onedriveforbusiness
    *  - customsource - Configure this in your Filestack Dev Portal.
+   *  - unsplash
    */
   fromSources?: string[];
   /**
