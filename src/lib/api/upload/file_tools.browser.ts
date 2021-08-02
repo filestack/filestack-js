@@ -15,9 +15,8 @@
  * limitations under the License.
  */
 import { File as FsFile } from './file';
-import { SanitizeOptions, getMimetype } from './../../utils';
+import { SanitizeOptions, getMimetype, FILE_TYPE_MINIMUM_BYTES } from './../../utils';
 import { FilestackError } from './../../../filestack_error';
-import fileType from 'file-type';
 
 export type RawFile = Blob | Buffer | File | string;
 export type NamedInputFile = {
@@ -179,7 +178,18 @@ export const getFile = (input: InputFile, sanitizeOptions?: SanitizeOptions): Pr
     async res => {
       let mime = file.type;
       if (!file.type  || file.type.length === 0 || file.type === 'text/plain') {
-        mime = getMimetype(await res.slice(0, fileType.minimumBytes), filename);
+        return getMimetype(await res.slice(0, FILE_TYPE_MINIMUM_BYTES), filename).then(mime => {
+          return new FsFile(
+            {
+              name: filename,
+              size: file.size,
+              type: mime,
+              slice: res.slice,
+              release: res.release,
+            },
+            sanitizeOptions
+          );
+        });
       }
 
       return new FsFile(

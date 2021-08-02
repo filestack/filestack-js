@@ -61,3 +61,5 @@ export const isMobile = () => navigator && navigator.userAgent && mobileRegexp.t
  * Check if application is runned in facebook browser
  */
 export const isFacebook = () => navigator && navigator.userAgent && /\[FB.*;/i.test(navigator.userAgent);
+
+export { fromBuffer } from 'file-type/core';

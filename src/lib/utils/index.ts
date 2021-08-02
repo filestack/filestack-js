@@ -18,7 +18,7 @@
 import { Session } from '../client';
 import { Hosts } from './../../config';
 import { ExtensionsMap } from './extensions';
-import fileType from 'file-type';
+import { fromBuffer } from './index.node';
 import * as isutf8 from 'isutf8';
 
 /**
@@ -101,40 +101,40 @@ export const uniqueId = (len: number = 10): string => {
  * @param {Uint8Array | Buffer} file
  * @returns {string} - mimetype
  */
-export const getMimetype = (file: Uint8Array | Buffer, name?: string): string => {
-  let type = fileType(file);
+export const getMimetype = (file: Uint8Array | Buffer, name?: string): Promise<string> => {
+  return fromBuffer(file).then(type => {
+    const excludedMimetypes = ['text/plain', 'application/octet-stream', 'application/x-ms', 'application/x-msi', 'application/zip'];
 
-  const excludedMimetypes = ['text/plain', 'application/octet-stream', 'application/x-ms', 'application/x-msi', 'application/zip'];
-
-  if (type && excludedMimetypes.indexOf(type.mime) === -1) {
-    return type.mime;
-  }
-
-  if (name && name.indexOf('.') > -1) {
-    const mime = extensionToMime(name);
-
-    if (mime) {
-      return mime;
+    if (type && excludedMimetypes.indexOf(type.mime) === -1) {
+      return type.mime;
     }
-  }
 
-  try {
-    if (isutf8(file)) {
-      return 'text/plain';
+    if (name && name.indexOf('.') > -1) {
+      const mime = extensionToMime(name);
+
+      if (mime) {
+        return mime;
+      }
     }
-  } catch (e) {
+
+    try {
+      if (isutf8(file)) {
+        return 'text/plain';
+      }
+    } catch (e) {
+      /* istanbul ignore next */
+      console.warn('Additional mimetype checks (text/plain) are currently not supported for browsers');
+    }
+    // this is only fallback, omit it in coverage
     /* istanbul ignore next */
-    console.warn('Additional mimetype checks (text/plain) are currently not supported for browsers');
-  }
-  // this is only fallback, omit it in coverage
-  /* istanbul ignore next */
 
-  // if we cant find types by extensions and we have magic bytes fallback to it
-  if (type) {
-    return type.mime;
-  }
+    // if we cant find types by extensions and we have magic bytes fallback to it
+    if (type) {
+      return type.mime;
+    }
 
-  return 'application/octet-stream';
+    return 'application/octet-stream';
+  });
 };
 
 /**
@@ -257,5 +257,7 @@ export const cleanUpCallbacks = (obj: any) => {
 
   return obj;
 };
+
+export const FILE_TYPE_MINIMUM_BYTES = 4100;
 
 export * from './index.node';

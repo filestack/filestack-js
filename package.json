@@ -46,7 +46,7 @@
     "debug": "^4.1.1",
     "eventemitter3": "^4.0.0",
     "fast-xml-parser": "^3.16.0",
-    "file-type": "^10.11.0",
+    "file-type": "^16.5.2",
     "follow-redirects": "^1.10.0",
     "isutf8": "^2.1.0",
     "jsonschema": "^1.2.5",
