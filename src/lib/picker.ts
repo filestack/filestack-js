@@ -404,7 +404,7 @@ export interface PickerOptions {
    *  - box
    *  - github
    *  - gmail
-   *  - picasa
+   *  - googlephotos
    *  - onedrive
    *  - onedriveforbusiness
    *  - customsource - Configure this in your Filestack Dev Portal.
