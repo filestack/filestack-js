@@ -68,7 +68,7 @@ export const PickerParamsSchema = {
             'box',
             'github',
             'gmail',
-            'picasa',
+            'googlephotos',
             'onedrive',
             'onedriveforbusiness',
             'clouddrive',
