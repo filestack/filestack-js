@@ -172,6 +172,9 @@ export interface PickerResponse {
 export interface PickerFileCallback {
   (file: PickerFileMetadata): void | Promise<any>;
 }
+export interface PickerFileWithTokenCallback {
+  (file: PickerFileMetadata, token?: {pause?: () => void, resume?: () => void, cancel?: () => void}): void | Promise<any>;
+}
 
 export interface PickerFileCancelCallback {
   (file: PickerFileMetadata): void;
@@ -624,7 +627,7 @@ export interface PickerOptions {
   /**
    * Called when a file begins uploading.
    */
-  onFileUploadStarted?: PickerFileCallback;
+  onFileUploadStarted?: PickerFileWithTokenCallback;
   /**
    * Called when a file is done uploading.
    */

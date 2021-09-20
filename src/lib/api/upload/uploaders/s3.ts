@@ -364,6 +364,7 @@ export class S3Uploader extends UploaderAbstract {
       );
 
       debug(`[${id}] All tasks for %s enqueued. Start processing main upload queue`, id);
+      this.emit('start');
       this.partsQueue.start();
 
       resolve(await this.partsQueue.onIdle());
