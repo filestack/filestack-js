@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.25.0](https://github.com/filestack/filestack-js/compare/v3.24.1...v3.25.0) (2021-10-05)
+
+
+### Features
+
+* **picker:** bump version ([f047a4e](https://github.com/filestack/filestack-js/commit/f047a4e1552ba433f7f9f027c74cc4bf4ff90b8e))
+* **picker:** Picker paste event add configuration options ([#454](https://github.com/filestack/filestack-js/issues/454)) ([a5a249b](https://github.com/filestack/filestack-js/commit/a5a249b0c9233f8eae7160bf5eef0f05dccd0920))
+* **picker:** support callback for tags ([#461](https://github.com/filestack/filestack-js/issues/461)) ([cf89ee0](https://github.com/filestack/filestack-js/commit/cf89ee08486dc28f352a2523a96b53e7c58ce3b0))
+* **upload:** emit event on file upload start ([#462](https://github.com/filestack/filestack-js/issues/462)) ([c676b48](https://github.com/filestack/filestack-js/commit/c676b483c8af519f0360fee0bf84446df1810494))
+
 ### [3.24.1](https://github.com/filestack/filestack-js/compare/v3.24.0...v3.24.1) (2021-07-28)
 
 
