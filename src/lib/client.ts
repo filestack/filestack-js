@@ -457,6 +457,7 @@ export class Client extends EventEmitter {
       upload.setSecurity(security);
     }
 
+    upload.on('start', () => this.emit('upload.start'));
     /* istanbul ignore next */
     upload.on('error', e => {
       if (this.forwardErrors) {
@@ -522,6 +523,7 @@ export class Client extends EventEmitter {
       upload.setSecurity(security);
     }
 
+    upload.on('start', () => this.emit('upload.start'));
     /* istanbul ignore next */
     upload.on('error', e => {
       Sentry.withScope(scope => {

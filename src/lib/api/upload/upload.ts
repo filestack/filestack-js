@@ -131,6 +131,7 @@ export class Upload extends EventEmitter {
 
     this.uploader.setUploadTags(options.tags);
 
+    this.uploader.on('start', () => this.emit('start'));
     this.uploader.on('error', (e) => this.emit('error', e));
     this.uploader.on('progress', this.handleProgress.bind(this));
   }
