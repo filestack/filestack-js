@@ -431,5 +431,17 @@ export const PickerParamsSchema = {
     useSentryBreadcrumbs: {
       type: 'boolean',
     },
+    pasteMode: {
+      type: 'object',
+      additionalProperties: false,
+      properties: {
+        pasteToFirstInViewPort: {
+          type: 'boolean',
+        },
+        pasteToFirstInstance: {
+          type: 'boolean',
+        },
+      },
+    },
   },
 };

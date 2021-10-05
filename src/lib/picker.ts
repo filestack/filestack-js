@@ -692,6 +692,17 @@ export interface PickerOptions {
    * It can override global objects like console, error etc. Defaults to `true`.
    */
   useSentryBreadcrumbs?: boolean;
+  /**
+   * Specify which Picker instance should respond to paste event.
+   * By default only hovered instance responds to event.
+   * @param {boolean = false} pasteToFirstInViewPort If none instance is hovered take first picker instance fully visible in viewport
+   * @param {boolean = false} pasteToFirstInstance If none instance is hovered take first picker instance that is initialized
+   * @pasteToFirstInViewPort is checked first
+   */
+  pasteMode?: {
+    pasteToFirstInViewPort?: boolean,
+    pasteToFirstInstance?: boolean
+  };
 }
 
 export interface PickerCropOptions {
