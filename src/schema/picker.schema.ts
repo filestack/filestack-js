@@ -79,12 +79,6 @@ export const PickerParamsSchema = {
         },
       ],
     },
-    tags: {
-      type: 'object',
-      additionalProperties: {
-        type: 'string',
-      },
-    },
     container: {
       format: 'HTMLContainer',
     },
@@ -416,7 +410,23 @@ export const PickerParamsSchema = {
     uploadConfig: {
       type: 'object',
       additionalProperties: false,
-      properties: UploadParamsSchema.properties,// manual import upload definitions
+      properties: {
+        // manual import upload definitions
+        ...UploadParamsSchema.properties,
+        tags: {
+          type: 'object',
+          additionalProperties: {
+            anyOf: [
+              {
+                type: 'string',
+              },
+              {
+                format: 'callback',
+              },
+            ],
+          },
+        },
+      },
     },
     useSentryBreadcrumbs: {
       type: 'boolean',
