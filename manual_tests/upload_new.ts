@@ -31,19 +31,22 @@ const fs = new Client(process.env.API_KEY);
 // });
 
 (async () => {
-  const file1 = createFile();
-  const file2 = createFile();
+  const file1 = createFile(5 * 1024 * 1024);
+  const file2 = createFile(2 * 1024 * 1024);
 
   fs.multiupload(
-    [ file1, file2 ],
+    [ { file: file1, name: 'test1' }, { file: file2, name: 'test 2' } ],
     {
       onProgress: (e) => {
         console.log('prog', e);
+        if (e.files) {
+          Object.keys(e.files).forEach(f => console.log(e.files[f]));
+        }
       },
-    },
-    {
-      filename: () => 'test2.mp4',
     }
+    // {
+    //   filename: () => 'test2.mp4',
+    // }
   ).then(res => {
     console.dir(res, { depth: null });
   });

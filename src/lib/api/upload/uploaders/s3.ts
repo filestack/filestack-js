@@ -776,7 +776,7 @@ export class S3Uploader extends UploaderAbstract {
         totalBytes: totalParts,
         totalPercent: Math.round((totalParts * 100) / payload.file.size) || 0,
         file: {
-          name: payload.file.customName,
+          name: payload.file.name,
           originalName: payload.file.originalName,
           size: payload.file.size,
           mimetype: payload.file.mimetype,
