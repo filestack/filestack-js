@@ -14,30 +14,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 import { EventEmitter } from 'eventemitter3';
-import { Session, Security } from '../../client';
-import { S3Uploader } from './uploaders/s3';
+
+import { Security, Session } from '../../client';
+import { ProgressEvent, StoreUploadOptions, UploadOptions } from '../upload/types';
 import { FilestackError, FilestackErrorType } from './../../../filestack_error';
+import { getValidator, StoreParamsSchema, UploadParamsSchema } from './../../../schema';
 import { SanitizeOptions } from './../../utils';
-
-import { UploadOptions, StoreUploadOptions } from '../upload/types';
-import { getFile, InputFile } from './file_tools';
 import { FileState, UploadTags } from './file';
+import { getFile, InputFile } from './file_tools';
 import { UploadMode } from './uploaders/abstract';
-import { getValidator, UploadParamsSchema, StoreParamsSchema } from './../../../schema';
-
-export interface ProgressEvent {
-  totalPercent: number;
-  totalBytes: number;
-  files?: { (key: string): ProgressEvent };
-}
+import { S3Uploader } from './uploaders/s3';
 
 const DEFAULT_PROGRESS_INTERVAL = 1000;
 
 const normalizeProgress = (current, last) => {
   current.totalBytes = Math.max(current.totalBytes, last.totalBytes);
   current.totalPercent = Math.max(current.totalPercent, last.totalPercent);
+  current.file = last?.file;
 
   return current;
 };

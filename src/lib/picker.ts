@@ -14,12 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { FILESTACK_MODULES, loadModule } from '@filestack/loader';
 
-import { loadModule, FILESTACK_MODULES } from '@filestack/loader';
 import { FilestackError, FilestackErrorType } from './../filestack_error';
-import { Client } from './client';
-import { FSProgressEvent, UploadOptions, WorkflowConfig } from './api/upload/types';
 import { getValidator, PickerParamsSchema } from './../schema';
+import { UploadOptions, WorkflowConfig } from './api/upload/types';
+import { Client } from './client';
 
 export interface PickerInstance {
   /**
@@ -185,7 +185,7 @@ export interface PickerFileErrorCallback {
 }
 
 export interface PickerFileProgressCallback {
-  (file: PickerFileMetadata, event: FSProgressEvent): void;
+  (file: PickerFileMetadata, event: ProgressEvent): void;
 }
 
 export interface PickerUploadStartedCallback {

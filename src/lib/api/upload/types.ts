@@ -14,10 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 import { StoreBaseParams } from './../../filelink';
+import { SanitizeOptions } from './../../utils';
 import { UploadTags } from './file';
-import { SanitizeOptions } from './../../utils/index';
 
 export interface UploadOptions {
   /**
@@ -31,7 +30,7 @@ export interface UploadOptions {
   /**
    * Callback for progress events.
    */
-  onProgress?: (evt: FSProgressEvent) => void;
+  onProgress?: (evt: ProgressEvent) => void;
   /**
    * How often to report progress. Default is 1000 (in milliseconds).
    */
@@ -114,7 +113,15 @@ export interface WorkflowConfig {
   id: string;
 }
 
-export interface FSProgressEvent {
+export interface ProgressEvent {
   totalPercent: number;
   totalBytes: number;
+  files?: { (key: string): ProgressEvent & {
+    file?: {
+      name: string;
+      size: number;
+      mimetype: string;
+      uploadTags: UploadTags;
+    };
+  }};
 }
