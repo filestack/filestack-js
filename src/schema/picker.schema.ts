@@ -47,6 +47,9 @@ export const PickerParamsSchema = {
     acceptFn: {
       format: 'callback',
     },
+    validateFileExtensionOnly :{
+      type: 'boolean'
+    },
     fromSources: {
       type: 'array',
       items: [
