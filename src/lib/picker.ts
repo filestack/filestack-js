@@ -388,6 +388,15 @@ export interface PickerOptions {
    * ```
    */
   acceptFn?: (PickerFileMetadata, PickerAcceptFnOptions) => Promise<string>;
+
+  /**
+   *  When true, file's format are validated only by extension instead of MIME type.
+   *  Note, that in accept array only exact file extensions are going to be validated -
+   *  MIME types groups such as ["image/jpeg"] will be omitted.
+   *  Default false.
+   */
+  validateFileExtensionOnly?: boolean;
+
   /**
    * Prevent modal close on upload failure and allow users to retry.
    */
