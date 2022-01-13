@@ -34,7 +34,8 @@ export interface ProgressEvent {
 }
 
 const DEFAULT_PROGRESS_INTERVAL = 1000;
-
+const BIG_FILE_THRESHOLD = 50 * 1000 * 1000 * 1000 // 50GB
+const BIG_FILE_PART_SIZE = 10 * 1024 * 1024; // 10MB
 const normalizeProgress = (current, last) => {
   current.totalBytes = Math.max(current.totalBytes, last.totalBytes);
   current.totalPercent = Math.max(current.totalPercent, last.totalPercent);
@@ -206,6 +207,9 @@ export class Upload extends EventEmitter {
 
     const f = await getFile(input, this.sanitizerOptions);
     f.customName = this.overrideFileName;
+    if (f.size > BIG_FILE_THRESHOLD){
+      this.uploader.setPartSize(BIG_FILE_THRESHOLD);
+    }
     this.uploader.addFile(f);
 
     this.startProgressInterval();
