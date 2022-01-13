@@ -208,7 +208,7 @@ export class Upload extends EventEmitter {
     const f = await getFile(input, this.sanitizerOptions);
     f.customName = this.overrideFileName;
     if (f.size > BIG_FILE_THRESHOLD){
-      this.uploader.setPartSize(BIG_FILE_THRESHOLD);
+      this.uploader.setPartSize(BIG_FILE_PART_SIZE);
     }
     this.uploader.addFile(f);
 
