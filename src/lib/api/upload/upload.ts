@@ -20,6 +20,7 @@ import { Session, Security } from '../../client';
 import { S3Uploader } from './uploaders/s3';
 import { FilestackError, FilestackErrorType } from './../../../filestack_error';
 import { SanitizeOptions } from './../../utils';
+import { File as FsFile } from './file';
 
 import { UploadOptions, StoreUploadOptions } from '../upload/types';
 import { getFile, InputFile } from './file_tools';
@@ -197,6 +198,19 @@ export class Upload extends EventEmitter {
   }
 
   /**
+   * Set upload part size
+   *
+   * @param {File} file
+   * @param {S3Uploader} uploader
+   * @memberof Upload
+   */
+  private setPartSize(uploader : S3Uploader, file : FsFile ){
+    if(file.size > BIG_FILE_THRESHOLD){
+      uploader.setPartSize(BIG_FILE_PART_SIZE);
+    }
+  }
+
+  /**
    * Upload single file
    *
    * @param {(InputFile)} file
@@ -207,9 +221,8 @@ export class Upload extends EventEmitter {
 
     const f = await getFile(input, this.sanitizerOptions);
     f.customName = this.overrideFileName;
-    if (f.size > BIG_FILE_THRESHOLD){
-      this.uploader.setPartSize(BIG_FILE_PART_SIZE);
-    }
+    this.setPartSize(this.uploader, f);
+
     this.uploader.addFile(f);
 
     this.startProgressInterval();
@@ -241,6 +254,7 @@ export class Upload extends EventEmitter {
 
       const f = await getFile(input[i], this.sanitizerOptions);
       f.customName = this.overrideFileName;
+      this.setPartSize(this.uploader, f);
       this.uploader.addFile(f);
     }
 
