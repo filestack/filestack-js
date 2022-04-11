@@ -415,6 +415,15 @@ export interface PickerOptions {
    */
   fromSources?: string[];
   /**
+   * Provide default text value for Image Search
+   * ```javascript
+   * websearch: {
+   *  predefinedText: 'Sample text'
+   * }
+   * ```
+   */
+  websearch?: object;
+  /**
    * Container where picker should be appended. Only relevant for `inline` and `dropPane` display modes.
    */
   container?: string | Node;
