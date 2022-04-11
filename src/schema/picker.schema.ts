@@ -51,8 +51,8 @@ export const PickerParamsSchema = {
       type: 'object',
       properties: {
         predefinedText: {
-          type: 'string'
-        }
+          type: 'string',
+        },
       },
     },
     fromSources: {
