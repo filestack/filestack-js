@@ -16,7 +16,6 @@
  */
 
 import { EventEmitter } from 'eventemitter3';
-import * as Sentry from '@sentry/minimal';
 import { config, Hosts } from '../config';
 import { FilestackError } from './../filestack_error';
 import { metadata, MetadataOptions, remove, retrieve, RetrieveOptions, download } from './api/file';
@@ -31,9 +30,6 @@ import { FsResponse } from './request/types';
 import { StoreParams } from './filelink';
 
 import { picker, PickerInstance, PickerOptions } from './picker';
-
-/* istanbul ignore next */
-Sentry.addBreadcrumb({ category: 'sdk', message: 'filestack-js-sdk scope' });
 
 export interface Session {
   apikey: string;
@@ -70,12 +66,6 @@ export interface ClientOptions {
    * Please be aware that tokens stored in localStorage are accessible by other scripts on the same domain.
    */
   sessionCache?: boolean;
-
-  /**
-   * Enable forwarding error logs to sentry
-   * @default false
-   */
-  forwardErrors?: boolean;
 }
 
 /**
@@ -99,8 +89,6 @@ export class Client extends EventEmitter {
   private cloud: CloudClient;
   private prefetchInstance: Prefetch;
 
-  private forwardErrors: boolean = true;
-
   /**
    * Returns filestack utils
    *
@@ -113,11 +101,6 @@ export class Client extends EventEmitter {
 
   constructor(apikey: string, private options?: ClientOptions) {
     super();
-
-    /* istanbul ignore if */
-    if (options && options.forwardErrors) {
-      this.forwardErrors = options.forwardErrors;
-    }
 
     if (!apikey || typeof apikey !== 'string' || apikey.length === 0) {
       throw new Error('An apikey is required to initialize the Filestack client');
@@ -305,7 +288,15 @@ export class Client extends EventEmitter {
    * @param headers    Optional headers to send
    * @param workflowIds    Optional workflowIds to send
    */
-  storeURL(url: string, storeParams?: StoreParams, token?: any, security?: Security, uploadTags?: UploadTags, headers?: {[key: string]: string}, workflowIds?: string[]): Promise<Object> {
+  storeURL(
+    url: string,
+    storeParams?: StoreParams,
+    token?: any,
+    security?: Security,
+    uploadTags?: UploadTags,
+    headers?: { [key: string]: string },
+    workflowIds?: string[],
+  ): Promise<Object> {
     return storeURL({
       session: this.session,
       url,
@@ -460,18 +451,6 @@ export class Client extends EventEmitter {
     upload.on('start', () => this.emit('upload.start'));
     /* istanbul ignore next */
     upload.on('error', e => {
-      if (this.forwardErrors) {
-        Sentry.withScope(scope => {
-          scope.setTag('filestack-apikey', this.session.apikey);
-          scope.setTag('filestack-version', Utils.getVersion());
-          scope.setExtra('filestack-options', this.options);
-          scope.setExtras({ uploadOptions: options, storeOptions, details: e.details });
-          e.message = `FS-${e.message}`;
-
-          Sentry.captureException(e);
-        });
-      }
-
       this.emit('upload.error', e);
     });
 
@@ -526,15 +505,6 @@ export class Client extends EventEmitter {
     upload.on('start', () => this.emit('upload.start'));
     /* istanbul ignore next */
     upload.on('error', e => {
-      Sentry.withScope(scope => {
-        scope.setTag('filestack-apikey', this.session.apikey);
-        scope.setTag('filestack-version', Utils.getVersion());
-        scope.setExtra('filestack-options', this.options);
-        scope.setExtras(e.details);
-        scope.setExtras({ uploadOptions: options, storeOptions });
-        Sentry.captureException(e);
-      });
-
       this.emit('upload.error', e);
     });
 

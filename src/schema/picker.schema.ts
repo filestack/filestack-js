@@ -428,9 +428,6 @@ export const PickerParamsSchema = {
         },
       },
     },
-    useSentryBreadcrumbs: {
-      type: 'boolean',
-    },
     pasteMode: {
       type: 'object',
       additionalProperties: false,
