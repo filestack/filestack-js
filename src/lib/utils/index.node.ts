@@ -59,3 +59,5 @@ export const isMobile = () => false;
  * Check if application is runned in facebook browser
  */
 export const isFacebook = () => false;
+
+export { fromBuffer } from 'file-type';

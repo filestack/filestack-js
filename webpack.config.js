@@ -13,7 +13,7 @@ const config =  {
   watchOptions: {
     ignored: /node_modules/
   },
-  entry: './build/module/index.js',
+  entry: ['./node_modules/babel-regenerator-runtime','./build/module/index.js'],
   output: {
     libraryTarget: 'umd',
     library: 'filestack',
@@ -36,6 +36,9 @@ const config =  {
                 },
               ],
             ],
+            // "plugins": [
+            //   ["@babel/transform-runtime"]
+            // ],
           },
         },
       },

@@ -63,7 +63,7 @@ const isFileBase = (input: InputFile): input is string => {
  * @param {*} inputFile
  * @returns {Promise<File>}
  */
-export const getFile = (input: InputFile, sanitizeOptions?: SanitizeOptions): Promise<FsFile> => {
+export const getFile = async (input: InputFile, sanitizeOptions?: SanitizeOptions): Promise<FsFile> => {
   let filename;
 
   if (isFileNamed(input)) {
@@ -74,7 +74,7 @@ export const getFile = (input: InputFile, sanitizeOptions?: SanitizeOptions): Pr
   if (isFilePath(input)) {
     let path = input;
     return new Promise((resolve, reject) => {
-      require('fs').readFile(path, (err, buffer) => {
+      require('fs').readFile(path, async(err, buffer) => {
         if (err) {
           return reject(err);
         }
@@ -88,7 +88,7 @@ export const getFile = (input: InputFile, sanitizeOptions?: SanitizeOptions): Pr
             {
               name: filename,
               size: buffer.byteLength,
-              type: getMimetype(buffer, filename),
+              type: await getMimetype(buffer, filename),
               slice: (start, end) => Promise.resolve(buffer.slice(start, end)),
             },
             sanitizeOptions
@@ -113,7 +113,7 @@ export const getFile = (input: InputFile, sanitizeOptions?: SanitizeOptions): Pr
         {
           name: filename,
           size: input.byteLength,
-          type: getMimetype(input, filename),
+          type: await getMimetype(input, filename),
           // @ts-ignore
           slice: (start, end) => Promise.resolve(input.slice(start, end)),
         },
