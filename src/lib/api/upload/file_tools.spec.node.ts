@@ -28,8 +28,8 @@ describe('Api/Upload/FileTools', () => {
   describe('getFileNode', () => {
 
     it('Should return file instance for nodejs loaded file from path', async () => {
-      spyOn(fs, 'existsSync').and.returnValue(true);
-      spyOn(fs, 'readFile').and.callFake((path, cb) => {
+      jest.spyOn(fs, 'existsSync').mockReturnValue(true);
+      jest.spyOn(fs, 'readFile').mockImplementation((path, cb) => {
         cb(null, mockedTestFile);
       });
 
@@ -46,12 +46,12 @@ describe('Api/Upload/FileTools', () => {
     });
 
     it('Should reject if provided file cannot be read', () => {
-      spyOn(fs, 'existsSync').and.returnValue(true);
-      spyOn(fs, 'readFile').and.callFake((path, cb) => {
-        cb('error');
+      jest.spyOn(fs, 'existsSync').mockReturnValue(true);
+      jest.spyOn(fs, 'readFile').mockImplementation((path, cb) => {
+        cb(new Error('error'), null);
       });
 
-      return expect(getFile('/testfile.txt')).rejects.toEqual('error');
+      return expect(getFile('/testfile.txt')).rejects.toEqual(new Error('error'));
     });
 
     it('Should return correct mimetype', async () => {

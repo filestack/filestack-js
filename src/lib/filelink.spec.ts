@@ -17,14 +17,14 @@
 
 import { Filelink, ShapeType, VideoAccessMode, AnimationParams, FitOptions, Align, WatermarkParams, ImageWatermarkPosition, SmartCropParams, SmartCropMode, ProgressiveJpgParams } from './filelink';
 import { TransformSchema } from './../schema/transforms.schema';
-import * as validator from '../schema';
+import * as validator from '../schema/validator';
 
 const defaultSource = '5aYkEQJSQCmYShsoCnZN';
 const defaultApikey = 'DEFAULT_API_KEY';
 
 describe('filelink', () => {
   beforeAll(() => {
-    spyOn(validator, 'getValidator').and.callThrough();
+    jest.spyOn(validator, 'getValidator').mockImplementation();
   });
 
   it('should properly instantiate Filelink', () => {

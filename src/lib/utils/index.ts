@@ -19,7 +19,7 @@ import { Session } from '../client';
 import { Hosts } from './../../config';
 import { ExtensionsMap } from './extensions';
 import fileType from 'file-type';
-import * as isutf8 from 'isutf8';
+import isutf8 from 'isutf8';
 
 /**
  * Resolve cdn url based on handle type

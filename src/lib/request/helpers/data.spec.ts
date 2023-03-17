@@ -110,6 +110,7 @@ describe('Request/Helpers/Data', () => {
       const res = await parseResponse(response);
 
       return expect(res.data).toEqual({
+        '?xml': '',
         Error: {
           code: 'RequestTimeTooSkewed',
           Message: 'The difference between the request time and the current time is toolarge.',
