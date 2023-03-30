@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.26.0](https://github.com/filestack/filestack-js/compare/v3.25.0...v3.26.0) (2023-03-30)
+### Feature
+ * **picker:** Added possibility to predefine the results for the imagesearch in Picker 
+ * **picker:** Picker - Display Unsplash Search and Good Old Image Search as two tabs of one "source"
+
 ## [3.25.0](https://github.com/filestack/filestack-js/compare/v3.24.1...v3.25.0) (2021-10-05)
 
 
