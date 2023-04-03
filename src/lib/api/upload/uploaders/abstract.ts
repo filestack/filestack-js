@@ -25,13 +25,13 @@ import { isMobile } from './../../../utils';
 import { FilestackError } from './../../../../filestack_error';
 
 // regular part size
-export const DEFAULT_PART_SIZE = 10 * 1024 * 1024;
+export const DEFAULT_PART_SIZE = 6 * 1024 * 1024;
 
 // Minimum part size for upload by multipart
 export const MIN_PART_SIZE = 5 * 1024 * 1024;
 
 // when mode is set to fallback or intelligent, this part size is required
-export const INTELLIGENT_CHUNK_SIZE = 16 * 1024 * 1024;
+export const INTELLIGENT_CHUNK_SIZE = 8 * 1024 * 1024;
 
 // Mobile Chunk size for ii
 export const INTELLIGENT_MOBILE_CHUNK_SIZE = 1024 * 1024;
