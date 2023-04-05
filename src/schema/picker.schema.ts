@@ -47,6 +47,14 @@ export const PickerParamsSchema = {
     acceptFn: {
       format: 'callback',
     },
+    websearch: {
+      type: 'object',
+      properties: {
+        predefinedText: {
+          type: 'string',
+        },
+      },
+    },
     fromSources: {
       type: 'array',
       items: [

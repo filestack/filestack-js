@@ -133,6 +133,12 @@ export class CloudClient {
       if (!Array.isArray(accept)) {
         accept = [accept];
       }
+      // FS-11013.
+      // google-drive storing uncommon file-types in incorrect format, eg .srt (subrip) file is stored in bin (octet-stream) format
+      // so if user wants to accept subrip files, we should search google drive for octet-steam file.
+      if (accept.includes('application/x-subrip') && !accept.includes('application/octet-stream')) {
+        accept.push('application/octet-stream');
+      }
       // filtering mimetypes in clouds
       payload.accept = accept;
     }
