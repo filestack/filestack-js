@@ -53,8 +53,8 @@ export interface FileChunk extends FilePart {
 }
 
 export interface PartSize {
-  partsCount: number,
-  chunkSize: number
+  partsCount: number;
+  chunkSize: number;
 }
 
 /**
@@ -171,31 +171,31 @@ export class File {
   /**
    * Returns number of parts and part size according to max limit
    * @param {number} size - part size in bytes
-   * @returns {PartSize} 
+   * @returns {PartSize}
    * @memberof File
    */
   public getPartsCount (size: number, intelligentChunk: boolean): PartSize {
-    const DEFAULT_FILE_SIZE_LIMIT = 60 * 1024 * 1024 * 1024
-    const INTELLIGENT_FILE_SIZE_LIMIT = 80 * 1024 * 1024 * 1024
+    const DEFAULT_FILE_SIZE_LIMIT = 60 * 1024 * 1024 * 1024;
+    const INTELLIGENT_FILE_SIZE_LIMIT = 80 * 1024 * 1024 * 1024;
     const FILE_SIZE_LIMIT = intelligentChunk ? INTELLIGENT_FILE_SIZE_LIMIT : DEFAULT_FILE_SIZE_LIMIT;
     const MAX_S3_CHUNKS_ALLOWED = 10000;
-    
+
     // When file size is greater than 60GB, chunk size is calculated dynamically
     // Chunk count is set to the max number of chunks allowed over s3
-    if(this._file.size > FILE_SIZE_LIMIT) {
+    if (this._file.size > FILE_SIZE_LIMIT) {
       const dynamicPartSize = Math.ceil(this._file.size / MAX_S3_CHUNKS_ALLOWED); // size is set in bytes
 
       return {
         partsCount: Math.ceil(this._file.size / dynamicPartSize),
-        chunkSize: dynamicPartSize
-      }
+        chunkSize: dynamicPartSize,
+      };
 
     }
 
     return {
       partsCount: Math.ceil(this._file.size / size),
-      chunkSize: size
-    }
+      chunkSize: size,
+    };
   }
 
   /**
