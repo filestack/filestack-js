@@ -254,19 +254,21 @@ export class S3Uploader extends UploaderAbstract {
    */
   private prepareParts(id: string): Promise<void> {
     const file = this.getPayloadById(id).file;
+    let intelligentChunk = false;
 
     // for intelligent or fallback mode we cant overwrite part size - requires 8MB
     if ([UploadMode.INTELLIGENT, UploadMode.FALLBACK].indexOf(this.uploadMode) > -1) {
       this.partSize = INTELLIGENT_CHUNK_SIZE;
+      intelligentChunk = true;
     }
 
-    const partsCount = file.getPartsCount(this.partSize);
+    const { partsCount, chunkSize } = file.getPartsCount(this.partSize, intelligentChunk);
 
     const parts = [];
 
     for (let i = 0; i < partsCount; i++) {
       parts[i] = {
-        ...file.getPartMetadata(i, this.partSize),
+        ...file.getPartMetadata(i, chunkSize),
         offset: 0,
       };
     }
