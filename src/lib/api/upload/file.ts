@@ -175,14 +175,14 @@ export class File {
    * @memberof File
    */
   public getPartsCount (size: number, intelligentChunk: boolean): PartSize {
-    const DEFAULT_FILE_SIZE_LIMIT = 60 * 1024 * 1024 * 1024;
-    const INTELLIGENT_FILE_SIZE_LIMIT = 80 * 1024 * 1024 * 1024;
+    const DEFAULT_FILE_SIZE_LIMIT = 59 * 1024 * 1024 * 1024;
+    const INTELLIGENT_FILE_SIZE_LIMIT = 79 * 1024 * 1024 * 1024;
     const FILE_SIZE_LIMIT = intelligentChunk ? INTELLIGENT_FILE_SIZE_LIMIT : DEFAULT_FILE_SIZE_LIMIT;
     const MAX_S3_CHUNKS_ALLOWED = 10000;
 
     // When file size is greater than 60GB, chunk size is calculated dynamically
     // Chunk count is set to the max number of chunks allowed over s3
-    if (this._file.size > FILE_SIZE_LIMIT) {
+    if (this._file.size >= FILE_SIZE_LIMIT) {
       const dynamicPartSize = Math.ceil(this._file.size / MAX_S3_CHUNKS_ALLOWED); // size is set in bytes
 
       return {
