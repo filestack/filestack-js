@@ -180,6 +180,8 @@ export class File {
     const FILE_SIZE_LIMIT = intelligentChunk ? INTELLIGENT_FILE_SIZE_LIMIT : DEFAULT_FILE_SIZE_LIMIT;
     const MAX_S3_CHUNKS_ALLOWED = 10000;
 
+    console.log('file size', this._file.size, 'Default chunk size allowed', size, 'Is intelligent', intelligentChunk);
+
     // When file size is greater than 60GB, chunk size is calculated dynamically
     // Chunk count is set to the max number of chunks allowed over s3
     if (this._file.size >= FILE_SIZE_LIMIT) {
