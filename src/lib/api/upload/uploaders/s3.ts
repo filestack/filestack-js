@@ -264,8 +264,6 @@ export class S3Uploader extends UploaderAbstract {
 
     const { partsCount, chunkSize } = file.getPartsCount(this.partSize, intelligentChunk);
 
-    console.log('partsCount', partsCount, 'chunkSize', chunkSize);
-
     const parts = [];
 
     for (let i = 0; i < partsCount; i++) {

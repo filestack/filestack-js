@@ -1,7 +1,7 @@
 name: filestack-js-beta
 on:
   push:
-    branches: [ Bug-FS-10615-Allow-upload-files-bigger-than-50GB ]
+    branches: [ develop ]
 jobs:
   build:
     runs-on: ubuntu-latest
