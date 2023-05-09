@@ -540,7 +540,7 @@ export class S3Uploader extends UploaderAbstract {
   private async uploadNextChunk(id: string, partNumber: number, chunkSize: number = this.intelligentChunkSize) {
     const payload = this.getPayloadById(id);
     let part = payload.parts[partNumber];
-    chunkSize = Math.min(chunkSize, part.size - part.offset);
+    chunkSize = part.size - part.offset;
 
     let chunk = await payload.file.getChunkByMetadata(part, part.offset, chunkSize, this.integrityCheck);
 
