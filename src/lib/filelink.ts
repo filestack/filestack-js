@@ -124,6 +124,20 @@ export enum SmartCropMode {
 /**
  * Convert to format
  */
+export enum AudioTypes {
+  libmp3lame = 'libmp3lame',
+  libvorbis = 'libvorbis',
+  libfdk_aac = 'libfdk_aac',
+  dib_ac3 = 'dib_ac3',
+  pcm_s16le = 'pcm_s16le',
+  mp2 = 'mp2',
+  ac3 = 'ac3',
+  eac3 = 'eac3',
+}
+
+/**
+ * Convert to format
+ */
 export enum VideoTypes {
   h264 = 'h264',
   h264_hi = 'h264.hi',
@@ -430,6 +444,7 @@ export interface VideoConvertParams {
   access?: VideoAccess;
   container?: string;
   audio_bitrate?: number;
+  audio_codec?: AudioTypes;
   upscale: boolean;
   video_bitrate?: number;
   audio_sample_rate?: number;
