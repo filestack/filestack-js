@@ -186,7 +186,7 @@ export type SanitizeOptions =
  * @param name
  * @param {bool} options  - enable,disable sanitizer, default enabled
  * @param {string} options.replacement - replacement for sanitized chars defaults to "-"
- * @param {string[]} options.exclude - array with excluded chars default - ['\', '{', '}','|', '%', '`', '"', "'", '~', '[', ']', '#', '|', '^', '<', '>']
+ * @param {string[]} options.exclude - array with excluded chars default - `['\', '{', '}','|', '%', '`', '"', "'", '~', '[', ']', '#', '|', '^', '<', '>']`
  */
 export const sanitizeName = (name: string, options: SanitizeOptions = true): string => {
   if (typeof options === 'boolean' && !options) {
