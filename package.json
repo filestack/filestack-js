@@ -45,7 +45,7 @@
     "abab": "^2.0.3",
     "debug": "^4.1.1",
     "eventemitter3": "^4.0.0",
-    "fast-xml-parser": "^3.16.0",
+    "fast-xml-parser": "^4.2.4",
     "file-type": "^10.11.0",
     "follow-redirects": "^1.10.0",
     "isutf8": "^2.1.0",
