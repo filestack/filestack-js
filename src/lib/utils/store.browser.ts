@@ -24,7 +24,13 @@ export class Store {
   private availableTypes = [];
 
   constructor() {
-    if (window.localStorage !== undefined) {
+    let localStorage: Storage | undefined = undefined;
+    try {
+      localStorage = window.localStorage;
+    } catch {
+      debug('Local storage access denied');
+    }
+    if (localStorage !== undefined) {
       this.availableTypes.push(STORE_TYPE.LOCAL);
       debug('Local storage exists');
     }
