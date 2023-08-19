@@ -46,7 +46,6 @@
   - [Node](#node-1)
   - [Browser](#browser)
   - [Error event](#error-event)
-- [Sentry Integration](#sentry-integration)
 - [Versioning](#versioning)
 - [Contributing](#contributing)
 
@@ -231,10 +230,6 @@ Error contains details field with responseBody, responseHeaders, code (only when
 ```
 
 Upload abort throws an `FilestackError` with type `FilestackErrorType.ABORTED`
-
-## Sentry Integration
-
-If you're using [Sentry](https://sentry.io/welcome/) to monitor your application, Filestack will automatically report upload errors to Sentry, and tag them with helpful diagnostic information via [`@sentry/minimal`](https://github.com/getsentry/sentry-javascript/tree/master/packages/minimal).
 
 ## Versioning
 

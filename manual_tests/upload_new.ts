@@ -17,13 +17,11 @@
 
 // import { Client } from './../src/lib/client';
 // import * as Path from 'path';
-// import * as Sentry from '@sentry/node';
 
 import { S3Uploader } from './../src/lib/api/upload/uploaders/s3';
 import { getFile } from '../src/lib/api/upload';
 
 const createFile = (size = 10 * 1024 * 1024) => Buffer.alloc(size).fill('a');
-// Sentry.init({ dsn: 'DSN' });
 
 // const fs = new Client(process.env.API_KEY);
 // fs.on('upload.error', (e) => {
