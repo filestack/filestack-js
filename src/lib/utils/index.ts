@@ -58,7 +58,9 @@ export const resolveHost = (urls: Hosts, cname: string): Hosts => {
   const hosts = /filestackapi.com|filestackcontent.com/i;
 
   Object.keys(urls).forEach(key => {
-    urls[key] = urls[key].replace(hosts, cname);
+    if (!new RegExp(cname, 'i').test(urls[key])) {
+      urls[key] = urls[key].replace(hosts, cname);
+    }
   });
 
   return urls;
