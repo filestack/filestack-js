@@ -1,7 +1,7 @@
 name: filestack-js-beta
 on:
   push:
-    branches: [ develop ]
+    branches: [ FS_WCAG_2.0_Celestial_Accessibility_Changes ]
 jobs:
   build:
     runs-on: ubuntu-latest
