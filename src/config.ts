@@ -45,7 +45,7 @@ export const config = {
     processUrl: 'https://process.filestackapi.com',
     fileApiUrl: 'https://www.filestackapi.com/api/file',
     uploadApiUrl: 'https://upload.filestackapi.com',
-    cloudApiUrl: 'https://cloud.filestackapi.com',
+    cloudApiUrl: 'https://cloud.stage.filestackapi.com',
     cdnUrl: 'https://cdn.filestackcontent.com',
     pickerUrl: `https://static.filestackapi.com/picker/${PICKER_VERSION}/picker.js`,
   },
