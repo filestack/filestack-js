@@ -1,6 +1,6 @@
 {
   "name": "filestack-js",
-  "version": "3.25.0",
+  "version": "3.27.0",
   "description": "Official JavaScript library for Filestack",
   "main": "build/main/index.js",
   "module": "build/module/index.js",
@@ -45,7 +45,7 @@
     "abab": "^2.0.3",
     "debug": "^4.1.1",
     "eventemitter3": "^4.0.0",
-    "fast-xml-parser": "^3.16.0",
+    "fast-xml-parser": "^4.2.4",
     "file-type": "^10.11.0",
     "follow-redirects": "^1.10.0",
     "isutf8": "^2.1.0",

@@ -18,7 +18,7 @@ import { isURLSearchParams, isObject, isStream, isFormData, isArrayBuffer, isFil
 import { getVersion, uniqueId } from './../../utils';
 import { FsRequestOptions, FsResponse } from './../types';
 import { set } from './headers';
-import * as parser from 'fast-xml-parser';
+import { XMLParser, XMLValidator } from 'fast-xml-parser';
 import Debug from 'debug';
 
 const debug = Debug('fs:request:data');
@@ -99,11 +99,14 @@ export const parseResponse = async (response: FsResponse): Promise<FsResponse> =
       data = bufferToString(response.data);
     }
 
-    if (parser.validate(data) === true) {
-      response.data = parser.parse(data, {
+    if (XMLValidator.validate(data) === true) {
+      const parser = new XMLParser({
+        ignoreDeclaration: true,
         ignoreAttributes : true,
         trimValues: true,
       });
+
+      response.data = parser.parse(data);
     }
   }
 
