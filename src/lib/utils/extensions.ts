@@ -920,7 +920,7 @@ export const ExtensionsMap = {
   'video/x-ms-wmv': ['wmv'],
   'video/x-ms-wmx': ['wmx'],
   'video/x-ms-wvx': ['wvx'],
-  'video/x-msvideo': ['avi'],
+  'video/vnd.avi': ['avi'],
   'video/x-sgi-movie': ['movie'],
   'video/x-smv': ['smv'],
   'x-conference/x-cooltalk': ['ice'],
