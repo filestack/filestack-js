@@ -243,3 +243,4 @@ We use [SemVer](http://semver.org/) for versioning. For the versions available, 
 ## Contributing
 
 We follow the [conventional commits](https://conventionalcommits.org/) specification to ensure consistent commit messages and changelog formatting.
+
