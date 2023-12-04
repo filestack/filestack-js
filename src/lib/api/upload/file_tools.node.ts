@@ -83,7 +83,7 @@ export const getFile = async(input: InputFile, sanitizeOptions?: SanitizeOptions
           filename = require && require('path').basename(path);
         }
 
-        let mime = await getMimetype(buffer, filename)
+        let mime = await getMimetype(buffer, filename);
         return resolve(
           new FsFile(
             {
@@ -109,7 +109,7 @@ export const getFile = async(input: InputFile, sanitizeOptions?: SanitizeOptions
   }
 
   if (isFileBuffer(input)) {
-    let mime = await getMimetype(input, filename);;;
+    let mime = await getMimetype(input, filename);
     return Promise.resolve(
       new FsFile(
         {
