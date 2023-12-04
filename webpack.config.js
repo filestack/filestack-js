@@ -5,6 +5,7 @@ const merge = require('lodash.merge');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const WebpackAssetsManifest = require('webpack-assets-manifest');
 const banner = fs.readFileSync('./LICENSE', 'utf8').replace('{year}', new Date().getFullYear());
+const nodeExternals = require('webpack-node-externals');
 
 const config =  {
   mode: 'production',
@@ -57,9 +58,19 @@ const config =  {
       'process.env.NODE_ENV': JSON.stringify('production'),
       '@{VERSION}' : JSON.stringify(`${require('./package.json').version}`),
     }),
-    new webpack.NormalModuleReplacementPlugin(/\.node$/,  (resource) => {
-      resource.request = resource.request.replace(/\.node$/, '.browser');
-    }),
+    new webpack.NormalModuleReplacementPlugin(/node:/, (resource) => {
+      const mod = resource.request.replace(/^node:/, "");
+      switch (mod) {
+          case "buffer":
+             resource.request = "buffer";
+             break;
+          case "stream":
+             resource.request = "readable-stream";
+             break;
+          default:
+             throw new Error(`Not found ${mod}`);
+      }
+  }),
   ],
   devtool: 'source-map',
   resolve: {
@@ -71,6 +82,9 @@ const config =  {
       buffer: require.resolve("buffer"),
       http: require.resolve("stream-http"),
       https: require.resolve("https-browserify"),
+      crypto: require.resolve('crypto-browserify'),
+      fs: require.resolve('browserify-fs'),
+      path: require.resolve('path-browserify'),
     },
   },
 };
@@ -116,4 +130,8 @@ const prod = merge({}, config,  {
   ],
 });
 
-module.exports = { umd, esm, prod };
+const ext = merge({}, config,{
+  externals: [nodeExternals()]
+});
+
+module.exports = { umd, esm, prod, ext };
