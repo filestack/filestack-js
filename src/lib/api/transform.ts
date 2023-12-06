@@ -144,6 +144,20 @@ export enum EImageWatermarkPosition {
 /**
  * Convert to format
  */
+export enum EAudioTypes {
+  libmp3lame = 'libmp3lame',
+  libvorbis = 'libvorbis',
+  libfdk_aac = 'libfdk_aac',
+  dib_ac3 = 'dib_ac3',
+  pcm_s16le = 'pcm_s16le',
+  mp2 = 'mp2',
+  ac3 = 'ac3',
+  eac3 = 'eac3',
+}
+
+/**
+ * Convert to format
+ */
 export enum EVideoTypes {
     h264 = 'h264',
     h264_hi = 'h264.hi',
@@ -408,6 +422,7 @@ export interface TransformOptions {
     access?: EVideoAccess;
     container?: string;
     audio_bitrate?: number;
+    audio_codec?: EAudioTypes;
     upscale: boolean;
     video_bitrate?: number;
     audio_sample_rate?: number;

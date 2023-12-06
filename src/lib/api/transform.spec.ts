@@ -111,7 +111,7 @@ describe('OldTransforms', () => {
 
   it('return call toString on filelink when params are empty', () => {
     const testUrl = 'nanana';
-    spyOn(Filelink.prototype, 'toString').and.callFake(() => testUrl);
+    jest.spyOn(Filelink.prototype, 'toString').mockImplementation(() => testUrl);
 
     expect(transform(
       defaultSession,

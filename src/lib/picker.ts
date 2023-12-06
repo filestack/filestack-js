@@ -434,7 +434,7 @@ export interface PickerOptions {
   };
   /**
    * Customize the text on the cloud authentication screen in Picker.
-   * Use a cloud source name (see [[PickerOptions.fromSources]])
+   * Use a cloud source name (see {@link PickerOptions.fromSources})
    * or a 'default' as a key, then put your custom notice or consent
    * to the 'top' or the 'bottom' key to show it respectivly above or under 'Connect button'.
    *

@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import * as nock from 'nock';
+import nock from 'nock';
 import { Dispatch } from './dispatch';
 import { HttpAdapter } from './adapters/http';
 import { FsHttpMethod } from './types';
@@ -44,7 +44,13 @@ describe('Request/Dispatch', () => {
 
   describe('dispatch request', () => {
     it('should return req', async () => {
-      spyOn(adapter, 'request').and.callFake(() => Promise.resolve());
+      jest.spyOn(adapter, 'request').mockImplementation(() => Promise.resolve({
+        status: 200,
+        headers: {},
+        data: {},
+        config: {},
+        statusText: ''
+      }));
       const dispatch = new Dispatch(adapter);
       const req = { url, method: FsHttpMethod.GET, headers: {} };
       await dispatch.request(req);
@@ -55,16 +61,16 @@ describe('Request/Dispatch', () => {
   describe('dispatch request catch', () => {
     it('should return config base', async () => {
       const error = new FsRequestError('error msg', configBase, fsResponseBase);
-      spyOn(adapter, 'request').and.callFake(() => Promise.reject(error));
+      jest.spyOn(adapter, 'request').mockImplementation(() => Promise.reject(error));
       const dispatch = new Dispatch(adapter);
-      const request = await dispatch.request(configBase).catch(err => err);
+      await dispatch.request(configBase).catch(err => err);
       expect(adapter.request).toHaveBeenCalledWith(configBase);
     });
 
     it('should return config base', async () => {
       fsResponseBase.status = 500;
       const error = new FsRequestError('error msg', configBase, fsResponseBase, FsRequestErrorCode.NETWORK);
-      spyOn(adapter, 'request').and.callFake(() => Promise.reject(error));
+      jest.spyOn(adapter, 'request').mockImplementation(() => Promise.reject(error));
       const dispatch = new Dispatch(adapter);
       await dispatch.request(configBase).catch(err => err);
       expect(adapter.request).toHaveBeenCalledWith(configBase);
@@ -81,7 +87,7 @@ describe('Request/Dispatch', () => {
       };
       fsResponseBase.status = 500;
       const error = new FsRequestError('error msg', config, fsResponseBase, FsRequestErrorCode.NETWORK);
-      spyOn(adapter, 'request').and.callFake(() => Promise.reject(error));
+      jest.spyOn(adapter, 'request').mockImplementation(() => Promise.reject(error));
       const dispatch = new Dispatch(adapter);
       await dispatch.request(config).catch(err => err);
       expect(adapter.request).toHaveBeenCalledWith(config);

@@ -100,13 +100,11 @@ export const parseResponse = async (response: FsResponse): Promise<FsResponse> =
     }
 
     if (XMLValidator.validate(data) === true) {
-      const parser = new XMLParser({
+      response.data = new XMLParser({
         ignoreDeclaration: true,
         ignoreAttributes : true,
         trimValues: true,
-      });
-
-      response.data = parser.parse(data);
+      }).parse(data);
     }
   }
 

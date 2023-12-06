@@ -60,6 +60,7 @@ class HttpWritableStream extends Stream.Writable {
     }
 
     this.request.end();
+    return this;
   }
 }
 
