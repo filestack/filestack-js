@@ -199,7 +199,7 @@ describe('client', () => {
     const storeOptions = {};
     const token = {};
 
-    spyOn(Upload.prototype, 'upload').and.returnValue(Promise.resolve());
+    jest.spyOn(Upload.prototype, 'upload').mockImplementation(() => Promise.resolve());
 
     await client.upload(file, uploadOptions, storeOptions, token, defaultSecurity);
 
@@ -219,7 +219,7 @@ describe('client', () => {
     const uploadOptions = {};
     const storeOptions = {};
 
-    spyOn(Upload.prototype, 'upload').and.returnValue(Promise.resolve());
+    jest.spyOn(Upload.prototype, 'upload').mockImplementation(() => Promise.resolve());
 
     await client.upload(file, uploadOptions, storeOptions);
 
@@ -257,7 +257,7 @@ describe('client', () => {
     const storeOptions = {};
     const token = {};
 
-    spyOn(Upload.prototype, 'multiupload').and.returnValue(Promise.resolve());
+    jest.spyOn(Upload.prototype, 'multiupload').mockImplementation(() => Promise.resolve());
 
     await client.multiupload(files, uploadOptions, storeOptions, token, defaultSecurity);
 
@@ -277,7 +277,7 @@ describe('client', () => {
     const uploadOptions = {};
     const storeOptions = {};
 
-    spyOn(Upload.prototype, 'multiupload').and.returnValue(Promise.resolve());
+    jest.spyOn(Upload.prototype, 'multiupload').mockImplementation(() => Promise.resolve());
 
     await client.multiupload(files, uploadOptions, storeOptions);
 
@@ -296,7 +296,7 @@ describe('client', () => {
     const storeOptions = {};
     const token = {};
 
-    spyOn(Upload.prototype, 'multiupload').and.returnValue(Promise.resolve());
+    jest.spyOn(Upload.prototype, 'multiupload').mockImplementation(() => Promise.resolve());
 
     const mockOnError = jest.fn().mockName('mockOnError');
 

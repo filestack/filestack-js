@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 import Debug from 'debug';
-import * as EventEmitter from 'eventemitter3';
+import EventEmitter from 'eventemitter3';
 
 import { File, UploadTags } from './../file';
 import { StoreUploadOptions } from './../types';

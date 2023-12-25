@@ -18,8 +18,8 @@
 import { Session } from '../client';
 import { Hosts } from './../../config';
 import { ExtensionsMap } from './extensions';
-import { fromBuffer } from 'file-type';
-import * as isutf8 from 'isutf8';
+import {fromBuffer} from 'file-type';
+import isutf8 from 'isutf8';
 
 /**
  * Resolve cdn url based on handle type
@@ -58,9 +58,7 @@ export const resolveHost = (urls: Hosts, cname: string): Hosts => {
   const hosts = /filestackapi.com|filestackcontent.com/i;
 
   Object.keys(urls).forEach(key => {
-    if (!new RegExp(cname, 'i').test(urls[key])) {
-      urls[key] = urls[key].replace(hosts, cname);
-    }
+    urls[key] = urls[key].replace(hosts, cname);
   });
 
   return urls;
@@ -101,10 +99,10 @@ export const uniqueId = (len: number = 10): string => {
  * Check if input is a svg
  *
  * @param {Uint8Array | Buffer} file
- * @returns {Promise<string>} - mimetype
+ * @returns {string} - mimetype
  */
 export const getMimetype = async(file: Uint8Array | Buffer, name?: string): Promise<string> => {
-  let type = await fromBuffer(file);
+  let type =  await fromBuffer(file);
 
   const excludedMimetypes = ['text/plain', 'application/octet-stream', 'application/x-ms', 'application/x-msi', 'application/zip'];
 
@@ -188,7 +186,7 @@ export type SanitizeOptions =
  * @param name
  * @param {bool} options  - enable,disable sanitizer, default enabled
  * @param {string} options.replacement - replacement for sanitized chars defaults to "-"
- * @param {string[]} options.exclude - array with excluded chars default - ['\', '{', '}','|', '%', '`', '"', "'", '~', '[', ']', '#', '|', '^', '<', '>']
+ * @param {string[]} options.exclude - array with excluded chars default - `['\', '{', '}','|', '%', '`', '"', "'", '~', '[', ']', '#', '|', '^', '<', '>']`
  */
 export const sanitizeName = (name: string, options: SanitizeOptions = true): string => {
   if (typeof options === 'boolean' && !options) {

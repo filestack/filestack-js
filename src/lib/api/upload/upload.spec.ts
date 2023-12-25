@@ -54,7 +54,7 @@ const mockExecute = jest.fn();
 
 describe('Api/Upload/upload', () => {
   beforeAll(() => {
-    spyOn(S3Uploader.prototype, 'execute').and.callFake(mockExecute);
+    jest.spyOn(S3Uploader.prototype, 'execute').mockImplementation(mockExecute);
   });
 
   describe('Settings', () => {
@@ -278,9 +278,10 @@ describe('Api/Upload/upload', () => {
     };
 
     it('should handle correct progress event', async () => {
-      spyOn(S3Uploader.prototype, 'on').and.callFake((ev, cb) => {
+      jest.spyOn(S3Uploader.prototype, 'on').mockImplementation((ev, cb) => {
         cb(progress1);
         cb(progress100);
+        return this;
       });
 
       const progressMock = jest.fn();
@@ -309,8 +310,9 @@ describe('Api/Upload/upload', () => {
         });
       });
 
-      spyOn(S3Uploader.prototype, 'on').and.callFake((ev, cb) => {
+      jest.spyOn(S3Uploader.prototype, 'on').mockImplementation((ev, cb) => {
         progressCb = cb;
+        return this;
       });
 
       const progressMock = jest.fn();
@@ -341,8 +343,9 @@ describe('Api/Upload/upload', () => {
         });
       });
 
-      spyOn(S3Uploader.prototype, 'on').and.callFake((ev, cb) => {
+      jest.spyOn(S3Uploader.prototype, 'on').mockImplementation((ev, cb) => {
         progressCb = cb;
+        return this;
       });
 
       const progressMock = jest.fn();

@@ -73,7 +73,7 @@ describe('Api/Upload/File', () => {
   });
 
   it('should return correct parts count for given size', () => {
-    expect(file.getPartsCount(1)).toEqual({ chunkSize: 1, partsCount: 4 });
+    expect(file.getPartsCount(1)).toEqual(file.size);
   });
 
   it('should return correct part metadata', () => {

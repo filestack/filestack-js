@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "esModuleInterop": true,
     "target": "es5",
     "outDir": "build/main",
     "rootDir": "src",
