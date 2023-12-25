@@ -224,5 +224,5 @@ export abstract class UploaderAbstract extends EventEmitter {
 
   public abstract addFile(file: File): string;
 
-  public abstract async execute(): Promise<any>;
+  public abstract execute(): Promise<any>;
 }

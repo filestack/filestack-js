@@ -54,12 +54,13 @@ class HttpWritableStream extends Stream.Writable {
     this.request.write(chunk, encoding, cb);
   }
 
-  end(chunk) {
+  end(chunk: any): this {
     if (chunk) {
       this.request.write(chunk);
     }
 
     this.request.end();
+    return this;
   }
 }
 
