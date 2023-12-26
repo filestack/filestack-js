@@ -72,6 +72,15 @@ describe('utils:index', () => {
       const result = resolveHost(hosts, cname);
       checkHosts(result, cname);
     });
+
+    it('should be idempotent', () => {
+      const cname = 'stage.filestackapi.com';
+      const firstResult = resolveHost(hosts, cname);
+      const copiedResult = JSON.parse(JSON.stringify(firstResult));
+      const secondResult = resolveHost(copiedResult, cname);
+
+      expect(JSON.stringify(firstResult)).toEqual(JSON.stringify(secondResult));
+    });
   });
 
   describe('removeEmpty', () => {
