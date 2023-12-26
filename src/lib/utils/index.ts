@@ -18,7 +18,7 @@
 import { Session } from '../client';
 import { Hosts } from './../../config';
 import { ExtensionsMap } from './extensions';
-import fileType from 'file-type';
+import { fromBuffer } from 'file-type';
 import * as isutf8 from 'isutf8';
 
 /**
@@ -103,8 +103,8 @@ export const uniqueId = (len: number = 10): string => {
  * @param {Uint8Array | Buffer} file
  * @returns {string} - mimetype
  */
-export const getMimetype = (file: Uint8Array | Buffer, name?: string): string => {
-  let type = fileType(file);
+export const getMimetype = async(file: Uint8Array | Buffer, name?: string): Promise<string> => {
+  let type = await fromBuffer(file);
 
   const excludedMimetypes = ['text/plain', 'application/octet-stream', 'application/x-ms', 'application/x-msi', 'application/zip'];
 

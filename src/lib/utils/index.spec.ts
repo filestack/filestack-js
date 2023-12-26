@@ -72,7 +72,7 @@ describe('utils:index', () => {
       const result = resolveHost(hosts, cname);
       checkHosts(result, cname);
     });
-  
+
     it('should be idempotent', () => {
       const cname = 'stage.filestackapi.com';
       const firstResult = resolveHost(hosts, cname);
