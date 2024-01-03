@@ -179,6 +179,7 @@ export const getFile = (input: InputFile, sanitizeOptions?: SanitizeOptions): Pr
     async res => {
       let mime = file.type;
       let minimumBytes = 4100;
+      console.log("just for fun")
       if (!file.type  || file.type.length === 0 || file.type === 'text/plain') {
         mime = await getMimetype(await res.slice(0, minimumBytes), filename);
       }
