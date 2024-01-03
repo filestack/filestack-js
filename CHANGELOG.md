@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.28.0](https://github.com/filestack/filestack-js/compare/v3.27.0...v3.28.0) (2023-12-12)
+
+### Updgrade
+  * **Dependency-upgrade:** Upgraded packages to the latest possible version while maintaining backward compatibility. 
+
+## [3.27.0](https://github.com/filestack/filestack-js/compare/v3.26.1...v3.27.0) (2023-08-07)
+
+### Fix
+  * **fast-xml-parser:** It's a security upgrade based on ([#518](https://github.com/filestack/filestack-js/issues/518)) . Dependabot did the version bump and then fixed the tests([#521](https://github.com/filestack/filestack-js/pull/521)).
+
 ## [3.26.1](https://github.com/filestack/filestack-js/compare/v3.26.0...v3.26.1) (2023-04-06)
 
 ### Fix

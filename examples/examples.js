@@ -101,7 +101,7 @@ app.get('/*', (req, res) => {
       return;
     }
 
-    const config = yaml.safeLoad(filesContent.config);
+    const config = yaml.load(filesContent.config);
     let tpl = template + '';
     tpl = tpl.replace('{{title}}', config.name || '')
       .replace('{{content}}', filesContent.index)

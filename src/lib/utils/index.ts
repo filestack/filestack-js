@@ -19,7 +19,7 @@ import { Session } from '../client';
 import { Hosts } from './../../config';
 import { ExtensionsMap } from './extensions';
 import fileType from 'file-type';
-import * as isutf8 from 'isutf8';
+import isutf8 from 'isutf8';
 
 /**
  * Resolve cdn url based on handle type
@@ -186,7 +186,7 @@ export type SanitizeOptions =
  * @param name
  * @param {bool} options  - enable,disable sanitizer, default enabled
  * @param {string} options.replacement - replacement for sanitized chars defaults to "-"
- * @param {string[]} options.exclude - array with excluded chars default - ['\', '{', '}','|', '%', '`', '"', "'", '~', '[', ']', '#', '|', '^', '<', '>']
+ * @param {string[]} options.exclude - array with excluded chars default - `['\', '{', '}','|', '%', '`', '"', "'", '~', '[', ']', '#', '|', '^', '<', '>']`
  */
 export const sanitizeName = (name: string, options: SanitizeOptions = true): string => {
   if (typeof options === 'boolean' && !options) {

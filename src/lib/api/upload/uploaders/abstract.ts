@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 import Debug from 'debug';
-import * as EventEmitter from 'eventemitter3';
+import EventEmitter from 'eventemitter3';
 
 import { File, UploadTags } from './../file';
 import { StoreUploadOptions } from './../types';
@@ -224,5 +224,5 @@ export abstract class UploaderAbstract extends EventEmitter {
 
   public abstract addFile(file: File): string;
 
-  public abstract async execute(): Promise<any>;
+  public abstract execute(): Promise<any>;
 }

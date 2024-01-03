@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "esModuleInterop": true,
     "target": "es5",
     "outDir": "build/main",
     "rootDir": "src",
@@ -45,26 +46,14 @@
 
   /* Generated Docs */
   "typedocOptions": {
-    "emitDecoratorMetadata": true,
     "exclude": "**/*.spec.ts",
     "excludeExternals": true,
     "excludePrivate": true,
     "excludeProtected": true,
-    "experimentalDecorators": true,
     "hideGenerator": true,
-    "ignoreCompilerErrors": true,
-    "includeDeclarations": false,
-    "mode": "file",
     "name": "filestack-js",
-    "module": "commonjs",
-    "moduleResolution": "node",
     "out": "build/docs",
-    "preserveConstEnums": true,
     "readme": "README.md",
-    "stripInternal": true,
-    "suppressExcessPropertyErrors": true,
-    "suppressImplicitAnyIndexErrors": true,
-    "target": "ES6",
-    "theme": "minimal"
+    "theme": "default"
   }
 }

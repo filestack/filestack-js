@@ -17,9 +17,9 @@
 
 import { S3Uploader } from './s3';
 import { File } from './../file';
-import * as nock from 'nock';
+import nock from 'nock';
 import { UploadMode, DEFAULT_STORE_LOCATION, INTELLIGENT_CHUNK_SIZE, DEFAULT_PART_SIZE, INTELLIGENT_MOBILE_CHUNK_SIZE } from './abstract';
-import * as utils from '../../../utils';
+import * as utils from '../../../utils/index.node';
 
 const testBufferSize = 1024 * 1024 * 9;
 const testSmallBufferSize = 1024 * 1024 * 2;
@@ -159,7 +159,7 @@ describe('Api/Upload/Uploaders/S3', () => {
     });
 
     it('should set intelligent mobile chunk size on mobile devices', () => {
-      spyOn(utils, 'isMobile').and.returnValue(true);
+      jest.spyOn(utils, 'isMobile').mockReturnValue(true);
       const u = new S3Uploader({});
       return expect(u.getIntelligentChunkSize()).toEqual(INTELLIGENT_MOBILE_CHUNK_SIZE);
     });
@@ -258,7 +258,7 @@ describe('Api/Upload/Uploaders/S3', () => {
       expect(mockStart).not.toHaveBeenCalled();
     });
 
-    it('should throw error on wrong etag field', async (done) => {
+    it('should throw error on wrong etag field', async () => {
       mockStart.mockReturnValue({
         uri: mockedUri,
         region: mockRegion,
@@ -276,7 +276,6 @@ describe('Api/Upload/Uploaders/S3', () => {
 
       u.on('error', (err) => {
         expect(err.message).toEqual('Cannot upload file, check S3 bucket settings');
-        done();
       });
 
       await u.execute();
@@ -596,7 +595,8 @@ describe('Api/Upload/Uploaders/S3', () => {
         const putRequestTimeout = 300;
         let delayApplied = false;
 
-        interceptorS3.reply(
+        nock.removeInterceptor(interceptorS3);
+        scope.put('/fakes3').reply(
           function(url, _, cb) {
             if (!delayApplied) {
               delayApplied = true;
@@ -604,11 +604,8 @@ describe('Api/Upload/Uploaders/S3', () => {
                 cb(504);
               }, 3000);
             } else {
-              cb(null, mockPut(url, this.req.headers));
+              cb(null, [201, mockPut(url, this.req.headers), {etag: 'test'}]);
             }
-          },
-          {
-            etag: 'test',
           }
         );
 
@@ -617,6 +614,7 @@ describe('Api/Upload/Uploaders/S3', () => {
         u.setApikey(testApikey);
         u.setTimeout(putRequestTimeout);
         u.setUploadMode(UploadMode.INTELLIGENT);
+        u.setIntelligentChunkSize(INTELLIGENT_CHUNK_SIZE);
 
         u.addFile(getSmallTestFile());
         const res = await u.execute();
@@ -682,7 +680,8 @@ describe('Api/Upload/Uploaders/S3', () => {
       });
 
       it('should exit when chunk size reaches min chunk size', async () => {
-        interceptorS3.reply((url, _, cb) => cb('Error'));
+        nock.removeInterceptor(interceptorS3);
+        scope.put('/fakes3').reply((url, _, cb) => cb('Error'));
 
         const u = new S3Uploader({});
         u.setUrl(testHost);
@@ -754,17 +753,15 @@ describe('Api/Upload/Uploaders/S3', () => {
         });
 
         let networkFail = true;
-        interceptorS3.reply(
+        nock.removeInterceptor(interceptorS3);
+        scope.put('/fakes3').reply(
           function(url, _, cb) {
             if (networkFail) {
               networkFail = false;
               return cb('Error');
             }
 
-            cb(null, mockPut(url, this.req.headers));
-          },
-          {
-            etag: 'test',
+            cb(null, [201, mockPut(url, this.req.headers), { etag: 'test'}]);
           }
         );
 
@@ -772,6 +769,7 @@ describe('Api/Upload/Uploaders/S3', () => {
         u.setUrl(testHost);
         u.setApikey(testApikey);
         u.setUploadMode(UploadMode.FALLBACK);
+        u.setIntelligentChunkSize(INTELLIGENT_CHUNK_SIZE);
         u.addFile(getSmallTestFile());
 
         const res = await u.execute();
@@ -831,10 +829,7 @@ describe('Api/Upload/Uploaders/S3', () => {
               });
             }
 
-            cb(null, mockPut(url, this.req.headers));
-          },
-          {
-            etag: 'test',
+            cb(null, [201, mockPut(url, this.req.headers), {etag: 'test'}]);
           }
         );
 
@@ -1022,24 +1017,22 @@ describe('Api/Upload/Uploaders/S3', () => {
       expect(mockComplete).not.toHaveBeenCalled();
     });
 
-    it('should repsect retry config', async () => {
+    it('should respect retry config', async () => {
       // simulate first request network fail
       let networkFail = true;
 
       nock.removeInterceptor(interceptorS3);
       scope.persist(false);
 
-      interceptorS3.twice().reply(
+      scope.put('/fakes3').twice().reply(
         function(url, _, cb) {
           if (networkFail) {
             networkFail = false;
             return cb(Error('error'));
           }
 
-          cb(null, mockPut(url, this.req.headers));
-        },
-        { etag: 'test' }
-      );
+          cb(null, [201, mockPut(url, this.req.headers), { etag: 'test'}]);
+        });
 
       const u = new S3Uploader({});
       u.setUrl(testHost);

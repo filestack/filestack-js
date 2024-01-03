@@ -1,5 +1,4 @@
 module.exports = {
-  name: 'filestack-js',
   collectCoverage: true,
   clearMocks: true,
   projects: [
@@ -11,11 +10,11 @@ module.exports = {
     moduleFileExtensions: ['js'],
   }, {
     displayName: 'Browser',
-    testMatch: ['<rootDir>/src/**/*.browser.spec.ts'],
+    testMatch: ['<rootDir>/build/main/**/*.spec.browser.js'],
     clearMocks: true,
     testEnvironment: 'jsdom',
+    setupFilesAfterEnv: ['<rootDir>/build/main/jest_browser_setup.js'],
     setupFiles: ['jest-localstorage-mock'],
-    testMatch: [ '<rootDir>/build/main/**/*.spec.browser.js'],
     moduleFileExtensions: ['js'],
     moduleNameMapper: {
       "\(.*)\\.node": "$1.browser",

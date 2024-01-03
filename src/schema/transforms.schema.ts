@@ -1046,6 +1046,9 @@ export const TransformSchema = {
           minimum: 1,
           maximum: 999,
         },
+        audio_codec: {
+          type: 'string',
+        },
         audio_channels: {
           type: 'integer',
           minimum: 1,
