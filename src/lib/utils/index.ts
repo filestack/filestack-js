@@ -102,8 +102,12 @@ export const uniqueId = (len: number = 10): string => {
  * @returns {string} - mimetype
  */
 export const getMimetype = async(file: Uint8Array | Buffer, name?: string): Promise<string> => {
-  let type = await fromBuffer(file);
-
+  let type;
+  try {
+     type = await fromBuffer(file);
+  } catch(e) {
+    return 'application/octet-stream'
+  }
   const excludedMimetypes = ['text/plain', 'application/octet-stream', 'application/x-ms', 'application/x-msi', 'application/zip'];
 
   if (type && excludedMimetypes.indexOf(type.mime) === -1) {
