@@ -17,7 +17,6 @@
 import { File as FsFile } from './file';
 import { SanitizeOptions, getMimetype } from './../../utils';
 import { FilestackError } from './../../../filestack_error';
-// import fileType from 'file-type';
 
 export type RawFile = Blob | Buffer | File | string;
 export type NamedInputFile = {

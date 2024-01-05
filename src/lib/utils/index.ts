@@ -106,11 +106,7 @@ export const getMimetype = async(file: Uint8Array | Buffer, name?: string): Prom
   try {
      type = await fromBuffer(file);
   } catch(e) {
-    // const mime = extensionToMime(name);
-    // if (mime) {
-    //   return mime;
-    // }
-    console.log("catching")
+    console.warn("An exception occurred while processing the buffer:", e.message);
   }
   const excludedMimetypes = ['text/plain', 'application/octet-stream', 'application/x-ms', 'application/x-msi', 'application/zip'];
 
@@ -142,7 +138,6 @@ export const getMimetype = async(file: Uint8Array | Buffer, name?: string): Prom
     return type.mime;
   }
 
-  // return 'application/octet-stream';
 };
 
 /**
