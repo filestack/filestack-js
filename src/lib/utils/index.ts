@@ -106,7 +106,10 @@ export const getMimetype = async(file: Uint8Array | Buffer, name?: string): Prom
   try {
      type = await fromBuffer(file);
   } catch(e) {
-    return 'application/octet-stream'
+    const mime = extensionToMime(name);
+    if (mime) {
+      return mime;
+    }
   }
   const excludedMimetypes = ['text/plain', 'application/octet-stream', 'application/x-ms', 'application/x-msi', 'application/zip'];
 
