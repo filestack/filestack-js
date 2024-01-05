@@ -138,7 +138,7 @@ export const getMimetype = async(file: Uint8Array | Buffer, name?: string): Prom
     return type.mime;
   }
 
-  return 'application/octet-stream';
+  // return 'application/octet-stream';
 };
 
 /**
