@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.29.0](https://github.com/filestack/filestack-js/compare/v3.28.0...v3.29.0) (2024-01-05)
+
+### Updgrade
+  * **file-type:** Upgraded file-type to v16.5.4. 
+
 ## [3.28.0](https://github.com/filestack/filestack-js/compare/v3.27.0...v3.28.0) (2023-12-12)
 
 ### Updgrade
