@@ -27,15 +27,16 @@ const defaultSession = {
 
 describe('api:upload:preview', () => {
   beforeEach(() => {
-    spyOn(window, 'open').and.returnValue(true);
+    jest.spyOn(window, 'open').mockImplementation();
 
-    spyOn(document, 'createElement').and.returnValue({
+    const createdElement: any = {
       src: '',
       width: '',
       height: '',
-    });
+    };
+    jest.spyOn(document, 'createElement').mockReturnValue(createdElement);
 
-    spyOn(document, 'getElementById').and.callFake((id) => {
+    jest.spyOn(document, 'getElementById').mockImplementation((id) => {
       let obj;
 
       if (id === 'testId') {

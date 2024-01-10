@@ -17,7 +17,6 @@
 import { File as FsFile } from './file';
 import { SanitizeOptions, getMimetype } from './../../utils';
 import { FilestackError } from './../../../filestack_error';
-import fileType from 'file-type';
 
 export type RawFile = Blob | Buffer | File | string;
 export type NamedInputFile = {
@@ -178,8 +177,9 @@ export const getFile = (input: InputFile, sanitizeOptions?: SanitizeOptions): Pr
   return readFile(file).then(
     async res => {
       let mime = file.type;
+      let minimumBytes = 4100;
       if (!file.type  || file.type.length === 0 || file.type === 'text/plain') {
-        mime = getMimetype(await res.slice(0, fileType.minimumBytes), filename);
+        mime = await getMimetype(await res.slice(0, minimumBytes), filename);
       }
 
       return new FsFile(

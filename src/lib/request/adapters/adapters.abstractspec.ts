@@ -16,7 +16,7 @@
  */
 
 /* istanbul ignore file */
-import * as nock from 'nock';
+import nock from 'nock';
 import * as zlib from 'zlib';
 import { FsHttpMethod, FsRequestOptions } from '../types';
 import { FsCancelToken } from '../token';
@@ -34,9 +34,9 @@ export const adaptersHttpAbstract = (adapter: any, adapterName: string) => {
 
     beforeEach(() => {
       scope = nock(url).defaultReplyHeaders({
-        'access-control-allow-origin': req => req.headers['origin'],
-        'access-control-allow-methods': req => req.headers['access-control-request-method'],
-        'access-control-allow-headers': req => req.headers['access-control-request-headers'],
+        'access-control-allow-origin': function (req) { return req.getHeader('origin')?.toString(); },
+        'access-control-allow-methods': function (req) { return req.getHeader('access-control-request-method')?.toString(); },
+        'access-control-allow-headers': function (req) { return req.getHeader('access-control-request-headers')?.toString(); },
       });
 
       if (adapterName === 'xhr') {
@@ -64,9 +64,9 @@ export const adaptersHttpAbstract = (adapter: any, adapterName: string) => {
         const httpUrl = url.replace('https', 'http');
 
         const scopeHttp = nock(httpUrl).defaultReplyHeaders({
-          'access-control-allow-origin': req => req.headers['origin'],
-          'access-control-allow-methods': req => req.headers['access-control-request-method'],
-          'access-control-allow-headers': req => req.headers['access-control-request-headers'],
+          'access-control-allow-origin': function (req) { return req.getHeader('origin')?.toString(); },
+          'access-control-allow-methods': function (req) { return req.getHeader('access-control-request-method')?.toString(); },
+          'access-control-allow-headers': function (req) { return req.getHeader('access-control-request-headers')?.toString(); },
         });
 
         if (adapterName === 'xhr') {

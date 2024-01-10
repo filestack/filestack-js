@@ -2,6 +2,31 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.29.0](https://github.com/filestack/filestack-js/compare/v3.28.0...v3.29.0) (2024-01-05)
+
+### Updgrade
+  * **file-type:** Upgraded file-type to v16.5.4. 
+
+## [3.28.0](https://github.com/filestack/filestack-js/compare/v3.27.0...v3.28.0) (2023-12-12)
+
+### Updgrade
+  * **Dependency-upgrade:** Upgraded packages to the latest possible version while maintaining backward compatibility. 
+
+## [3.27.0](https://github.com/filestack/filestack-js/compare/v3.26.1...v3.27.0) (2023-08-07)
+
+### Fix
+  * **fast-xml-parser:** It's a security upgrade based on ([#518](https://github.com/filestack/filestack-js/issues/518)) . Dependabot did the version bump and then fixed the tests([#521](https://github.com/filestack/filestack-js/pull/521)).
+
+## [3.26.1](https://github.com/filestack/filestack-js/compare/v3.26.0...v3.26.1) (2023-04-06)
+
+### Fix
+ * **picker:** Fixed console error during file select and upload
+
+## [3.26.0](https://github.com/filestack/filestack-js/compare/v3.25.0...v3.26.0) (2023-03-30)
+### Feature
+ * **picker:** Added possibility to predefine the results for the imagesearch in Picker 
+ * **picker:** Picker - Display Unsplash Search and Good Old Image Search as two tabs of one "source"
+
 ## [3.25.0](https://github.com/filestack/filestack-js/compare/v3.24.1...v3.25.0) (2021-10-05)
 
 

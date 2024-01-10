@@ -80,6 +80,7 @@ export const ExtensionsMap = {
   'application/octet-stream': [
     'bin',
     'dms',
+    'tdms',
     'lrf',
     'mar',
     'so',

@@ -21,7 +21,7 @@ import { Session, Security, Client } from './../client';
 import { PickerOptions } from './../picker';
 import { FsRequest } from '../request';
 import { cleanUpCallbacks } from './../utils';
-import * as cloneDeep from 'lodash.clonedeep';
+import cloneDeep from 'lodash.clonedeep';
 
 // const debug = Debug('fs:prefetch');
 
