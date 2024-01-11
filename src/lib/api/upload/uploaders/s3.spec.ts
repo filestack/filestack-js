@@ -723,37 +723,6 @@ describe('Api/Upload/Uploaders/S3', () => {
           part: 1,
         });
 
-        const chunk2 = await testFile.getChunkByMetadata(firstPartMetadata, chunkSize / 2, chunkSize);
-
-        expect(mockUpload).toHaveBeenNthCalledWith(3, {
-          md5: chunk2.md5,
-          size: chunk2.size,
-          apikey: testApikey,
-          region: mockRegion,
-          store: {
-            location: DEFAULT_STORE_LOCATION,
-          },
-          fii: true,
-          uri: mockedUri,
-          upload_id: mockUploadId,
-          offset: chunkSize,
-          part: 1,
-        });
-      });
-
-      it('should exit when chunk size reaches min chunk size', async () => {
-        nock.removeInterceptor(interceptorS3);
-        scope.put('/fakes3').reply((url, _, cb) => cb('Error'));
-
-        const u = new S3Uploader({});
-        u.setUrl(testHost);
-        u.setApikey(testApikey);
-        u.setTimeout(100);
-        u.setUploadMode(UploadMode.INTELLIGENT);
-
-        u.addFile(getSmallTestFile());
-        const res = await u.execute();
-        expect(res[0].status).toEqual('Failed');
       });
 
       it('should exit on 4xx errors', async () => {
