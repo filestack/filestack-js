@@ -106,11 +106,9 @@ export const getMimetype = async(file: Uint8Array | Buffer, name?: string): Prom
   try {
      type = await fromBuffer(file);
   } catch(e) {
-    console.warn("An exception occurred while processing the buffer:", e.message);
-    if (!name) {
+    // console.warn("An exception occurred while processing the buffer:", e.message);
       console.log("here: ", name);
       return 'image/png';
-    }
 
   }
   const excludedMimetypes = ['text/plain', 'application/octet-stream', 'application/x-ms', 'application/x-msi', 'application/zip'];
