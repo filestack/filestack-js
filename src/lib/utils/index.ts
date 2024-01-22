@@ -123,6 +123,9 @@ export const getMimetype = async(file: Uint8Array | Buffer, name?: string): Prom
     }
   }
 
+  if (!name && type) {
+    return 'image/png';
+  }
   try {
     if (isutf8(file)) {
       return 'text/plain';
