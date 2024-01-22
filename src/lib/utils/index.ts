@@ -148,7 +148,7 @@ export const getMimetype = async(file: Uint8Array | Buffer, name?: string): Prom
  * @return string|boolean
  */
 export const extensionToMime = (ext: string) => {
-  console.log("getting mimetype from ext");
+  console.log("getting mimetype from ext: ",ext);
   if (!ext || ext.length === 0) {
     return;
   }
