@@ -122,8 +122,10 @@ export const getMimetype = async(file: Uint8Array | Buffer, name?: string): Prom
       return mime;
     }
   }
-
+  console.log("name: ",name);
+  console.log("type: ",type);
   if (!name && type) {
+    console.log("here: ",name);
     return 'image/png';
   }
   try {
