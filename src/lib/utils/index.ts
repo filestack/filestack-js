@@ -107,7 +107,7 @@ export const getMimetype = async(file: Uint8Array | Buffer, name?: string): Prom
      type = await fromBuffer(file);
   } catch(e) {
     console.warn("An exception occurred while processing the buffer:", e.message);
-    if (name === undefined && e.message === 'Buffer is not defined') {
+    if (!name) {
       console.log("here: ", name);
       return 'image/png';
     }
