@@ -110,6 +110,12 @@ export const getMimetype = async(file: Uint8Array | Buffer, name?: string): Prom
   }
   const excludedMimetypes = ['text/plain', 'application/octet-stream', 'application/x-ms', 'application/x-msi', 'application/zip'];
 
+  const isPNG = check([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]);
+
+  if (isPNG(file)) {
+    console.log("is PNG");
+    return 'image/png';
+  }
   console.log("name: ",name);
   if (type && excludedMimetypes.indexOf(type.mime) === -1) {
     return type.mime;
@@ -122,12 +128,7 @@ export const getMimetype = async(file: Uint8Array | Buffer, name?: string): Prom
       return mime;
     }
   }
-  console.log("name: ",name);
-  console.log("type: ",type);
-  if (!name && type) {
-    console.log("here: ",name);
-    return 'image/png';
-  }
+
   try {
     if (isutf8(file)) {
       return 'text/plain';
@@ -144,7 +145,13 @@ export const getMimetype = async(file: Uint8Array | Buffer, name?: string): Prom
     return type.mime;
   }
 
+  return 'application/octet-stream';
+
 };
+
+function check(signature) {
+  return (buffer) => signature.every((byte, i) => byte === buffer[i]);
+}
 
 /**
  * Change extension to according mimetype using ext=>mimetype map
