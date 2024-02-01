@@ -111,6 +111,8 @@ export const getMimetype = async(file: Uint8Array | Buffer, name?: string): Prom
 
   if (name && name.indexOf('.') > -1) {
     const mime = extensionToMime(name);
+    console.log("mime: ", mime);
+
     if (mime) {
       return mime;
     }
