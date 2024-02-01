@@ -108,7 +108,7 @@ export const getMimetype = async(file: Uint8Array | Buffer, name?: string): Prom
   } catch(e) {
     console.warn("An exception occurred while processing the buffer:", e.message);
   }
-  console.log("name: ", name);
+  console.log("name: ", name.indexOf('.'));
   if (name && name.indexOf('.') > -1) {
     const mime = extensionToMime(name);
 
