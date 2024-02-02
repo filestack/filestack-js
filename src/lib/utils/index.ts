@@ -106,11 +106,12 @@ export const getMimetype = async(file: Uint8Array | Buffer, name?: string): Prom
   try {
      type = await fromBuffer(file);
   } catch(e) {
-    // A temporary solution for some PNG files when resized
-    if (name == undefined){
+    // A temporary solution for some PNG files when resize
+    if (!name){
       return 'image/png';
     }
   }
+
   if (name && name.indexOf('.') > -1) {
     const mime = extensionToMime(name);
 
@@ -123,12 +124,6 @@ export const getMimetype = async(file: Uint8Array | Buffer, name?: string): Prom
   if (type && excludedMimetypes.indexOf(type.mime) === -1) {
     return type.mime;
   }
-  // if we cant find types by extensions and we have magic bytes fallback to it
-  if (type) {
-    console.log('in the cond: ',type.mime)
-    return type.mime;
-  }
-  console.log('after the cond: ',type)
 
   try {
     if (isutf8(file)) {
@@ -141,7 +136,10 @@ export const getMimetype = async(file: Uint8Array | Buffer, name?: string): Prom
   // this is only fallback, omit it in coverage
   /* istanbul ignore next */
 
-
+  // if we cant find types by extensions and we have magic bytes fallback to it
+  if (type) {
+    return type.mime;
+  }
 
 };
 
