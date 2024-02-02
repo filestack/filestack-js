@@ -112,7 +112,7 @@ export const getMimetype = async(file: Uint8Array | Buffer, name?: string): Prom
       return 'image/png';
     }
   }
-
+  console.log('name2: ',name)
   if (name && name.indexOf('.') > -1) {
     const mime = extensionToMime(name);
 
