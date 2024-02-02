@@ -120,7 +120,7 @@ export const getMimetype = async(file: Uint8Array | Buffer, name?: string): Prom
       return mime;
     }
   }
-  const excludedMimetypes = ['text/plain', 'application/octet-stream', 'application/x-ms', 'application/x-msi', 'application/zip'];
+  const excludedMimetypes = ['text/plain','image/png', 'application/octet-stream', 'application/x-ms', 'application/x-msi', 'application/zip'];
 
   if (type && excludedMimetypes.indexOf(type.mime) === -1) {
     return type.mime;
