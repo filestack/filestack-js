@@ -125,8 +125,10 @@ export const getMimetype = async(file: Uint8Array | Buffer, name?: string): Prom
   }
   // if we cant find types by extensions and we have magic bytes fallback to it
   if (type) {
+    console.log('in the cond: ',type.mime)
     return type.mime;
   }
+  console.log('after the cond: ',type)
 
   try {
     if (isutf8(file)) {
