@@ -106,6 +106,7 @@ export const getMimetype = async(file: Uint8Array | Buffer, name?: string): Prom
   try {
      type = await fromBuffer(file);
   } catch(e) {
+    console.log('name: ',name)
     // A temporary solution for some PNG files when resized
     if (!name){
       return 'image/png';
