@@ -106,7 +106,10 @@ export const getMimetype = async(file: Uint8Array | Buffer, name?: string): Prom
   try {
      type = await fromBuffer(file);
   } catch(e) {
-    console.warn("An exception occurred while processing the buffer:", e.message);
+    // A temporary solution for some PNG files when resized
+    if (!name){
+      return 'image/png';
+    }
   }
 
   if (name && name.indexOf('.') > -1) {
