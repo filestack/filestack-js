@@ -210,7 +210,30 @@ describe('client', () => {
 
     expect(Upload.prototype.setToken).toHaveBeenCalledWith(token);
     expect(Upload.prototype.setSecurity).toHaveBeenCalledWith(defaultSecurity);
-    expect(Upload.prototype.upload).toHaveBeenCalledWith(file);
+    expect(Upload.prototype.upload).toHaveBeenCalledWith(file, undefined);
+  });
+
+  it('should be able to upload file with alt text', async () => {
+    const client = new Client(defaultApikey);
+    const file = 'anyFile';
+    const uploadOptions = {
+      altText: 'alt',
+    };
+    const storeOptions = {};
+    const token = {};
+
+    jest.spyOn(Upload.prototype, 'upload').mockImplementation(() => Promise.resolve());
+
+    await client.upload(file, uploadOptions, storeOptions, token, defaultSecurity);
+
+    expect(Upload.prototype.setSession).toHaveBeenCalledWith({
+      apikey: defaultApikey,
+      urls: sessionURls,
+    });
+
+    expect(Upload.prototype.setToken).toHaveBeenCalledWith(token);
+    expect(Upload.prototype.setSecurity).toHaveBeenCalledWith(defaultSecurity);
+    expect(Upload.prototype.upload).toHaveBeenCalledWith(file, uploadOptions.altText);
   });
 
   it('should be able to upload file without token and security', async () => {
@@ -228,7 +251,7 @@ describe('client', () => {
       urls: sessionURls,
     });
 
-    expect(Upload.prototype.upload).toHaveBeenCalledWith(file);
+    expect(Upload.prototype.upload).toHaveBeenCalledWith(file, undefined);
   });
 
   it('should emit error', async () => {
