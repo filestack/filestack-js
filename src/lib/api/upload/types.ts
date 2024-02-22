@@ -81,6 +81,8 @@ export interface UploadOptions {
    * @memberof UploadOptions
    */
   tags?: UploadTags;
+
+  altText?: string;
 }
 
 export type StoreUploadOptions = StoreBaseParams & {

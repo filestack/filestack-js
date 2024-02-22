@@ -81,5 +81,9 @@ export const UploadParamsSchema = {
         maxlength: 256,
       },
     },
+    altText: {
+      type: ['string', 'null'],
+      maxLength: 60,
+    },
   },
 };

@@ -79,6 +79,8 @@ export class File {
 
   public uploadTags: UploadTags;
 
+  public alt: string;
+
   constructor(private readonly _file: FileInstance, private readonly _sanitizeOptions?: SanitizeOptions) {
     this._file.name = sanitizeName(this._file.name, this._sanitizeOptions);
   }
