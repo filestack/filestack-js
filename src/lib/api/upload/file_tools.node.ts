@@ -71,6 +71,7 @@ export const getFile = async(input: InputFile, sanitizeOptions?: SanitizeOptions
     input = input.file;
   }
 
+  console.log('hitting here');
   if (isFilePath(input)) {
     let path = input;
     return new Promise((resolve, reject) => {
