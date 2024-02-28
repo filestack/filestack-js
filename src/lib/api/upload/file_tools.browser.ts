@@ -157,7 +157,7 @@ const readPart = (start: number, end: number, file): Promise<any> => {
 export const getFile = (input: InputFile, sanitizeOptions?: SanitizeOptions): Promise<FsFile> => {
   let filename;
   let file: Blob;
-
+  console.log('getting file');
   if (isFileNamed(input)) {
     filename = input.name;
     input = input.file;
