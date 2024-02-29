@@ -1,7 +1,7 @@
 name: filestack-js-beta
 on:
   push:
-    branches: [ gary/sc-add-alt-text ]
+    branches: [ sc-add-alt-text ]
 jobs:
   build:
     runs-on: ubuntu-latest
