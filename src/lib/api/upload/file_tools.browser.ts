@@ -158,7 +158,7 @@ export const getFile = (input: InputFile, sanitizeOptions?: SanitizeOptions): Pr
   let filename;
   let file: Blob;
 
-  console.log('input file: ',input);
+  console.log('inputfile: ',input);
   if (isFileNamed(input)) {
     filename = input.name;
     input = input.file;
