@@ -203,7 +203,7 @@ export class Upload extends EventEmitter {
    * @memberof Upload
    */
   async upload(input: InputFile): Promise<any> {
-
+    console.log('new log, input: ', input);
     const f = await getFile(input, this.sanitizerOptions);
     f.customName = this.overrideFileName;
     this.uploader.addFile(f);
