@@ -439,6 +439,9 @@ export const PickerParamsSchema = {
     useSentryBreadcrumbs: {
       type: 'boolean',
     },
+    useNewTransformer: {
+      type: 'boolean',
+    },
     pasteMode: {
       type: 'object',
       additionalProperties: false,

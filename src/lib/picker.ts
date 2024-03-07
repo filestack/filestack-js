@@ -688,6 +688,10 @@ export interface PickerOptions {
    */
   transformations?: PickerTransformationOptions;
   /**
+   * Whether to use the new transformations UI. Defaults to `false`.
+   */
+  useNewTransformer?: boolean;
+  /**
    * Options for local file uploads.
    */
   uploadConfig?: UploadOptions;
