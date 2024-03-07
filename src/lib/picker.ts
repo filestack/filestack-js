@@ -155,6 +155,10 @@ export interface PickerFileMetadata {
    * The Filestack CDN URL for the uploaded file.
    */
   url: string;
+  /**
+   * Alt text for images
+   */
+  alt: string;
 }
 
 export interface CustomAuthTextOptions {
