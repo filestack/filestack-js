@@ -56,37 +56,41 @@ export const PickerParamsSchema = {
       },
     },
     fromSources: {
-      type: 'array',
-      items: [
-        {
-          type: ['string', 'object'],
-          additionalProperties: false,
-          enum: [
-            'local_file_system',
-            'url',
-            'imagesearch',
-            'facebook',
-            'instagram',
-            'googledrive',
-            'unsplash',
-            'dropbox',
-            'webcam',
-            'video',
-            'audio',
-            'box',
-            'github',
-            'gmail',
-            'googlephotos',
-            'onedrive',
-            'onedriveforbusiness',
-            'clouddrive',
-            'googlephotos',
-            'customsource',
-            'tint',
-          ],
-        },
-      ],
-    },
+      "type": "array",
+      "items": {
+          "anyOf": [
+              {
+                  "type": "string",
+                  "enum": [
+                      "local_file_system",
+                      "url",
+                      "imagesearch",
+                      "facebook",
+                      "instagram",
+                      "googledrive",
+                      "unsplash",
+                      "dropbox",
+                      "webcam",
+                      "video",
+                      "audio",
+                      "box",
+                      "github",
+                      "gmail",
+                      "googlephotos",
+                      "onedrive",
+                      "onedriveforbusiness",
+                      "clouddrive",
+                      "googlephotos",
+                      "customsource",
+                      "tint"
+                  ]
+              },
+              {
+                  "type": "object"
+              }
+          ]
+      }
+  },
     container: {
       format: 'HTMLContainer',
     },
