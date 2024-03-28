@@ -118,5 +118,14 @@ const upload = async (bucket, path, cacheControll) => {
     })
   }
 
+  if (args.indexOf('--stage') > -1) {
+    console.log(`publish stage version`);
+    paths.push({
+      bucket,
+      path: `filestack-js/stage`,
+      cacheControll: 0
+    })
+  }
+
   Promise.all(paths.map((data) => upload(data.bucket, data.path, data.cacheControll))).then((res) => console.log(res))
 })();
