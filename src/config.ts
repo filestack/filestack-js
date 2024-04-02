@@ -18,7 +18,7 @@
 /**
  * @private
  */
-const PICKER_VERSION = 'stage';
+const PICKER_VERSION = '1.27.1';
 
 /**
  * @private
