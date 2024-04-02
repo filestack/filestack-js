@@ -104,6 +104,7 @@ export const ExtensionsMap = {
     'mxd',
     'indd',
     'vsm',
+    'hpt',
   ],
   'application/oda': ['oda'],
   'application/oebps-package+xml': ['opf'],
