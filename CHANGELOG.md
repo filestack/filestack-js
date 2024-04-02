@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.32.0](https://github.com/filestack/filestack-js/compare/v3.31.0...v3.32.0) (2024-04-03)
+
+### Updgrade
+  * **picker:** Upgraded picker to v1.27.1.
+  * **picker:** Fixed support for hpt file type ([558](https://github.com/filestack/filestack-js/pull/558/))
+
 ## [3.30.2](https://github.com/filestack/filestack-js/compare/v3.30.2...v3.31.0) (2024-03-10)
 
 ### Updgrade
