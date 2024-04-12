@@ -239,7 +239,6 @@ If you're using [Sentry](https://sentry.io/welcome/) to monitor your application
 ## Versioning
 
 We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags](https://github.com/filestack/filestack-js/tags) on this repository.
-
 ## Contributing
 
 We follow the [conventional commits](https://conventionalcommits.org/) specification to ensure consistent commit messages and changelog formatting.
