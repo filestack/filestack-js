@@ -103,6 +103,7 @@ export const uniqueId = (len: number = 10): string => {
  */
 export const getMimetype = async(file: Uint8Array | Buffer, name?: string): Promise<string> => {
   let type;
+
   try {
      type = await fromBuffer(file);
   } catch(e) {
@@ -116,6 +117,7 @@ export const getMimetype = async(file: Uint8Array | Buffer, name?: string): Prom
       return mime;
     }
   }
+
   const excludedMimetypes = ['text/plain', 'application/octet-stream', 'application/x-ms', 'application/x-msi', 'application/zip'];
 
   if (type && excludedMimetypes.indexOf(type.mime) === -1) {
@@ -138,6 +140,7 @@ export const getMimetype = async(file: Uint8Array | Buffer, name?: string): Prom
     return type.mime;
   }
 
+  return 'application/octet-stream';
 };
 
 /**
