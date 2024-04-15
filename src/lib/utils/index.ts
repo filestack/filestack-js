@@ -103,7 +103,7 @@ export const uniqueId = (len: number = 10): string => {
  */
 export const getMimetype = async(file: Uint8Array | Buffer, name?: string): Promise<string> => {
   let type;
-  console.log('hittin here...');
+  console.log('hittin here....');
   try {
      type = await fromBuffer(file);
   } catch(e) {
