@@ -155,6 +155,10 @@ export interface PickerFileMetadata {
    * The Filestack CDN URL for the uploaded file.
    */
   url: string;
+  /**
+   * Alt text for images
+   */
+  alt: string;
 }
 
 export interface CustomAuthTextOptions {
@@ -683,6 +687,10 @@ export interface PickerOptions {
    * Specify options for images passed to the crop UI.
    */
   transformations?: PickerTransformationOptions;
+  /**
+   * Whether to use the new transformations UI. Defaults to `false`.
+   */
+  useNewTransformer?: boolean;
   /**
    * Options for local file uploads.
    */
