@@ -19,7 +19,6 @@
  * @private
  */
 const PICKER_VERSION = 'beta';
-
 /**
  * @private
  */
