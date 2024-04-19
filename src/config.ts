@@ -18,7 +18,8 @@
 /**
  * @private
  */
-const PICKER_VERSION = 'beta';
+const PICKER_VERSION = 'stage';
+
 /**
  * @private
  */
