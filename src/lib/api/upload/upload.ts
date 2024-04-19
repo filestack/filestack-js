@@ -199,13 +199,18 @@ export class Upload extends EventEmitter {
    * Upload single file
    *
    * @param {(InputFile)} file
+   * @param {(string)} altText
    * @returns {Promise<any>}
    * @memberof Upload
    */
-  async upload(input: InputFile): Promise<any> {
+  async upload(input: InputFile, altText?: string): Promise<any> {
 
     const f = await getFile(input, this.sanitizerOptions);
     f.customName = this.overrideFileName;
+    if (altText) {
+      f.alt = altText;
+    }
+
     this.uploader.addFile(f);
 
     this.startProgressInterval();
