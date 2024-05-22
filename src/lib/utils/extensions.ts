@@ -640,6 +640,7 @@ export const ExtensionsMap = {
   'application/vnd.uoml+xml': ['uoml'],
   'application/vnd.vcx': ['vcx'],
   'application/vnd.visio': ['vsd', 'vst', 'vss', 'vsw'],
+  'application/vnd.ms-visio.drawing.main+xml': ['vsdx'],
   'application/vnd.visionary': ['vis'],
   'application/vnd.vsf': ['vsf'],
   'application/vnd.wap.wbxml': ['wbxml'],
