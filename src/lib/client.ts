@@ -16,7 +16,7 @@
  */
 
 import { EventEmitter } from 'eventemitter3';
-import * as Sentry from '@sentry/minimal';
+import * as Sentry from '@sentry/core';
 import { config, Hosts } from '../config';
 import { FilestackError } from './../filestack_error';
 import { metadata, MetadataOptions, remove, retrieve, RetrieveOptions, download } from './api/file';
@@ -305,7 +305,15 @@ export class Client extends EventEmitter {
    * @param headers    Optional headers to send
    * @param workflowIds    Optional workflowIds to send
    */
-  storeURL(url: string, storeParams?: StoreParams, token?: any, security?: Security, uploadTags?: UploadTags, headers?: {[key: string]: string}, workflowIds?: string[]): Promise<Object> {
+  storeURL(
+    url: string,
+    storeParams?: StoreParams,
+    token?: any,
+    security?: Security,
+    uploadTags?: UploadTags,
+    headers?: { [key: string]: string },
+    workflowIds?: string[]
+  ): Promise<Object> {
     return storeURL({
       session: this.session,
       url,
