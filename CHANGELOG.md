@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.32.3](https://github.com/filestack/filestack-js/compare/v3.32.2...v3.32.3) (2024-06-18)
+  * **fromSources:** revert version ([b2767e5](https://github.com/filestack/filestack-js/commit/b2767e5))
+
 ## [3.32.2](https://github.com/filestack/filestack-js/compare/v3.32.1...v3.32.2) (2024-06-14)
   * **picker:** Upgraded picker to v1.27.3.
   * **fromSources:** Fixed declaring the custom source at first place in fromSources array
