@@ -787,7 +787,17 @@ class PickerLoader {
     const validateRes = getValidator(PickerParamsSchema)(options);
 
     if (validateRes.errors.length) {
-      throw new FilestackError(`Invalid picker params`, validateRes.errors, FilestackErrorType.VALIDATION);
+      validateRes.errors.forEach(error => {
+        if (error.path.includes('fromSources')) {
+          console.warn(`Warning: Invalid source \"${error.instance}\" found and removed!`);
+          options.fromSources = options.fromSources.filter(source => source !== error.instance);
+        } else {
+          throw new FilestackError(`Invalid picker params`, validateRes.errors, FilestackErrorType.VALIDATION);
+        }
+      });
+      if (!options.fromSources.length) {
+        delete options.fromSources;
+      }
     }
 
     this._initialized = this.loadModule(client, options);
