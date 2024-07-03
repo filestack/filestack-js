@@ -68,6 +68,7 @@ export const PickerParamsSchema = {
               'facebook',
               'instagram',
               'googledrive',
+              'picasa',
               'unsplash',
               'dropbox',
               'webcam',
