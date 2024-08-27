@@ -232,7 +232,7 @@ Upload abort throws an `FilestackError` with type `FilestackErrorType.ABORTED`
 
 ## Sentry Integration
 
-If you're using [Sentry](https://sentry.io/welcome/) to monitor your application, Filestack will automatically report upload errors to Sentry, and tag them with helpful diagnostic information via [`@sentry/minimal`](https://github.com/getsentry/sentry-javascript/tree/master/packages/minimal).
+If you're using [Sentry](https://sentry.io/welcome/) to monitor your application, Filestack will automatically report upload errors to Sentry, and tag them with helpful diagnostic information via [`@sentry/core`](https://github.com/getsentry/sentry-javascript/tree/master/packages/core).
 
 ## Versioning
 
