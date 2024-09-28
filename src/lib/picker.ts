@@ -690,7 +690,7 @@ export interface PickerOptions {
   /**
    * Whether to use the new transformations UI. Defaults to `false`.
    */
-  useNewTransformer?: boolean;
+  transformationsUI?: boolean;
   /**
    * Options for local file uploads.
    */

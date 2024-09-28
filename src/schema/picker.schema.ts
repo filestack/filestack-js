@@ -303,6 +303,9 @@ export const PickerParamsSchema = {
       type: 'object',
       additionalProperties: false,
       properties: {
+        config: {
+          type: 'object',
+        },
         circle: {
           type: 'boolean',
         },
@@ -443,7 +446,7 @@ export const PickerParamsSchema = {
     useSentryBreadcrumbs: {
       type: 'boolean',
     },
-    useNewTransformer: {
+    transformationsUI: {
       type: 'boolean',
     },
     pasteMode: {
