@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.33.3](https://github.com/filestack/filestack-js/compare/v3.32.3...v3.33.3) (2024-06-18)
+  * **picker:** Updated picker v1.28.3 with transformations-ui as default editor
+  * **fromSources:** Added back picasa as a potential source ([#567](https://github.com/filestack/filestack-js/pull/567)
+  * **fix(dependency):** Updated fast-xml-parser ([#7b862752f6](https://github.com/filestack/filestack-js/commit/7b862752f64e242e1dac9c269bab03105667cc3c)
+
 ## [3.32.3](https://github.com/filestack/filestack-js/compare/v3.32.2...v3.32.3) (2024-06-18)
   * **fromSources:** revert version ([b2767e5](https://github.com/filestack/filestack-js/commit/b2767e5))
 
