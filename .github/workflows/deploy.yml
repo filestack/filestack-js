@@ -2,7 +2,7 @@ name: filestack-js
 on:
   push:
     branches:
-      - "master"
+      - "!*"
     tags:
       - v*
 jobs:
