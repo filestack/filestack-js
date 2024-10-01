@@ -18,7 +18,7 @@
 /**
  * @private
  */
-const PICKER_VERSION = '1.28.3';
+const PICKER_VERSION = 'beta';
 
 /**
  * @private
