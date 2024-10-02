@@ -475,7 +475,7 @@ export class Client extends EventEmitter {
       this.emit('upload.error', e);
     });
 
-    return upload.upload(file, options.altText);
+    return upload.upload(file, options?.altText);
   }
 
   /**
