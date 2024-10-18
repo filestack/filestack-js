@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.34.4](https://github.com/filestack/filestack-js/compare/3.34.3...3.34.4) (2024-10-18)
+  * **picker:** Updated picker v1.29.4
+  * **client.upload:** Added check for altText check ([df5a23](https://github.com/filestack/filestack-js/commit/df5a23ab5f05b58664d8545944504988fde177a0))
+
 ## [3.34.3](https://github.com/filestack/filestack-js/compare/v3.33.3...v3.34.3) (2024-10-01)
   * **picker:** Updated picker v1.29.3 disabled transformations ui as default editor ([0ff66c85177](https://github.com/filestack/filestack-js/commit/0ff66c851778b02396292b7eb5cb67b2ecbe1848))
 
