@@ -514,6 +514,10 @@ export interface PickerOptions {
    */
   disableTransformer?: boolean;
   /**
+   * Disables alt text view/edit in the summary screen.
+   */
+  disableAltText?: boolean;
+  /**
    * Disables local image thumbnail previews in the summary screen.
    */
   disableThumbnails?: boolean;

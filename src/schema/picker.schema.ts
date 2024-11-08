@@ -140,6 +140,9 @@ export const PickerParamsSchema = {
     disableTransformer: {
       type: 'boolean',
     },
+    disableAltText: {
+      type: 'boolean',
+    },
     disableThumbnails: {
       type: 'boolean',
     },
