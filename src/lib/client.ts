@@ -461,12 +461,14 @@ export class Client extends EventEmitter {
     /* istanbul ignore next */
     upload.on('error', e => {
       if (this.forwardErrors) {
-        Sentry.setTag('filestack-apikey', this.session.apikey);
-        Sentry.setTag('filestack-version', Utils.getVersion());
-        Sentry.setExtra('filestack-options', this.options);
-        Sentry.setExtras({ uploadOptions: options, storeOptions, details: e.details });
-        e.message = `FS-${e.message}`;
-        Sentry.captureException(e);
+        Sentry.withScope(scope => {
+          scope.setTag('filestack-apikey', this.session.apikey);
+          scope.setTag('filestack-version', Utils.getVersion());
+          scope.setExtra('filestack-options', this.options);
+          scope.setExtras({ uploadOptions: options, storeOptions, details: e.details });
+          e.message = `FS-${e.message}`;
+          scope.captureException(e);
+        });
       }
 
       this.emit('upload.error', e);
@@ -523,11 +525,15 @@ export class Client extends EventEmitter {
     upload.on('start', () => this.emit('upload.start'));
     /* istanbul ignore next */
     upload.on('error', e => {
-      Sentry.setTag('filestack-apikey', this.session.apikey);
-      Sentry.setTag('filestack-version', Utils.getVersion());
-      Sentry.setExtra('filestack-options', this.options);
-      Sentry.setExtras({ uploadOptions: options, storeOptions, details: e.details });
-      Sentry.captureException(e);
+      Sentry.withScope(scope => {
+        scope.setTag('filestack-apikey', this.session.apikey);
+        scope.setTag('filestack-version', Utils.getVersion());
+        scope.setExtra('filestack-options', this.options);
+        scope.setExtras(e.details);
+        scope.setExtras({ uploadOptions: options, storeOptions });
+        scope.captureException(e);
+      });
+
       this.emit('upload.error', e);
     });
 
