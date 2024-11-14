@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+
+## [3.35.4](https://github.com/filestack/filestack-js/compare/3.34.4...3.35.4) (2024-10-14)
+  * **picker:** Updated picker v1.30.4
+  * **picker:** Added disableAltText option ([3164a1](https://github.com/filestack/filestack-js/commit/3164a17ddf2ae782c41f8a98b77f2d0d0dba5eef))
+
 ## [3.34.4](https://github.com/filestack/filestack-js/compare/3.34.3...3.34.4) (2024-10-18)
   * **picker:** Updated picker v1.29.4
   * **client.upload:** Added check for altText check ([df5a23](https://github.com/filestack/filestack-js/commit/df5a23ab5f05b58664d8545944504988fde177a0))
