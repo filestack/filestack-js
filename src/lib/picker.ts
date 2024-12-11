@@ -724,6 +724,10 @@ export interface PickerOptions {
     pasteToFirstInViewPort?: boolean,
     pasteToFirstInstance?: boolean
   };
+  /**
+   * Disable/Enable possibility to upload directories.
+   */
+  disableDirectoryUpload?: boolean;
 }
 
 export interface PickerCropOptions {
