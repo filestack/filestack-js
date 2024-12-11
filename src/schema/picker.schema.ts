@@ -464,5 +464,8 @@ export const PickerParamsSchema = {
         },
       },
     },
+    disableDirectoryUpload: {
+      type: 'boolean'
+    },
   },
 };
