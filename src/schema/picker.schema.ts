@@ -467,5 +467,11 @@ export const PickerParamsSchema = {
     disableDirectoryUpload: {
       type: 'boolean',
     },
+    miniUploader: {
+      type: 'boolean',
+    },
+    multipleFileUpload: {
+      type: 'boolean',
+    },
   },
 };
