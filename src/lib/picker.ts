@@ -728,6 +728,14 @@ export interface PickerOptions {
    * Disable/Enable possibility to upload directories.
    */
   disableDirectoryUpload?: boolean;
+  /**
+   * Enable/Disable Mini Uploader
+   */
+  miniUploader?: boolean;
+  /**
+   * Enable/Disable possibility to multiple file upload
+   */
+  multipleFileUpload?: boolean;
 }
 
 export interface PickerCropOptions {
