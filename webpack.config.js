@@ -10,7 +10,8 @@ const banner = fs.readFileSync('./LICENSE', 'utf8').replace('{year}', new Date()
 const config =  {
   mode: 'production',
   node: { 
-    Buffer: false,
+    Buffer: true,
+    buffer: true,
     fs: 'empty',
   },
   watchOptions: {
