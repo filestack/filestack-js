@@ -32,7 +32,7 @@ const template = `
     </head>
     <body>
         {{content}}
-        <script src="http://localhost:4000/index.umd.js"></script>
+        <script src="http://localhost:4000/filestack.umd.js"></script>
         <script>
             {{script}}
         </script>
@@ -73,8 +73,8 @@ app.get('/', (req, res) => {
 app.get('/*', (req, res) => {
   const requestedPath = req.path;
   const promises = [];
-  if (req.path === '/index.umd.js') {
-    return readFile(path.join(__dirname, '../build/browser/index.umd.js'))
+  if (req.path === '/filestack.umd.js') {
+    return readFile(path.join(__dirname, '../build/browser/filestack.umd.js'))
       .then((file) => res.send(file.toString()));
   }
 
