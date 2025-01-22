@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.37.4](https://github.com/filestack/filestack-js/compare/3.36.4...3.37.4) (2025-01-22)
+  * **getMimeType:** Fixed getMimetype response ([6c0615](https://github.com/filestack/filestack-js/commit/6c0615f644bc2279e850df077f1308b6ef9c8564))
+
 ## [3.36.4](https://github.com/filestack/filestack-js/compare/3.35.4...3.36.4) (2024-12-11)
   * **picker:** Updated picker v1.31.4
 
