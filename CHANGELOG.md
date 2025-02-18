@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.38.5](https://github.com/filestack/filestack-js/compare/3.37.5...3.38.5) (2025-02-18)
+  * **getMimeType:** Fixed getMimetype response ([61741c](https://github.com/filestack/filestack-js/commit/61741c3e01926277e2b96dcb1b1b052d26ea2857))
+  * **picker:** Updated picker with fixed seperated camera and microphone permission. ([f380e6](https://github.com/filestack/filestack-js/commit/f380e61b5eb9832c0f081f158c4262a83622ed2e))
+
 ## [3.37.4](https://github.com/filestack/filestack-js/compare/3.36.4...3.37.4) (2025-01-22)
   * **getMimeType:** Fixed getMimetype response ([6c0615](https://github.com/filestack/filestack-js/commit/6c0615f644bc2279e850df077f1308b6ef9c8564))
 
