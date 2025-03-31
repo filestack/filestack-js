@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.39.5](https://github.com/filestack/filestack-js/compare/3.38.5...3.39.5) (2025-03-31)
+  * **sentry:** Upgraded sentry version ([579](https://github.com/filestack/filestack-js/pull/579)) ([578](https://github.com/filestack/filestack-js/pull/578)) ([577](https://github.com/filestack/filestack-js/pull/577)) ([575](https://github.com/filestack/filestack-js/pull/575))
+
 ## [3.38.5](https://github.com/filestack/filestack-js/compare/3.37.5...3.38.5) (2025-02-18)
   * **getMimeType:** Fixed getMimetype response ([61741c](https://github.com/filestack/filestack-js/commit/61741c3e01926277e2b96dcb1b1b052d26ea2857))
   * **picker:** Updated picker with fixed seperated camera and microphone permission. ([f380e6](https://github.com/filestack/filestack-js/commit/f380e61b5eb9832c0f081f158c4262a83622ed2e))
