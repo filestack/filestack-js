@@ -67,7 +67,7 @@ const config =  {
     fallback: {
       fs: false,
       process: require.resolve("process/browser"),
-      zlib: false,
+      zlib: require.resolve("browserify-zlib"),
       stream: require.resolve("stream-browserify"),
       buffer: require.resolve("buffer"),
       http: require.resolve("stream-http"),
