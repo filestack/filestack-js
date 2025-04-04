@@ -1,7 +1,6 @@
 const webpack = require('webpack');
 const path = require('path');
 const fs = require('fs');
-const EsmWebpackPlugin = require('@purtuga/esm-webpack-plugin');
 const merge = require('lodash.merge');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const WebpackAssetsManifest = require('webpack-assets-manifest');
@@ -9,18 +8,14 @@ const banner = fs.readFileSync('./LICENSE', 'utf8').replace('{year}', new Date()
 
 const config =  {
   mode: 'production',
-  node: { 
-    Buffer: true,
-    buffer: true,
-    fs: 'empty',
-  },
   watchOptions: {
     ignored: /node_modules/
   },
   entry: './build/module/index.js',
   output: {
-    libraryTarget: 'umd',
-    library: 'filestack',
+    library: {
+      type: 'umd',
+    },
     path: path.resolve(__dirname, 'build/browser'),
     filename: 'filestack.umd.js',
   },
@@ -50,47 +45,74 @@ const config =  {
     maxAssetSize: 255000
   },
   plugins: [
-    new CleanWebpackPlugin(),
+    new CleanWebpackPlugin({
+      cleanStaleWebpackAssets: false,
+    }),
+    new webpack.ProvidePlugin({
+      Buffer: ["buffer", "Buffer"],
+      process: "process/browser",
+    }),
     new webpack.BannerPlugin({ banner }),
     new webpack.DefinePlugin({
-      'process.env.NODE_ENV': 'production',
-      '@{VERSION}' : `${require('./package.json').version}`,
+      'process.env.NODE_ENV': JSON.stringify('production'),
+      '@{VERSION}' : JSON.stringify(`${require('./package.json').version}`),
     }),
-    new webpack.NormalModuleReplacementPlugin(/^.*\.node\.js$/,  (result) => {
-      if (result.resource) {
-        result.resource = result.resource.replace(/node/g, 'browser');
-      }
+    new webpack.NormalModuleReplacementPlugin(/\.node$/,  (resource) => {
+      resource.request = resource.request.replace(/\.node$/, '.browser');
     }),
   ],
   devtool: 'source-map',
+  resolve: {
+    extensions: ['.tsx', '.ts', '.js'],
+    fallback: {
+      fs: false,
+      'process/browser': require.resolve("process/browser"),
+      zlib: require.resolve("browserify-zlib"),
+      stream: require.resolve("stream-browserify"),
+      buffer: require.resolve("buffer"),
+      http: require.resolve("stream-http"),
+      https: require.resolve("https-browserify"),
+    },
+  },
 };
 
 const umd = merge({}, config, {
   output: {
-    libraryTarget: 'umd',
+    library: {
+      type: 'umd',
+    },
     filename: 'filestack.umd.js',
   },
 });
 
 const esm = merge({}, config, {
   output: {
-    libraryTarget: 'var',
     filename: 'filestack.esm.js',
+    library: {
+      type: 'module',
+    },
+    environment: {
+      module: true,
+    },
+    module: true,
   },
-  plugins: [
-    new EsmWebpackPlugin(),
-  ]
+  experiments: {
+    outputModule: true,
+  },
 });
 
 const prod = merge({}, config,  {
   output: {
-    libraryTarget: 'umd',
+    library: {
+      type: 'umd',
+    },
     filename: 'filestack.min.js',
   },
   plugins: [
     new WebpackAssetsManifest({
       writeToDisk: true,
       integrity: true,
+      output: 'manifest.json',
     }),
   ],
 });
