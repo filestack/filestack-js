@@ -66,7 +66,7 @@ const config =  {
     extensions: ['.tsx', '.ts', '.js'],
     fallback: {
       fs: false,
-      process: require.resolve("process/browser"),
+      'process/browser': require.resolve("process/browser"),
       zlib: require.resolve("browserify-zlib"),
       stream: require.resolve("stream-browserify"),
       buffer: require.resolve("buffer"),
