@@ -18,7 +18,7 @@
 import { Session } from '../client';
 import { Hosts } from './../../config';
 import { ExtensionsMap } from './extensions';
-import { fromBuffer } from 'file-type';
+import FileType from 'file-type';
 import isutf8 from 'isutf8';
 
 /**
@@ -105,7 +105,7 @@ export const getMimetype = async(file: Uint8Array | Buffer, name?: string): Prom
   let type;
 
   try {
-    type = await fromBuffer(file);
+    type = await FileType.fileTypeFromBuffer(file);
   } catch(e) {
     console.warn("An exception occurred while processing the buffer:", e.message);
   }
