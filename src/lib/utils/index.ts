@@ -18,7 +18,7 @@
 import { Session } from '../client';
 import { Hosts } from './../../config';
 import { ExtensionsMap } from './extensions';
-import FileType from 'file-type';
+import * as FileType from 'file-type';
 import isutf8 from 'isutf8';
 
 /**
