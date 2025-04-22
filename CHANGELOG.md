@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.40.5](https://github.com/filestack/filestack-js/compare/3.39.5...3.40.5) (2025-04-22)
+  * **build:** Upgraded to webpack 5. ([#593](https://github.com/filestack/filestack-js/pull/593))
+
 ## [3.39.5](https://github.com/filestack/filestack-js/compare/3.38.5...3.39.5) (2025-03-31)
   * **sentry:** Upgraded sentry version ([579](https://github.com/filestack/filestack-js/pull/579)) ([578](https://github.com/filestack/filestack-js/pull/578)) ([577](https://github.com/filestack/filestack-js/pull/577)) ([575](https://github.com/filestack/filestack-js/pull/575))
 
