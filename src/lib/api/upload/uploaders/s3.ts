@@ -44,6 +44,7 @@ export interface UploadPayload {
   upload_id?: number;
   location_url?: string;
   location_region?: string;
+  metahash?: string;
 }
 
 export class S3Uploader extends UploaderAbstract {
@@ -213,6 +214,7 @@ export class S3Uploader extends UploaderAbstract {
       upload_id: payload.upload_id,
       region: payload.region,
       alt: payload.file.alt,
+      metahash: payload.metahash,
     };
 
     if (this.uploadMode === UploadMode.INTELLIGENT || (this.uploadMode === UploadMode.FALLBACK && fiiFallback)) {
@@ -688,7 +690,7 @@ export class S3Uploader extends UploaderAbstract {
     return FsRequest.post(
       `${this.getUploadUrl(id)}/multipart/complete`,
       {
-        ...this.getDefaultFields(id, ['apikey', 'policy', 'signature', 'uri', 'region', 'upload_id', 'fii', 'alt'], true),
+        ...this.getDefaultFields(id, ['apikey', 'policy', 'signature', 'uri', 'region', 'upload_id', 'fii', 'alt', 'metahash'], true),
         // method specific keys
         filename: payload.file.name,
         mimetype: payload.file.type,
