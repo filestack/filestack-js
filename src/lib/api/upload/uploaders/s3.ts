@@ -314,7 +314,7 @@ export class S3Uploader extends UploaderAbstract {
       }
     )
       .then(({ data }) => {
-        if (!data || !data.location_url || !data.region || !data.upload_id || !data.uri || !data.filehash) {
+        if (!data || !data.location_url || !data.region || !data.upload_id || !data.uri) {
           debug(`[${id}] Incorrect start response: \n%O\n`, data);
           this.setPayloadStatus(id, FileState.FAILED);
           return Promise.reject(new FilestackError('Incorrect start response', data, FilestackErrorType.REQUEST));
