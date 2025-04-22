@@ -65,6 +65,7 @@ const testHost = 'https://filestack-test.com';
 const mockUploadId = '123132123';
 const mockRegion = 'test-region';
 const mockedUri = '/sometest';
+const mockFileHash= 'test'
 const s3Url = testHost + '/fakes3';
 
 const mockStart = jest.fn().mockName('multipart/start');
@@ -100,6 +101,7 @@ describe('Api/Upload/Uploaders/S3', () => {
       region: mockRegion,
       upload_id: mockUploadId,
       location_url: testHost,
+      filehash: mockFileHash,
     });
 
     mockUpload.mockReturnValue({
@@ -121,6 +123,7 @@ describe('Api/Upload/Uploaders/S3', () => {
       mimetype: 'test_mimetype',
       status: 'test_status',
       upload_tags: { test: 123 },
+      filehash: mockFileHash,
     });
   });
 
@@ -224,6 +227,7 @@ describe('Api/Upload/Uploaders/S3', () => {
         region: mockRegion,
         upload_id: mockUploadId,
         location_url: testHost.replace('https://', ''),
+        filehash: mockFileHash,
       });
 
       const u = new S3Uploader({});
@@ -245,6 +249,7 @@ describe('Api/Upload/Uploaders/S3', () => {
         region: mockRegion,
         upload_id: mockUploadId,
         location_url: testHost.replace('https://', ''),
+        filehash: mockFileHash,
       });
 
       const u = new S3Uploader({});
@@ -264,6 +269,7 @@ describe('Api/Upload/Uploaders/S3', () => {
         region: mockRegion,
         upload_id: mockUploadId,
         location_url: testHost.replace('https://', ''),
+        filehash: mockFileHash,
       });
 
       interceptorS3.once().reply(200, s3Callback, {});
@@ -288,6 +294,7 @@ describe('Api/Upload/Uploaders/S3', () => {
         upload_id: mockUploadId,
         location_region: 'test',
         location_url: testHost.replace('https://', ''),
+        filehash: mockFileHash,
       });
 
       interceptorUpload.reply(200, function(_, data) {
@@ -495,6 +502,7 @@ describe('Api/Upload/Uploaders/S3', () => {
           upload_id: mockUploadId,
           location_url: testHost,
           upload_type: 'intelligent_ingestion',
+          filehash: mockFileHash,
         });
       });
 
@@ -571,6 +579,7 @@ describe('Api/Upload/Uploaders/S3', () => {
           },
           fii: true,
           uri: mockedUri,
+          filehash: mockFileHash,
         });
       });
 
@@ -647,6 +656,7 @@ describe('Api/Upload/Uploaders/S3', () => {
           },
           fii: true,
           uri: mockedUri,
+          filehash: mockFileHash,
         });
       });
 
@@ -732,6 +742,7 @@ describe('Api/Upload/Uploaders/S3', () => {
           upload_id: mockUploadId,
           location_url: testHost,
           upload_type: 'intelligent_ingestion',
+          filehash: mockFileHash,
         });
 
         interceptorS3.reply(400, {
@@ -781,6 +792,7 @@ describe('Api/Upload/Uploaders/S3', () => {
           upload_id: mockUploadId,
           location_url: testHost,
           upload_type: 'intelligent_ingestion',
+          filehash: mockFileHash,
         });
 
         let networkFail = true;
@@ -847,6 +859,7 @@ describe('Api/Upload/Uploaders/S3', () => {
           region: mockRegion,
           upload_id: mockUploadId,
           location_url: testHost,
+          filehash: mockFileHash,
         });
 
         let networkFail = true;
@@ -948,6 +961,7 @@ describe('Api/Upload/Uploaders/S3', () => {
           location: DEFAULT_STORE_LOCATION,
         },
         uri: mockedUri,
+        filehash: mockFileHash,
       });
 
       expect(res[0].handle).toEqual('test_handle');
@@ -1021,6 +1035,7 @@ describe('Api/Upload/Uploaders/S3', () => {
           location: DEFAULT_STORE_LOCATION,
         },
         uri: mockedUri,
+        filehash: mockFileHash,
       });
 
       expect(res[0].handle).toEqual('test_handle');

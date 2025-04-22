@@ -44,6 +44,7 @@ export interface UploadPayload {
   upload_id?: number;
   location_url?: string;
   location_region?: string;
+  filehash?: string;
 }
 
 export class S3Uploader extends UploaderAbstract {
@@ -213,6 +214,7 @@ export class S3Uploader extends UploaderAbstract {
       upload_id: payload.upload_id,
       region: payload.region,
       alt: payload.file.alt,
+      filehash: payload.filehash,
     };
 
     if (this.uploadMode === UploadMode.INTELLIGENT || (this.uploadMode === UploadMode.FALLBACK && fiiFallback)) {
@@ -312,7 +314,7 @@ export class S3Uploader extends UploaderAbstract {
       }
     )
       .then(({ data }) => {
-        if (!data || !data.location_url || !data.region || !data.upload_id || !data.uri) {
+        if (!data || !data.location_url || !data.region || !data.upload_id || !data.uri || !data.filehash) {
           debug(`[${id}] Incorrect start response: \n%O\n`, data);
           this.setPayloadStatus(id, FileState.FAILED);
           return Promise.reject(new FilestackError('Incorrect start response', data, FilestackErrorType.REQUEST));
@@ -688,7 +690,7 @@ export class S3Uploader extends UploaderAbstract {
     return FsRequest.post(
       `${this.getUploadUrl(id)}/multipart/complete`,
       {
-        ...this.getDefaultFields(id, ['apikey', 'policy', 'signature', 'uri', 'region', 'upload_id', 'fii', 'alt'], true),
+        ...this.getDefaultFields(id, ['apikey', 'policy', 'signature', 'uri', 'region', 'upload_id', 'fii', 'alt', 'filehash'], true),
         // method specific keys
         filename: payload.file.name,
         mimetype: payload.file.type,
