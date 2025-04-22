@@ -5,11 +5,11 @@
 const { runOnEachFile, browserBuildDir, version } = require('./utils');
 const Path = require('path');
 const Fs = require('fs').promises;
-const AWS = require('aws-sdk');
+const { S3Client, PutObjectCommand, S3ServiceException } = require("@aws-sdk/client-s3");
 const mime = require('mime-types');
 const git = require('git-state');
 
-const s3 = new AWS.S3();
+const s3Client = new S3Client({region: process.env.AWS_REGION});
 // const DEPLOY_BRANCH = 'master';
 const path = './';
 const repositoryExists = git.isGitSync(path);
@@ -42,14 +42,19 @@ const pushOneFileToS3 = (basePath, to, cacheControll = 1) => {
       ContentType: figureOutFileMimetype(basePath),
     };
 
-    return s3.putObject(options, (err) => {
-      if (err) {
+    const command = new PutObjectCommand(options);
+
+    try {
+      await s3Client.send(command);
+      resolve(`File: ${file} has been uploaded to: ${to.bucket}/${uploadKey}`);
+    } catch (err) {
+      if (err instanceof S3ServiceException) {
         console.error('Upload ERROR:', err);
         reject(err);
       } else {
-        resolve(`File: ${file} has been uploaded to: ${to.bucket}/${uploadKey}`);
+        reject(err);
       }
-    });
+    }
   });
 };
 
