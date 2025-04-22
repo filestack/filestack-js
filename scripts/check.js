@@ -4,7 +4,7 @@ const Path = require('path');
 const requiredFiles = ['filestack.esm.js', 'filestack.esm.js.map', 'filestack.min.js', 'filestack.min.js.map', 'filestack.umd.js', 'filestack.umd.js.map', 'manifest.json'];
 
 
-const compare = (first, second) => second.every((e)=> first.includes(e));
+const compare = (first, second) => first.every((e)=> second.includes(e)) && second.every((e)=> first.includes(e));
 
 (async () => {
   const files = await runOnEachFile(browserBuildDir, {}, (f) => Path.basename(f));
