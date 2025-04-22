@@ -4,6 +4,7 @@ const fs = require('fs');
 const merge = require('lodash.merge');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const WebpackAssetsManifest = require('webpack-assets-manifest');
+const { SourceMapConsumer } = require('source-map');
 const banner = fs.readFileSync('./LICENSE', 'utf8').replace('{year}', new Date().getFullYear());
 
 const config =  {
@@ -45,8 +46,24 @@ const config =  {
     maxAssetSize: 255000
   },
   plugins: [
+    {
+      apply: (compiler) => {
+        compiler.hooks.beforeRun.tap('SourceMapInit', () => {
+          SourceMapConsumer.initialize({
+            'lib/mappings.wasm': path.resolve(
+              path.dirname(require.resolve('source-map')),
+              'lib',
+              'mappings.wasm'
+            )
+          });
+        });
+      }
+    },
     new CleanWebpackPlugin({
       cleanStaleWebpackAssets: false,
+    }),
+    new webpack.ProvidePlugin({
+      Buffer: ['buffer', 'Buffer']
     }),
     new webpack.BannerPlugin({ banner }),
     new webpack.DefinePlugin({
@@ -65,7 +82,7 @@ const config =  {
       'process/browser': require.resolve("process/browser"),
       zlib: require.resolve("browserify-zlib"),
       stream: require.resolve("stream-browserify"),
-      buffer: require.resolve("buffer"),
+      buffer: require.resolve("buffer/"),
       http: require.resolve("stream-http"),
       https: require.resolve("https-browserify"),
       url: require.resolve("url"),
