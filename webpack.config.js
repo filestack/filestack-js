@@ -94,6 +94,7 @@ const umd = merge({}, config, {
   output: {
     library: {
       type: 'umd',
+      name: 'filestack',
     },
     filename: 'filestack.umd.js',
   },
