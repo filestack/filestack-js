@@ -1,4 +1,4 @@
-const glob = require('glob');
+const { glob } = require('glob');
 const version = require('../package.json').version;
 const path = require('path');
 
@@ -9,16 +9,15 @@ const getRootPath = () => {
 }
 
 const getFiles = (dir, globOpts = {}) => {
-  return new Promise((resolve, reject) => {
+  return new Promise(async (resolve, reject) => {
     globOpts.cwd = getRootPath();
 
-    glob(dir, globOpts, (err, files) => {
-      if (err) {
-        return reject(err);
-      }
-
-      return resolve(files);
-    })
+    try {
+      const files = await glob(dir, globOpts);
+      resolve(files);
+    } catch (error) {
+      reject(error);
+    }
   });
 }
 
