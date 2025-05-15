@@ -36,14 +36,14 @@ gulp.task('typescript:modules', () => {
 });
 
 gulp.task('build:webpack:umd', () => {
-  const conf = webpackCfg.umd;
+  const conf = webpackCfg[0];
   return gulp.src(conf.entry)
   .pipe(webpack(conf))
   .pipe(gulp.dest(conf.output.path));
 });
 
 gulp.task('build:webpack:esm', () => {
-  const conf = webpackCfg.esm;
+  const conf = webpackCfg[1];
 
   return gulp.src(conf.entry)
   .pipe(webpack(conf))
@@ -51,7 +51,7 @@ gulp.task('build:webpack:esm', () => {
 });
 
 gulp.task('build:webpack:prod', () => {
-  const conf = webpackCfg.prod;
+  const conf = webpackCfg[2];
 
   return gulp.src(conf.entry)
   .pipe(webpack(conf))

@@ -7,19 +7,12 @@ const WebpackAssetsManifest = require('webpack-assets-manifest');
 const { SourceMapConsumer } = require('source-map');
 const banner = fs.readFileSync('./LICENSE', 'utf8').replace('{year}', new Date().getFullYear());
 
-const config =  {
+const baseConfig = {
   mode: 'production',
   watchOptions: {
     ignored: /node_modules/
   },
   entry: './build/module/index.js',
-  output: {
-    library: {
-      type: 'umd',
-    },
-    path: path.resolve(__dirname, 'build/browser'),
-    filename: 'filestack.umd.js',
-  },
   module: {
     rules: [
       {
@@ -68,9 +61,9 @@ const config =  {
     new webpack.BannerPlugin({ banner }),
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify('production'),
-      '@{VERSION}' : JSON.stringify(`${require('./package.json').version}`),
+      '@{VERSION}': JSON.stringify(`${require('./package.json').version}`),
     }),
-    new webpack.NormalModuleReplacementPlugin(/\.node$/,  (resource) => {
+    new webpack.NormalModuleReplacementPlugin(/\.node$/, (resource) => {
       resource.request = resource.request.replace(/\.node$/, '.browser');
     }),
   ],
@@ -90,17 +83,19 @@ const config =  {
   },
 };
 
-const umd = merge({}, config, {
+const umd = merge({}, baseConfig, {
   output: {
-    library: {
-      type: 'umd',
-    },
+    path: path.resolve(__dirname, 'build/browser'),
     filename: 'filestack.umd.js',
+    library: 'filestack',
+    libraryTarget: 'umd',
+
   },
 });
 
-const esm = merge({}, config, {
+const esm = merge({}, baseConfig, {
   output: {
+    path: path.resolve(__dirname, 'build/browser'),
     filename: 'filestack.esm.js',
     library: {
       type: 'module',
@@ -115,12 +110,12 @@ const esm = merge({}, config, {
   },
 });
 
-const prod = merge({}, config,  {
+const prod = merge({}, baseConfig, {
   output: {
-    library: {
-      type: 'umd',
-    },
+    path: path.resolve(__dirname, 'build/browser'),
     filename: 'filestack.min.js',
+    library: 'filestack',
+    libraryTarget: 'umd'
   },
   plugins: [
     new WebpackAssetsManifest({
@@ -131,4 +126,4 @@ const prod = merge({}, config,  {
   ],
 });
 
-module.exports = { umd, esm, prod };
+module.exports = [umd, esm, prod];
