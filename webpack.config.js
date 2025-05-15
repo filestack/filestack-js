@@ -83,47 +83,48 @@ const baseConfig = {
   },
 };
 
-const umd = merge({}, baseConfig, {
-  output: {
-    path: path.resolve(__dirname, 'build/browser'),
-    filename: 'filestack.umd.js',
-    library: 'filestack',
-    libraryTarget: 'umd',
-
-  },
-});
-
-const esm = merge({}, baseConfig, {
-  output: {
-    path: path.resolve(__dirname, 'build/browser'),
-    filename: 'filestack.esm.js',
-    library: {
-      type: 'module',
+const webpackConfigs = {
+  umd: merge({}, baseConfig, {
+    output: {
+      path: path.resolve(__dirname, 'build/browser'),
+      filename: 'filestack.umd.js',
+      library: 'filestack',
+      libraryTarget: 'umd',
     },
-    environment: {
+  }),
+
+  esm: merge({}, baseConfig, {
+    output: {
+      path: path.resolve(__dirname, 'build/browser'),
+      filename: 'filestack.esm.js',
+      library: {
+        type: 'module',
+      },
+      environment: {
+        module: true,
+      },
       module: true,
     },
-    module: true,
-  },
-  experiments: {
-    outputModule: true,
-  },
-});
+    experiments: {
+      outputModule: true,
+    },
+  }),
 
-const prod = merge({}, baseConfig, {
-  output: {
-    path: path.resolve(__dirname, 'build/browser'),
-    filename: 'filestack.min.js',
-    library: 'filestack',
-    libraryTarget: 'umd'
-  },
-  plugins: [
-    new WebpackAssetsManifest({
-      writeToDisk: true,
-      integrity: true,
-      output: 'manifest.json',
-    }),
-  ],
-});
+  prod: merge({}, baseConfig, {
+    output: {
+      path: path.resolve(__dirname, 'build/browser'),
+      filename: 'filestack.min.js',
+      library: 'filestack',
+      libraryTarget: 'umd'
+    },
+    plugins: [
+      new WebpackAssetsManifest({
+        writeToDisk: true,
+        integrity: true,
+        output: 'manifest.json',
+      }),
+    ],
+  })
+};
 
-module.exports = [umd, esm, prod];
+module.exports = webpackConfigs;
