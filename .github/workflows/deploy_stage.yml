@@ -1,7 +1,7 @@
 name: filestack-js-stage
 on:
   push:
-    branches: [ stage ]
+    branches: [ feature/FS-12113 ]
 jobs:
   build:
     runs-on: ubuntu-latest
