@@ -10,7 +10,7 @@ jobs:
     - name: Setup repository env
       uses: actions/setup-node@v1
       with:
-        node-version: '14.x'
+        node-version: 'v18.20.5'
         registry-url: "https://registry.npmjs.org"
     - name: Install deps
       run: npm install --ignore-scripts
