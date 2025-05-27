@@ -953,4 +953,5 @@ export const ExtensionsMap = {
   'application/x-typescript': 'ts',
   'application/x-java-archive': 'jar',
   'application/x-sharedlib': 'so',
+  'image/avif': 'avif',
 };
