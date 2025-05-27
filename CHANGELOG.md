@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.40.6](https://github.com/filestack/filestack-js/compare/3.40.5...3.40.6) (2025-05-27)
+  * **build:** Fixed webpack 5 issues. ([#599](https://github.com/filestack/filestack-js/pull/599))
+  * **getMimeType:** .m4a files mime type from audio/x-m4a to audio/mp4 ([#600](https://github.com/filestack/filestack-js/pull/600))
+
 ## [3.40.5](https://github.com/filestack/filestack-js/compare/3.39.5...3.40.5) (2025-04-22)
   * **build:** Upgraded to webpack 5. ([#593](https://github.com/filestack/filestack-js/pull/593))
 
