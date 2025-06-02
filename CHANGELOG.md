@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.0.0](https://github.com/filestack/filestack-js/compare/3.40.6...4.0.0) (2025-06-02)
+  * **picker:** Added folder upload option with picker v4.0.0
+  * **picker:** Added minipicker for multiple files with picker v4.0.0
+  * **picker:** Added pause and resume funtionality with picker v4.0.0
+  * **picker:** Added support for picker ui customization using tailwind css with picker v4.0.0
+
 ## [3.40.6](https://github.com/filestack/filestack-js/compare/3.40.5...3.40.6) (2025-05-27)
   * **build:** Fixed webpack 5 issues. ([#599](https://github.com/filestack/filestack-js/pull/599))
   * **getMimeType:** .m4a files mime type from audio/x-m4a to audio/mp4 ([#600](https://github.com/filestack/filestack-js/pull/600))
