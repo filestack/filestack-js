@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.0.2](https://github.com/filestack/filestack-js/compare/4.0.1...4.0.2) (2025-06-16)
+  * **upload:** Fixed ERR_STREAM_WRITE_AFTER_END error during upload for node version 22+ ([4979d1](https://github.com/filestack/filestack-js/commit/4979d17dfbb32debdf87e6d836c6e494593783e0))
+
 ## [4.0.1](https://github.com/filestack/filestack-js/compare/4.0.0...4.0.1) (2025-06-16)
   * **upload:** Fixed write after end error during upload for node version 22+ ([fc080d](https://github.com/filestack/filestack-js/commit/fc080d414b6c2866b8a695a92955d2393ac66c7f))
 
