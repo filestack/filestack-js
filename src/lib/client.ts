@@ -445,7 +445,7 @@ export class Client extends EventEmitter {
    *
    * @returns {Promise}
    */
-  upload(file: InputFile, options?: UploadOptions, storeOptions?: StoreUploadOptions, token?: any, security?: Security) {
+  upload(file: InputFile, options?: UploadOptions, storeOptions?: StoreUploadOptions, token?: any, security?: Security, mimetype?: string) {
     let upload = new Upload(options, storeOptions);
     upload.setSession(this.session);
 
@@ -474,7 +474,7 @@ export class Client extends EventEmitter {
       this.emit('upload.error', e);
     });
 
-    return upload.upload(file, options && options.altText);
+    return upload.upload(file, options && options.altText, mimetype);
   }
 
   /**
