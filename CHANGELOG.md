@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.40.9](https://github.com/filestack/filestack-js/compare/3.40.8...3.40.9) (2025-07-22)
+  * **mimetype:** Pass mimetype to upload client ([7f7bb0](https://github.com/filestack/filestack-js/commit/7f7bb04d0052058559ff1c3274af244db417162c))
+  * **picker:** Updated picker version ([87de0f](https://github.com/filestack/filestack-js/commit/87de0f5a16d3a98aa45666c72e37d19a8880a464))
+
 ## [3.40.8](https://github.com/filestack/filestack-js/compare/3.40.7...3.40.8) (2025-06-16)
   * **upload:** Fixed ERR_STREAM_WRITE_AFTER_END error during upload for node version 22+ ([cdc8ec](https://github.com/filestack/filestack-js/commit/cdc8ec3979251da7ed43ffa289d969709526ed69))
 
