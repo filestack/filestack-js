@@ -203,9 +203,9 @@ export class Upload extends EventEmitter {
    * @returns {Promise<any>}
    * @memberof Upload
    */
-  async upload(input: InputFile, altText?: string, mimetype?: string): Promise<any> {
+  async upload(input: InputFile, altText?: string): Promise<any> {
 
-    const f = await getFile(input, this.sanitizerOptions, mimetype);
+    const f = await getFile(input, this.sanitizerOptions);
     f.customName = this.overrideFileName;
     if (altText) {
       f.alt = altText;
