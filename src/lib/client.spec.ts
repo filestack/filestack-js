@@ -210,7 +210,7 @@ describe('client', () => {
 
     expect(Upload.prototype.setToken).toHaveBeenCalledWith(token);
     expect(Upload.prototype.setSecurity).toHaveBeenCalledWith(defaultSecurity);
-    expect(Upload.prototype.upload).toHaveBeenCalledWith(file, undefined, undefined);
+    expect(Upload.prototype.upload).toHaveBeenCalledWith(file, undefined);
   });
 
   it('should be able to upload file with alt text', async () => {
@@ -233,7 +233,7 @@ describe('client', () => {
 
     expect(Upload.prototype.setToken).toHaveBeenCalledWith(token);
     expect(Upload.prototype.setSecurity).toHaveBeenCalledWith(defaultSecurity);
-    expect(Upload.prototype.upload).toHaveBeenCalledWith(file, uploadOptions.altText, undefined);
+    expect(Upload.prototype.upload).toHaveBeenCalledWith(file, uploadOptions.altText);
   });
 
   it('should be able to upload file without token and security', async () => {
@@ -251,7 +251,7 @@ describe('client', () => {
       urls: sessionURls,
     });
 
-    expect(Upload.prototype.upload).toHaveBeenCalledWith(file, undefined, undefined);
+    expect(Upload.prototype.upload).toHaveBeenCalledWith(file, undefined);
   });
 
   it('should emit error', async () => {
