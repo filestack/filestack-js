@@ -169,7 +169,7 @@ export class CloudClient {
     });
   }
 
-  store(name: string, path: string, options: StoreParams = {}, customSource: any = {}, cancelTokenInput?: any, uploadTags: UploadTags = null) {
+  store(name: string, path: string, options: StoreParams = {}, customSource: any = {}, cancelTokenInput?: any, uploadTags: UploadTags = null, pickerSessionId?: string) {
     // Default to S3
     if (options.location === undefined) {
       options.location = 's3';
@@ -183,6 +183,7 @@ export class CloudClient {
       clouds: {
         [name]: {
           path,
+          picker_session_id: pickerSessionId,
           store: removeEmpty(options),
         },
       },
