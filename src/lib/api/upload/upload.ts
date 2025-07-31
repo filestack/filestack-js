@@ -67,6 +67,22 @@ export class Upload extends EventEmitter {
    */
   private overrideFileName;
 
+  /**
+   * Mimetype of the file
+   *
+   * @private
+   * @memberof Upload
+   */
+  private mimetype;
+
+  /**
+   * Alt Text of the file
+   *
+   * @private
+   * @memberof Upload
+   */
+  private altText;
+
   private lastProgress: ProgressEvent = {
     totalBytes: 0,
     totalPercent: 0,
@@ -100,6 +116,16 @@ export class Upload extends EventEmitter {
     if (this.storeOptions.sanitizer) {
       this.sanitizerOptions = this.storeOptions.sanitizer;
       delete this.storeOptions.sanitizer;
+    }
+
+    if (storeOptions.altText) {
+      this.altText = storeOptions.altText;
+      delete this.storeOptions.altText;
+    }
+
+    if (storeOptions.mimetype) {
+      this.mimetype = storeOptions.mimetype;
+      delete this.storeOptions.mimetype;
     }
 
     this.uploader = new S3Uploader(this.storeOptions, options.concurrency);
@@ -199,16 +225,16 @@ export class Upload extends EventEmitter {
    * Upload single file
    *
    * @param {(InputFile)} file
-   * @param {(string)} altText
    * @returns {Promise<any>}
    * @memberof Upload
    */
-  async upload(input: InputFile, altText?: string): Promise<any> {
+  async upload(input: InputFile): Promise<any> {
 
-    const f = await getFile(input, this.sanitizerOptions);
+    const f = await getFile(input, this.sanitizerOptions, this.mimetype);
     f.customName = this.overrideFileName;
-    if (altText) {
-      f.alt = altText;
+
+    if (this.overrideFileName) {
+      f.alt = this.altText
     }
 
     this.uploader.addFile(f);
@@ -240,8 +266,13 @@ export class Upload extends EventEmitter {
         continue;
       }
 
-      const f = await getFile(input[i], this.sanitizerOptions);
+      const f = await getFile(input[i], this.sanitizerOptions, this.mimetype);
       f.customName = this.overrideFileName;
+
+      if (this.overrideFileName) {
+        f.alt = this.altText
+      }
+
       this.uploader.addFile(f);
     }
 

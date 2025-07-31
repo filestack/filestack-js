@@ -154,7 +154,7 @@ const readPart = (start: number, end: number, file): Promise<any> => {
  * @param {*} fileOrString
  * @returns {Promise<File>}
  */
-export const getFile = (input: InputFile, sanitizeOptions?: SanitizeOptions): Promise<FsFile> => {
+export const getFile = (input: InputFile, sanitizeOptions?: SanitizeOptions, mimetype?: string): Promise<FsFile> => {
   let filename;
   let file: Blob;
 
@@ -186,7 +186,7 @@ export const getFile = (input: InputFile, sanitizeOptions?: SanitizeOptions): Pr
         {
           name: filename,
           size: file.size,
-          type: mime,
+          type: mimetype || mime,
           slice: res.slice,
           release: res.release,
         },
