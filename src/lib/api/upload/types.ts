@@ -81,8 +81,6 @@ export interface UploadOptions {
    * @memberof UploadOptions
    */
   tags?: UploadTags;
-
-  altText?: string;
 }
 
 export type StoreUploadOptions = StoreBaseParams & {
@@ -90,6 +88,16 @@ export type StoreUploadOptions = StoreBaseParams & {
    * Filename or function that returns custom filename for stored file
    */
   filename?: ((file: File) => string) | string;
+
+  /**
+   * Mimetype of the stored file
+   */
+  mimetype?: string;
+
+  /**
+   * Alt text of the stored file
+   */
+  altText?: string;
 
   /**
    * Workflows ids to run after upload
