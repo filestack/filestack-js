@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.40.11](https://github.com/filestack/filestack-js/compare/3.40.10...3.40.11) (2025-08-04)
+  * **storeOptions:** Pass altText and mimetype as storeOptions ([03791b](https://github.com/filestack/filestack-js/commit/03791b0bb92ec9e7f54307684a08af0c68e1ca79))
+  * **picker:** Updated picker version ([013ee9](https://github.com/filestack/filestack-js/commit/013ee9779618e8ce7e4329097d52808703ccd504))
+
 ## [3.40.10](https://github.com/filestack/filestack-js/compare/3.40.9...3.40.10) (2025-07-23)
   * **revert:** Reverted last deployment
 
