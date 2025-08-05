@@ -30,7 +30,7 @@ export const StoreParamsSchema = {
     },
     mimetype: {
       type: ['string', 'null'],
-      maxLength: 60,
+      maxLength: 255,
     },
     altText: {
       type: ['string', 'null'],
