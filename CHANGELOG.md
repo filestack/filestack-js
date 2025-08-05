@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.40.12](https://github.com/filestack/filestack-js/compare/3.40.11...3.40.12) (2025-08-05)
+  * **mimetype:** Increased maxLength of mimetype to 255 ([ab0b03](https://github.com/filestack/filestack-js/commit/ab0b03393b974b6bf89c355cdfa5481bab9ecfd6))
+  * **altText:** Check altText if available instead of filename ([506e85](https://github.com/filestack/filestack-js/commit/506e856af1b967d57dc0413ca22e6f947d448fb2))
+
 ## [3.40.11](https://github.com/filestack/filestack-js/compare/3.40.10...3.40.11) (2025-08-04)
   * **storeOptions:** Pass altText and mimetype as storeOptions ([03791b](https://github.com/filestack/filestack-js/commit/03791b0bb92ec9e7f54307684a08af0c68e1ca79))
   * **picker:** Updated picker version ([013ee9](https://github.com/filestack/filestack-js/commit/013ee9779618e8ce7e4329097d52808703ccd504))
