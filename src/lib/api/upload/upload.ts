@@ -233,7 +233,7 @@ export class Upload extends EventEmitter {
     const f = await getFile(input, this.sanitizerOptions, this.mimetype);
     f.customName = this.overrideFileName;
 
-    if (this.overrideFileName) {
+    if (this.altText) {
       f.alt = this.altText
     }
 
@@ -269,7 +269,7 @@ export class Upload extends EventEmitter {
       const f = await getFile(input[i], this.sanitizerOptions, this.mimetype);
       f.customName = this.overrideFileName;
 
-      if (this.overrideFileName) {
+      if (this.altText) {
         f.alt = this.altText
       }
 
