@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.41.12](https://github.com/filestack/filestack-js/compare/3.40.12...3.41.12) (2025-08-11)
+  * **picker:** Picker now supports new Google Photos Picker ([c27d4b](https://github.com/filestack/filestack-js/commit/c27d4bf88bea5dbb441e7edf2d02ac510591767b)))
+  * **googlephotos:** Pass optional pickerSessionId to store ([c5aab6](https://github.com/filestack/filestack-js/commit/c5aab6e576613c3dbf7f7c7f0d6442baf34fa828)))
+
 ## [3.40.12](https://github.com/filestack/filestack-js/compare/3.40.11...3.40.12) (2025-08-05)
   * **mimetype:** Increased maxLength of mimetype to 255 ([ab0b03](https://github.com/filestack/filestack-js/commit/ab0b03393b974b6bf89c355cdfa5481bab9ecfd6))
   * **altText:** Check altText if available instead of filename ([506e85](https://github.com/filestack/filestack-js/commit/506e856af1b967d57dc0413ca22e6f947d448fb2))
