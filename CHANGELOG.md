@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.0.4](https://github.com/filestack/filestack-js/compare/4.0.3...4.0.4) (2025-08-12)
+  * **picker:** Updated picker version 4.2.0, fixed Global CSS override
+
 ## [4.0.3](https://github.com/filestack/filestack-js/compare/4.0.2...4.0.3) (2025-06-26)
   * **picker:** Updated picker version 4.1.0, fixed picker v4 translation
 
