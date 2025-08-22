@@ -68,6 +68,16 @@ export const storeURL = ({
   session.signature = security && security.signature || session.signature;
 
   const filelink = new Filelink(url, session.apikey);
+
+  if (url && typeof storeParams === 'object' && storeParams !== null){
+    if (storeParams['mimetype']) {
+      delete storeParams['mimetype'];
+    }
+    if (storeParams['altText']) {
+      delete storeParams['altText'];
+    }
+  }
+
   filelink.store(storeParams);
 
   if (session.policy && session.signature) {
@@ -93,7 +103,6 @@ export const storeURL = ({
       headers,
     }];
   }
-
   if (workflowIds && workflowIds.length > 0) {
     filelink.addTask('store', { workflows: workflowIds });
   }
