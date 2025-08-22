@@ -94,6 +94,10 @@ export const storeURL = ({
     }];
   }
 
+  if (sources && sources?.length > 0) {
+    filelink.removeTaskParams('store', ['mimetype','altText']);
+  }
+  
   if (workflowIds && workflowIds.length > 0) {
     filelink.addTask('store', { workflows: workflowIds });
   }

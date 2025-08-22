@@ -782,6 +782,45 @@ export class Filelink {
   }
 
   /**
+   * Remove specific parameter keys from tasks
+   *
+   * @param {string} taskName - Name of the task to target
+   * @param {string|string[]} paramKeys - Parameter key(s) to remove
+   * @returns {Filelink} - Returns this for chaining
+   * @memberof Filelink
+   */
+  removeTaskParams(taskName, paramKeys) {
+    Debug(`Remove params ${paramKeys} from task ${taskName}`);
+    
+    const keysToRemove = Array.isArray(paramKeys) ? paramKeys : [paramKeys];
+    const validKeys = keysToRemove.filter(key => key && typeof key === 'string');
+  
+    if (validKeys.length === 0) {
+      Debug('No valid parameter keys to remove');
+      return this;
+    }
+
+    this.transforms.forEach(task => {
+      if (task.name === taskName && task.params && typeof task.params === 'object' && !Array.isArray(task.params)) {
+        let hasChanges = false;
+        
+        validKeys.forEach(key => {
+          if (key in task.params) {
+            delete task.params[key];
+            hasChanges = true;
+          }
+        });
+        
+        if (hasChanges && Object.keys(task.params).length === 0) {
+          task.params = undefined;
+        }
+      }
+    });
+    
+    return this;
+  }
+
+  /**
    * Returns all tasks added for transformation
    *
    * @memberof Filelink
