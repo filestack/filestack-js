@@ -132,5 +132,14 @@ const upload = async (bucket, path, cacheControll) => {
     })
   }
 
+  if (args.indexOf('--beta.v4') > -1) {
+    console.log(`publish beta v4 version`);
+    paths.push({
+      bucket,
+      path: `filestack-js/beta-v4`,
+      cacheControll: 0
+    })
+  }
+
   Promise.all(paths.map((data) => upload(data.bucket, data.path, data.cacheControll))).then((res) => console.log(res))
 })();

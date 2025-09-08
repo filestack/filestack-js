@@ -32,6 +32,7 @@
     "prepare": "npm run build",
     "publish:s3:beta": "npm run build && node scripts/publish.js --beta",
     "publish:s3:stage": "npm run build && node scripts/publish.js --stage",
+    "publish:s3:beta.v4": "npm run build && node scripts/publish.js --beta.v4",
     "publish:s3": "node scripts/publish.js --current --latest",
     "cache:clean": "node scripts/cache.js --current --latest",
     "cache:clean:beta": "node scripts/cache.js --beta",

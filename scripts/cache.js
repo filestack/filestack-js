@@ -66,5 +66,10 @@ const purge = (bucket, path) => {
     paths.push(`filestack-js/stage`)
   }
 
+  if (args.indexOf('--beta.v4') > -1) {
+    console.log(`clearing cache for beta v4 version`);
+    paths.push(`filestack-js/beta-v4`)
+  }
+
   Promise.all(paths.map((p) => purge(bucket, p)), (res) => console.log(res))
 })();
