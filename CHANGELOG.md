@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.1.4](https://github.com/filestack/filestack-js/compare/4.0.4...4.1.4) (2025-09-08)
+  * **picker:** Updated picker version 4.3.0, now supports Google Photos Picker UI
+
 ## [4.0.4](https://github.com/filestack/filestack-js/compare/4.0.3...4.0.4) (2025-08-12)
   * **picker:** Updated picker version 4.2.0, fixed Global CSS override
 
