@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.42.0](https://github.com/filestack/filestack-js/compare/3.41.12...3.42.0) (2025-09-11)
+  * **upload:** Fixed upload via URL Failing in 3.40.12 Release ([e316fe](https://github.com/filestack/filestack-js/commit/e316fe83b67e690b84e7613a69538c8e0f79f1fd)))
+
 ## [3.41.12](https://github.com/filestack/filestack-js/compare/3.40.12...3.41.12) (2025-08-11)
   * **picker:** Picker now supports new Google Photos Picker ([c27d4b](https://github.com/filestack/filestack-js/commit/c27d4bf88bea5dbb441e7edf2d02ac510591767b)))
   * **googlephotos:** Pass optional pickerSessionId to store ([c5aab6](https://github.com/filestack/filestack-js/commit/c5aab6e576613c3dbf7f7c7f0d6442baf34fa828)))
