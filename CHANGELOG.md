@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.42.1](https://github.com/filestack/filestack-js/compare/3.42.0...3.42.1) (2025-09-29)
+  * **picker:** Fixed Filter Tab Not Working During URL Upload in 3.42.1 Release ([a8696e](https://github.com/filestack/filestack-js/commit/a8696e112136757ae1d374a9f153b027fd1ace99)))
+
 ## [3.42.0](https://github.com/filestack/filestack-js/compare/3.41.12...3.42.0) (2025-09-11)
   * **upload:** Fixed upload via URL Failing in 3.40.12 Release ([e316fe](https://github.com/filestack/filestack-js/commit/e316fe83b67e690b84e7613a69538c8e0f79f1fd)))
 
