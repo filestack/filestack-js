@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.43.1](https://github.com/filestack/filestack-js/compare/3.42.1...3.43.1) (2025-10-07)
+  * **picker:** Updated Picker Version - Now supports Google Drive Picker ([c6c29f](https://github.com/filestack/filestack-js/commit/c6c29f6db47a393c96d045ac7e60f096e28a0853)))
+
 ## [3.42.1](https://github.com/filestack/filestack-js/compare/3.42.0...3.42.1) (2025-09-29)
   * **picker:** Fixed Filter Tab Not Working During URL Upload in 3.42.1 Release ([a8696e](https://github.com/filestack/filestack-js/commit/a8696e112136757ae1d374a9f153b027fd1ace99)))
 
