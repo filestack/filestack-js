@@ -736,6 +736,11 @@ export interface PickerOptions {
    * Enable/Disable possibility to multiple file upload
    */
   multipleFileUpload?: boolean;
+  /**
+   * Set your own Google Drive Picker App ID. Defaults to Filestack's.
+   * This is your Project Number from the Google Cloud console.
+   */
+  googleDriveAppID?: string;
 }
 
 export interface PickerCropOptions {
