@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.44.2](https://github.com/filestack/filestack-js/compare/3.44.1...3.44.2) (2025-10-22)
+  * **picker:**  Updated Picker Version ([a53988](https://github.com/filestack/filestack-js/commit/a539885e581f135fb67b0c24caf604d633279292)))
+
 ## [3.44.1](https://github.com/filestack/filestack-js/compare/3.43.1...3.44.1) (2025-10-07)
   * **picker:**  Set Google Drive App ID incase of custom OAuth ([1bbae3](https://github.com/filestack/filestack-js/commit/1bbae3707b2c0eb3bab17df03c69924527aab271)))
 
