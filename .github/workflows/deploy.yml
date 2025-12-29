@@ -20,7 +20,7 @@ jobs:
     - name: Setup repository env
       uses: actions/setup-node@v1
       with:
-        node-version: '14.x'
+        node-version: '18.x'
         registry-url: "https://registry.npmjs.org"
     - name: Install deps
       run: npm install --ignore-scripts
@@ -38,6 +38,8 @@ jobs:
         NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
     - name: Update code cov report
       run: npm run test:codecov
+      env:
+        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
     - name: Prepare docs
       run: npm run docs
     - name: Deploy docs

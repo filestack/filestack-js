@@ -155,6 +155,10 @@ export interface PickerFileMetadata {
    * The Filestack CDN URL for the uploaded file.
    */
   url: string;
+  /**
+   * Alt text for images
+   */
+  alt: string;
 }
 
 export interface CustomAuthTextOptions {
@@ -415,6 +419,15 @@ export interface PickerOptions {
    */
   fromSources?: string[];
   /**
+   * Provide default text value for Image Search
+   * ```javascript
+   * websearch: {
+   *  predefinedText: 'Sample text'
+   * }
+   * ```
+   */
+  websearch?: object;
+  /**
    * Container where picker should be appended. Only relevant for `inline` and `dropPane` display modes.
    */
   container?: string | Node;
@@ -434,7 +447,7 @@ export interface PickerOptions {
   };
   /**
    * Customize the text on the cloud authentication screen in Picker.
-   * Use a cloud source name (see [[PickerOptions.fromSources]])
+   * Use a cloud source name (see {@link PickerOptions.fromSources})
    * or a 'default' as a key, then put your custom notice or consent
    * to the 'top' or the 'bottom' key to show it respectivly above or under 'Connect button'.
    *
@@ -500,6 +513,10 @@ export interface PickerOptions {
    * When true removes ability to edit images.
    */
   disableTransformer?: boolean;
+  /**
+   * Disables alt text view/edit in the summary screen.
+   */
+  disableAltText?: boolean;
   /**
    * Disables local image thumbnail previews in the summary screen.
    */
@@ -675,6 +692,10 @@ export interface PickerOptions {
    */
   transformations?: PickerTransformationOptions;
   /**
+   * Whether to use the new transformations UI. Defaults to `false`.
+   */
+  transformationsUI?: boolean;
+  /**
    * Options for local file uploads.
    */
   uploadConfig?: UploadOptions;
@@ -703,6 +724,23 @@ export interface PickerOptions {
     pasteToFirstInViewPort?: boolean,
     pasteToFirstInstance?: boolean
   };
+  /**
+   * Disable/Enable possibility to upload directories.
+   */
+  disableDirectoryUpload?: boolean;
+  /**
+   * Enable/Disable Mini Uploader
+   */
+  miniUploader?: boolean;
+  /**
+   * Enable/Disable possibility to multiple file upload
+   */
+  multipleFileUpload?: boolean;
+  /**
+   * Set your own Google Drive Picker App ID. Defaults to Filestack's.
+   * This is your Project Number from the Google Cloud console.
+   */
+  googleDriveAppID?: string;
 }
 
 export interface PickerCropOptions {
@@ -770,7 +808,17 @@ class PickerLoader {
     const validateRes = getValidator(PickerParamsSchema)(options);
 
     if (validateRes.errors.length) {
-      throw new FilestackError(`Invalid picker params`, validateRes.errors, FilestackErrorType.VALIDATION);
+      validateRes.errors.forEach(error => {
+        if (error.path.includes('fromSources')) {
+          console.warn(`Warning: Invalid source \"${error.instance}\" found and removed!`);
+          options.fromSources = options.fromSources.filter(source => source !== error.instance);
+        } else {
+          throw new FilestackError(`Invalid picker params`, validateRes.errors, FilestackErrorType.VALIDATION);
+        }
+      });
+      if (!options.fromSources.length) {
+        delete options.fromSources;
+      }
     }
 
     this._initialized = this.loadModule(client, options);

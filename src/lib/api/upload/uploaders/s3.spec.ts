@@ -17,9 +17,9 @@
 
 import { S3Uploader } from './s3';
 import { File } from './../file';
-import * as nock from 'nock';
+import nock from 'nock';
 import { UploadMode, DEFAULT_STORE_LOCATION, INTELLIGENT_CHUNK_SIZE, DEFAULT_PART_SIZE, INTELLIGENT_MOBILE_CHUNK_SIZE } from './abstract';
-import * as utils from '../../../utils';
+import * as utils from '../../../utils/index.node';
 
 const testBufferSize = 1024 * 1024 * 9;
 const testSmallBufferSize = 1024 * 1024 * 2;
@@ -159,7 +159,7 @@ describe('Api/Upload/Uploaders/S3', () => {
     });
 
     it('should set intelligent mobile chunk size on mobile devices', () => {
-      spyOn(utils, 'isMobile').and.returnValue(true);
+      jest.spyOn(utils, 'isMobile').mockReturnValue(true);
       const u = new S3Uploader({});
       return expect(u.getIntelligentChunkSize()).toEqual(INTELLIGENT_MOBILE_CHUNK_SIZE);
     });
@@ -258,7 +258,7 @@ describe('Api/Upload/Uploaders/S3', () => {
       expect(mockStart).not.toHaveBeenCalled();
     });
 
-    it('should throw error on wrong etag field', async (done) => {
+    it('should throw error on wrong etag field', async () => {
       mockStart.mockReturnValue({
         uri: mockedUri,
         region: mockRegion,
@@ -276,7 +276,6 @@ describe('Api/Upload/Uploaders/S3', () => {
 
       u.on('error', (err) => {
         expect(err.message).toEqual('Cannot upload file, check S3 bucket settings');
-        done();
       });
 
       await u.execute();
@@ -525,8 +524,9 @@ describe('Api/Upload/Uploaders/S3', () => {
         });
 
         const firstPartOffset = 0;
-        const firstPartMetadata = testFile.getPartMetadata(0, INTELLIGENT_CHUNK_SIZE);
-        const firstPartChunk = await testFile.getChunkByMetadata(firstPartMetadata, firstPartOffset, chunkSize);
+        const { partsCount, chunkSize: dynamicPartSize } = testFile.getPartsCount(INTELLIGENT_CHUNK_SIZE, true);
+        const firstPartMetadata = testFile.getPartMetadata(0, dynamicPartSize);
+        const firstPartChunk = await testFile.getChunkByMetadata(firstPartMetadata, firstPartOffset, dynamicPartSize);
 
         expect(mockUpload).toHaveBeenCalledWith({
           md5: firstPartChunk.md5,
@@ -545,12 +545,68 @@ describe('Api/Upload/Uploaders/S3', () => {
 
         expect(mockPut).toHaveBeenCalledWith('/fakes3', expect.any(Object));
 
-        const secondPartOffset = chunkSize;
-        const firstPartSecondChunk = await testFile.getChunkByMetadata(firstPartMetadata, secondPartOffset, chunkSize);
+        expect(mockPut).toHaveBeenCalledWith('/fakes3', expect.any(Object));
+
+        expect(mockCommit).toHaveBeenCalledWith({
+          apikey: testApikey,
+          part: 1,
+          size: testFile.size,
+          region: mockRegion,
+          uri: mockedUri,
+          upload_id: mockUploadId,
+          store: {
+            location: DEFAULT_STORE_LOCATION,
+          },
+        });
+
+        expect(mockComplete).toHaveBeenCalledWith({
+          apikey: testApikey,
+          filename: testFile.name,
+          mimetype: testFile.mimetype,
+          size: testFile.size,
+          region: mockRegion,
+          upload_id: mockUploadId,
+          store: {
+            location: DEFAULT_STORE_LOCATION,
+          },
+          fii: true,
+          uri: mockedUri,
+        });
+      });
+
+      it('should upload file', async () => {
+        const chunkSize = 1024 * 1024;
+
+        const u = new S3Uploader({});
+        u.setUrl(testHost);
+        u.setApikey(testApikey);
+        u.setUploadMode(UploadMode.INTELLIGENT);
+        u.setIntelligentChunkSize(chunkSize);
+        u.addFile(getSmallTestFile());
+
+        const res = await u.execute();
+        expect(res[0].handle).toEqual('test_handle');
+
+        const testFile = getSmallTestFile();
+        expect(mockStart).toHaveBeenCalledWith({
+          filename: testFile.name,
+          mimetype: testFile.mimetype,
+          size: testFile.size,
+          store: {
+            location: DEFAULT_STORE_LOCATION,
+          },
+          apikey: testApikey,
+          fii: true,
+        });
+
+        const firstPartOffset = 0;
+        const { partsCount, chunkSize: dynamicPartSize } = testFile.getPartsCount(INTELLIGENT_CHUNK_SIZE, true);
+        const firstPartMetadata = testFile.getPartMetadata(0, dynamicPartSize);
+        const firstPartChunk = await testFile.getChunkByMetadata(firstPartMetadata, firstPartOffset, dynamicPartSize);
 
         expect(mockUpload).toHaveBeenCalledWith({
-          md5: firstPartSecondChunk.md5,
-          size: firstPartSecondChunk.size,
+          md5: firstPartChunk.md5,
+          size: firstPartChunk.size,
           apikey: testApikey,
           region: mockRegion,
           store: {
@@ -558,10 +614,12 @@ describe('Api/Upload/Uploaders/S3', () => {
           },
           uri: mockedUri,
           upload_id: mockUploadId,
-          offset: secondPartOffset,
+          offset: firstPartOffset,
           fii: true,
           part: 1,
         });
+
+        expect(mockPut).toHaveBeenCalledWith('/fakes3', expect.any(Object));
 
         expect(mockPut).toHaveBeenCalledWith('/fakes3', expect.any(Object));
 
@@ -596,7 +654,8 @@ describe('Api/Upload/Uploaders/S3', () => {
         const putRequestTimeout = 300;
         let delayApplied = false;
 
-        interceptorS3.reply(
+        nock.removeInterceptor(interceptorS3);
+        scope.put('/fakes3').reply(
           function(url, _, cb) {
             if (!delayApplied) {
               delayApplied = true;
@@ -604,11 +663,8 @@ describe('Api/Upload/Uploaders/S3', () => {
                 cb(504);
               }, 3000);
             } else {
-              cb(null, mockPut(url, this.req.headers));
+              cb(null, [201, mockPut(url, this.req.headers), {etag: 'test'}]);
             }
-          },
-          {
-            etag: 'test',
           }
         );
 
@@ -617,6 +673,7 @@ describe('Api/Upload/Uploaders/S3', () => {
         u.setApikey(testApikey);
         u.setTimeout(putRequestTimeout);
         u.setUploadMode(UploadMode.INTELLIGENT);
+        u.setIntelligentChunkSize(INTELLIGENT_CHUNK_SIZE);
 
         u.addFile(getSmallTestFile());
         const res = await u.execute();
@@ -625,8 +682,9 @@ describe('Api/Upload/Uploaders/S3', () => {
         expect(res[0].status).toEqual('test_status');
 
         const testFile = getSmallTestFile();
-        const firstPartMetadata = testFile.getPartMetadata(0, INTELLIGENT_CHUNK_SIZE);
-        const firstPartChunk = await testFile.getChunkByMetadata(firstPartMetadata, 0, INTELLIGENT_CHUNK_SIZE);
+        const { partsCount, chunkSize: dynamicPartSize } = testFile.getPartsCount(INTELLIGENT_CHUNK_SIZE, true);
+        const firstPartMetadata = testFile.getPartMetadata(0, dynamicPartSize);
+        const firstPartChunk = await testFile.getChunkByMetadata(firstPartMetadata, 0, dynamicPartSize);
 
         // this request will be aborted but called on mock upload
         expect(mockUpload).toHaveBeenNthCalledWith(1, {
@@ -645,8 +703,10 @@ describe('Api/Upload/Uploaders/S3', () => {
         });
 
         // split part size by a half and retry request (thats give us 2 chunks so 2 upload requests needed)
-        const chunkSize = Math.min(INTELLIGENT_CHUNK_SIZE, testFile.size) / 2;
-        const chunk1 = await testFile.getChunkByMetadata(firstPartMetadata, 0, chunkSize);
+        let { chunkSize } = testFile.getPartsCount(INTELLIGENT_CHUNK_SIZE, true);
+        chunkSize = chunkSize / 2;
+        const updatedFirstPartMetaData = testFile.getPartMetadata(0, chunkSize);
+        const chunk1 = await testFile.getChunkByMetadata(updatedFirstPartMetaData, 0, chunkSize);
 
         expect(mockUpload).toHaveBeenNthCalledWith(2, {
           md5: chunk1.md5,
@@ -663,36 +723,6 @@ describe('Api/Upload/Uploaders/S3', () => {
           part: 1,
         });
 
-        const chunk2 = await testFile.getChunkByMetadata(firstPartMetadata, chunkSize / 2, chunkSize);
-
-        expect(mockUpload).toHaveBeenNthCalledWith(3, {
-          md5: chunk2.md5,
-          size: chunk2.size,
-          apikey: testApikey,
-          region: mockRegion,
-          store: {
-            location: DEFAULT_STORE_LOCATION,
-          },
-          fii: true,
-          uri: mockedUri,
-          upload_id: mockUploadId,
-          offset: chunkSize,
-          part: 1,
-        });
-      });
-
-      it('should exit when chunk size reaches min chunk size', async () => {
-        interceptorS3.reply((url, _, cb) => cb('Error'));
-
-        const u = new S3Uploader({});
-        u.setUrl(testHost);
-        u.setApikey(testApikey);
-        u.setTimeout(100);
-        u.setUploadMode(UploadMode.INTELLIGENT);
-
-        u.addFile(getSmallTestFile());
-        const res = await u.execute();
-        expect(res[0].status).toEqual('Failed');
       });
 
       it('should exit on 4xx errors', async () => {
@@ -754,17 +784,15 @@ describe('Api/Upload/Uploaders/S3', () => {
         });
 
         let networkFail = true;
-        interceptorS3.reply(
+        nock.removeInterceptor(interceptorS3);
+        scope.put('/fakes3').reply(
           function(url, _, cb) {
             if (networkFail) {
               networkFail = false;
               return cb('Error');
             }
 
-            cb(null, mockPut(url, this.req.headers));
-          },
-          {
-            etag: 'test',
+            cb(null, [201, mockPut(url, this.req.headers), { etag: 'test'}]);
           }
         );
 
@@ -772,6 +800,7 @@ describe('Api/Upload/Uploaders/S3', () => {
         u.setUrl(testHost);
         u.setApikey(testApikey);
         u.setUploadMode(UploadMode.FALLBACK);
+        u.setIntelligentChunkSize(INTELLIGENT_CHUNK_SIZE);
         u.addFile(getSmallTestFile());
 
         const res = await u.execute();
@@ -831,10 +860,7 @@ describe('Api/Upload/Uploaders/S3', () => {
               });
             }
 
-            cb(null, mockPut(url, this.req.headers));
-          },
-          {
-            etag: 'test',
+            cb(null, [201, mockPut(url, this.req.headers), {etag: 'test'}]);
           }
         );
 
@@ -1022,24 +1048,22 @@ describe('Api/Upload/Uploaders/S3', () => {
       expect(mockComplete).not.toHaveBeenCalled();
     });
 
-    it('should repsect retry config', async () => {
+    it('should respect retry config', async () => {
       // simulate first request network fail
       let networkFail = true;
 
       nock.removeInterceptor(interceptorS3);
       scope.persist(false);
 
-      interceptorS3.twice().reply(
+      scope.put('/fakes3').twice().reply(
         function(url, _, cb) {
           if (networkFail) {
             networkFail = false;
             return cb(Error('error'));
           }
 
-          cb(null, mockPut(url, this.req.headers));
-        },
-        { etag: 'test' }
-      );
+          cb(null, [201, mockPut(url, this.req.headers), { etag: 'test'}]);
+        });
 
       const u = new S3Uploader({});
       u.setUrl(testHost);

@@ -184,8 +184,6 @@ Polyfills we recommend:**
 Module (for bundling):
 * https://babeljs.io/docs/en/babel-polyfill
 
-Script (for script tag):
-* https://polyfill.io/v3/polyfill.min.js?features=Promise%2CSymbol%2CSymbol.iterator%2CArray.from%2CObject.assign%2CNumber.isFinite%2CString.prototype.includes
 
 ## Development
 
@@ -234,12 +232,11 @@ Upload abort throws an `FilestackError` with type `FilestackErrorType.ABORTED`
 
 ## Sentry Integration
 
-If you're using [Sentry](https://sentry.io/welcome/) to monitor your application, Filestack will automatically report upload errors to Sentry, and tag them with helpful diagnostic information via [`@sentry/minimal`](https://github.com/getsentry/sentry-javascript/tree/master/packages/minimal).
+If you're using [Sentry](https://sentry.io/welcome/) to monitor your application, Filestack will automatically report upload errors to Sentry, and tag them with helpful diagnostic information via [`@sentry/browser`](https://github.com/getsentry/sentry-javascript/tree/master/packages/browser).
 
 ## Versioning
 
 We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags](https://github.com/filestack/filestack-js/tags) on this repository.
-
 ## Contributing
 
 We follow the [conventional commits](https://conventionalcommits.org/) specification to ensure consistent commit messages and changelog formatting.

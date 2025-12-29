@@ -47,37 +47,49 @@ export const PickerParamsSchema = {
     acceptFn: {
       format: 'callback',
     },
+    websearch: {
+      type: 'object',
+      properties: {
+        predefinedText: {
+          type: 'string',
+        },
+      },
+    },
     fromSources: {
       type: 'array',
-      items: [
-        {
-          type: ['string', 'object'],
-          additionalProperties: false,
-          enum: [
-            'local_file_system',
-            'url',
-            'imagesearch',
-            'facebook',
-            'instagram',
-            'googledrive',
-            'unsplash',
-            'dropbox',
-            'webcam',
-            'video',
-            'audio',
-            'box',
-            'github',
-            'gmail',
-            'googlephotos',
-            'onedrive',
-            'onedriveforbusiness',
-            'clouddrive',
-            'googlephotos',
-            'customsource',
-            'tint',
-          ],
-        },
-      ],
+      items: {
+        anyOf: [
+          {
+            type: 'string',
+            enum: [
+              'local_file_system',
+              'url',
+              'imagesearch',
+              'facebook',
+              'instagram',
+              'googledrive',
+              'picasa',
+              'unsplash',
+              'dropbox',
+              'webcam',
+              'video',
+              'audio',
+              'box',
+              'github',
+              'gmail',
+              'googlephotos',
+              'onedrive',
+              'onedriveforbusiness',
+              'clouddrive',
+              'customsource',
+              'tint',
+            ],
+          },
+          {
+            type: 'object',
+          },
+        ],
+      },
     },
     container: {
       format: 'HTMLContainer',
@@ -126,6 +138,9 @@ export const PickerParamsSchema = {
       type: 'boolean',
     },
     disableTransformer: {
+      type: 'boolean',
+    },
+    disableAltText: {
       type: 'boolean',
     },
     disableThumbnails: {
@@ -291,6 +306,9 @@ export const PickerParamsSchema = {
       type: 'object',
       additionalProperties: false,
       properties: {
+        config: {
+          type: 'object',
+        },
         circle: {
           type: 'boolean',
         },
@@ -431,6 +449,9 @@ export const PickerParamsSchema = {
     useSentryBreadcrumbs: {
       type: 'boolean',
     },
+    transformationsUI: {
+      type: 'boolean',
+    },
     pasteMode: {
       type: 'object',
       additionalProperties: false,
@@ -442,6 +463,18 @@ export const PickerParamsSchema = {
           type: 'boolean',
         },
       },
+    },
+    disableDirectoryUpload: {
+      type: 'boolean',
+    },
+    miniUploader: {
+      type: 'boolean',
+    },
+    multipleFileUpload: {
+      type: 'boolean',
+    },
+    googleDriveAppID: {
+      type: 'string',
     },
   },
 };

@@ -90,6 +90,16 @@ export type StoreUploadOptions = StoreBaseParams & {
   filename?: ((file: File) => string) | string;
 
   /**
+   * Mimetype of the stored file
+   */
+  mimetype?: string;
+
+  /**
+   * Alt text of the stored file
+   */
+  altText?: string;
+
+  /**
    * Workflows ids to run after upload
    */
   workflows?: (string | WorkflowConfig)[];

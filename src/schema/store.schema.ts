@@ -28,6 +28,14 @@ export const StoreParamsSchema = {
         format: 'callback',
       }],
     },
+    mimetype: {
+      type: ['string', 'null'],
+      maxLength: 255,
+    },
+    altText: {
+      type: ['string', 'null'],
+      maxLength: 125,
+    },
     location: {
       '$ref': 'locationsDef',
     },

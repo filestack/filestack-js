@@ -199,7 +199,28 @@ describe('client', () => {
     const storeOptions = {};
     const token = {};
 
-    spyOn(Upload.prototype, 'upload').and.returnValue(Promise.resolve());
+    jest.spyOn(Upload.prototype, 'upload').mockImplementation(() => Promise.resolve());
+
+    await client.upload(file, uploadOptions, storeOptions, token, defaultSecurity);
+
+    expect(Upload.prototype.setSession).toHaveBeenCalledWith({
+      apikey: defaultApikey,
+      urls: sessionURls,
+    });
+
+    expect(Upload.prototype.setToken).toHaveBeenCalledWith(token);
+    expect(Upload.prototype.setSecurity).toHaveBeenCalledWith(defaultSecurity);
+    expect(Upload.prototype.upload).toHaveBeenCalledWith(file);
+  });
+
+  it('should be able to upload file with alt text', async () => {
+    const client = new Client(defaultApikey);
+    const file = 'anyFile';
+    const uploadOptions = {};
+    const storeOptions = {};
+    const token = {};
+
+    jest.spyOn(Upload.prototype, 'upload').mockImplementation(() => Promise.resolve());
 
     await client.upload(file, uploadOptions, storeOptions, token, defaultSecurity);
 
@@ -219,7 +240,7 @@ describe('client', () => {
     const uploadOptions = {};
     const storeOptions = {};
 
-    spyOn(Upload.prototype, 'upload').and.returnValue(Promise.resolve());
+    jest.spyOn(Upload.prototype, 'upload').mockImplementation(() => Promise.resolve());
 
     await client.upload(file, uploadOptions, storeOptions);
 
@@ -257,7 +278,7 @@ describe('client', () => {
     const storeOptions = {};
     const token = {};
 
-    spyOn(Upload.prototype, 'multiupload').and.returnValue(Promise.resolve());
+    jest.spyOn(Upload.prototype, 'multiupload').mockImplementation(() => Promise.resolve());
 
     await client.multiupload(files, uploadOptions, storeOptions, token, defaultSecurity);
 
@@ -277,7 +298,7 @@ describe('client', () => {
     const uploadOptions = {};
     const storeOptions = {};
 
-    spyOn(Upload.prototype, 'multiupload').and.returnValue(Promise.resolve());
+    jest.spyOn(Upload.prototype, 'multiupload').mockImplementation(() => Promise.resolve());
 
     await client.multiupload(files, uploadOptions, storeOptions);
 
@@ -296,7 +317,7 @@ describe('client', () => {
     const storeOptions = {};
     const token = {};
 
-    spyOn(Upload.prototype, 'multiupload').and.returnValue(Promise.resolve());
+    jest.spyOn(Upload.prototype, 'multiupload').mockImplementation(() => Promise.resolve());
 
     const mockOnError = jest.fn().mockName('mockOnError');
 

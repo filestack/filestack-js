@@ -17,8 +17,8 @@
 
 import { config } from './../../config';
 import { CloudClient, PICKER_KEY } from './cloud';
-import * as utils from './../utils';
-import * as nock from 'nock';
+import * as utils from './../utils/index.node';
+import nock from 'nock';
 import { Store, STORE_TYPE } from '../utils/store';
 
 const testApiKey = 'API_KEY';
@@ -41,9 +41,9 @@ const testSession = {
 let scope = nock(sessionURls.cloudApiUrl);
 
 scope.defaultReplyHeaders({
-  'access-control-allow-origin': req => req.headers['origin'],
-  'access-control-allow-methods': req => req.headers['access-control-request-method'],
-  'access-control-allow-headers': req => req.headers['access-control-request-headers'],
+  'access-control-allow-origin': function (req) { return req.getHeader('origin')?.toString(); },
+  'access-control-allow-methods': function (req) { return req.getHeader('access-control-request-method')?.toString(); },
+  'access-control-allow-headers': function (req) { return req.getHeader('access-control-request-headers')?.toString(); },
   'content-type': 'application/json',
 });
 
@@ -206,7 +206,7 @@ describe('cloud', () => {
 
   describe('facebook inapp browser', () => {
     it('should set token to sessionStore when inapp browser is detected', async () => {
-      spyOn(utils, 'isFacebook').and.returnValue(true);
+      jest.spyOn(utils, 'isFacebook').mockReturnValue(true);
 
       const client = new CloudClient(Object.assign({}, testSession, {
         prefetch: {
@@ -227,7 +227,7 @@ describe('cloud', () => {
     });
 
     it('should get token from sessionStore when inapp browser is detected', async () => {
-      spyOn(utils, 'isFacebook').and.returnValue(true);
+      jest.spyOn(utils, 'isFacebook').mockReturnValue(true);
 
       const client = new CloudClient(Object.assign({}, testSession, {
         prefetch: {

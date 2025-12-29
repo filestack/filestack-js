@@ -18,8 +18,8 @@
 import { Session } from '../client';
 import { Hosts } from './../../config';
 import { ExtensionsMap } from './extensions';
-import fileType from 'file-type';
-import * as isutf8 from 'isutf8';
+import { fromBuffer } from 'file-type';
+import isutf8 from 'isutf8';
 
 /**
  * Resolve cdn url based on handle type
@@ -101,10 +101,16 @@ export const uniqueId = (len: number = 10): string => {
  * @param {Uint8Array | Buffer} file
  * @returns {string} - mimetype
  */
-export const getMimetype = (file: Uint8Array | Buffer, name?: string): string => {
-  let type = fileType(file);
+export const getMimetype = async (file: Uint8Array | Buffer, name?: string): Promise<string> => {
+  let type;
 
-  const excludedMimetypes = ['text/plain', 'application/octet-stream', 'application/x-ms', 'application/x-msi', 'application/zip'];
+  try {
+    type = await fromBuffer(file);
+  } catch (e) {
+    console.warn('An exception occurred while processing the buffer:', e.message);
+  }
+
+  const excludedMimetypes = ['text/plain', 'application/octet-stream', 'application/x-ms', 'application/x-msi', 'application/zip', 'audio/x-m4a'];
 
   if (type && excludedMimetypes.indexOf(type.mime) === -1) {
     return type.mime;
@@ -176,9 +182,9 @@ export const extensionToMime = (ext: string) => {
 export type SanitizeOptions =
   | boolean
   | {
-    exclude?: string[];
-    replacement?: string;
-  };
+      exclude?: string[];
+      replacement?: string;
+    };
 
 /**
  * Sanitize file name
@@ -186,7 +192,7 @@ export type SanitizeOptions =
  * @param name
  * @param {bool} options  - enable,disable sanitizer, default enabled
  * @param {string} options.replacement - replacement for sanitized chars defaults to "-"
- * @param {string[]} options.exclude - array with excluded chars default - ['\', '{', '}','|', '%', '`', '"', "'", '~', '[', ']', '#', '|', '^', '<', '>']
+ * @param {string[]} options.exclude - array with excluded chars default - `['\', '{', '}','|', '%', '`', '"', "'", '~', '[', ']', '#', '|', '^', '<', '>']`
  */
 export const sanitizeName = (name: string, options: SanitizeOptions = true): string => {
   if (typeof options === 'boolean' && !options) {

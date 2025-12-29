@@ -16,7 +16,7 @@
  */
 
 import { EventEmitter } from 'eventemitter3';
-import * as Sentry from '@sentry/minimal';
+import * as Sentry from '@sentry/browser';
 import { config, Hosts } from '../config';
 import { FilestackError } from './../filestack_error';
 import { metadata, MetadataOptions, remove, retrieve, RetrieveOptions, download } from './api/file';
@@ -467,8 +467,7 @@ export class Client extends EventEmitter {
           scope.setExtra('filestack-options', this.options);
           scope.setExtras({ uploadOptions: options, storeOptions, details: e.details });
           e.message = `FS-${e.message}`;
-
-          Sentry.captureException(e);
+          scope.captureException(e);
         });
       }
 
@@ -532,7 +531,7 @@ export class Client extends EventEmitter {
         scope.setExtra('filestack-options', this.options);
         scope.setExtras(e.details);
         scope.setExtras({ uploadOptions: options, storeOptions });
-        Sentry.captureException(e);
+        scope.captureException(e);
       });
 
       this.emit('upload.error', e);

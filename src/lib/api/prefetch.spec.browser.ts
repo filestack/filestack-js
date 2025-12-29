@@ -16,7 +16,7 @@
  */
 
 // import { config } from './../../config';
-import * as nock from 'nock';
+import nock from 'nock';
 import { Prefetch, PrefetchEvents } from './prefetch';
 import { Session, Security } from './../client';
 import { FsRequestErrorCode } from '../request';
@@ -45,9 +45,9 @@ let scope = nock(testURL.uploadApiUrl);
 
 // mock cors responses for all request for browser tests
 scope.defaultReplyHeaders({
-  'access-control-allow-origin': req => req.headers['origin'],
-  'access-control-allow-methods': req => req.headers['access-control-request-method'],
-  'access-control-allow-headers': req => req.headers['access-control-request-headers'],
+  'access-control-allow-origin': function (req) { return req.getHeader('origin')?.toString(); },
+  'access-control-allow-methods': function (req) { return req.getHeader('access-control-request-method')?.toString(); },
+  'access-control-allow-headers': function (req) { return req.getHeader('access-control-request-headers')?.toString(); },
   'content-type': 'application/json',
 });
 
@@ -58,7 +58,7 @@ describe('Prefetch', () => {
     .reply(204);
   });
 
-  it('Should make correct request to prefetch and return new config', async () => {
+  it('should make correct request to prefetch and return new config', async () => {
     const sessionCopy =  { ...testSession };
 
     const serverResponse = {

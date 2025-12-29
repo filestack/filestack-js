@@ -2,6 +2,140 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.46.2](https://github.com/filestack/filestack-js/compare/3.45.2...3.46.2) (2025-12-22)
+  * **picker:**  Updated Picker Version ([d82969](https://github.com/filestack/filestack-js/commit/d82969fc2d113b35984752f7d432d366d284508f)))
+
+## [3.45.2](https://github.com/filestack/filestack-js/compare/3.44.2...3.45.2) (2025-12-15)
+  * **picker:**  Updated Picker Version ([44351d](https://github.com/filestack/filestack-js/commit/44351db9b42ca22cc1bb5ada8f520d9267bd1e5f)))
+
+## [3.44.2](https://github.com/filestack/filestack-js/compare/3.44.1...3.44.2) (2025-10-22)
+  * **picker:**  Updated Picker Version ([a53988](https://github.com/filestack/filestack-js/commit/a539885e581f135fb67b0c24caf604d633279292)))
+
+## [3.44.1](https://github.com/filestack/filestack-js/compare/3.43.1...3.44.1) (2025-10-07)
+  * **picker:**  Set Google Drive App ID incase of custom OAuth ([1bbae3](https://github.com/filestack/filestack-js/commit/1bbae3707b2c0eb3bab17df03c69924527aab271)))
+
+## [3.43.1](https://github.com/filestack/filestack-js/compare/3.42.1...3.43.1) (2025-10-07)
+  * **picker:** Updated Picker Version - Now supports Google Drive Picker ([c6c29f](https://github.com/filestack/filestack-js/commit/c6c29f6db47a393c96d045ac7e60f096e28a0853)))
+
+## [3.42.1](https://github.com/filestack/filestack-js/compare/3.42.0...3.42.1) (2025-09-29)
+  * **picker:** Fixed Filter Tab Not Working During URL Upload in 3.42.1 Release ([a8696e](https://github.com/filestack/filestack-js/commit/a8696e112136757ae1d374a9f153b027fd1ace99)))
+
+## [3.42.0](https://github.com/filestack/filestack-js/compare/3.41.12...3.42.0) (2025-09-11)
+  * **upload:** Fixed upload via URL Failing in 3.40.12 Release ([e316fe](https://github.com/filestack/filestack-js/commit/e316fe83b67e690b84e7613a69538c8e0f79f1fd)))
+
+## [3.41.12](https://github.com/filestack/filestack-js/compare/3.40.12...3.41.12) (2025-08-11)
+  * **picker:** Picker now supports new Google Photos Picker ([c27d4b](https://github.com/filestack/filestack-js/commit/c27d4bf88bea5dbb441e7edf2d02ac510591767b)))
+  * **googlephotos:** Pass optional pickerSessionId to store ([c5aab6](https://github.com/filestack/filestack-js/commit/c5aab6e576613c3dbf7f7c7f0d6442baf34fa828)))
+
+## [3.40.12](https://github.com/filestack/filestack-js/compare/3.40.11...3.40.12) (2025-08-05)
+  * **mimetype:** Increased maxLength of mimetype to 255 ([ab0b03](https://github.com/filestack/filestack-js/commit/ab0b03393b974b6bf89c355cdfa5481bab9ecfd6))
+  * **altText:** Check altText if available instead of filename ([506e85](https://github.com/filestack/filestack-js/commit/506e856af1b967d57dc0413ca22e6f947d448fb2))
+
+## [3.40.11](https://github.com/filestack/filestack-js/compare/3.40.10...3.40.11) (2025-08-04)
+  * **storeOptions:** Pass altText and mimetype as storeOptions ([03791b](https://github.com/filestack/filestack-js/commit/03791b0bb92ec9e7f54307684a08af0c68e1ca79))
+  * **picker:** Updated picker version ([013ee9](https://github.com/filestack/filestack-js/commit/013ee9779618e8ce7e4329097d52808703ccd504))
+
+## [3.40.10](https://github.com/filestack/filestack-js/compare/3.40.9...3.40.10) (2025-07-23)
+  * **revert:** Reverted last deployment
+
+## [3.40.9](https://github.com/filestack/filestack-js/compare/3.40.8...3.40.9) (2025-07-22)
+  * **mimetype:** Pass mimetype to upload client ([7f7bb0](https://github.com/filestack/filestack-js/commit/7f7bb04d0052058559ff1c3274af244db417162c))
+  * **picker:** Updated picker version ([87de0f](https://github.com/filestack/filestack-js/commit/87de0f5a16d3a98aa45666c72e37d19a8880a464))
+
+## [3.40.8](https://github.com/filestack/filestack-js/compare/3.40.7...3.40.8) (2025-06-16)
+  * **upload:** Fixed ERR_STREAM_WRITE_AFTER_END error during upload for node version 22+ ([cdc8ec](https://github.com/filestack/filestack-js/commit/cdc8ec3979251da7ed43ffa289d969709526ed69))
+
+## [3.40.7](https://github.com/filestack/filestack-js/compare/3.40.6...3.40.7) (2025-06-16)
+  * **upload:** Fixed write after end error during upload for node version 22+ ([fc080d](https://github.com/filestack/filestack-js/commit/fc080d414b6c2866b8a695a92955d2393ac66c7f))
+
+## [4.0.0](https://github.com/filestack/filestack-js/compare/3.40.6...4.0.0) (2025-06-02)
+  * **picker:** Added folder upload option with picker v4.0.0
+  * **picker:** Added minipicker for multiple files with picker v4.0.0
+  * **picker:** Added pause and resume funtionality with picker v4.0.0
+  * **picker:** Added support for picker ui customization using tailwind css with picker v4.0.0
+
+## [3.40.6](https://github.com/filestack/filestack-js/compare/3.40.5...3.40.6) (2025-05-27)
+  * **build:** Fixed webpack 5 issues. ([#599](https://github.com/filestack/filestack-js/pull/599))
+  * **getMimeType:** .m4a files mime type from audio/x-m4a to audio/mp4 ([#600](https://github.com/filestack/filestack-js/pull/600))
+
+## [3.40.5](https://github.com/filestack/filestack-js/compare/3.39.5...3.40.5) (2025-04-22)
+  * **build:** Upgraded to webpack 5. ([#593](https://github.com/filestack/filestack-js/pull/593))
+
+## [3.39.5](https://github.com/filestack/filestack-js/compare/3.38.5...3.39.5) (2025-03-31)
+  * **sentry:** Upgraded sentry version ([579](https://github.com/filestack/filestack-js/pull/579)) ([578](https://github.com/filestack/filestack-js/pull/578)) ([577](https://github.com/filestack/filestack-js/pull/577)) ([575](https://github.com/filestack/filestack-js/pull/575))
+
+## [3.38.5](https://github.com/filestack/filestack-js/compare/3.37.5...3.38.5) (2025-02-18)
+  * **getMimeType:** Fixed getMimetype response ([61741c](https://github.com/filestack/filestack-js/commit/61741c3e01926277e2b96dcb1b1b052d26ea2857))
+  * **picker:** Updated picker with fixed seperated camera and microphone permission. ([f380e6](https://github.com/filestack/filestack-js/commit/f380e61b5eb9832c0f081f158c4262a83622ed2e))
+
+## [3.37.4](https://github.com/filestack/filestack-js/compare/3.36.4...3.37.4) (2025-01-22)
+  * **getMimeType:** Fixed getMimetype response ([6c0615](https://github.com/filestack/filestack-js/commit/6c0615f644bc2279e850df077f1308b6ef9c8564))
+
+## [3.36.4](https://github.com/filestack/filestack-js/compare/3.35.4...3.36.4) (2024-12-11)
+  * **picker:** Updated picker v1.31.4
+
+## [3.35.4](https://github.com/filestack/filestack-js/compare/3.34.4...3.35.4) (2024-10-14)
+  * **picker:** Updated picker v1.30.4
+  * **picker:** Added disableAltText option ([3164a1](https://github.com/filestack/filestack-js/commit/3164a17ddf2ae782c41f8a98b77f2d0d0dba5eef))
+
+## [3.34.4](https://github.com/filestack/filestack-js/compare/3.34.3...3.34.4) (2024-10-18)
+  * **picker:** Updated picker v1.29.4
+  * **client.upload:** Added check for altText check ([df5a23](https://github.com/filestack/filestack-js/commit/df5a23ab5f05b58664d8545944504988fde177a0))
+
+## [3.34.3](https://github.com/filestack/filestack-js/compare/v3.33.3...v3.34.3) (2024-10-01)
+  * **picker:** Updated picker v1.29.3 disabled transformations ui as default editor ([0ff66c85177](https://github.com/filestack/filestack-js/commit/0ff66c851778b02396292b7eb5cb67b2ecbe1848))
+
+## [3.33.3](https://github.com/filestack/filestack-js/compare/v3.32.3...v3.33.3) (2024-09-30)
+  * **picker:** Updated picker v1.28.3 with transformations-ui as default editor
+  * **fromSources:** Added back picasa as a potential source ([#567](https://github.com/filestack/filestack-js/pull/567)
+  * **fix(dependency):** Updated fast-xml-parser ([#7b862752f6](https://github.com/filestack/filestack-js/commit/7b862752f64e242e1dac9c269bab03105667cc3c)
+
+## [3.32.3](https://github.com/filestack/filestack-js/compare/v3.32.2...v3.32.3) (2024-06-18)
+  * **fromSources:** revert version ([b2767e5](https://github.com/filestack/filestack-js/commit/b2767e5))
+
+## [3.32.2](https://github.com/filestack/filestack-js/compare/v3.32.1...v3.32.2) (2024-06-14)
+  * **picker:** Upgraded picker to v1.27.3.
+  * **fromSources:** Fixed declaring the custom source at first place in fromSources array
+
+## [3.32.1](https://github.com/filestack/filestack-js/compare/v3.32.0...v3.32.1) (2024-05-30)
+  * **miemtypes:** Fixed support for vsdx file using through accept params
+
+## [3.32.0](https://github.com/filestack/filestack-js/compare/v3.31.0...v3.32.0) (2024-04-03)
+
+### Updgrade
+  * **picker:** Upgraded picker to v1.27.1.
+  * **picker:** Fixed support for hpt file type ([558](https://github.com/filestack/filestack-js/pull/558/))
+
+## [3.30.2](https://github.com/filestack/filestack-js/compare/v3.30.2...v3.31.0) (2024-03-10)
+
+### Updgrade
+  * **picker:** Upgraded picker to v1.27.0.
+
+## [3.30.2](https://github.com/filestack/filestack-js/compare/v3.30.1...v3.30.2) (2024-03-04)
+
+### Updgrade
+  * **picker:** Upgraded picker to v1.26.2.
+
+## [3.30.1](https://github.com/filestack/filestack-js/compare/v3.30.0...v3.30.1) (2024-02-07)
+
+### Updgrade
+  * **picker:** Upgraded picker to v1.26.1.
+
+## [3.30.0](https://github.com/filestack/filestack-js/compare/v3.29.0...v3.30.0) (2024-01-18)
+
+### Updgrade
+  * **picker:** Upgraded picker to v1.26.0. 
+
+## [3.29.0](https://github.com/filestack/filestack-js/compare/v3.28.0...v3.29.0) (2024-01-05)
+
+### Updgrade
+  * **file-type:** Upgraded file-type to v16.5.4. 
+
+## [3.28.0](https://github.com/filestack/filestack-js/compare/v3.27.0...v3.28.0) (2023-12-12)
+
+### Updgrade
+  * **Dependency-upgrade:** Upgraded packages to the latest possible version while maintaining backward compatibility. 
+
 ## [3.27.0](https://github.com/filestack/filestack-js/compare/v3.26.1...v3.27.0) (2023-08-07)
 
 ### Fix

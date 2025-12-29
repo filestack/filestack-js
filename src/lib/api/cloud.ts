@@ -133,6 +133,12 @@ export class CloudClient {
       if (!Array.isArray(accept)) {
         accept = [accept];
       }
+      // FS-11013.
+      // google-drive storing uncommon file-types in incorrect format, eg .srt (subrip) file is stored in bin (octet-stream) format
+      // so if user wants to accept subrip files, we should search google drive for octet-steam file.
+      if (accept.includes('application/x-subrip') && !accept.includes('application/octet-stream')) {
+        accept.push('application/octet-stream');
+      }
       // filtering mimetypes in clouds
       payload.accept = accept;
     }
@@ -163,7 +169,7 @@ export class CloudClient {
     });
   }
 
-  store(name: string, path: string, options: StoreParams = {}, customSource: any = {}, cancelTokenInput?: any, uploadTags: UploadTags = null) {
+  store(name: string, path: string, options: StoreParams = {}, customSource: any = {}, cancelTokenInput?: any, uploadTags: UploadTags = null, pickerSessionId?: string) {
     // Default to S3
     if (options.location === undefined) {
       options.location = 's3';
@@ -177,6 +183,7 @@ export class CloudClient {
       clouds: {
         [name]: {
           path,
+          picker_session_id: pickerSessionId,
           store: removeEmpty(options),
         },
       },
