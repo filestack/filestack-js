@@ -333,6 +333,11 @@ export const PickerParamsSchema = {
                 aspectRatio: {
                   type: 'number',
                 },
+                autoCropArea: {
+                  type: 'number',
+                  minimum: 0,
+                  maximum: 1,
+                },
               },
             },
           ],

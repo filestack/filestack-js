@@ -752,6 +752,10 @@ export interface PickerCropOptions {
    * Force all images to be cropped before uploading.
    */
   force?: boolean;
+  /**
+   * Auto crop area value between 0 and 1.
+   */
+  autoCropArea?: number;
 }
 
 export interface PickerTransformationOptions {
