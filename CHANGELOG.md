@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.46.3](https://github.com/filestack/filestack-js/compare/3.46.2...3.46.3) (2026-01-19)
+  * **picker:**  Updated Picker Version ([eec3b3](https://github.com/filestack/filestack-js/commit/eec3b3f1bca2508b4872926a9205e244661b8c36)))
+
 ## [3.46.2](https://github.com/filestack/filestack-js/compare/3.45.2...3.46.2) (2025-12-22)
   * **picker:**  Updated Picker Version ([d82969](https://github.com/filestack/filestack-js/commit/d82969fc2d113b35984752f7d432d366d284508f)))
 
