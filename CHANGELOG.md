@@ -2,6 +2,8 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.3.5](https://github.com/filestack/filestack-js/compare/4.3.4...4.3.5) (2026-01-28)
+  * **picker:** Updated picker version 4.5.1
 
 ## [4.3.4](https://github.com/filestack/filestack-js/compare/4.2.4...4.3.4) (2025-10-29)
   * **picker:** Updated picker version 4.5.0, fixed css issue, webcam and video preview
