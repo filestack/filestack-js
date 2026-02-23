@@ -736,17 +736,6 @@ export interface PickerOptions {
    * Enable/Disable possibility to multiple file upload
    */
   multipleFileUpload?: boolean;
-  /**
-   * Set your own Google Drive Picker App ID. Defaults to Filestack's.
-   * This is your Project Number from the Google Cloud console.
-   */
-  googleDriveAppID?: string;
-  /**
-   * Sets the origin of picker dialog. The origin should be set to
-   * the window.location.protocol + '//' + window.location.host of the top-most page,
-   * if your application is running in an iframe.
-   */
-  googleAppOrigin?: string;
 }
 
 export interface PickerCropOptions {

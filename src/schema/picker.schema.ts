@@ -478,11 +478,5 @@ export const PickerParamsSchema = {
     multipleFileUpload: {
       type: 'boolean',
     },
-    googleDriveAppID: {
-      type: 'string',
-    },
-    googleAppOrigin: {
-      type: 'string',
-    },
   },
 };
