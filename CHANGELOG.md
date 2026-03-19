@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.3.7](https://github.com/filestack/filestack-js/compare/4.3.6...4.3.7 (2026-03-19)
+  * **picker:** Updated picker version 4.5.2
+
 ## [4.3.6](https://github.com/filestack/filestack-js/compare/4.3.5...4.3.6 (2026-02-24)
   * **dependency:** fix: Updated fast-xml-parser to version 5.3.6 ([#612](https://github.com/filestack/filestack-js/pull/612))
 
