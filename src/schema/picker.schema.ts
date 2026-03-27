@@ -476,5 +476,8 @@ export const PickerParamsSchema = {
     googleDriveAppID: {
       type: 'string',
     },
+    googleAppOrigin: {
+      type: 'string',
+    },
   },
 };
