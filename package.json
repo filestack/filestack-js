@@ -38,7 +38,7 @@
     "examples": "npm run build && node ./examples/examples.js"
   },
   "engines": {
-    "node": ">=18"
+    "node": ">=8"
   },
   "dependencies": {
     "@babel/runtime": "^7.8.4",
