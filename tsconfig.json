@@ -19,6 +19,9 @@
       "dom"
     ],
     "baseUrl": ".",
+    "paths": {
+      "file-type": ["./node_modules/file-type/source/index"]
+    },
     "typeRoots": [
       "@types",
       "./node_modules/@types",

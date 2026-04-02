@@ -66,12 +66,16 @@ const baseConfig = {
     new webpack.NormalModuleReplacementPlugin(/\.node$/, (resource) => {
       resource.request = resource.request.replace(/\.node$/, '.browser');
     }),
+    new webpack.NormalModuleReplacementPlugin(/^node:/, (resource) => {
+      resource.request = resource.request.replace(/^node:/, '');
+    }),
   ],
   devtool: 'source-map',
   resolve: {
     extensions: ['.tsx', '.ts', '.js'],
     fallback: {
       fs: false,
+      'fs/promises': false,
       'process/browser': require.resolve("process/browser"),
       zlib: require.resolve("browserify-zlib"),
       stream: require.resolve("stream-browserify"),
