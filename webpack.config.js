@@ -9,6 +9,10 @@ const banner = fs.readFileSync('./LICENSE', 'utf8').replace('{year}', new Date()
 
 const baseConfig = {
   mode: 'production',
+  optimization: {
+    splitChunks: false,
+    runtimeChunk: false,
+  },
   watchOptions: {
     ignored: /node_modules/
   },
@@ -39,6 +43,7 @@ const baseConfig = {
     maxAssetSize: 255000
   },
   plugins: [
+    new webpack.optimize.LimitChunkCountPlugin({ maxChunks: 1 }),
     {
       apply: (compiler) => {
         compiler.hooks.beforeRun.tap('SourceMapInit', () => {
