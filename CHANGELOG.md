@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.3.8](https://github.com/filestack/filestack-js/compare/4.3.7...4.3.8 (2026-05-11)
+  * **getMimeType:** Updated file-type version to v22
+
 ## [4.3.7](https://github.com/filestack/filestack-js/compare/4.3.6...4.3.7 (2026-03-19)
   * **picker:** Updated picker version 4.5.2
 
