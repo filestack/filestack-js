@@ -208,6 +208,12 @@ export const sanitizeName = (name: string, options: SanitizeOptions = true): str
     return 'undefined';
   }
 
+  name = name.split('/').pop();
+
+  if (name.length === 0) {
+    return 'undefined';
+  }
+
   const fileParts = name.split('.');
 
   if (fileParts.length > 1) {
