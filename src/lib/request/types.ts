@@ -72,6 +72,7 @@ export interface FsRequestOptions {
   onProgress?: (pr: ProgressEvent) => any;
   auth?: FsAuthConfig;
   runtime?: FsRequestRuntime;
+  virtualForm?: boolean;
 }
 
 export interface FsResponse {
