@@ -124,7 +124,7 @@ export class File {
   public set customName(val: ((file: this) => string) | string) {
     switch (typeof val) {
       case 'string':
-        this.name = val;
+        this.name = val.split('/').pop();
         break;
       case 'function':
         const newName = val(this);
@@ -132,7 +132,7 @@ export class File {
           throw new Error(`Name function must return a string. Current return type is ${typeof val}`);
         }
 
-        this.name = val(this);
+        this.name = newName.split('/').pop();
         break;
     }
   }
