@@ -2,13 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
-## [4.3.8](https://github.com/filestack/filestack-js/compare/4.3.7...4.3.8 (2026-05-11)
+## [4.3.9](https://github.com/filestack/filestack-js/compare/4.3.8...4.3.9) (2026-10-01)
+  * **picker:** Updated picker version 4.5.3
+
+## [4.3.8](https://github.com/filestack/filestack-js/compare/4.3.7...4.3.8) (2026-05-11)
   * **getMimeType:** Updated file-type version to v22
 
-## [4.3.7](https://github.com/filestack/filestack-js/compare/4.3.6...4.3.7 (2026-03-19)
+## [4.3.7](https://github.com/filestack/filestack-js/compare/4.3.6...4.3.7) (2026-03-19)
   * **picker:** Updated picker version 4.5.2
 
-## [4.3.6](https://github.com/filestack/filestack-js/compare/4.3.5...4.3.6 (2026-02-24)
+## [4.3.6](https://github.com/filestack/filestack-js/compare/4.3.5...4.3.6) (2026-02-24)
   * **dependency:** fix: Updated fast-xml-parser to version 5.3.6 ([#612](https://github.com/filestack/filestack-js/pull/612))
 
 ## [4.3.5](https://github.com/filestack/filestack-js/compare/4.3.4...4.3.5) (2026-01-28)
