@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { removeEmpty } from '../utils';
+import { removeEmpty, uniqueId } from '../utils';
 import { StoreParams } from '../filelink';
 import { ClientOptions, Session } from '../client';
 import { FilestackError } from './../../filestack_error';
@@ -127,6 +127,8 @@ export class CloudClient {
       clouds,
       flow: 'web',
       token: this.token,
+      // FS-12472: shared CSRF nonce so the virtual-form cookie matches the auth URL's state.
+      oauth_csrf_nonce: uniqueId(32),
     };
 
     if (accept) {
@@ -160,7 +162,8 @@ export class CloudClient {
       options.cancelToken = cancelToken;
     }
 
-    return FsRequest.post(`${this.cloudApiUrl}/folder/list`, payload, options).then(res => {
+    // FS-12472: virtual-form POST lets cloudrouter set the cross-domain cookie via native form behavior.
+    return FsRequest.postForm(`${this.cloudApiUrl}/folder/list`, payload, options).then(res => {
       if (res.data && res.data.token) {
         this.token = res.data.token;
       }

@@ -190,6 +190,20 @@ export class FsRequest {
   }
 
   /**
+   * Dispatch POST via a virtual form submission before the regular XHR (browser-native cookie handling).
+   *
+   * @static
+   * @param {string} url
+   * @param {*} [data]
+   * @param {FsRequestOptions} [config]
+   * @returns {Promise<FsResponse>}
+   * @memberof FsRequest
+   */
+  public static postForm(url: string, data?: any, config?: FsRequestOptions): Promise<FsResponse> {
+    return FsRequest.getInstance().dispatch(Object.assign({}, config || {}, { method: FsHttpMethod.POST, url, data, virtualForm: true  }));
+  }
+
+  /**
    * Dispatch PUT request
    *
    * @static

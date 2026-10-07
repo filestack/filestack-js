@@ -23,6 +23,89 @@ import { prepareData, parseResponse, parse as parseHeaders, combineURL } from '.
 
 const debug = Debug('fs:request:xhr');
 const CANCEL_CLEAR = `FsCleanMemory`;
+let virtualFormId = 0;
+
+const isDomAvailable = (): boolean => typeof document !== 'undefined' && typeof window !== 'undefined' && typeof document.createElement === 'function' && !!document.body;
+
+const appendHiddenInput = (form: HTMLFormElement, name: string, value: any) => {
+  const input = document.createElement('input');
+  input.type = 'hidden';
+  input.name = name;
+  input.value = value === null || value === undefined ? '' : typeof value === 'object' ? JSON.stringify(value) : String(value);
+  form.appendChild(input);
+};
+
+const submitVirtualForm = (url: string, data: any, config: FsRequestOptions): Promise<void> => {
+  if (!isDomAvailable()) {
+    return Promise.reject(new FsRequestError('Virtual form requests are only supported in browser environments', config, null, FsRequestErrorCode.REQUEST));
+  }
+
+  const targetName = `fsVirtualFormTarget_${Date.now()}_${virtualFormId++}`;
+  const iframe = document.createElement('iframe');
+  iframe.name = targetName;
+  iframe.style.display = 'none';
+  iframe.setAttribute('aria-hidden', 'true');
+  iframe.src = 'about:blank';
+
+  const form = document.createElement('form');
+  form.method = 'POST';
+  form.action = url;
+  form.target = targetName;
+  form.enctype = 'multipart/form-data';
+  form.acceptCharset = 'UTF-8';
+  form.style.display = 'none';
+  form.setAttribute('novalidate', 'true');
+
+  if (data !== undefined && data !== null) {
+    if (typeof data !== 'object' || data instanceof File || data instanceof Blob) {
+      appendHiddenInput(form, 'data', data);
+    } else {
+      Object.keys(data).forEach(key => appendHiddenInput(form, key, data[key]));
+    }
+  }
+
+  document.body.appendChild(iframe);
+  document.body.appendChild(form);
+
+  return new Promise<void>((resolve, reject) => {
+    let cleanUp = () => {
+      if (form.parentNode) {
+        form.parentNode.removeChild(form);
+      }
+      if (iframe.parentNode) {
+        iframe.parentNode.removeChild(iframe);
+      }
+      if (config.cancelToken) {
+        config.cancelToken.removeListener('cancel', cancelListener);
+      }
+    };
+
+    const onLoad = () => {
+      cleanUp();
+      resolve();
+    };
+
+    const onCancel = (reason) => {
+      if (iframe.parentNode) {
+        iframe.parentNode.removeChild(iframe);
+      }
+      if (form.parentNode) {
+        form.parentNode.removeChild(form);
+      }
+      cleanUp = () => {};
+      reject(new FsRequestError(`Virtual form request aborted. Reason: ${reason}`, config, null, FsRequestErrorCode.ABORTED));
+    };
+
+    let cancelListener;
+    if (config.cancelToken) {
+      cancelListener = onCancel;
+      config.cancelToken.once('cancel', cancelListener);
+    }
+
+    iframe.addEventListener('load', onLoad);
+    form.submit();
+  });
+};
 
 export class XhrAdapter implements AdapterInterface {
 
@@ -30,6 +113,13 @@ export class XhrAdapter implements AdapterInterface {
     // if this option is unspecified set it by default
     if (typeof config.filestackHeaders === 'undefined') {
       config.filestackHeaders = true;
+    }
+
+    if (config.virtualForm) {
+      return submitVirtualForm(config.url, config.data, config).then(() => {
+        const normalConfig = Object.assign({}, config, { virtualForm: false });
+        return this.request(normalConfig);
+      });
     }
 
     config = prepareData(config);
