@@ -121,5 +121,60 @@ describe('Request/Helpers/Data', () => {
         },
       });
     });
+
+    it('should parse multipart upload xml responses to json', async () => {
+      const xmlResponse = (xml: string) => ({
+        status: 200,
+        statusText: 'ok',
+        headers: {
+          'content-type': 'application/xml',
+        },
+        data: xml,
+        config: {
+          url: 'https://filestack.com',
+        },
+      });
+
+      const init = await parseResponse(xmlResponse('<?xml version="1.0" encoding="UTF-8"?><InitiateMultipartUploadResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/"><Bucket>bucket</Bucket><Key>dir/file.jpg</Key><UploadId>VXBsb2FkIElEIGZvciA2aWWpbmcncyBteS1tb3ZpZS5tMnRzIHVwbG9hZA</UploadId></InitiateMultipartUploadResult>'));
+      const complete = await parseResponse(xmlResponse('<?xml version="1.0" encoding="UTF-8"?><CompleteMultipartUploadResult><Location>https://bucket.s3.amazonaws.com/dir/file.jpg</Location><Bucket>bucket</Bucket><Key>dir/file.jpg</Key><ETag>"3858f62230ac3c915f300c664312c11f-9"</ETag></CompleteMultipartUploadResult>'));
+
+      expect(init.data).toEqual({
+        InitiateMultipartUploadResult: {
+          Bucket: 'bucket',
+          Key: 'dir/file.jpg',
+          UploadId: 'VXBsb2FkIElEIGZvciA2aWWpbmcncyBteS1tb3ZpZS5tMnRzIHVwbG9hZA',
+        },
+      });
+      expect(complete.data).toEqual({
+        CompleteMultipartUploadResult: {
+          Location: 'https://bucket.s3.amazonaws.com/dir/file.jpg',
+          Bucket: 'bucket',
+          Key: 'dir/file.jpg',
+          ETag: '"3858f62230ac3c915f300c664312c11f-9"',
+        },
+      });
+    });
+
+    // CVE-2026-33036: numeric character references bypassed fast-xml-parser's entity limits and
+    // made parsing quadratic (~19 s for this 195 KB body with fast-xml-parser 5.3.6).
+    it('should parse an xml response flooded with numeric entities quickly', async () => {
+      const response = {
+        status: 200,
+        statusText: 'ok',
+        headers: {
+          'content-type': 'application/xml',
+        },
+        data: `<root>${'&#65;'.repeat(40000)}</root>`,
+        config: {
+          url: 'https://filestack.com',
+        },
+      };
+
+      const start = Date.now();
+      const res = await parseResponse(response);
+
+      expect(Date.now() - start).toBeLessThan(1000);
+      expect(typeof res.data.root).toBe('string');
+    }, 60000);
   });
 });

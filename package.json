@@ -47,7 +47,7 @@
     "abab": "^2.0.6",
     "debug": "^4.3.4",
     "eventemitter3": "^5.0.0",
-    "fast-xml-parser": "^5.3.6",
+    "fast-xml-parser": "^5.7.3",
     "file-type": "^22.0.0",
     "follow-redirects": "^1.15.2",
     "isutf8": "^4.0.0",
@@ -58,7 +58,7 @@
     "ts-node": "^10.9.1"
   },
   "devDependencies": {
-    "@aws-sdk/client-s3": "^3.787.0",
+    "@aws-sdk/client-s3": "3.967.0",
     "@babel/core": "^7.21.3",
     "@babel/plugin-transform-runtime": "^7.8.3",
     "@babel/preset-env": "^7.23.7",
@@ -75,7 +75,6 @@
     "buffer": "^6.0.3",
     "clean-webpack-plugin": "^4.0.0",
     "codecov": "^3.8.3",
-    "compression-webpack-plugin": "^10.0.0",
     "constants-browserify": "^1.0.0",
     "crypto-browserify": "^3.12.0",
     "del": "^6.1.1",
@@ -104,11 +103,9 @@
     "jsdom": "^21.1.1",
     "lodash.merge": "^4.6.2",
     "nock": "^13.3.0",
-    "opn-cli": "^5.0.0",
     "path-browserify": "^1.0.1",
     "prettier": "^2.8.4",
     "process": "^0.11.10",
-    "request": "^2.88.2",
     "source-map": "^0.7.4",
     "standard-version": "^9.5.0",
     "stream-browserify": "^3.0.0",
@@ -118,7 +115,6 @@
     "typedoc": "^0.23.25",
     "typescript": "^4.9.5",
     "url": "^0.11.4",
-    "validate-commit-msg": "^2.14.0",
     "webpack": "^5.76.1",
     "webpack-assets-manifest": "^5.1.0",
     "webpack-bundle-analyzer": "^4.8.0",
@@ -152,5 +148,26 @@
       "lcov",
       "text-summary"
     ]
+  },
+  "overrides": {
+    "codecov": {
+      "js-yaml": "^3.15.2"
+    },
+    "@istanbuljs/load-nyc-config": {
+      "js-yaml": "^3.15.2"
+    },
+    "@gulp-sourcemaps/identity-map": {
+      "postcss": "^8.5.18"
+    },
+    "chokidar@2": {
+      "braces": "^3.0.3"
+    },
+    "micromatch@3": {
+      "braces": "^3.0.3"
+    },
+    "@aws-sdk/xml-builder": {
+      "fast-xml-parser": "$fast-xml-parser"
+    },
+    "@aws-sdk/util-locate-window": "3.965.0"
   }
 }
