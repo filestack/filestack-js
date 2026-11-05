@@ -168,6 +168,15 @@
     "@aws-sdk/xml-builder": {
       "fast-xml-parser": "$fast-xml-parser"
     },
-    "@aws-sdk/util-locate-window": "3.965.0"
+    "@aws-sdk/util-locate-window": "3.965.0",
+    "@inrupt/jest-jsdom-polyfills": {
+      "undici": "^6.29.1"
+    },
+    "teeny-request": {
+      "uuid": "^11.1.1"
+    },
+    "trash": {
+      "uuid": "^11.1.1"
+    }
   }
 }
