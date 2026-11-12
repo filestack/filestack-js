@@ -177,6 +177,7 @@
     },
     "trash": {
       "uuid": "^11.1.1"
-    }
+    },
+    "decode-uri-component": "git+https://github.com/filepicker/decode-uri-component.git#2b004666bd07d5a73d9aa6aa07f731d5d9fda1ea"
   }
 }
